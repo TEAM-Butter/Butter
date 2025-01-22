@@ -25,6 +25,11 @@ public class BreadLog {
     @NotNull
     private Member member;
 
+    @ManyToOne
+    @JoinColumn(name = "bread_log_type_id")
+    @NotNull
+    private BreadLogType breadLogType;
+
     @Builder
     public BreadLog(Member member) {
         this.member = member;
