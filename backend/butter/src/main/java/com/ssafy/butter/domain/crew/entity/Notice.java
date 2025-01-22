@@ -1,6 +1,6 @@
 package com.ssafy.butter.domain.crew.entity;
 
-import com.ssafy.butter.domain.common.BaseEntity;
+import com.ssafy.butter.domain.common.TimestampedEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "crew_notice")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Notice extends BaseEntity {
+public class Notice extends TimestampedEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "crew_notice_id")
     private Long id;

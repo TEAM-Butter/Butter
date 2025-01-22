@@ -1,6 +1,6 @@
 package com.ssafy.butter.domain.schedule.entity;
 
-import com.ssafy.butter.domain.common.BaseEntity;
+import com.ssafy.butter.domain.common.TimestampedEntity;
 import com.ssafy.butter.domain.crew.entity.Crew;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -13,7 +13,7 @@ import lombok.RequiredArgsConstructor;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Schedule extends BaseEntity {
+public class Schedule extends TimestampedEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "schedule_id")
     private Long id;
