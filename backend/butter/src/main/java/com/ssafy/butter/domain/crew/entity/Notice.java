@@ -1,5 +1,6 @@
 package com.ssafy.butter.domain.crew.entity;
 
+import com.ssafy.butter.domain.common.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -18,7 +19,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "crew_notice")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Notice {
+public class Notice extends BaseEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "crew_notice_id")
     private Long id;
@@ -39,19 +40,11 @@ public class Notice {
     @Column(length = 2048)
     private String imageUrl;
 
-    @NotNull
-    private LocalDateTime createDate; //TODO : 시간 베이스 엔티티 생성
-
-    private LocalDateTime updateDate;
-
     @Builder
-    public Notice(Crew crew, String title, String content, String imageUrl, LocalDateTime createDate,
-                  LocalDateTime updateDate) {
+    public Notice(Crew crew, String title, String content, String imageUrl) {
         this.crew = crew;
         this.title = title;
         this.content = content;
         this.imageUrl = imageUrl;
-        this.createDate = createDate;
-        this.updateDate = updateDate;
     }
 }
