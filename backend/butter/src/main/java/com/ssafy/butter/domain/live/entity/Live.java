@@ -2,7 +2,6 @@ package com.ssafy.butter.domain.live.entity;
 
 import com.ssafy.butter.domain.clip.entity.Clip;
 import com.ssafy.butter.domain.crew.entity.Crew;
-import jakarta.persistence.Access;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
