@@ -1,5 +1,6 @@
 package com.ssafy.butter.domain.live.entity;
 
+import com.ssafy.butter.domain.clip.entity.Clip;
 import com.ssafy.butter.domain.crew.entity.Crew;
 import jakarta.persistence.Access;
 import jakarta.persistence.Column;
@@ -10,8 +11,11 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
@@ -27,6 +31,9 @@ public class Live {
     @JoinColumn(name = "crew_id")
     @NotNull
     private Crew crew;
+
+    @OneToMany(mappedBy = "live")
+    private List<Clip> clips = new ArrayList<>();
 
     @Column(length = 50)
     @NotNull
