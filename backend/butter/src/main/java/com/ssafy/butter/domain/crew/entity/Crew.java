@@ -25,14 +25,21 @@ public class Crew {
     @OneToMany(mappedBy = "crew", fetch = FetchType.LAZY)
     private List<Schedule> schedules = new ArrayList<>();
 
+    @Column(length = 50)
     @NotNull
     private String name;
 
+    @Column(length = 200)
     @NotNull
     private String description;
+
+    @Column(length = 2048)
     private String imageUrl;
+
+    @Column(length = 2048)
     private String promotionUrl;
 
+    @Column(length = 2048)
     @NotNull
     private String portfolioVideoUrl;
 
