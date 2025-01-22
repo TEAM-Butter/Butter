@@ -25,6 +25,9 @@ public class Crew {
     @OneToMany(mappedBy = "crew", fetch = FetchType.LAZY)
     private List<Schedule> schedules = new ArrayList<>();
 
+    @OneToMany(mappedBy = "crew", fetch = FetchType.LAZY)
+    private List<Notice> notices = new ArrayList<>();
+
     @Column(length = 50)
     @NotNull
     private String name;
