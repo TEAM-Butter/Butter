@@ -1,6 +1,7 @@
 package com.ssafy.butter.domain.crew.entity;
 
 import com.ssafy.butter.domain.schedule.entity.Schedule;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -18,6 +19,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Crew {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "crew_id")
     private Long id;
 
     @OneToMany(mappedBy = "crew", fetch = FetchType.LAZY)
