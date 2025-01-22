@@ -1,5 +1,6 @@
 package com.ssafy.butter.domain.crew.entity;
 
+import com.ssafy.butter.domain.live.entity.Live;
 import com.ssafy.butter.domain.schedule.entity.Schedule;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -27,6 +28,9 @@ public class Crew {
 
     @OneToMany(mappedBy = "crew", fetch = FetchType.LAZY)
     private List<Notice> notices = new ArrayList<>();
+
+    @OneToMany(mappedBy = "crew", fetch = FetchType.LAZY)
+    private List<Live> lives = new ArrayList<>();
 
     @Column(length = 50)
     @NotNull
