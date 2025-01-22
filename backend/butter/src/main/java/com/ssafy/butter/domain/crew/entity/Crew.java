@@ -23,13 +23,13 @@ public class Crew {
     @Column(name = "crew_id")
     private Long id;
 
-    @OneToMany(mappedBy = "crew", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "crew")
     private List<Schedule> schedules = new ArrayList<>();
 
-    @OneToMany(mappedBy = "crew", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "crew")
     private List<Notice> notices = new ArrayList<>();
 
-    @OneToMany(mappedBy = "crew", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "crew")
     private List<Live> lives = new ArrayList<>();
 
     @Column(length = 50)
