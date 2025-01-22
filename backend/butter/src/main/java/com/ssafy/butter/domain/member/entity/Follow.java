@@ -1,8 +1,6 @@
 package com.ssafy.butter.domain.member.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,6 +10,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 public class Follow {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long followId;
 
     @ManyToOne
     @JoinColumn(name = "member_id")
