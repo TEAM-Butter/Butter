@@ -5,6 +5,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
@@ -50,6 +52,11 @@ public class Member {
 
     @NotNull
     private Integer avatarType;
+
+    @ManyToOne
+    @JoinColumn(name = "member_type_id")
+    @NotNull
+    private MemberType memberType;
 
     @Builder
     public Member(String nickname, String email, String password, String imageUrl, LocalDate createDate, LocalDate birthDate, Integer gender, String phoneNumber, Integer breadAmount, Integer avatarType) {
