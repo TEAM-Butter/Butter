@@ -26,12 +26,15 @@ public class Schedule {
     private LocalDateTime createTime;//TODO: 시간 베이스 엔티티 추가
     private LocalDateTime updateTime;
 
+    @Column(length = 50)
     @NotNull
     private String title;
 
+    @Column(length = 200)
     @NotNull
     private String content;
 
+    @Column(length = 200)
     @NotNull
     private String place;
 
