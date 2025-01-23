@@ -20,6 +20,6 @@ public abstract class TimestampedEntity {
     private LocalDateTime createDate;
 
     @LastModifiedDate
-    @Column(nullable = false)
+    @NotNull
     private LocalDateTime updateDate;
 }
