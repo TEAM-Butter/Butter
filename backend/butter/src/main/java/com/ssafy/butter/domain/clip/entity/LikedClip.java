@@ -28,9 +28,13 @@ public class LikedClip {
     @NotNull
     private Member member;
 
+    @NotNull
+    private Boolean isLiked;
+
     @Builder
-    public LikedClip(Clip clip, Member member) {
+    public LikedClip(Clip clip, Member member, Boolean isLiked) {
         this.clip = clip;
         this.member = member;
+        this.isLiked = isLiked;
     }
 }
