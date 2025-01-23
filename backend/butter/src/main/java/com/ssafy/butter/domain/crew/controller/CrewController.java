@@ -1,6 +1,7 @@
 package com.ssafy.butter.domain.crew.controller;
 
 import com.ssafy.butter.domain.crew.dto.request.CrewCreationRequestDTO;
+import com.ssafy.butter.domain.crew.dto.request.CrewListRequestDTO;
 import com.ssafy.butter.domain.crew.dto.request.CrewMemberRequestDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +29,12 @@ public class CrewController {
     @DeleteMapping("/{crewId}/member/{memberId}")
     public ResponseEntity<?> deleteCrewMember(@PathVariable Long crewId, @PathVariable Long memberId) {
         log.info("deleteCrewMember: crewId: {}, memberId: {}", crewId, memberId);
+        return ResponseEntity.ok(null);
+    }
+
+    @GetMapping("/list")
+    public ResponseEntity<?> getCrewList(CrewListRequestDTO crewListRequestDTO) {
+        log.info("getCrewList: {}", crewListRequestDTO);
         return ResponseEntity.ok(null);
     }
 }
