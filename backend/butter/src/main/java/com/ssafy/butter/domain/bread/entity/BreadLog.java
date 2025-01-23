@@ -1,6 +1,7 @@
-package com.ssafy.butter.domain.member.entity;
+package com.ssafy.butter.domain.bread.entity;
 
 import com.ssafy.butter.domain.crew.entity.Crew;
+import com.ssafy.butter.domain.member.entity.Member;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;

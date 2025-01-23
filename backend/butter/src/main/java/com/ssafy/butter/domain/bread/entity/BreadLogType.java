@@ -1,4 +1,4 @@
-package com.ssafy.butter.domain.member.entity;
+package com.ssafy.butter.domain.bread.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
