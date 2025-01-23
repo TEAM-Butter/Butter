@@ -13,13 +13,17 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "crew_notice")
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Notice extends TimestampedEntity {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "crew_notice_id")
     private Long id;
 

@@ -14,6 +14,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @EntityListeners(AuditingEntityListener.class)
 @Getter
 public abstract class TimestampedEntity {
+
     @CreatedDate
     @Column(updatable = false)
     @NotNull
