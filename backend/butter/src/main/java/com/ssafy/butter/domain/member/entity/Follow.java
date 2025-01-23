@@ -28,9 +28,13 @@ public class Follow {
     @NotNull
     private Crew crew;
 
+    @NotNull
+    private Boolean isFollowed;
+
     @Builder
-    public Follow(Member member, Crew crew) {
+    public Follow(Member member, Crew crew, Boolean isFollowed) {
         this.member = member;
         this.crew = crew;
+        this.isFollowed = isFollowed;
     }
 }
