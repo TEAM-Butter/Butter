@@ -28,8 +28,9 @@ public class BreadLog {
     private BreadLogType breadLogType;
 
     @Builder
-    public BreadLog(Member member) {
+    public BreadLog(Member member, BreadLogType breadLogType) {
         this.member = member;
+        this.breadLogType = breadLogType;
     }
 
 }

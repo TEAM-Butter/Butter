@@ -57,7 +57,7 @@ public class Member {
     private MemberType memberType;
 
     @Builder
-    public Member(String nickname, String email, String password, String imageUrl, LocalDate createDate, LocalDate birthDate, Integer gender, String phoneNumber, Integer breadAmount, Integer avatarType) {
+    public Member(String nickname, String email, String password, String imageUrl, LocalDate createDate, LocalDate birthDate, Integer gender, String phoneNumber, Integer breadAmount, Integer avatarType, MemberType memberType) {
         this.nickname = nickname;
         this.email = email;
         this.password = password;
@@ -68,6 +68,7 @@ public class Member {
         this.phoneNumber = phoneNumber;
         this.breadAmount = breadAmount;
         this.avatarType = avatarType;
+        this.memberType = memberType;
     }
 
 }
