@@ -5,10 +5,7 @@ import com.ssafy.butter.domain.crew.dto.request.CrewMemberRequestDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
@@ -25,6 +22,12 @@ public class CrewController {
     @PostMapping("/member")
     public ResponseEntity<?> createCrewMember(@ModelAttribute CrewMemberRequestDTO crewMemberRequestDTO) {
         log.info("createCrewMember: {}", crewMemberRequestDTO);
+        return ResponseEntity.ok(null);
+    }
+
+    @DeleteMapping("/{crewId}/member/{memberId}")
+    public ResponseEntity<?> deleteCrewMember(@PathVariable Long crewId, @PathVariable Long memberId) {
+        log.info("deleteCrewMember: crewId: {}, memberId: {}", crewId, memberId);
         return ResponseEntity.ok(null);
     }
 }
