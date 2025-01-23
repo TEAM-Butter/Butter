@@ -15,8 +15,13 @@ public class LikedClip {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "clip_id")
+    @Column(name = "liked_clip_id")
     private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "clip_id")
+    @NotNull
+    private Clip clip;
 
     @ManyToOne
     @JoinColumn(name = "member_id")
@@ -24,7 +29,8 @@ public class LikedClip {
     private Member member;
 
     @Builder
-    public LikedClip(Member member) {
+    public LikedClip(Clip clip, Member member) {
+        this.clip = clip;
         this.member = member;
     }
 }
