@@ -1,11 +1,10 @@
 package com.ssafy.butter.domain.clip.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.ssafy.butter.domain.member.entity.Member;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -18,4 +17,14 @@ public class LikedClip {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "clip_id")
     private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "member_id")
+    @NotNull
+    private Member member;
+
+    @Builder
+    public LikedClip(Member member) {
+        this.member = member;
+    }
 }
