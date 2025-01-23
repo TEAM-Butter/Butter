@@ -14,7 +14,8 @@ public class MemberGenre {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long memberGenreId;
+    @Column(name = "member_genre_id")
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "member_id")

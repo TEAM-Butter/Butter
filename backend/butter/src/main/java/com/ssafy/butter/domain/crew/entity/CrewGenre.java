@@ -15,7 +15,8 @@ public class CrewGenre {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long crewGenreId;
+    @Column(name = "crew_genre_id")
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "genre_id")

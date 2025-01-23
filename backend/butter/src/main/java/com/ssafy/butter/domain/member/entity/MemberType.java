@@ -17,7 +17,8 @@ public class MemberType {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long memberTypeId;
+    @Column(name = "member_type_id")
+    private Long id;
 
     @Column(length = 50)
     @NotNull

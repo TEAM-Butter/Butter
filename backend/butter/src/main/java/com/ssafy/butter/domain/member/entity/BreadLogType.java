@@ -17,7 +17,8 @@ public class BreadLogType {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long breadLogId;
+    @Column(name = "bread_log_type_id")
+    private Long id;
 
     @Column(length = 50)
     @NotNull

@@ -20,7 +20,8 @@ public class Notification {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long notificationId;
+    @Column(name = "notification_id")
+    private Long id;
 
     @Column(length = 200)
     @NotNull
