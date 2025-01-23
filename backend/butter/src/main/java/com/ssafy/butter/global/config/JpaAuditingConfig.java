@@ -1,4 +1,4 @@
-package com.ssafy.butter.config;
+package com.ssafy.butter.global.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
