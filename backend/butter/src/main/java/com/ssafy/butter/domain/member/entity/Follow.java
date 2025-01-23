@@ -1,5 +1,6 @@
 package com.ssafy.butter.domain.member.entity;
 
+import com.ssafy.butter.domain.crew.entity.Crew;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
@@ -22,9 +23,18 @@ public class Follow {
     @NotNull
     private Member member;
 
-    @Builder
-    public Follow(Member member) {
-        this.member = member;
-    }
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "crew_id")
+    @NotNull
+    private Crew crew;
 
+    @NotNull
+    private Boolean isFollowed;
+
+    @Builder
+    public Follow(Member member, Crew crew, Boolean isFollowed) {
+        this.member = member;
+        this.crew = crew;
+        this.isFollowed = isFollowed;
+    }
 }

@@ -23,5 +23,4 @@ public class BreadLogType {
     @Column(length = 50)
     @NotNull
     private String name;
-
 }

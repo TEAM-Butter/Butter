@@ -19,13 +19,18 @@ public class CrewGenre {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "crew_id")
+    @NotNull
+    private Crew crew;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "genre_id")
     @NotNull
     private Genre genre;
 
     @Builder
-    public CrewGenre(Genre genre) {
+    public CrewGenre(Crew crew, Genre genre) {
+        this.crew = crew;
         this.genre = genre;
     }
-
 }

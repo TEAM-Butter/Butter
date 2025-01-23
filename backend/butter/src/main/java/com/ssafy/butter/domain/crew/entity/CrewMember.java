@@ -1,5 +1,6 @@
-package com.ssafy.butter.domain.member.entity;
+package com.ssafy.butter.domain.crew.entity;
 
+import com.ssafy.butter.domain.member.entity.Member;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
@@ -8,18 +9,19 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class Notification {
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class CrewMember {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "notification_id")
+    @Column(name = "crew_member_id")
     private Long id;
 
-    @Column(length = 200)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "crew_id")
     @NotNull
-    private String content;
+    private Crew crew;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
@@ -27,8 +29,8 @@ public class Notification {
     private Member member;
 
     @Builder
-    public Notification(String content, Member member) {
-        this.content = content;
+    public CrewMember(Crew crew, Member member) {
+        this.crew = crew;
         this.member = member;
     }
 }

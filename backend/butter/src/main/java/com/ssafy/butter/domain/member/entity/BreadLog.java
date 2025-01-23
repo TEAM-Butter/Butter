@@ -1,5 +1,6 @@
 package com.ssafy.butter.domain.member.entity;
 
+import com.ssafy.butter.domain.crew.entity.Crew;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
@@ -23,14 +24,18 @@ public class BreadLog {
     private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "crew_id")
+    private Crew crew;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "bread_log_type_id")
     @NotNull
     private BreadLogType breadLogType;
 
     @Builder
-    public BreadLog(Member member, BreadLogType breadLogType) {
+    public BreadLog(Member member, Crew crew, BreadLogType breadLogType) {
         this.member = member;
+        this.crew = crew;
         this.breadLogType = breadLogType;
     }
-
 }

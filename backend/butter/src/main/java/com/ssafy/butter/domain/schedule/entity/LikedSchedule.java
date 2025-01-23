@@ -1,6 +1,6 @@
-package com.ssafy.butter.domain.member.entity;
+package com.ssafy.butter.domain.schedule.entity;
 
-import com.ssafy.butter.domain.crew.entity.Genre;
+import com.ssafy.butter.domain.member.entity.Member;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
@@ -9,13 +9,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class MemberGenre {
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class LikedSchedule {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "member_genre_id")
+    @Column(name = "liked_schedule_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -24,13 +24,17 @@ public class MemberGenre {
     private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "genre_id")
+    @JoinColumn(name = "schedule_id")
     @NotNull
-    private Genre genre;
+    private Schedule schedule;
+
+    @NotNull
+    private Boolean isLiked;
 
     @Builder
-    public MemberGenre(Member member, Genre genre) {
+    public LikedSchedule(Member member, Schedule schedule, Boolean isLiked) {
         this.member = member;
-        this.genre = genre;
+        this.schedule = schedule;
+        this.isLiked = isLiked;
     }
 }
