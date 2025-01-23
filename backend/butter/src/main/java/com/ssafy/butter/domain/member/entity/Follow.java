@@ -17,7 +17,7 @@ public class Follow {
     @Column(name = "follow_id")
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     @NotNull
     private Member member;
