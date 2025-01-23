@@ -28,9 +28,13 @@ public class LikedSchedule {
     @NotNull
     private Schedule schedule;
 
+    @NotNull
+    private Boolean isLiked;
+
     @Builder
-    public LikedSchedule(Member member, Schedule schedule) {
+    public LikedSchedule(Member member, Schedule schedule, Boolean isLiked) {
         this.member = member;
         this.schedule = schedule;
+        this.isLiked = isLiked;
     }
 }
