@@ -1,5 +1,6 @@
 package com.ssafy.butter.domain.member.entity;
 
+import com.ssafy.butter.domain.crew.entity.Genre;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
@@ -22,8 +23,14 @@ public class MemberGenre {
     @NotNull
     private Member member;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "genre_id")
+    @NotNull
+    private Genre genre;
+
     @Builder
-    public MemberGenre(Member member) {
+    public MemberGenre(Member member, Genre genre) {
         this.member = member;
+        this.genre = genre;
     }
 }
