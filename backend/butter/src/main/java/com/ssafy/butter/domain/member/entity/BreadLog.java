@@ -32,5 +32,4 @@ public class BreadLog {
         this.member = member;
         this.breadLogType = breadLogType;
     }
-
 }

@@ -70,5 +70,4 @@ public class Member {
         this.avatarType = avatarType;
         this.memberType = memberType;
     }
-
 }

@@ -26,5 +26,4 @@ public class MemberGenre {
     public MemberGenre(Member member) {
         this.member = member;
     }
-
 }

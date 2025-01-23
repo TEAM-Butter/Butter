@@ -31,5 +31,4 @@ public class Notification {
         this.content = content;
         this.member = member;
     }
-
 }

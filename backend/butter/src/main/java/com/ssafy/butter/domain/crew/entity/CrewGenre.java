@@ -27,5 +27,4 @@ public class CrewGenre {
     public CrewGenre(Genre genre) {
         this.genre = genre;
     }
-
 }

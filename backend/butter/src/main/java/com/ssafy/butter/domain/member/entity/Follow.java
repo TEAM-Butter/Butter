@@ -26,5 +26,4 @@ public class Follow {
     public Follow(Member member) {
         this.member = member;
     }
-
 }

@@ -23,5 +23,4 @@ public class MemberType {
     @Column(length = 50)
     @NotNull
     private String name;
-
 }
