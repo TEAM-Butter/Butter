@@ -24,7 +24,7 @@ public class LikedSchedule {
     private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "schedule_id")
     @NotNull
     private Schedule schedule;
 
