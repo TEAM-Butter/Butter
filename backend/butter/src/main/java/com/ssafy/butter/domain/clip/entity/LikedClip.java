@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ClipLike {
+public class LikedClip {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "clip_id")
     private Long id;
