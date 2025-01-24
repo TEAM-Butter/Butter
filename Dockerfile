@@ -8,7 +8,7 @@ WORKDIR backend/butter/app
 COPY . .
 
 # Step 4: Build the application
-RUN backend/butter/gradlew clean build -x test
+RUN ./backend/butter/gradlew clean build -x test
 
 # Step 5: Use a lightweight JRE image for the final container
 FROM eclipse-temurin:21-jre
