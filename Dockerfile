@@ -17,7 +17,7 @@ FROM eclipse-temurin:21-jre
 WORKDIR backend/butter/app
 
 # Step 7: Copy the built JAR file from the previous stage
-COPY --from=build /app/build/libs/*.jar app.jar
+COPY --from=build backend/butter/app/build/libs/*.jar app.jar
 
 # Step 8: Expose the application port
 EXPOSE 8080
