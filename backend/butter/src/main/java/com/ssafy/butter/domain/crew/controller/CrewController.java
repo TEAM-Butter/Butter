@@ -34,7 +34,7 @@ public class CrewController {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<?> getCrewList(@RequestBody CrewListRequestDTO crewListRequestDTO) {
+    public ResponseEntity<?> getCrewList(@ModelAttribute CrewListRequestDTO crewListRequestDTO) {
         log.info("getCrewList: {}", crewListRequestDTO);
         return ResponseEntity.ok(null);
     }
