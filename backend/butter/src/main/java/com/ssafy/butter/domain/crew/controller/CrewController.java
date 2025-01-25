@@ -63,4 +63,10 @@ public class CrewController {
         log.info("unfollowCrew: {}", id);
         return ResponseEntity.ok(null);
     }
+
+    @GetMapping("/recommend")
+    public ResponseEntity<?> getRecommendedCrew() {
+        log.info("getRecommendedCrew");
+        return ResponseEntity.ok(null);
+    }
 }
