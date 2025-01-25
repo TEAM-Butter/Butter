@@ -1,10 +1,9 @@
 package com.ssafy.butter.domain.crew.controller;
 
-import com.ssafy.butter.domain.crew.dto.request.CrewCreationRequestDTO;
+import com.ssafy.butter.domain.crew.dto.request.CrewSaveRequestDTO;
 import com.ssafy.butter.domain.crew.dto.request.CrewFollowRequestDTO;
 import com.ssafy.butter.domain.crew.dto.request.CrewListRequestDTO;
 import com.ssafy.butter.domain.crew.dto.request.CrewMemberRequestDTO;
-import com.ssafy.butter.domain.crew.dto.request.CrewUpdateRequestDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -17,8 +16,8 @@ import org.springframework.web.bind.annotation.*;
 public class CrewController {
 
     @PostMapping
-    public ResponseEntity<?> createCrew(@ModelAttribute CrewCreationRequestDTO crewCreationRequestDTO) {
-        log.info("createCrew: {}", crewCreationRequestDTO);
+    public ResponseEntity<?> createCrew(@ModelAttribute CrewSaveRequestDTO crewSaveRequestDTO) {
+        log.info("createCrew: {}", crewSaveRequestDTO);
         return ResponseEntity.ok(null);
     }
 
@@ -46,9 +45,9 @@ public class CrewController {
         return ResponseEntity.ok(null);
     }
 
-    @PutMapping
-    public ResponseEntity<?> updateCrew(@ModelAttribute CrewUpdateRequestDTO crewUpdateRequestDTO) {
-        log.info("updateCrew: {}", crewUpdateRequestDTO);
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateCrew(@PathVariable Long id, @ModelAttribute CrewSaveRequestDTO crewSaveRequestDTO) {
+        log.info("updateCrew: id: {}, crewSaveRequestDTO: {}", id, crewSaveRequestDTO);
         return ResponseEntity.ok(null);
     }
 

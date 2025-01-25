@@ -8,7 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 @AllArgsConstructor
 @Getter
 @ToString
-public class CrewCreationRequestDTO {
+public class CrewSaveRequestDTO {
 
     private String name;
     private String description;
