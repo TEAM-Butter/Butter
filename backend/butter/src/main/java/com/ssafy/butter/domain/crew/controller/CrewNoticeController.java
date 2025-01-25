@@ -22,4 +22,10 @@ public class CrewNoticeController {
         log.info("CrewNotice crewNoticeCreationRequestDTO: {}", crewNoticeCreationRequestDTO);
         return ResponseEntity.ok(null);
     }
+
+    @GetMapping("/detail/{id}")
+    public ResponseEntity<?> getCrewNotice(@PathVariable Long id) {
+        log.info("CrewNotice detail: {}", id);
+        return ResponseEntity.ok(null);
+    }
 }
