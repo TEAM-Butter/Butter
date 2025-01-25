@@ -1,6 +1,7 @@
 package com.ssafy.butter.domain.crew.controller;
 
 import com.ssafy.butter.domain.crew.dto.request.CrewCreationRequestDTO;
+import com.ssafy.butter.domain.crew.dto.request.CrewFollowRequestDTO;
 import com.ssafy.butter.domain.crew.dto.request.CrewListRequestDTO;
 import com.ssafy.butter.domain.crew.dto.request.CrewMemberRequestDTO;
 import com.ssafy.butter.domain.crew.dto.request.CrewUpdateRequestDTO;
@@ -48,6 +49,12 @@ public class CrewController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteCrew(@PathVariable Long id) {
         log.info("deleteCrew: {}", id);
+        return ResponseEntity.ok(null);
+    }
+
+    @PostMapping("/follow")
+    public ResponseEntity<?> followCrew(@ModelAttribute CrewFollowRequestDTO crewFollowRequestDTO) {
+        log.info("followCrew: {}", crewFollowRequestDTO);
         return ResponseEntity.ok(null);
     }
 }
