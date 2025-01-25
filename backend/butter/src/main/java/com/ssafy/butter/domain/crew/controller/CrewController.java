@@ -40,6 +40,12 @@ public class CrewController {
         return ResponseEntity.ok(null);
     }
 
+    @GetMapping("/detail/{id}")
+    public ResponseEntity<?> getCrewDetail(@PathVariable Long id) {
+        log.info("getCrewDetail: {}", id);
+        return ResponseEntity.ok(null);
+    }
+
     @PutMapping
     public ResponseEntity<?> updateCrew(@ModelAttribute CrewUpdateRequestDTO crewUpdateRequestDTO) {
         log.info("updateCrew: {}", crewUpdateRequestDTO);
