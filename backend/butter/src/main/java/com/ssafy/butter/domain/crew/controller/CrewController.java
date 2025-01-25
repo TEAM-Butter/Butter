@@ -3,6 +3,7 @@ package com.ssafy.butter.domain.crew.controller;
 import com.ssafy.butter.domain.crew.dto.request.CrewCreationRequestDTO;
 import com.ssafy.butter.domain.crew.dto.request.CrewListRequestDTO;
 import com.ssafy.butter.domain.crew.dto.request.CrewMemberRequestDTO;
+import com.ssafy.butter.domain.crew.dto.request.CrewUpdateRequestDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -35,6 +36,12 @@ public class CrewController {
     @GetMapping("/list")
     public ResponseEntity<?> getCrewList(CrewListRequestDTO crewListRequestDTO) {
         log.info("getCrewList: {}", crewListRequestDTO);
+        return ResponseEntity.ok(null);
+    }
+
+    @PutMapping
+    public ResponseEntity<?> updateCrew(@ModelAttribute CrewUpdateRequestDTO crewUpdateRequestDTO) {
+        log.info("updateCrew: {}", crewUpdateRequestDTO);
         return ResponseEntity.ok(null);
     }
 }
