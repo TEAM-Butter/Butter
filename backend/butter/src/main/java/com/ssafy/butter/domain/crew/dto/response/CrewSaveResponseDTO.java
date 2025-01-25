@@ -1,11 +1,10 @@
 package com.ssafy.butter.domain.crew.dto.response;
 
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
-import org.springframework.web.multipart.MultipartFile;
 
-@AllArgsConstructor
+@Builder
 @Getter
 @ToString
 public class CrewSaveResponseDTO {
