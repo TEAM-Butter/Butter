@@ -1,10 +1,12 @@
 package com.ssafy.butter.domain.crew.controller;
 
 import com.ssafy.butter.domain.crew.dto.request.CrewNoticeCreationRequestDTO;
+import com.ssafy.butter.domain.crew.dto.request.CrewNoticeListRequestDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -20,6 +22,12 @@ public class CrewNoticeController {
     @PostMapping
     public ResponseEntity<?> createCrewNotice(CrewNoticeCreationRequestDTO crewNoticeCreationRequestDTO) {
         log.info("CrewNotice crewNoticeCreationRequestDTO: {}", crewNoticeCreationRequestDTO);
+        return ResponseEntity.ok(null);
+    }
+
+    @GetMapping("/list")
+    public ResponseEntity<?> getCrewNoticeList(@ModelAttribute CrewNoticeListRequestDTO crewNoticeListRequestDTO) {
+        log.info("CrewNotice List: {}", crewNoticeListRequestDTO);
         return ResponseEntity.ok(null);
     }
 
