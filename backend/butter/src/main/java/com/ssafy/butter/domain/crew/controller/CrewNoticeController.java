@@ -6,6 +6,7 @@ import com.ssafy.butter.domain.crew.dto.request.CrewNoticeUpdateRequestDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -42,6 +43,12 @@ public class CrewNoticeController {
     @PutMapping
     public ResponseEntity<?> updateCrewNotice(@RequestBody CrewNoticeUpdateRequestDTO crewNoticeUpdateRequestDTO) {
         log.info("CrewNotice updateRequestDTO: {}", crewNoticeUpdateRequestDTO);
+        return ResponseEntity.ok(null);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteCrewNotice(@PathVariable Long id) {
+        log.info("CrewNotice deleteRequestDTO: {}", id);
         return ResponseEntity.ok(null);
     }
 }
