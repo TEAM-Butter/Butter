@@ -44,4 +44,10 @@ public class CrewController {
         log.info("updateCrew: {}", crewUpdateRequestDTO);
         return ResponseEntity.ok(null);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteCrew(@PathVariable Long id) {
+        log.info("deleteCrew: {}", id);
+        return ResponseEntity.ok(null);
+    }
 }
