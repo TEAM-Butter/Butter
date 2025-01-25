@@ -1,8 +1,7 @@
 package com.ssafy.butter.domain.crew.controller;
 
-import com.ssafy.butter.domain.crew.dto.request.CrewNoticeCreationRequestDTO;
+import com.ssafy.butter.domain.crew.dto.request.CrewNoticeSaveRequestDTO;
 import com.ssafy.butter.domain.crew.dto.request.CrewNoticeListRequestDTO;
-import com.ssafy.butter.domain.crew.dto.request.CrewNoticeUpdateRequestDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -23,8 +22,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class CrewNoticeController {
 
     @PostMapping
-    public ResponseEntity<?> createCrewNotice(CrewNoticeCreationRequestDTO crewNoticeCreationRequestDTO) {
-        log.info("CrewNotice crewNoticeCreationRequestDTO: {}", crewNoticeCreationRequestDTO);
+    public ResponseEntity<?> createCrewNotice(CrewNoticeSaveRequestDTO crewNoticeSaveRequestDTO) {
+        log.info("CrewNotice crewNoticeCreationRequestDTO: {}", crewNoticeSaveRequestDTO);
         return ResponseEntity.ok(null);
     }
 
@@ -40,9 +39,9 @@ public class CrewNoticeController {
         return ResponseEntity.ok(null);
     }
 
-    @PutMapping
-    public ResponseEntity<?> updateCrewNotice(@RequestBody CrewNoticeUpdateRequestDTO crewNoticeUpdateRequestDTO) {
-        log.info("CrewNotice updateRequestDTO: {}", crewNoticeUpdateRequestDTO);
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateCrewNotice(@PathVariable Long id, @RequestBody CrewNoticeSaveRequestDTO crewNoticeSaveRequestDTO) {
+        log.info("CrewNotice updateRequestDTO: id: {}, crewNoticeUpdateRequestDTO: {}", id, crewNoticeSaveRequestDTO);
         return ResponseEntity.ok(null);
     }
 

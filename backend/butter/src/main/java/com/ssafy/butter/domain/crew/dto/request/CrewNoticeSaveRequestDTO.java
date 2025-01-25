@@ -10,7 +10,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Getter
 @ToString
-public class CrewNoticeCreationRequestDTO {
+public class CrewNoticeSaveRequestDTO {
 
     private Long crewId;
     private String title;
