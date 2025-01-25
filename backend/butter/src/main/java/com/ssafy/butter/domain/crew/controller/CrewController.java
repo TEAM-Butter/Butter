@@ -57,4 +57,10 @@ public class CrewController {
         log.info("followCrew: {}", crewFollowRequestDTO);
         return ResponseEntity.ok(null);
     }
+
+    @DeleteMapping("/{id}/follow")
+    public ResponseEntity<?> unfollowCrew(@PathVariable Long id) {
+        log.info("unfollowCrew: {}", id);
+        return ResponseEntity.ok(null);
+    }
 }
