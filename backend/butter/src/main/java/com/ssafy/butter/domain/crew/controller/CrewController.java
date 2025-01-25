@@ -58,7 +58,7 @@ public class CrewController {
     }
 
     @PostMapping("/follow")
-    public ResponseEntity<?> followCrew(@ModelAttribute CrewFollowRequestDTO crewFollowRequestDTO) {
+    public ResponseEntity<?> followCrew(@RequestBody CrewFollowRequestDTO crewFollowRequestDTO) {
         log.info("followCrew: {}", crewFollowRequestDTO);
         return ResponseEntity.ok(null);
     }
