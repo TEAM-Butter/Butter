@@ -1,4 +1,4 @@
-package com.ssafy.butter.infrastructure.email.dto.response;
+package com.ssafy.butter.infrastructure.emailAuth.dto.response;
 
 public record EmailWithAuthCodeDTO(
         String email,
