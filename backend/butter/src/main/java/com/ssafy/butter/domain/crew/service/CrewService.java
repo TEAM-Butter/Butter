@@ -28,5 +28,5 @@ public interface CrewService {
 
     void unfollowCrew(Long crewId);
 
-    List<CrewResponseDTO> getRecommendedCrew();
+    List<CrewResponseDTO> getRecommendedCrewList();
 }

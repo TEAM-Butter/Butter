@@ -70,8 +70,8 @@ public class CrewController {
     }
 
     @GetMapping("/recommend")
-    public ResponseEntity<?> getRecommendedCrew() {
-        log.info("getRecommendedCrew");
+    public ResponseEntity<?> getRecommendedCrewList() {
+        log.info("getRecommendedCrewList");
         return ResponseEntity.ok(null);
     }
 }

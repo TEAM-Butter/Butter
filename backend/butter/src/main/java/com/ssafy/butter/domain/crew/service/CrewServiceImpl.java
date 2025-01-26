@@ -88,7 +88,7 @@ public class CrewServiceImpl implements CrewService {
     }
 
     @Override
-    public List<CrewResponseDTO> getRecommendedCrew() {
+    public List<CrewResponseDTO> getRecommendedCrewList() {
         return List.of();
     }
 }
