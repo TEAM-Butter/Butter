@@ -86,4 +86,9 @@ public class CrewServiceImpl implements CrewService {
     public void unfollowCrew(Long crewId) {
 
     }
+
+    @Override
+    public List<CrewResponseDTO> getRecommendedCrew() {
+        return List.of();
+    }
 }
