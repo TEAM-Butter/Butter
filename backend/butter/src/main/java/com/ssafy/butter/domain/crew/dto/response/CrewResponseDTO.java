@@ -24,4 +24,18 @@ public class CrewResponseDTO {
     private String imageUrl;
     private String promotionUrl;
     private String portfolioVideoUrl;
+
+    public static CrewResponseDTO fromEntity(Crew crew) {
+        return builder()
+                .id(crew.getId())
+                .schedules(crew.getSchedules())
+                .notices(crew.getNotices())
+                .lives(crew.getLives())
+                .name(crew.getName())
+                .description(crew.getDescription())
+                .imageUrl(crew.getImageUrl())
+                .promotionUrl(crew.getPromotionUrl())
+                .portfolioVideoUrl(crew.getPortfolioVideoUrl())
+                .build();
+    }
 }
