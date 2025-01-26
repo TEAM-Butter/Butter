@@ -4,10 +4,14 @@ import com.ssafy.butter.domain.crew.dto.request.CrewSaveRequestDTO;
 import com.ssafy.butter.domain.crew.dto.request.CrewFollowRequestDTO;
 import com.ssafy.butter.domain.crew.dto.request.CrewListRequestDTO;
 import com.ssafy.butter.domain.crew.dto.request.CrewMemberRequestDTO;
+import com.ssafy.butter.domain.crew.dto.response.CrewResponseDTO;
+import com.ssafy.butter.domain.crew.service.CrewService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.net.URI;
 
 @RequiredArgsConstructor
 @RestController
@@ -15,10 +19,12 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 public class CrewController {
 
+    private final CrewService crewService;
+
     @PostMapping
     public ResponseEntity<?> createCrew(@ModelAttribute CrewSaveRequestDTO crewSaveRequestDTO) {
-        log.info("createCrew: {}", crewSaveRequestDTO);
-        return ResponseEntity.ok(null);
+        CrewResponseDTO crewResponseDTO = crewService.createCrew(crewSaveRequestDTO);
+        return ResponseEntity.created(URI.create("/api/v1/crew/detail/" + crewResponseDTO.getId())).body(crewResponseDTO);
     }
 
     @PostMapping("/member")

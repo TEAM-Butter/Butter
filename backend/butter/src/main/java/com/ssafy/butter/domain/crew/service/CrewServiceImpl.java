@@ -5,25 +5,45 @@ import com.ssafy.butter.domain.crew.dto.request.CrewListRequestDTO;
 import com.ssafy.butter.domain.crew.dto.request.CrewMemberRequestDTO;
 import com.ssafy.butter.domain.crew.dto.request.CrewSaveRequestDTO;
 import com.ssafy.butter.domain.crew.dto.response.CrewResponseDTO;
+import com.ssafy.butter.domain.crew.entity.Crew;
+import com.ssafy.butter.domain.crew.repository.CrewRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @RequiredArgsConstructor
 @Service
+@Transactional
 public class CrewServiceImpl implements CrewService {
+
+    private final CrewRepository crewRepository;
 
     @Override
     public CrewResponseDTO createCrew(CrewSaveRequestDTO crewSaveRequestDTO) {
-        return CrewResponseDTO.builder()
-                .id(null)
-                .name(null)
-                .description(null)
-                .imageUrl(null)
-                .promotionUrl(null)
-                .portfolioVideoUrl(null)
+        if (crewSaveRequestDTO.getPortfolioVideo() == null) {
+            throw new IllegalArgumentException("Portfolio video required");
+        }
+
+        Crew crew = Crew.builder()
+                .name(crewSaveRequestDTO.getName())
+                .description(crewSaveRequestDTO.getDescription())
+                .promotionUrl(crewSaveRequestDTO.getPromotionUrl())
+                .portfolioVideoUrl("")
                 .build();
+        Crew savedCrew = crewRepository.save(crew);
+
+        String filenamePrefix = crew.getId() + "_" + System.currentTimeMillis() + "_";
+        String imageUrl = null;
+        if (crewSaveRequestDTO.getImage() != null) {
+            imageUrl = filenamePrefix + crewSaveRequestDTO.getImage().getOriginalFilename();
+        }
+        String portfolioVideoUrl = filenamePrefix + crewSaveRequestDTO.getPortfolioVideo().getOriginalFilename();
+
+        savedCrew.setImageUrl(imageUrl);
+        savedCrew.setPortfolioVideoUrl(portfolioVideoUrl);
+        return CrewResponseDTO.fromEntity(crewRepository.save(savedCrew));
     }
 
     @Override
