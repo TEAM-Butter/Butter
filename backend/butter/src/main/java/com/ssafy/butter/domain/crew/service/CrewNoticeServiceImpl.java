@@ -28,4 +28,16 @@ public class CrewNoticeServiceImpl implements CrewNoticeService {
     public List<CrewNoticeResponseDTO> getCrewNoticeList(CrewNoticeListRequestDTO crewNoticeListRequestDTO) {
         return List.of();
     }
+
+    @Override
+    public CrewNoticeResponseDTO getCrewNotice(Long id) {
+        return CrewNoticeResponseDTO.builder()
+                .id(null)
+                .title(null)
+                .content(null)
+                .imageUrl(null)
+                .createDate(null)
+                .updateDate(null)
+                .build();
+    }
 }
