@@ -39,4 +39,16 @@ public class CrewServiceImpl implements CrewService {
     public List<CrewResponseDTO> getCrewList(CrewListRequestDTO crewListRequestDTO) {
         return List.of();
     }
+
+    @Override
+    public CrewResponseDTO getCrewDetail(Long id) {
+        return CrewResponseDTO.builder()
+                .id(null)
+                .name(null)
+                .description(null)
+                .imageUrl(null)
+                .promotionUrl(null)
+                .portfolioVideoUrl(null)
+                .build();
+    }
 }

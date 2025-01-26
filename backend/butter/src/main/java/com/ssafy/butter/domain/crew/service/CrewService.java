@@ -16,4 +16,6 @@ public interface CrewService {
     void deleteCrewMember(Long crewId, Long memberId);
 
     List<CrewResponseDTO> getCrewList(CrewListRequestDTO crewListRequestDTO);
+
+    CrewResponseDTO getCrewDetail(Long id);
 }
