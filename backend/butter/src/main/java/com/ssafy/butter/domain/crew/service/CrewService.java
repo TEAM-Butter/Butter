@@ -18,4 +18,6 @@ public interface CrewService {
     List<CrewResponseDTO> getCrewList(CrewListRequestDTO crewListRequestDTO);
 
     CrewResponseDTO getCrewDetail(Long id);
+
+    CrewResponseDTO updateCrew(Long id, CrewMemberRequestDTO crewMemberRequestDTO);
 }
