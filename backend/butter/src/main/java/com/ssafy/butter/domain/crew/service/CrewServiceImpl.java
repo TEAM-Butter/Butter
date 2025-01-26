@@ -79,6 +79,11 @@ public class CrewServiceImpl implements CrewService {
 
     @Override
     public void followCrew(CrewFollowRequestDTO crewFollowRequestDTO) {
-        
+
+    }
+
+    @Override
+    public void unfollowCrew(Long crewId) {
+
     }
 }
