@@ -1,8 +1,14 @@
 package com.ssafy.butter.domain.crew.dto.response;
 
+import com.ssafy.butter.domain.crew.entity.Crew;
+import com.ssafy.butter.domain.crew.entity.Notice;
+import com.ssafy.butter.domain.live.entity.Live;
+import com.ssafy.butter.domain.schedule.entity.Schedule;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
+
+import java.util.List;
 
 @Builder
 @Getter
@@ -10,6 +16,9 @@ import lombok.ToString;
 public class CrewResponseDTO {
 
     private Long id;
+    private List<Schedule> schedules;
+    private List<Notice> notices;
+    private List<Live> lives;
     private String name;
     private String description;
     private String imageUrl;
