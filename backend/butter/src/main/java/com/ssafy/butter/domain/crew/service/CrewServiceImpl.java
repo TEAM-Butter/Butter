@@ -63,4 +63,16 @@ public class CrewServiceImpl implements CrewService {
                 .portfolioVideoUrl(null)
                 .build();
     }
+
+    @Override
+    public CrewResponseDTO deleteCrew(Long id) {
+        return CrewResponseDTO.builder()
+                .id(null)
+                .name(null)
+                .description(null)
+                .imageUrl(null)
+                .promotionUrl(null)
+                .portfolioVideoUrl(null)
+                .build();
+    }
 }

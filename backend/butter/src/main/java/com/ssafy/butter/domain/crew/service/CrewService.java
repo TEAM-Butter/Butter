@@ -20,4 +20,6 @@ public interface CrewService {
     CrewResponseDTO getCrewDetail(Long id);
 
     CrewResponseDTO updateCrew(Long id, CrewMemberRequestDTO crewMemberRequestDTO);
+
+    CrewResponseDTO deleteCrew(Long id);
 }
