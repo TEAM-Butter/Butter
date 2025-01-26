@@ -1,5 +1,6 @@
 package com.ssafy.butter.domain.crew.service;
 
+import com.ssafy.butter.domain.crew.dto.request.CrewMemberRequestDTO;
 import com.ssafy.butter.domain.crew.dto.request.CrewSaveRequestDTO;
 import com.ssafy.butter.domain.crew.dto.response.CrewSaveResponseDTO;
 import lombok.RequiredArgsConstructor;
@@ -19,5 +20,10 @@ public class CrewServiceImpl implements CrewService {
                 .promotionUrl(null)
                 .portfolioVideoUrl(null)
                 .build();
+    }
+
+    @Override
+    public void createCrewMember(CrewMemberRequestDTO crewMemberRequestDTO) {
+        
     }
 }
