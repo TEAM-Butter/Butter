@@ -21,11 +21,22 @@ public class Member {
 
     @Column(length = 50)
     @NotNull
-    private String nickname;
+    private String loginId;
 
-    @Column(length = 50)
-    @NotNull
-    private String email;
+    @Embedded
+    private Nickname nickname;
+
+    @Embedded
+    private Email email;
+
+    @Embedded
+    private PhoneNumber phoneNumber;
+
+    @Embedded
+    private BirthDate birthDate;
+
+    @Embedded
+    private BreadAmount breadAmount;
 
     @Column(length = 200)
     private String password;
@@ -34,22 +45,13 @@ public class Member {
     private String imageUrl;
 
     @NotNull
-    private LocalDate createDate;
-
-    @NotNull
-    private LocalDate birthDate;
-
-    @NotNull
     private Integer gender;
 
     @NotNull
-    private String phoneNumber;
-
-    @NotNull
-    private Integer breadAmount;
-
-    @NotNull
     private Integer avatarType;
+
+    @NotNull
+    private LocalDate createDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_type_id")
@@ -57,17 +59,20 @@ public class Member {
     private MemberType memberType;
 
     @Builder
-    public Member(String nickname, String email, String password, String imageUrl, LocalDate createDate, LocalDate birthDate, Integer gender, String phoneNumber, Integer breadAmount, Integer avatarType, MemberType memberType) {
+    public Member(Nickname nickname, Email email, String password, String imageUrl, BirthDate birthDate, Integer gender,
+                  PhoneNumber phoneNumber, BreadAmount breadAmount, Integer avatarType, LocalDate createDate,
+                  MemberType memberType) {
         this.nickname = nickname;
         this.email = email;
         this.password = password;
         this.imageUrl = imageUrl;
-        this.createDate = createDate;
         this.birthDate = birthDate;
         this.gender = gender;
         this.phoneNumber = phoneNumber;
         this.breadAmount = breadAmount;
         this.avatarType = avatarType;
+        this.createDate = createDate;
         this.memberType = memberType;
     }
 }
+
