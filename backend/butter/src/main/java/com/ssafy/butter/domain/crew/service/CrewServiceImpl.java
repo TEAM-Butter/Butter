@@ -1,10 +1,13 @@
 package com.ssafy.butter.domain.crew.service;
 
+import com.ssafy.butter.domain.crew.dto.request.CrewListRequestDTO;
 import com.ssafy.butter.domain.crew.dto.request.CrewMemberRequestDTO;
 import com.ssafy.butter.domain.crew.dto.request.CrewSaveRequestDTO;
 import com.ssafy.butter.domain.crew.dto.response.CrewResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @Service
@@ -30,5 +33,10 @@ public class CrewServiceImpl implements CrewService {
     @Override
     public void deleteCrewMember(Long crewId, Long memberId) {
 
+    }
+
+    @Override
+    public List<CrewResponseDTO> getCrewList(CrewListRequestDTO crewListRequestDTO) {
+        return List.of();
     }
 }
