@@ -1,6 +1,6 @@
-package com.ssafy.butter.infrastructure.email.repository;
+package com.ssafy.butter.infrastructure.emailAuth.repository;
 
-import com.ssafy.butter.infrastructure.email.entity.EmailAuth;
+import com.ssafy.butter.infrastructure.emailAuth.entity.EmailAuth;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;

@@ -1,4 +1,4 @@
-package com.ssafy.butter.infrastructure.email.entity;
+package com.ssafy.butter.infrastructure.emailAuth.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

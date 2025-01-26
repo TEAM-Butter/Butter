@@ -1,4 +1,4 @@
-package com.ssafy.butter.infrastructure.email.dto.request;
+package com.ssafy.butter.infrastructure.emailAuth.dto.request;
 
 import jakarta.validation.constraints.Pattern;
 

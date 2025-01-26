@@ -1,10 +1,10 @@
-package com.ssafy.butter.infrastructure.email.service;
+package com.ssafy.butter.infrastructure.emailAuth.service;
 
-import com.ssafy.butter.infrastructure.email.dto.request.EmailDTO;
-import com.ssafy.butter.infrastructure.email.dto.response.EmailWithAuthCodeDTO;
-import com.ssafy.butter.infrastructure.email.entity.EmailAuth;
-import com.ssafy.butter.infrastructure.email.handler.EmailSendFailureException;
-import com.ssafy.butter.infrastructure.email.repository.EmailAuthRepository;
+import com.ssafy.butter.infrastructure.emailAuth.dto.request.EmailDTO;
+import com.ssafy.butter.infrastructure.emailAuth.dto.response.EmailWithAuthCodeDTO;
+import com.ssafy.butter.infrastructure.emailAuth.entity.EmailAuth;
+import com.ssafy.butter.infrastructure.emailAuth.handler.EmailSendFailureException;
+import com.ssafy.butter.infrastructure.emailAuth.repository.EmailAuthRepository;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import java.time.LocalDateTime;
@@ -24,7 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class EmailService {
+public class EmailServiceImpl implements EmailService{
     private static final String MAIL_SUBJECT = "[Butter] 이메일 인증 코드를 발송해 드립니다.";
     private static final long EXPIRE_MINUTE = 30;
     private static final int RANDOM_CODE_LENGTH = 6;
@@ -34,12 +34,14 @@ public class EmailService {
     private final JavaMailSender javaMailSender;
     private final EmailAuthRepository emailAuthRepository;
 
+    @Override
     @Transactional
     @Scheduled(cron = "0 0 12 * * ?")// 인증 코드 만료
     public void deleteAfterExpireAuthCodes() {
         emailAuthRepository.deleteByExpireDateTimeBefore(LocalDateTime.now());
     }
 
+    @Override
     @Async
     public CompletableFuture<EmailWithAuthCodeDTO> sendEmail(EmailDTO to) {
         String randomAuthCode = createRandomCode();
@@ -64,6 +66,7 @@ public class EmailService {
         return CompletableFuture.completedFuture(new EmailWithAuthCodeDTO(to.email(), randomAuthCode));
     }
 
+    @Override
     @Transactional
     public boolean verifyEmail(String email, String authCode) {
         Optional<EmailAuth> authEmail = emailAuthRepository.findByEmailAndAuthCode(email, authCode);
