@@ -15,6 +15,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Getter
@@ -43,12 +44,14 @@ public class Crew {
     @NotNull
     private String description;
 
+    @Setter
     @Column(length = 2048)
     private String imageUrl;
 
     @Column(length = 2048)
     private String promotionUrl;
 
+    @Setter
     @Column(length = 2048)
     @NotNull
     private String portfolioVideoUrl;
