@@ -24,6 +24,11 @@ public class CrewServiceImpl implements CrewService {
 
     @Override
     public void createCrewMember(CrewMemberRequestDTO crewMemberRequestDTO) {
-        
+
+    }
+
+    @Override
+    public void deleteCrewMember(Long crewId, Long memberId) {
+
     }
 }

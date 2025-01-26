@@ -9,4 +9,6 @@ public interface CrewService {
     CrewSaveResponseDTO createCrew(CrewSaveRequestDTO crewSaveRequestDTO);
 
     void createCrewMember(CrewMemberRequestDTO crewMemberRequestDTO);
+
+    void deleteCrewMember(Long crewId, Long memberId);
 }
