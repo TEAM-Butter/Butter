@@ -2,11 +2,11 @@ package com.ssafy.butter.domain.crew.service;
 
 import com.ssafy.butter.domain.crew.dto.request.CrewMemberRequestDTO;
 import com.ssafy.butter.domain.crew.dto.request.CrewSaveRequestDTO;
-import com.ssafy.butter.domain.crew.dto.response.CrewSaveResponseDTO;
+import com.ssafy.butter.domain.crew.dto.response.CrewResponseDTO;
 
 public interface CrewService {
 
-    CrewSaveResponseDTO createCrew(CrewSaveRequestDTO crewSaveRequestDTO);
+    CrewResponseDTO createCrew(CrewSaveRequestDTO crewSaveRequestDTO);
 
     void createCrewMember(CrewMemberRequestDTO crewMemberRequestDTO);
 

@@ -7,7 +7,7 @@ import lombok.ToString;
 @Builder
 @Getter
 @ToString
-public class CrewSaveResponseDTO {
+public class CrewResponseDTO {
 
     private Long id;
     private String name;
