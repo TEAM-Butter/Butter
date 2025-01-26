@@ -52,4 +52,16 @@ public class CrewNoticeServiceImpl implements CrewNoticeService {
                 .updateDate(null)
                 .build();
     }
+
+    @Override
+    public CrewNoticeResponseDTO deleteCrewNotice(Long id) {
+        return CrewNoticeResponseDTO.builder()
+                .id(null)
+                .title(null)
+                .content(null)
+                .imageUrl(null)
+                .createDate(null)
+                .updateDate(null)
+                .build();
+    }
 }

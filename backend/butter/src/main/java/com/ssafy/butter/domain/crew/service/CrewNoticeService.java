@@ -15,4 +15,6 @@ public interface CrewNoticeService {
     CrewNoticeResponseDTO getCrewNotice(Long id);
 
     CrewNoticeResponseDTO updateCrewNotice(Long id, CrewNoticeSaveRequestDTO crewNoticeSaveRequestDTO);
+
+    CrewNoticeResponseDTO deleteCrewNotice(Long id);
 }
