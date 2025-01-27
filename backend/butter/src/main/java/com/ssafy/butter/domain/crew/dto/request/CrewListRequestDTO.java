@@ -9,9 +9,8 @@ import lombok.ToString;
 @ToString
 public class CrewListRequestDTO {
 
-    private String sortKey;
+    private Long crewId;
     private String keyword;
-    private Integer pageNumber;
     private Integer pageSize;
     private Boolean isLiked;
 }
