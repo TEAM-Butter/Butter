@@ -14,7 +14,7 @@ public class EmailAuthRepositoryImpl implements EmailAuthRepository {
 
     @Override
     public Optional<EmailAuth> findByEmailAndAuthCode(String email, String verifyCode) {
-        return emailAuthJpaRepository.findByEmailAndAuthCode(email, verifyCode);
+        return emailAuthJpaRepository.findByEmailAndVerifyCode(email, verifyCode);
     }
 
     @Override
