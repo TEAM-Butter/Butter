@@ -1,6 +1,5 @@
 package com.ssafy.butter.infrastructure.emailAuth.controller;
 
-import com.ssafy.butter.domain.member.entity.Email;
 import com.ssafy.butter.domain.member.service.MemberService;
 import com.ssafy.butter.infrastructure.emailAuth.dto.request.AuthCodeEmailDTO;
 import com.ssafy.butter.infrastructure.emailAuth.dto.request.EmailDTO;
