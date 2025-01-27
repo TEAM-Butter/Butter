@@ -13,11 +13,6 @@ public class EmailAuthRepositoryImpl implements EmailAuthRepository {
     private final EmailAuthJpaRepository emailAuthJpaRepository;
 
     @Override
-    public Optional<EmailAuth> findByEmail(String email) {
-        return emailAuthJpaRepository.findByEmail(email);
-    }
-
-    @Override
     public Optional<EmailAuth> findByEmailAndAuthCode(String email, String verifyCode) {
         return emailAuthJpaRepository.findByEmailAndAuthCode(email, verifyCode);
     }

@@ -3,6 +3,8 @@ package com.ssafy.butter.domain.member.service;
 import com.ssafy.butter.domain.member.dto.response.MyPageResponseDTO;
 import com.ssafy.butter.domain.member.entity.Member;
 import com.ssafy.butter.domain.member.repository.MemberRepository;
+import com.ssafy.butter.infrastructure.emailAuth.dto.request.EmailDTO;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.springframework.stereotype.Service;
@@ -28,5 +30,11 @@ public class MemberServiceImpl implements MemberService{
         return MyPageResponseDTO.builder()
                 .member(findMember)
                 .build();
+    }
+
+    @Override
+    public boolean checkIfEmailExists(EmailDTO emailDTO) {
+        Optional<Member> findMember = memberRepository.findByEmail(emailDTO.email());
+        return findMember.isPresent();
     }
 }
