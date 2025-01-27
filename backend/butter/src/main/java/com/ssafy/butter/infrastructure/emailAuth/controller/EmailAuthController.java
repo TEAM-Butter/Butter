@@ -37,4 +37,16 @@ public class EmailAuthController {
 
         return ResponseEntity.ok(result);
     }
+
+    @PostMapping("/verify")
+    public ResponseEntity<EmailWithAuthCodeDTO> verifyEmail(@Valid @RequestBody AuthCodeEmailDTO authCodeEmailDTO){
+        EmailWithAuthCodeDTO response = new EmailWithAuthCodeDTO(authCodeEmailDTO.email(), authCodeEmailDTO.authCode());
+
+        if(emailService.verifyEmail(authCodeEmailDTO.email(), authCodeEmailDTO.authCode())){
+            return ResponseEntity.ok(response);
+        }
+
+        return ResponseEntity.badRequest()
+                .body(response);
+    }
 }
