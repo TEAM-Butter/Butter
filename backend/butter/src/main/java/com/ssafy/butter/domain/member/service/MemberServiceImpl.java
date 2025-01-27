@@ -1,8 +1,14 @@
 package com.ssafy.butter.domain.member.service;
 
+import com.ssafy.butter.domain.member.dto.request.SignUpDTO;
 import com.ssafy.butter.domain.member.dto.response.MyPageResponseDTO;
+import com.ssafy.butter.domain.member.entity.BirthDate;
+import com.ssafy.butter.domain.member.entity.Email;
 import com.ssafy.butter.domain.member.entity.Member;
+import com.ssafy.butter.domain.member.entity.Nickname;
+import com.ssafy.butter.domain.member.entity.PhoneNumber;
 import com.ssafy.butter.domain.member.repository.MemberRepository;
+import com.ssafy.butter.global.util.encrypt.EncryptUtils;
 import com.ssafy.butter.infrastructure.emailAuth.dto.request.EmailDTO;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +20,27 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService{
     private final MemberRepository memberRepository;
+    private final EncryptUtils encryptUtils;
+
+    /**
+     * 회원 가입을 한다
+     * @param signUpDTO
+     * @return
+     */
+    @Override
+    public Member signUp(SignUpDTO signUpDTO) {
+        String encryptPassword = encryptUtils.encrypt(signUpDTO.password());
+
+        return memberRepository.save(Member.builder()
+                .loginId(signUpDTO.loginId())
+                .nickname(new Nickname(signUpDTO.nickname()))
+                .email(new Email(signUpDTO.email()))
+                .phoneNumber(new PhoneNumber(signUpDTO.phoneNumber()))
+                .birthDate(new BirthDate(signUpDTO.birthDate()))
+                .password(signUpDTO.password())
+                .gender(signUpDTO.gender())
+                .build());
+    }
 
     /**
      * 멤버의 마이 페이지에 필요한 정보를 조회한다
@@ -32,6 +59,11 @@ public class MemberServiceImpl implements MemberService{
                 .build();
     }
 
+    /**
+     * 파라미터 이메일과 동일한 이메일로 가입한 멤버의 존재 여부를 반환한다
+     * @param emailDTO
+     * @return
+     */
     @Override
     public boolean checkIfEmailExists(EmailDTO emailDTO) {
         Optional<Member> findMember = memberRepository.findByEmail(emailDTO.email());
