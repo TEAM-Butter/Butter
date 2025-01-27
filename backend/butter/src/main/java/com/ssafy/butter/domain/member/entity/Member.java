@@ -64,17 +64,20 @@ public class Member {
     private MemberType memberType;
 
     @Builder
-    public Member(Nickname nickname, Email email, String password, String imageUrl, BirthDate birthDate, Integer gender,
-                  PhoneNumber phoneNumber, BreadAmount breadAmount, Integer avatarType, LocalDate createDate,
-                  MemberType memberType) {
+    public Member(List<MemberGenre> memberGenres, String loginId, Nickname nickname, Email email,
+                  PhoneNumber phoneNumber,
+                  BirthDate birthDate, BreadAmount breadAmount, String password, String imageUrl, Integer gender,
+                  Integer avatarType, LocalDate createDate, MemberType memberType) {
+        this.memberGenres = memberGenres;
+        this.loginId = loginId;
         this.nickname = nickname;
         this.email = email;
+        this.phoneNumber = phoneNumber;
+        this.birthDate = birthDate;
+        this.breadAmount = breadAmount;
         this.password = password;
         this.imageUrl = imageUrl;
-        this.birthDate = birthDate;
         this.gender = gender;
-        this.phoneNumber = phoneNumber;
-        this.breadAmount = breadAmount;
         this.avatarType = avatarType;
         this.createDate = createDate;
         this.memberType = memberType;
