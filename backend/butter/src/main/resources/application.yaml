@@ -39,3 +39,13 @@ spring:
           timeout: 5000
           starttls:
             enable: true
+
+cloud:
+  aws:
+    s3:
+      bucket: ${custom.aws.s3.bucket-name}
+    stack.auto: false
+    region.static: ${custom.aws.s3.region}
+    credentials:
+      accessKey: ${custom.aws.s3.access-key}
+      secretKey: ${custom.aws.s3.secret-key}
