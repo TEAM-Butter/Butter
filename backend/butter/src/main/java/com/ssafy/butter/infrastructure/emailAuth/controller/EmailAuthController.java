@@ -1,11 +1,12 @@
 package com.ssafy.butter.infrastructure.emailAuth.controller;
 
-import com.ssafy.butter.domain.member.entity.Member;
+import com.ssafy.butter.domain.member.entity.Email;
 import com.ssafy.butter.domain.member.service.MemberService;
+import com.ssafy.butter.infrastructure.emailAuth.dto.request.AuthCodeEmailDTO;
 import com.ssafy.butter.infrastructure.emailAuth.dto.request.EmailDTO;
+import com.ssafy.butter.infrastructure.emailAuth.dto.response.EmailWithAuthCodeDTO;
 import com.ssafy.butter.infrastructure.emailAuth.service.EmailService;
 import jakarta.validation.Valid;
-import java.util.Optional;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping("/api/v1/email")
+@RequestMapping("/api/v1/auth/email")
 public class EmailAuthController {
     private final EmailService emailService;
     private final MemberService memberService;
@@ -28,5 +29,12 @@ public class EmailAuthController {
         }
 
         return ResponseEntity.ok(email);
+    }
+
+    @PostMapping("/send")
+    public ResponseEntity<EmailWithAuthCodeDTO> sendEmail(@Valid @RequestBody EmailDTO emailDTO){
+        EmailWithAuthCodeDTO result = emailService.sendEmail(emailDTO).join();
+
+        return ResponseEntity.ok(result);
     }
 }
