@@ -78,7 +78,7 @@ public class CrewServiceImpl implements CrewService {
     }
 
     @Override
-    public CrewResponseDTO updateCrew(Long id, CrewMemberRequestDTO crewMemberRequestDTO) {
+    public CrewResponseDTO updateCrew(Long id, CrewSaveRequestDTO crewSaveRequestDTO) {
         return CrewResponseDTO.builder()
                 .id(null)
                 .name(null)
