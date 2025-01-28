@@ -67,8 +67,8 @@ public class CrewController {
 
     @DeleteMapping("/{id}/follow")
     public ResponseEntity<?> unfollowCrew(@PathVariable Long id) {
-        log.info("unfollowCrew: {}", id);
-        return ResponseEntity.ok(null);
+        crewService.unfollowCrew(1L, id);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/recommend")

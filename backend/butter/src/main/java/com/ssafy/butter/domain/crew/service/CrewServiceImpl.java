@@ -141,7 +141,10 @@ public class CrewServiceImpl implements CrewService {
 
     @Override
     public void unfollowCrew(Long memberId, Long crewId) {
-
+        Crew crew = crewRepository.findById(crewId).orElseThrow();
+        Member member = memberService.findById(memberId);
+        Follow follow = followRepository.findByCrewAndMember(crew, member).orElseThrow();
+        followRepository.delete(follow);
     }
 
     @Override
