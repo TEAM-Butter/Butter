@@ -31,7 +31,7 @@ public class RefreshToken {
         this.token = token;
     }
 
-    public void ifHasSameToken(String token) {
+    public void validateSameRefreshToken(String token) {
         if (!this.token.equals(token)) {
             throw new IllegalArgumentException();
         }
