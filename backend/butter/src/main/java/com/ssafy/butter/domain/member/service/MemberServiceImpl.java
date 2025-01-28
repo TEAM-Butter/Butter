@@ -88,6 +88,12 @@ public class MemberServiceImpl implements MemberService{
         return password.encrypt(encryptUtils);
     }
 
+    /**
+     * 프로필 이미지를 S3 버킷에 업로드하고, url을 반환한다
+     * 사용자가 프로필 이미지를 설정하지 않은 경우, null을 반환한다
+     * @param profileImage
+     * @return
+     */
     private String insertProfileImage(MultipartFile profileImage){
         if(profileImage!=null && !profileImage.isEmpty()){
             return imageUploader.uploadImage(profileImage);
