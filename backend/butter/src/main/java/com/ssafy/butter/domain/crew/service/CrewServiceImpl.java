@@ -97,14 +97,9 @@ public class CrewServiceImpl implements CrewService {
 
     @Override
     public CrewResponseDTO deleteCrew(Long id) {
-        return CrewResponseDTO.builder()
-                .id(null)
-                .name(null)
-                .description(null)
-                .imageUrl(null)
-                .promotionUrl(null)
-                .portfolioVideoUrl(null)
-                .build();
+        Crew crew = crewRepository.findById(id).orElseThrow();
+        crewRepository.delete(crew);
+        return CrewResponseDTO.fromEntity(crew);
     }
 
     @Override

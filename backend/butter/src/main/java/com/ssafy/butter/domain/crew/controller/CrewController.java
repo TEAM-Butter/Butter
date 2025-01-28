@@ -56,8 +56,7 @@ public class CrewController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteCrew(@PathVariable Long id) {
-        log.info("deleteCrew: {}", id);
-        return ResponseEntity.ok(null);
+        return ResponseEntity.ok(crewService.deleteCrew(id));
     }
 
     @PostMapping("/follow")
