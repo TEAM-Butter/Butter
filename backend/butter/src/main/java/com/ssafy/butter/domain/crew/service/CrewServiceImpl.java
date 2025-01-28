@@ -6,7 +6,10 @@ import com.ssafy.butter.domain.crew.dto.request.CrewMemberRequestDTO;
 import com.ssafy.butter.domain.crew.dto.request.CrewSaveRequestDTO;
 import com.ssafy.butter.domain.crew.dto.response.CrewResponseDTO;
 import com.ssafy.butter.domain.crew.entity.Crew;
+import com.ssafy.butter.domain.crew.entity.CrewMember;
+import com.ssafy.butter.domain.crew.repository.CrewMemberRepository;
 import com.ssafy.butter.domain.crew.repository.CrewRepository;
+import com.ssafy.butter.domain.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -20,7 +23,10 @@ import java.util.List;
 @Transactional
 public class CrewServiceImpl implements CrewService {
 
+    private final MemberService memberService;
+
     private final CrewRepository crewRepository;
+    private final CrewMemberRepository crewMemberRepository;
 
     @Override
     public CrewResponseDTO createCrew(CrewSaveRequestDTO crewSaveRequestDTO) {
@@ -50,7 +56,11 @@ public class CrewServiceImpl implements CrewService {
 
     @Override
     public void createCrewMember(CrewMemberRequestDTO crewMemberRequestDTO) {
-
+        CrewMember crewMember = CrewMember.builder()
+                .crew(crewRepository.findById(crewMemberRequestDTO.getCrewId()).orElseThrow())
+                .member(memberService.findById(crewMemberRequestDTO.getMemberId()))
+                .build();
+        crewMemberRepository.save(crewMember);
     }
 
     @Override

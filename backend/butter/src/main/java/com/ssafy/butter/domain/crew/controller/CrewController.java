@@ -29,8 +29,8 @@ public class CrewController {
 
     @PostMapping("/member")
     public ResponseEntity<?> createCrewMember(@ModelAttribute CrewMemberRequestDTO crewMemberRequestDTO) {
-        log.info("createCrewMember: {}", crewMemberRequestDTO);
-        return ResponseEntity.ok(null);
+        crewService.createCrewMember(crewMemberRequestDTO);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{crewId}/member/{memberId}")
