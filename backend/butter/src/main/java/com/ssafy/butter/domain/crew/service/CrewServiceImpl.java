@@ -73,7 +73,10 @@ public class CrewServiceImpl implements CrewService {
 
     @Override
     public void deleteCrewMember(Long crewId, Long memberId) {
-
+        Crew crew = crewRepository.findById(crewId).orElseThrow();
+        Member member = memberService.findById(memberId);
+        CrewMember crewMember = crewMemberRepository.findByCrewAndMember(crew, member).orElseThrow();
+        crewMemberRepository.delete(crewMember);
     }
 
     @Override
