@@ -4,8 +4,10 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.validation.constraints.NotNull;
 import java.util.Objects;
+import lombok.Getter;
 
 @Embeddable
+@Getter
 public class Email {
     @NotNull
     @Column(name = "email")
@@ -18,10 +20,6 @@ public class Email {
             throw new IllegalArgumentException("ERR : 이메일 양식에 부합하지 않습니다");
         }
         this.value = address;
-    }
-
-    public String getAddress() {
-        return value;
     }
 
     @Override
