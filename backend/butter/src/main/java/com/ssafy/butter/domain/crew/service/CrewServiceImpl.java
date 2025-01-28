@@ -74,14 +74,7 @@ public class CrewServiceImpl implements CrewService {
 
     @Override
     public CrewResponseDTO getCrewDetail(Long id) {
-        return CrewResponseDTO.builder()
-                .id(null)
-                .name(null)
-                .description(null)
-                .imageUrl(null)
-                .promotionUrl(null)
-                .portfolioVideoUrl(null)
-                .build();
+        return CrewResponseDTO.fromEntity(crewRepository.findById(id).orElseThrow());
     }
 
     @Override

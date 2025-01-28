@@ -46,8 +46,7 @@ public class CrewController {
 
     @GetMapping("/detail/{id}")
     public ResponseEntity<?> getCrewDetail(@PathVariable Long id) {
-        log.info("getCrewDetail: {}", id);
-        return ResponseEntity.ok(null);
+        return ResponseEntity.ok(crewService.getCrewDetail(id));
     }
 
     @PutMapping("/{id}")
