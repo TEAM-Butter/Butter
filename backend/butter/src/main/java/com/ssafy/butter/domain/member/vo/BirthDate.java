@@ -1,5 +1,6 @@
 package com.ssafy.butter.domain.member.vo;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
@@ -9,7 +10,8 @@ import java.util.Objects;
 @Embeddable
 public class BirthDate {
     @NotNull
-    private LocalDate date;
+    @Column(name = "birth_date")
+    private LocalDate value;
 
     protected BirthDate() {}
 
@@ -17,15 +19,15 @@ public class BirthDate {
         if (date.isAfter(LocalDate.now())) {
             throw new IllegalArgumentException("ERR : 생년월일로 선택할 수 없습니다");
         }
-        this.date = date;
+        this.value = date;
     }
 
     public LocalDate getDate() {
-        return date;
+        return value;
     }
 
     public int calculateAge() {
-        return Period.between(this.date, LocalDate.now()).getYears();
+        return Period.between(this.value, LocalDate.now()).getYears();
     }
 
     @Override
@@ -33,12 +35,12 @@ public class BirthDate {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         BirthDate birthDate = (BirthDate) o;
-        return Objects.equals(date, birthDate.date);
+        return Objects.equals(value, birthDate.value);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(date);
+        return Objects.hash(value);
     }
 }
 

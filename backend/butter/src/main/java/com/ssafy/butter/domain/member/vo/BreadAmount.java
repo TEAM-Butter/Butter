@@ -1,5 +1,6 @@
 package com.ssafy.butter.domain.member.vo;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.validation.constraints.NotNull;
 import java.util.Objects;
@@ -7,7 +8,8 @@ import java.util.Objects;
 @Embeddable
 public class BreadAmount {
     @NotNull
-    private Integer amount;
+    @Column(name = "bread_amount")
+    private Integer value;
 
     protected BreadAmount() {}
 
@@ -15,15 +17,15 @@ public class BreadAmount {
         if (amount < 0) {
             throw new IllegalArgumentException("ERR : 빵은 최소 0개 이상입니다");
         }
-        this.amount = amount;
+        this.value = amount;
     }
 
     public Integer getAmount() {
-        return amount;
+        return value;
     }
 
     public BreadAmount add(int value) {
-        return new BreadAmount(this.amount + value);
+        return new BreadAmount(this.value + value);
     }
 
     @Override
@@ -31,12 +33,12 @@ public class BreadAmount {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         BreadAmount that = (BreadAmount) o;
-        return Objects.equals(amount, that.amount);
+        return Objects.equals(value, that.value);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(amount);
+        return Objects.hash(value);
     }
 }
 

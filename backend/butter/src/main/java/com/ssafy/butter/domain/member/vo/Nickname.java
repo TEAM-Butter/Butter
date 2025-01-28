@@ -1,5 +1,6 @@
 package com.ssafy.butter.domain.member.vo;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.validation.constraints.NotNull;
 import java.util.Objects;
@@ -7,6 +8,7 @@ import java.util.Objects;
 @Embeddable
 public class Nickname {
     @NotNull
+    @Column(name = "nickname")
     private String value;
 
     protected Nickname() {}
