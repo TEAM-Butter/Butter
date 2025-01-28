@@ -51,8 +51,7 @@ public class CrewController {
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updateCrew(@PathVariable Long id, @ModelAttribute CrewSaveRequestDTO crewSaveRequestDTO) {
-        log.info("updateCrew: id: {}, crewSaveRequestDTO: {}", id, crewSaveRequestDTO);
-        return ResponseEntity.ok(null);
+        return ResponseEntity.ok(crewService.updateCrew(id, crewSaveRequestDTO));
     }
 
     @DeleteMapping("/{id}")
