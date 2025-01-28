@@ -9,6 +9,8 @@ import com.ssafy.butter.domain.crew.entity.Crew;
 import com.ssafy.butter.domain.crew.entity.CrewMember;
 import com.ssafy.butter.domain.crew.repository.CrewMemberRepository;
 import com.ssafy.butter.domain.crew.repository.CrewRepository;
+import com.ssafy.butter.domain.member.entity.Member;
+import com.ssafy.butter.domain.member.repository.MemberRepository;
 import com.ssafy.butter.domain.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -27,6 +29,7 @@ public class CrewServiceImpl implements CrewService {
 
     private final CrewRepository crewRepository;
     private final CrewMemberRepository crewMemberRepository;
+    private final MemberRepository memberRepository;
 
     @Override
     public CrewResponseDTO createCrew(CrewSaveRequestDTO crewSaveRequestDTO) {
@@ -56,9 +59,14 @@ public class CrewServiceImpl implements CrewService {
 
     @Override
     public void createCrewMember(CrewMemberRequestDTO crewMemberRequestDTO) {
+        Crew crew = crewRepository.findById(crewMemberRequestDTO.getCrewId()).orElseThrow();
+        Member member = memberService.findById(crewMemberRequestDTO.getMemberId());
+        crewMemberRepository.findByCrewAndMember(crew, member).ifPresent(crewMember -> {
+            throw new IllegalArgumentException("Crew member already exists");
+        });
         CrewMember crewMember = CrewMember.builder()
-                .crew(crewRepository.findById(crewMemberRequestDTO.getCrewId()).orElseThrow())
-                .member(memberService.findById(crewMemberRequestDTO.getMemberId()))
+                .crew(crew)
+                .member(member)
                 .build();
         crewMemberRepository.save(crewMember);
     }
