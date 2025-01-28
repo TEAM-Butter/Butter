@@ -1,5 +1,11 @@
 package com.ssafy.butter.domain.member.entity;
 
+import com.ssafy.butter.domain.member.vo.BirthDate;
+import com.ssafy.butter.domain.member.vo.BreadAmount;
+import com.ssafy.butter.domain.member.vo.Email;
+import com.ssafy.butter.domain.member.vo.Nickname;
+import com.ssafy.butter.domain.member.vo.Password;
+import com.ssafy.butter.domain.member.vo.PhoneNumber;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import java.util.ArrayList;
@@ -44,7 +50,8 @@ public class Member {
     private BreadAmount breadAmount;
 
     @Column(length = 200)
-    private String password;
+    @Embedded
+    private Password password;
 
     @Column(length = 2048)
     private String imageUrl;
@@ -66,7 +73,7 @@ public class Member {
     @Builder
     public Member(List<MemberGenre> memberGenres, String loginId, Nickname nickname, Email email,
                   PhoneNumber phoneNumber,
-                  BirthDate birthDate, BreadAmount breadAmount, String password, String imageUrl, Integer gender,
+                  BirthDate birthDate, BreadAmount breadAmount, Password password, String imageUrl, Integer gender,
                   Integer avatarType, LocalDate createDate, MemberType memberType) {
         this.memberGenres = memberGenres;
         this.loginId = loginId;

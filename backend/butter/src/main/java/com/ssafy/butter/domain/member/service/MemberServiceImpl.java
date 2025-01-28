@@ -2,11 +2,12 @@ package com.ssafy.butter.domain.member.service;
 
 import com.ssafy.butter.domain.member.dto.request.SignUpDTO;
 import com.ssafy.butter.domain.member.dto.response.MyPageResponseDTO;
-import com.ssafy.butter.domain.member.entity.BirthDate;
-import com.ssafy.butter.domain.member.entity.Email;
+import com.ssafy.butter.domain.member.vo.BirthDate;
+import com.ssafy.butter.domain.member.vo.Email;
 import com.ssafy.butter.domain.member.entity.Member;
-import com.ssafy.butter.domain.member.entity.Nickname;
-import com.ssafy.butter.domain.member.entity.PhoneNumber;
+import com.ssafy.butter.domain.member.vo.Nickname;
+import com.ssafy.butter.domain.member.vo.Password;
+import com.ssafy.butter.domain.member.vo.PhoneNumber;
 import com.ssafy.butter.domain.member.repository.MemberRepository;
 import com.ssafy.butter.global.util.encrypt.EncryptUtils;
 import com.ssafy.butter.infrastructure.emailAuth.dto.request.EmailDTO;
@@ -29,7 +30,7 @@ public class MemberServiceImpl implements MemberService{
      */
     @Override
     public Member signUp(SignUpDTO signUpDTO) {
-        String encryptPassword = encryptUtils.encrypt(signUpDTO.password());
+        Password encryptedPassword = createEncryptedPassword(signUpDTO.password().getValue());
 
         return memberRepository.save(Member.builder()
                 .loginId(signUpDTO.loginId())
@@ -37,7 +38,7 @@ public class MemberServiceImpl implements MemberService{
                 .email(new Email(signUpDTO.email()))
                 .phoneNumber(new PhoneNumber(signUpDTO.phoneNumber()))
                 .birthDate(new BirthDate(signUpDTO.birthDate()))
-                .password(signUpDTO.password())
+                .password(encryptedPassword)
                 .gender(signUpDTO.gender())
                 .build());
     }
@@ -68,5 +69,10 @@ public class MemberServiceImpl implements MemberService{
     public boolean checkIfEmailExists(EmailDTO emailDTO) {
         Optional<Member> findMember = memberRepository.findByEmail(emailDTO.email());
         return findMember.isPresent();
+    }
+
+    private Password createEncryptedPassword(String rawPassword){
+        Password password = Password.raw(rawPassword);
+        return password.encrypt(encryptUtils);
     }
 }
