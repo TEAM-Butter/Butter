@@ -36,10 +36,12 @@ public class Crew {
     @OneToMany(mappedBy = "crew")
     private List<Live> lives = new ArrayList<>();
 
+    @Setter
     @Column(length = 50)
     @NotNull
     private String name;
 
+    @Setter
     @Column(length = 200)
     @NotNull
     private String description;
@@ -48,6 +50,7 @@ public class Crew {
     @Column(length = 2048)
     private String imageUrl;
 
+    @Setter
     @Column(length = 2048)
     private String promotionUrl;
 
