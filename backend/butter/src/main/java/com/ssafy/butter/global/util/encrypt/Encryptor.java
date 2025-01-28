@@ -4,7 +4,7 @@ import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SaltEncryption implements EncryptUtils {
+public class Encryptor implements EncryptUtils {
 
     @Override
     public String encrypt(String plain) {
