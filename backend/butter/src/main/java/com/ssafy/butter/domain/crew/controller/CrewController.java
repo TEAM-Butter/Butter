@@ -61,8 +61,8 @@ public class CrewController {
 
     @PostMapping("/follow")
     public ResponseEntity<?> followCrew(@RequestBody CrewFollowRequestDTO crewFollowRequestDTO) {
-        log.info("followCrew: {}", crewFollowRequestDTO);
-        return ResponseEntity.ok(null);
+        crewService.followCrew(1L, crewFollowRequestDTO);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{id}/follow")

@@ -7,8 +7,10 @@ import com.ssafy.butter.domain.crew.dto.request.CrewSaveRequestDTO;
 import com.ssafy.butter.domain.crew.dto.response.CrewResponseDTO;
 import com.ssafy.butter.domain.crew.entity.Crew;
 import com.ssafy.butter.domain.crew.entity.CrewMember;
+import com.ssafy.butter.domain.crew.entity.Follow;
 import com.ssafy.butter.domain.crew.repository.CrewMemberRepository;
 import com.ssafy.butter.domain.crew.repository.CrewRepository;
+import com.ssafy.butter.domain.crew.repository.FollowRepository;
 import com.ssafy.butter.domain.member.entity.Member;
 import com.ssafy.butter.domain.member.repository.MemberRepository;
 import com.ssafy.butter.domain.member.service.MemberService;
@@ -29,7 +31,7 @@ public class CrewServiceImpl implements CrewService {
 
     private final CrewRepository crewRepository;
     private final CrewMemberRepository crewMemberRepository;
-    private final MemberRepository memberRepository;
+    private final FollowRepository followRepository;
 
     @Override
     public CrewResponseDTO createCrew(CrewSaveRequestDTO crewSaveRequestDTO) {
@@ -125,7 +127,16 @@ public class CrewServiceImpl implements CrewService {
 
     @Override
     public void followCrew(Long memberId, CrewFollowRequestDTO crewFollowRequestDTO) {
-
+        Crew crew = crewRepository.findById(crewFollowRequestDTO.getCrewId()).orElseThrow();
+        Member member = memberService.findById(memberId);
+        followRepository.findByCrewAndMember(crew, member).ifPresent(follow -> {
+            throw new IllegalArgumentException("Crew follower already exists");
+        });
+        Follow follow = Follow.builder()
+                .crew(crew)
+                .member(member)
+                .build();
+        followRepository.save(follow);
     }
 
     @Override
