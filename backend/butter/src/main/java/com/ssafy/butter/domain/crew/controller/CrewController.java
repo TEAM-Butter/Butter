@@ -1,9 +1,9 @@
 package com.ssafy.butter.domain.crew.controller;
 
-import com.ssafy.butter.domain.crew.dto.request.CrewSaveRequestDTO;
 import com.ssafy.butter.domain.crew.dto.request.CrewFollowRequestDTO;
 import com.ssafy.butter.domain.crew.dto.request.CrewListRequestDTO;
 import com.ssafy.butter.domain.crew.dto.request.CrewMemberRequestDTO;
+import com.ssafy.butter.domain.crew.dto.request.CrewSaveRequestDTO;
 import com.ssafy.butter.domain.crew.dto.response.CrewResponseDTO;
 import com.ssafy.butter.domain.crew.service.CrewService;
 import lombok.RequiredArgsConstructor;
@@ -41,8 +41,7 @@ public class CrewController {
 
     @GetMapping("/list")
     public ResponseEntity<?> getCrewList(@ModelAttribute CrewListRequestDTO crewListRequestDTO) {
-        log.info("getCrewList: {}", crewListRequestDTO);
-        return ResponseEntity.ok(null);
+        return ResponseEntity.ok(crewListRequestDTO.getIsLiked() ? null : crewService.getCrewList(crewListRequestDTO));
     }
 
     @GetMapping("/detail/{id}")

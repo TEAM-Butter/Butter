@@ -8,6 +8,8 @@ import com.ssafy.butter.domain.crew.dto.response.CrewResponseDTO;
 import com.ssafy.butter.domain.crew.entity.Crew;
 import com.ssafy.butter.domain.crew.repository.CrewRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -58,7 +60,16 @@ public class CrewServiceImpl implements CrewService {
 
     @Override
     public List<CrewResponseDTO> getCrewList(CrewListRequestDTO crewListRequestDTO) {
-        return List.of();
+        Pageable pageable = PageRequest.of(0, crewListRequestDTO.getPageSize());
+        if (crewListRequestDTO.getKeyword() == null) {
+            if (crewListRequestDTO.getCrewId() == null) {
+                return crewRepository.findAllOrderByIdDesc(pageable).stream().map(CrewResponseDTO::fromEntity).toList();
+            } else {
+                return crewRepository.findAllByIdLessThanOrderByIdDesc(crewListRequestDTO.getCrewId(), pageable).stream().map(CrewResponseDTO::fromEntity).toList();
+            }
+        } else {
+            return null;
+        }
     }
 
     @Override
