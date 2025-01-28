@@ -13,7 +13,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 @RequiredArgsConstructor
 public class AuthenticatedUserArgumentResolver implements HandlerMethodArgumentResolver {
     private final JwtManager jwtManager;
-    private final JwtPrincipalExtractor jwtPrincipalExtractor;
+    private final JwtExtractor jwtExtractor;
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
@@ -28,6 +28,6 @@ public class AuthenticatedUserArgumentResolver implements HandlerMethodArgumentR
             throw new NoSuchElementException();
         }
 
-        return jwtManager.getParsedClaims(jwtPrincipalExtractor.extract(token));
+        return jwtManager.getParsedClaims(jwtExtractor.extract(token));
     }
 }

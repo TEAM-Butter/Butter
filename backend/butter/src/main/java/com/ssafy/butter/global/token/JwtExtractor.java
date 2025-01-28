@@ -4,7 +4,7 @@ import java.util.Enumeration;
 import org.springframework.stereotype.Component;
 
 @Component
-public class JwtPrincipalExtractor {
+public class JwtExtractor {
     public String extract(Enumeration<String> headers) {
         while (headers.hasMoreElements()) {
             String value = headers.nextElement();
