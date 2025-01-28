@@ -1,4 +1,4 @@
-package com.ssafy.butter.domain.member.entity;
+package com.ssafy.butter.domain.member.vo;
 
 import jakarta.persistence.Embeddable;
 import jakarta.validation.constraints.NotNull;
