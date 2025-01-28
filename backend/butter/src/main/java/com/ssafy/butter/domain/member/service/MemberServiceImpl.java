@@ -71,6 +71,11 @@ public class MemberServiceImpl implements MemberService{
         return findMember.isPresent();
     }
 
+    /**
+     * 사용자가 입력한 비밀번호를 암호화한다
+     * @param rawPassword
+     * @return
+     */
     private Password createEncryptedPassword(String rawPassword){
         Password password = Password.raw(rawPassword);
         return password.encrypt(encryptUtils);
