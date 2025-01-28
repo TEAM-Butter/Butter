@@ -10,18 +10,23 @@ import com.ssafy.butter.domain.member.vo.Password;
 import com.ssafy.butter.domain.member.vo.PhoneNumber;
 import com.ssafy.butter.domain.member.repository.MemberRepository;
 import com.ssafy.butter.global.util.encrypt.EncryptUtils;
+import com.ssafy.butter.infrastructure.awsS3.ImageUploader;
+import com.ssafy.butter.infrastructure.awsS3.S3ImageUploader;
 import com.ssafy.butter.infrastructure.emailAuth.dto.request.EmailDTO;
+import jakarta.mail.Multipart;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService{
     private final MemberRepository memberRepository;
     private final EncryptUtils encryptUtils;
+    private final ImageUploader imageUploader;
 
     /**
      * 회원 가입을 한다
@@ -29,8 +34,9 @@ public class MemberServiceImpl implements MemberService{
      * @return
      */
     @Override
-    public Member signUp(SignUpDTO signUpDTO) {
+    public Member signUp(SignUpDTO signUpDTO, MultipartFile profileImage) {
         Password encryptedPassword = createEncryptedPassword(signUpDTO.password().getValue());
+        String imageUrl = insertProfileImage(profileImage);
 
         return memberRepository.save(Member.builder()
                 .loginId(signUpDTO.loginId())
@@ -40,6 +46,7 @@ public class MemberServiceImpl implements MemberService{
                 .birthDate(new BirthDate(signUpDTO.birthDate()))
                 .password(encryptedPassword)
                 .gender(signUpDTO.gender())
+                .imageUrl(imageUrl)
                 .build());
     }
 
@@ -79,5 +86,12 @@ public class MemberServiceImpl implements MemberService{
     private Password createEncryptedPassword(String rawPassword){
         Password password = Password.raw(rawPassword);
         return password.encrypt(encryptUtils);
+    }
+
+    private String insertProfileImage(MultipartFile profileImage){
+        if(profileImage!=null && !profileImage.isEmpty()){
+            return imageUploader.uploadImage(profileImage);
+        }
+        return null;
     }
 }

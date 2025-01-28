@@ -17,6 +17,8 @@ public record SignUpDTO(
         Password password,
 
         @NotNull
-        Integer gender
+        Integer gender,
+
+        String imageUrl
 ) {
 }

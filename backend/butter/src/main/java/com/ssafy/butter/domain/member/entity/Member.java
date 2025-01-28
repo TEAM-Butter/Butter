@@ -29,8 +29,7 @@ public class Member {
 
     @OneToMany(mappedBy = "member")
     private List<MemberGenre> memberGenres = new ArrayList<>();
-
-    @Column(length = 50)
+    
     @NotNull
     private String loginId;
 
