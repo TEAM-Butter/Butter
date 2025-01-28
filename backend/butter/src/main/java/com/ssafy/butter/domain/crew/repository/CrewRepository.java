@@ -1,7 +1,14 @@
 package com.ssafy.butter.domain.crew.repository;
 
 import com.ssafy.butter.domain.crew.entity.Crew;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
+
 public interface CrewRepository extends JpaRepository<Crew, Long> {
+
+    List<Crew> findAllOrderByIdDesc(Pageable pageable);
+
+    List<Crew> findAllByIdLessThanOrderByIdDesc(Long id, Pageable pageable);
 }
