@@ -19,7 +19,7 @@ public class MyPageResponseDTO {
 
     @Builder
     public MyPageResponseDTO(Member member) {
-        this.email = member.getEmail().getAddress();
+        this.email = member.getEmail().getValue();
         this.nickname = member.getNickname().getValue();
         this.birthDate = member.getBirthDate().getDate();
         this.imageUrl = member.getImageUrl();
