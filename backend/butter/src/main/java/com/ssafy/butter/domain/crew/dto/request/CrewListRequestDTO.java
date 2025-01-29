@@ -12,5 +12,4 @@ public class CrewListRequestDTO {
     private Long crewId;
     private String keyword;
     private Integer pageSize;
-    private Boolean isLiked;
 }

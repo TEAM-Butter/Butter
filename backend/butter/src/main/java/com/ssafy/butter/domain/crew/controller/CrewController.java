@@ -41,7 +41,7 @@ public class CrewController {
 
     @GetMapping("/list")
     public ResponseEntity<?> getCrewList(@ModelAttribute CrewListRequestDTO crewListRequestDTO) {
-        return ResponseEntity.ok(crewListRequestDTO.getIsLiked() ? null : crewService.getCrewList(crewListRequestDTO));
+        return ResponseEntity.ok(crewService.getCrewList(crewListRequestDTO));
     }
 
     @GetMapping("/detail/{id}")
