@@ -59,7 +59,7 @@ public class LoginController {
 
     private void validateHeaderExists(HttpServletRequest request){
         String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
-        String refreshTokenHeader = request.getHeader("Refresh-Token");
+        String refreshTokenHeader = request.getHeader("refresh-Token");
         if (Objects.isNull(authorizationHeader) || Objects.isNull(refreshTokenHeader)) {
             throw new NoSuchElementException();
         }
