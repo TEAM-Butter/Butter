@@ -14,14 +14,7 @@ public class CrewNoticeServiceImpl implements CrewNoticeService {
 
     @Override
     public CrewNoticeResponseDTO createCrewNotice(CrewNoticeSaveRequestDTO crewNoticeSaveRequestDTO) {
-        return CrewNoticeResponseDTO.builder()
-                .id(null)
-                .title(null)
-                .content(null)
-                .imageUrl(null)
-                .createDate(null)
-                .updateDate(null)
-                .build();
+        return new CrewNoticeResponseDTO(null, null, null, null, null, null);
     }
 
     @Override
@@ -31,37 +24,16 @@ public class CrewNoticeServiceImpl implements CrewNoticeService {
 
     @Override
     public CrewNoticeResponseDTO getCrewNotice(Long id) {
-        return CrewNoticeResponseDTO.builder()
-                .id(null)
-                .title(null)
-                .content(null)
-                .imageUrl(null)
-                .createDate(null)
-                .updateDate(null)
-                .build();
+        return new CrewNoticeResponseDTO(null, null, null, null, null, null);
     }
 
     @Override
     public CrewNoticeResponseDTO updateCrewNotice(Long id, CrewNoticeSaveRequestDTO crewNoticeSaveRequestDTO) {
-        return CrewNoticeResponseDTO.builder()
-                .id(null)
-                .title(null)
-                .content(null)
-                .imageUrl(null)
-                .createDate(null)
-                .updateDate(null)
-                .build();
+        return new CrewNoticeResponseDTO(null, null, null, null, null, null);
     }
 
     @Override
     public CrewNoticeResponseDTO deleteCrewNotice(Long id) {
-        return CrewNoticeResponseDTO.builder()
-                .id(null)
-                .title(null)
-                .content(null)
-                .imageUrl(null)
-                .createDate(null)
-                .updateDate(null)
-                .build();
+        return new CrewNoticeResponseDTO(null, null, null, null, null, null);
     }
 }
