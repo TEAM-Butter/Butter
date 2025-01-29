@@ -1,21 +1,8 @@
 package com.ssafy.butter.domain.crew.dto.request;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.ToString;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 
-@AllArgsConstructor
-@Getter
-@ToString
-public class CrewNoticeSaveRequestDTO {
-
-    private Long crewId;
-    private String title;
-    private String content;
-    private MultipartFile image;
-    private LocalDate createDate;
-    private LocalDate updateDate;
+public record CrewNoticeSaveRequestDTO(Long crewId, String title, String content, MultipartFile image, LocalDate createDate, LocalDate updateDate) {
 }
