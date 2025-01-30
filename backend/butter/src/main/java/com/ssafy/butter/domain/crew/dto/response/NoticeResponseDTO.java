@@ -1,6 +1,6 @@
 package com.ssafy.butter.domain.crew.dto.response;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
-public record NoticeResponseDTO(Long id, String title, String content, String imageUrl, LocalDate createDate, LocalDate updateDate) {
+public record NoticeResponseDTO(Long id, String title, String content, String imageUrl, LocalDateTime createDate, LocalDateTime updateDate) {
 }
