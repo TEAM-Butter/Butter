@@ -32,8 +32,7 @@ public class NoticeController {
 
     @GetMapping("/detail/{id}")
     public ResponseEntity<?> getCrewNotice(@PathVariable Long id) {
-        log.info("CrewNotice detail: {}", id);
-        return ResponseEntity.ok(null);
+        return ResponseEntity.ok(noticeService.getCrewNotice(id));
     }
 
     @PutMapping("/{id}")

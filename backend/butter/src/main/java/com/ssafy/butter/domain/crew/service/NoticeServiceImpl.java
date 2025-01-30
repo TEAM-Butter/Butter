@@ -49,7 +49,7 @@ public class NoticeServiceImpl implements NoticeService {
 
     @Override
     public NoticeResponseDTO getCrewNotice(Long id) {
-        return new NoticeResponseDTO(null, null, null, null, null, null);
+        return NoticeResponseDTO.fromEntity(noticeRepository.findById(id).orElseThrow());
     }
 
     @Override
