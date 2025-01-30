@@ -24,7 +24,7 @@ public class CrewController {
     @PostMapping
     public ResponseEntity<?> createCrew(@ModelAttribute CrewSaveRequestDTO crewSaveRequestDTO) {
         CrewResponseDTO crewResponseDTO = crewService.createCrew(crewSaveRequestDTO);
-        return ResponseEntity.created(URI.create("/api/v1/crew/detail/" + crewResponseDTO.getId())).body(crewResponseDTO);
+        return ResponseEntity.created(URI.create("/api/v1/crew/detail/" + crewResponseDTO.id())).body(crewResponseDTO);
     }
 
     @PostMapping("/member")

@@ -35,24 +35,24 @@ public class CrewServiceImpl implements CrewService {
 
     @Override
     public CrewResponseDTO createCrew(CrewSaveRequestDTO crewSaveRequestDTO) {
-        if (crewSaveRequestDTO.getPortfolioVideo() == null) {
+        if (crewSaveRequestDTO.portfolioVideo() == null) {
             throw new IllegalArgumentException("Portfolio video required");
         }
 
         Crew crew = Crew.builder()
-                .name(crewSaveRequestDTO.getName())
-                .description(crewSaveRequestDTO.getDescription())
-                .promotionUrl(crewSaveRequestDTO.getPromotionUrl())
+                .name(crewSaveRequestDTO.name())
+                .description(crewSaveRequestDTO.description())
+                .promotionUrl(crewSaveRequestDTO.promotionUrl())
                 .portfolioVideoUrl("")
                 .build();
         Crew savedCrew = crewRepository.save(crew);
 
         String filenamePrefix = crew.getId() + "_" + System.currentTimeMillis() + "_";
         String imageUrl = null;
-        if (crewSaveRequestDTO.getImage() != null) {
-            imageUrl = filenamePrefix + crewSaveRequestDTO.getImage().getOriginalFilename();
+        if (crewSaveRequestDTO.image() != null) {
+            imageUrl = filenamePrefix + crewSaveRequestDTO.image().getOriginalFilename();
         }
-        String portfolioVideoUrl = filenamePrefix + crewSaveRequestDTO.getPortfolioVideo().getOriginalFilename();
+        String portfolioVideoUrl = filenamePrefix + crewSaveRequestDTO.portfolioVideo().getOriginalFilename();
 
         savedCrew.setImageUrl(imageUrl);
         savedCrew.setPortfolioVideoUrl(portfolioVideoUrl);
@@ -61,8 +61,8 @@ public class CrewServiceImpl implements CrewService {
 
     @Override
     public void createCrewMember(CrewMemberRequestDTO crewMemberRequestDTO) {
-        Crew crew = crewRepository.findById(crewMemberRequestDTO.getCrewId()).orElseThrow();
-        Member member = memberService.findById(crewMemberRequestDTO.getMemberId());
+        Crew crew = crewRepository.findById(crewMemberRequestDTO.crewId()).orElseThrow();
+        Member member = memberService.findById(crewMemberRequestDTO.memberId());
         crewMemberRepository.findByCrewAndMember(crew, member).ifPresent(crewMember -> {
             throw new IllegalArgumentException("Crew member already exists");
         });
@@ -83,12 +83,12 @@ public class CrewServiceImpl implements CrewService {
 
     @Override
     public List<CrewResponseDTO> getCrewList(CrewListRequestDTO crewListRequestDTO) {
-        Pageable pageable = PageRequest.of(0, crewListRequestDTO.getPageSize());
-        if (crewListRequestDTO.getKeyword() == null) {
-            if (crewListRequestDTO.getCrewId() == null) {
+        Pageable pageable = PageRequest.of(0, crewListRequestDTO.pageSize());
+        if (crewListRequestDTO.keyword() == null) {
+            if (crewListRequestDTO.crewId() == null) {
                 return crewRepository.findAllOrderByIdDesc(pageable).stream().map(CrewResponseDTO::fromEntity).toList();
             } else {
-                return crewRepository.findAllByIdLessThanOrderByIdDesc(crewListRequestDTO.getCrewId(), pageable).stream().map(CrewResponseDTO::fromEntity).toList();
+                return crewRepository.findAllByIdLessThanOrderByIdDesc(crewListRequestDTO.crewId(), pageable).stream().map(CrewResponseDTO::fromEntity).toList();
             }
         } else {
             return null;
@@ -105,14 +105,14 @@ public class CrewServiceImpl implements CrewService {
         Crew crew = crewRepository.findById(id).orElseThrow();
         String filenamePrefix = crew.getId() + "_" + System.currentTimeMillis() + "_";
         String imageUrl = null;
-        if (crewSaveRequestDTO.getImage() != null) {
-            imageUrl = filenamePrefix + crewSaveRequestDTO.getImage().getOriginalFilename();
+        if (crewSaveRequestDTO.image() != null) {
+            imageUrl = filenamePrefix + crewSaveRequestDTO.image().getOriginalFilename();
         }
-        String portfolioVideoUrl = filenamePrefix + crewSaveRequestDTO.getPortfolioVideo().getOriginalFilename();
+        String portfolioVideoUrl = filenamePrefix + crewSaveRequestDTO.portfolioVideo().getOriginalFilename();
 
-        crew.setName(crewSaveRequestDTO.getName());
-        crew.setDescription(crewSaveRequestDTO.getDescription());
-        crew.setPromotionUrl(crewSaveRequestDTO.getPromotionUrl());
+        crew.setName(crewSaveRequestDTO.name());
+        crew.setDescription(crewSaveRequestDTO.description());
+        crew.setPromotionUrl(crewSaveRequestDTO.promotionUrl());
         crew.setImageUrl(imageUrl);
         crew.setPortfolioVideoUrl(portfolioVideoUrl);
         return CrewResponseDTO.fromEntity(crewRepository.save(crew));
@@ -127,7 +127,7 @@ public class CrewServiceImpl implements CrewService {
 
     @Override
     public void followCrew(Long memberId, CrewFollowRequestDTO crewFollowRequestDTO) {
-        Crew crew = crewRepository.findById(crewFollowRequestDTO.getCrewId()).orElseThrow();
+        Crew crew = crewRepository.findById(crewFollowRequestDTO.crewId()).orElseThrow();
         Member member = memberService.findById(memberId);
         followRepository.findByCrewAndMember(crew, member).ifPresent(follow -> {
             throw new IllegalArgumentException("Crew follower already exists");
