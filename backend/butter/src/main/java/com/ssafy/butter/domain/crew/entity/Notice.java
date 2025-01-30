@@ -11,10 +11,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Table(name = "crew_notice")
@@ -32,14 +29,17 @@ public class Notice extends TimestampedEntity {
     @NotNull
     private Crew crew;
 
+    @Setter
     @Column(length = 50)
     @NotNull
     private String title;
 
+    @Setter
     @Column(length = 200)
     @NotNull
     private String content;
 
+    @Setter
     @Column(length = 2048)
     private String imageUrl;
 
