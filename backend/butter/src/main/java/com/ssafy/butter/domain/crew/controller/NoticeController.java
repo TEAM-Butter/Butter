@@ -37,8 +37,7 @@ public class NoticeController {
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updateCrewNotice(@PathVariable Long id, @RequestBody NoticeSaveRequestDTO noticeSaveRequestDTO) {
-        log.info("CrewNotice updateRequestDTO: id: {}, crewNoticeUpdateRequestDTO: {}", id, noticeSaveRequestDTO);
-        return ResponseEntity.ok(null);
+        return ResponseEntity.ok(noticeService.updateCrewNotice(id, noticeSaveRequestDTO));
     }
 
     @DeleteMapping("/{id}")

@@ -30,11 +30,13 @@ public class NoticeServiceImpl implements NoticeService {
                 .build();
         Notice savedNotice = noticeRepository.save(notice);
 
-        String filenamePrefix = savedNotice.getId() + "_" + System.currentTimeMillis() + "_";
         if (noticeSaveRequestDTO.image() != null) {
+            String filenamePrefix = savedNotice.getId() + "_" + System.currentTimeMillis() + "_";
             savedNotice.setImageUrl(filenamePrefix + noticeSaveRequestDTO.image().getOriginalFilename());
+            return NoticeResponseDTO.fromEntity(noticeRepository.save(savedNotice));
+        } else {
+            return NoticeResponseDTO.fromEntity(notice);
         }
-        return NoticeResponseDTO.fromEntity(noticeRepository.save(savedNotice));
     }
 
     @Override
