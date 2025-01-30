@@ -1,7 +1,7 @@
 package com.ssafy.butter.domain.crew.controller;
 
-import com.ssafy.butter.domain.crew.dto.request.CrewNoticeSaveRequestDTO;
-import com.ssafy.butter.domain.crew.dto.request.CrewNoticeListRequestDTO;
+import com.ssafy.butter.domain.crew.dto.request.NoticeSaveRequestDTO;
+import com.ssafy.butter.domain.crew.dto.request.NoticeListRequestDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -19,17 +19,17 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/v1/crew/notice")
 @Slf4j
-public class CrewNoticeController {
+public class NoticeController {
 
     @PostMapping
-    public ResponseEntity<?> createCrewNotice(CrewNoticeSaveRequestDTO crewNoticeSaveRequestDTO) {
-        log.info("CrewNotice crewNoticeCreationRequestDTO: {}", crewNoticeSaveRequestDTO);
+    public ResponseEntity<?> createCrewNotice(NoticeSaveRequestDTO noticeSaveRequestDTO) {
+        log.info("CrewNotice crewNoticeCreationRequestDTO: {}", noticeSaveRequestDTO);
         return ResponseEntity.ok(null);
     }
 
     @GetMapping("/list")
-    public ResponseEntity<?> getCrewNoticeList(@ModelAttribute CrewNoticeListRequestDTO crewNoticeListRequestDTO) {
-        log.info("CrewNotice List: {}", crewNoticeListRequestDTO);
+    public ResponseEntity<?> getCrewNoticeList(@ModelAttribute NoticeListRequestDTO noticeListRequestDTO) {
+        log.info("CrewNotice List: {}", noticeListRequestDTO);
         return ResponseEntity.ok(null);
     }
 
@@ -40,8 +40,8 @@ public class CrewNoticeController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateCrewNotice(@PathVariable Long id, @RequestBody CrewNoticeSaveRequestDTO crewNoticeSaveRequestDTO) {
-        log.info("CrewNotice updateRequestDTO: id: {}, crewNoticeUpdateRequestDTO: {}", id, crewNoticeSaveRequestDTO);
+    public ResponseEntity<?> updateCrewNotice(@PathVariable Long id, @RequestBody NoticeSaveRequestDTO noticeSaveRequestDTO) {
+        log.info("CrewNotice updateRequestDTO: id: {}, crewNoticeUpdateRequestDTO: {}", id, noticeSaveRequestDTO);
         return ResponseEntity.ok(null);
     }
 
