@@ -3,7 +3,7 @@
    License: none (public domain)
 */
 /* googlefont에서 inter font import */
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=42dot+Sans:wght@300..800&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 
 html,
 body,
@@ -109,8 +109,8 @@ section {
 }
 body {
   line-height: 1;
-  /* body에 inter font 적용 */
-  font-family: "Inter", serif;
+  /* body에 inter font(영어), 42dot Sans(한국어) 적용 */
+  font-family: "Inter", "42dot Sans", serif;
 }
 ol,
 ul {
