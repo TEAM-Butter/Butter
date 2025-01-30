@@ -1,7 +1,6 @@
 package com.ssafy.butter.domain.member.vo;
 
 import com.ssafy.butter.global.util.encrypt.EncryptUtils;
-import com.ssafy.butter.global.util.encrypt.Encryptor;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.validation.constraints.NotNull;
@@ -16,7 +15,7 @@ import lombok.NoArgsConstructor;
 public class Password {
 
     @NotNull
-    @Column(name = "password")
+    @Column(name = "password", length = 200)
     private String value;
 
     private Password(String value) {

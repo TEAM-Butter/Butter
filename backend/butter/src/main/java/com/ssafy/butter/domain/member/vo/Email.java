@@ -10,7 +10,7 @@ import lombok.Getter;
 @Getter
 public class Email {
     @NotNull
-    @Column(name = "email")
+    @Column(name = "email", length = 50)
     private String value;
 
     protected Email() {}

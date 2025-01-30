@@ -8,7 +8,7 @@ import java.util.Objects;
 @Embeddable
 public class Nickname {
     @NotNull
-    @Column(name = "nickname")
+    @Column(name = "nickname", length = 50)
     private String value;
 
     protected Nickname() {}
