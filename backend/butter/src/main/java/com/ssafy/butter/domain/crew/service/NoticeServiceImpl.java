@@ -54,7 +54,16 @@ public class NoticeServiceImpl implements NoticeService {
 
     @Override
     public NoticeResponseDTO updateCrewNotice(Long id, NoticeSaveRequestDTO noticeSaveRequestDTO) {
-        return new NoticeResponseDTO(null, null, null, null, null, null);
+        Notice notice = noticeRepository.findById(id).orElseThrow();
+        notice.setTitle(noticeSaveRequestDTO.title());
+        notice.setContent(noticeSaveRequestDTO.content());
+        if (noticeSaveRequestDTO.image() != null) {
+            String filenamePrefix = notice.getId() + "_" + System.currentTimeMillis() + "_";
+            notice.setImageUrl(filenamePrefix + noticeSaveRequestDTO.image().getOriginalFilename());
+        } else {
+            notice.setImageUrl(null);
+        }
+        return NoticeResponseDTO.fromEntity(noticeRepository.save(notice));
     }
 
     @Override
