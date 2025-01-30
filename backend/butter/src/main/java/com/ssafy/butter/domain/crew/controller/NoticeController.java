@@ -1,19 +1,15 @@
 package com.ssafy.butter.domain.crew.controller;
 
-import com.ssafy.butter.domain.crew.dto.request.NoticeSaveRequestDTO;
 import com.ssafy.butter.domain.crew.dto.request.NoticeListRequestDTO;
+import com.ssafy.butter.domain.crew.dto.request.NoticeSaveRequestDTO;
+import com.ssafy.butter.domain.crew.dto.response.NoticeResponseDTO;
+import com.ssafy.butter.domain.crew.service.NoticeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.net.URI;
 
 @RequiredArgsConstructor
 @RestController
@@ -21,10 +17,12 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class NoticeController {
 
+    private final NoticeService noticeService;
+
     @PostMapping
     public ResponseEntity<?> createCrewNotice(NoticeSaveRequestDTO noticeSaveRequestDTO) {
-        log.info("CrewNotice crewNoticeCreationRequestDTO: {}", noticeSaveRequestDTO);
-        return ResponseEntity.ok(null);
+        NoticeResponseDTO noticeResponseDTO = noticeService.createCrewNotice(noticeSaveRequestDTO);
+        return ResponseEntity.created(URI.create("/api/v1/crew/notice/detail/" + noticeResponseDTO.id())).body(noticeResponseDTO);
     }
 
     @GetMapping("/list")
