@@ -1,4 +1,4 @@
 package com.ssafy.butter.domain.crew.dto.request;
 
-public record NoticeListRequestDTO(String sortKey, Integer pageNumber, Integer pageSize) {
+public record NoticeListRequestDTO(Long noticeId, Long crewId, Integer pageSize) {
 }
