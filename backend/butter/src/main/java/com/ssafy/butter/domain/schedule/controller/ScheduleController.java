@@ -36,4 +36,10 @@ public class ScheduleController {
         log.info("Update schedule: {}", scheduleRequestDTO);
         return ResponseEntity.ok(null);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteSchedule(@PathVariable Long id) {
+        log.info("Delete schedule: {}", id);
+        return ResponseEntity.ok(null);
+    }
 }
