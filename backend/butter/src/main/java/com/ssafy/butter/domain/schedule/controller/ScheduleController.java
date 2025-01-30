@@ -32,8 +32,8 @@ public class ScheduleController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateSchedule(@PathVariable Long id, @ModelAttribute ScheduleRequestDTO scheduleRequestDTO) {
-        log.info("Update schedule: {}", scheduleRequestDTO);
+    public ResponseEntity<?> updateSchedule(@PathVariable Long id, @ModelAttribute ScheduleSaveRequestDTO scheduleSaveRequestDTO) {
+        log.info("Update schedule: {}", scheduleSaveRequestDTO);
         return ResponseEntity.ok(null);
     }
 
