@@ -1,5 +1,7 @@
 package com.ssafy.butter.global.token;
 
+import com.ssafy.butter.auth.dto.response.NaverUserDetailsResponseDTO.NaverUserDetailsDTO;
+import com.ssafy.butter.auth.service.NaverOAuthLoginService;
 import java.util.NoSuchElementException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.MethodParameter;
@@ -12,6 +14,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 @Component
 @RequiredArgsConstructor
 public class AuthenticatedUserArgumentResolver implements HandlerMethodArgumentResolver {
+    private final NaverOAuthLoginService naverOAuthLoginService;
     private final JwtManager jwtManager;
     private final JwtExtractor jwtExtractor;
 
@@ -28,6 +31,12 @@ public class AuthenticatedUserArgumentResolver implements HandlerMethodArgumentR
             throw new NoSuchElementException();
         }
 
-        return jwtManager.getParsedClaims(jwtExtractor.extract(token));
+        String extractedToken = jwtExtractor.extract(token);
+
+        if(extractedToken.contains(".")){
+            return jwtManager.getParsedClaims(extractedToken);
+        } else {
+            return naverOAuthLoginService.getUserDetails(extractedToken);
+        }
     }
 }
