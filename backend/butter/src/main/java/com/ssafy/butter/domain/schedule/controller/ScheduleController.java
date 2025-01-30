@@ -3,6 +3,7 @@ package com.ssafy.butter.domain.schedule.controller;
 import com.ssafy.butter.domain.schedule.dto.request.ScheduleLikeRequestDTO;
 import com.ssafy.butter.domain.schedule.dto.request.ScheduleRequestDTO;
 import com.ssafy.butter.domain.schedule.dto.request.ScheduleSaveRequestDTO;
+import com.ssafy.butter.domain.schedule.dto.request.ScheduleSearchRequestDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,12 @@ public class ScheduleController {
     @PostMapping
     public ResponseEntity<?> createSchedule(@RequestBody ScheduleSaveRequestDTO scheduleSaveRequestDTO) {
         log.info("Create schedule: {}", scheduleSaveRequestDTO);
+        return ResponseEntity.ok(null);
+    }
+
+    @GetMapping
+    public ResponseEntity<?> searchSchedule(@ModelAttribute ScheduleSearchRequestDTO scheduleSearchRequestDTO) {
+        log.info("Search schedule: {}", scheduleSearchRequestDTO);
         return ResponseEntity.ok(null);
     }
 
