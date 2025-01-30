@@ -7,6 +7,8 @@ import com.ssafy.butter.domain.crew.entity.Notice;
 import com.ssafy.butter.domain.crew.repository.CrewRepository;
 import com.ssafy.butter.domain.crew.repository.NoticeRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -37,7 +39,12 @@ public class NoticeServiceImpl implements NoticeService {
 
     @Override
     public List<NoticeResponseDTO> getCrewNoticeList(NoticeListRequestDTO noticeListRequestDTO) {
-        return List.of();
+        Pageable pageable = PageRequest.of(0, noticeListRequestDTO.pageSize());
+        if (noticeListRequestDTO.crewId() == null) {
+            return noticeRepository.findAllOrderByIdDesc(pageable).stream().map(NoticeResponseDTO::fromEntity).toList();
+        } else {
+            return noticeRepository.findAllByIdLessThanOrderByIdDesc(noticeListRequestDTO.crewId(), pageable).stream().map(NoticeResponseDTO::fromEntity).toList();
+        }
     }
 
     @Override

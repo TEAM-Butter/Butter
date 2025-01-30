@@ -27,8 +27,7 @@ public class NoticeController {
 
     @GetMapping("/list")
     public ResponseEntity<?> getCrewNoticeList(@ModelAttribute NoticeListRequestDTO noticeListRequestDTO) {
-        log.info("CrewNotice List: {}", noticeListRequestDTO);
-        return ResponseEntity.ok(null);
+        return ResponseEntity.ok(noticeService.getCrewNoticeList(noticeListRequestDTO));
     }
 
     @GetMapping("/detail/{id}")
