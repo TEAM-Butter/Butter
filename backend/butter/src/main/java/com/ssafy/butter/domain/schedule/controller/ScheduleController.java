@@ -1,5 +1,6 @@
 package com.ssafy.butter.domain.schedule.controller;
 
+import com.ssafy.butter.domain.schedule.dto.request.ScheduleLikeRequestDTO;
 import com.ssafy.butter.domain.schedule.dto.request.ScheduleRequestDTO;
 import com.ssafy.butter.domain.schedule.dto.request.ScheduleSaveRequestDTO;
 import lombok.RequiredArgsConstructor;
@@ -40,6 +41,12 @@ public class ScheduleController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteSchedule(@PathVariable Long id) {
         log.info("Delete schedule: {}", id);
+        return ResponseEntity.ok(null);
+    }
+
+    @PostMapping("/like")
+    public ResponseEntity<?> likeSchedule(@RequestBody ScheduleLikeRequestDTO scheduleLikeRequestDTO) {
+        log.info("Like schedule: {}", scheduleLikeRequestDTO);
         return ResponseEntity.ok(null);
     }
 }
