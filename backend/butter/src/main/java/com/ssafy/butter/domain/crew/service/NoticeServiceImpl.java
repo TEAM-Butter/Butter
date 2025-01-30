@@ -70,6 +70,8 @@ public class NoticeServiceImpl implements NoticeService {
 
     @Override
     public NoticeResponseDTO deleteCrewNotice(Long id) {
-        return new NoticeResponseDTO(null, null, null, null, null, null);
+        Notice notice = noticeRepository.findById(id).orElseThrow();
+        noticeRepository.delete(notice);
+        return NoticeResponseDTO.fromEntity(notice);
     }
 }
