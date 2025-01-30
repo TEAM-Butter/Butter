@@ -27,9 +27,14 @@ public class Member {
     @Column(name = "member_id")
     private Long id;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_type_id")
+    @NotNull
+    private MemberType memberType;
+
     @OneToMany(mappedBy = "member")
     private List<MemberGenre> memberGenres = new ArrayList<>();
-    
+
     @NotNull
     private String loginId;
 
@@ -48,7 +53,6 @@ public class Member {
     @Embedded
     private BreadAmount breadAmount;
 
-    @Column(length = 200)
     @Embedded
     private Password password;
 
@@ -63,11 +67,6 @@ public class Member {
 
     @NotNull
     private LocalDate createDate;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_type_id")
-    @NotNull
-    private MemberType memberType;
 
     @Builder
     public Member(List<MemberGenre> memberGenres, String loginId, Nickname nickname, Email email,
