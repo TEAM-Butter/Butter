@@ -49,4 +49,10 @@ public class ScheduleController {
         log.info("Like schedule: {}", scheduleLikeRequestDTO);
         return ResponseEntity.ok(null);
     }
+
+    @DeleteMapping("/like/{id}")
+    public ResponseEntity<?> unlikeSchedule(@PathVariable Long id) {
+        log.info("Unlike schedule: {}", id);
+        return ResponseEntity.ok(null);
+    }
 }
