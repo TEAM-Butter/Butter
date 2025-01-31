@@ -1,6 +1,5 @@
 package com.ssafy.butter.domain.member.service;
 
-<<<<<<< backend/butter/src/main/java/com/ssafy/butter/domain/member/service/MemberServiceImpl.java
 import com.ssafy.butter.domain.member.entity.Member;
 import com.ssafy.butter.domain.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
