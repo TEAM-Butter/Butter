@@ -33,6 +33,11 @@ public class CrewServiceImpl implements CrewService {
     private final CrewMemberRepository crewMemberRepository;
     private final FollowRepository followRepository;
 
+    /**
+     * 크루 생성 요청 DTO를 받아 크루를 생성 및 DB에 저장 후 크루 응답 DTO를 반환한다.
+     * @param crewSaveRequestDTO 크루 생성 요청 정보를 담은 DTO
+     * @return 크루 생성 응답 정보를 담은 DTO
+     */
     @Override
     public CrewResponseDTO createCrew(CrewSaveRequestDTO crewSaveRequestDTO) {
         if (crewSaveRequestDTO.portfolioVideo() == null) {
@@ -59,6 +64,10 @@ public class CrewServiceImpl implements CrewService {
         return CrewResponseDTO.fromEntity(crewRepository.save(savedCrew));
     }
 
+    /**
+     * 크루 ID와 멤버 ID가 담긴 DTO를 받아 크루 멤버를 DB에 저장한다.
+     * @param crewMemberRequestDTO 크루와 크루 멤버 정보를 담은 DTO
+     */
     @Override
     public void createCrewMember(CrewMemberRequestDTO crewMemberRequestDTO) {
         Crew crew = crewRepository.findById(crewMemberRequestDTO.crewId()).orElseThrow();
@@ -73,6 +82,11 @@ public class CrewServiceImpl implements CrewService {
         crewMemberRepository.save(crewMember);
     }
 
+    /**
+     * 크루 ID와 멤버 ID를 받아 크루 멤버를 DB에서 삭제한다.
+     * @param crewId 크루를 가리키는 ID
+     * @param memberId 멤버를 가리키는 ID
+     */
     @Override
     public void deleteCrewMember(Long crewId, Long memberId) {
         Crew crew = crewRepository.findById(crewId).orElseThrow();
@@ -81,6 +95,11 @@ public class CrewServiceImpl implements CrewService {
         crewMemberRepository.delete(crewMember);
     }
 
+    /**
+     * 크루 목록 조회 요청 정보를 담은 DTO를 받아 조건에 맞는 크루 목록을 조회하여 DTO 리스트로 반환한다.
+     * @param crewListRequestDTO 크루 목록 조회 요청 정보를 담은 DTO
+     * @return 크루 목록 조회 결과를 담은 DTO
+     */
     @Override
     public List<CrewResponseDTO> getCrewList(CrewListRequestDTO crewListRequestDTO) {
         Pageable pageable = PageRequest.of(0, crewListRequestDTO.pageSize());
@@ -95,11 +114,22 @@ public class CrewServiceImpl implements CrewService {
         }
     }
 
+    /**
+     * 크루 ID에 해당하는 크루 하나의 정보를 DB에서 조회 후 반환한다.
+     * @param id 조회하려는 크루를 가리키는 ID
+     * @return 크루 조회 정보를 담은 DTO
+     */
     @Override
     public CrewResponseDTO getCrewDetail(Long id) {
         return CrewResponseDTO.fromEntity(crewRepository.findById(id).orElseThrow());
     }
 
+    /**
+     * 수정하려는 크루의 ID와 수정할 내용을 받아 DB에 반영하고 수정 결과를 반환한다.
+     * @param id 수정하려는 크루의 ID
+     * @param crewSaveRequestDTO 수정할 크루 내용을 담은 DTO
+     * @return 수정된 크루 정보를 담은 DTO
+     */
     @Override
     public CrewResponseDTO updateCrew(Long id, CrewSaveRequestDTO crewSaveRequestDTO) {
         Crew crew = crewRepository.findById(id).orElseThrow();
@@ -118,6 +148,11 @@ public class CrewServiceImpl implements CrewService {
         return CrewResponseDTO.fromEntity(crewRepository.save(crew));
     }
 
+    /**
+     * 삭제하려는 크루 ID를 받아 해당 크루를 DB에서 삭제한다.
+     * @param id 삭제하려는 크루 ID
+     * @return 삭제된 크루 정보를 담은 DTO
+     */
     @Override
     public CrewResponseDTO deleteCrew(Long id) {
         Crew crew = crewRepository.findById(id).orElseThrow();
@@ -125,6 +160,11 @@ public class CrewServiceImpl implements CrewService {
         return CrewResponseDTO.fromEntity(crew);
     }
 
+    /**
+     * 팔로우하는 사용자의 ID와 팔로우 대상의 ID를 담은 DTO를 받아 팔로우 정보를 DB에 저장한다.
+     * @param memberId 팔로우하는 사용자의 ID
+     * @param crewFollowRequestDTO 팔로우 대상의 ID를 담은 DTO
+     */
     @Override
     public void followCrew(Long memberId, CrewFollowRequestDTO crewFollowRequestDTO) {
         Crew crew = crewRepository.findById(crewFollowRequestDTO.crewId()).orElseThrow();
@@ -139,6 +179,11 @@ public class CrewServiceImpl implements CrewService {
         followRepository.save(follow);
     }
 
+    /**
+     * 팔로우하는 사용자의 ID와 팔로우 대상의 ID를 받아 팔로우 정보를 DB에서 삭제한다.
+     * @param memberId 팔로우하는 사용자의 ID
+     * @param crewId 팔로우 대상의 ID
+     */
     @Override
     public void unfollowCrew(Long memberId, Long crewId) {
         Crew crew = crewRepository.findById(crewId).orElseThrow();
@@ -147,6 +192,10 @@ public class CrewServiceImpl implements CrewService {
         followRepository.delete(follow);
     }
 
+    /**
+     * 사용자의 추천 크루 목록을 생성한다.
+     * @return 추천된 크루 목록을 담은 DTO 리스트
+     */
     @Override
     public List<CrewResponseDTO> getRecommendedCrewList() {
         return List.of();
