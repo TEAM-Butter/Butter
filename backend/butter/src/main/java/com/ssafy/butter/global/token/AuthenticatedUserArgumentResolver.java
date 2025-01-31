@@ -1,8 +1,6 @@
 package com.ssafy.butter.global.token;
 
-import com.ssafy.butter.auth.dto.response.NaverUserDetailsResponseDTO.NaverUserDetailsDTO;
 import com.ssafy.butter.auth.service.NaverOAuthLoginService;
-import java.util.NoSuchElementException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
@@ -10,6 +8,7 @@ import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
+import java.util.NoSuchElementException;
 
 @Component
 @RequiredArgsConstructor
