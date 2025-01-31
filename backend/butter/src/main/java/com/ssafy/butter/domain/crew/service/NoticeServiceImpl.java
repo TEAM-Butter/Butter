@@ -20,6 +20,11 @@ public class NoticeServiceImpl implements NoticeService {
     private final CrewRepository crewRepository;
     private final NoticeRepository noticeRepository;
 
+    /**
+     * 크루 공지사항 정보를 담은 DTO를 받아 DB에 저장하고 생성된 공지사항 정보를 담은 DTO를 반환한다.
+     * @param noticeSaveRequestDTO 생성할 공지사항 요청 정보를 담은 DTO
+     * @return 생성된 공지사항 결과 정보를 담은 DTO
+     */
     @Override
     public NoticeResponseDTO createCrewNotice(NoticeSaveRequestDTO noticeSaveRequestDTO) {
         Notice notice = Notice.builder()
@@ -39,6 +44,11 @@ public class NoticeServiceImpl implements NoticeService {
         }
     }
 
+    /**
+     * 크루 공지사항 목록 조회 정보를 담은 DTO를 받아 DB에서 조회 후 결과를 반환한다.
+     * @param noticeListRequestDTO 크루 공지사항 조회 요청 정보를 담은 DTO
+     * @return 크루 공지사항 조회 결과를 담은 DTO 리스트
+     */
     @Override
     public List<NoticeResponseDTO> getCrewNoticeList(NoticeListRequestDTO noticeListRequestDTO) {
         Pageable pageable = PageRequest.of(0, noticeListRequestDTO.pageSize());
@@ -49,11 +59,22 @@ public class NoticeServiceImpl implements NoticeService {
         }
     }
 
+    /**
+     * 조회할 크루 공지사항 ID를 받아 DB에서 조회 후 결과를 반환한다.
+     * @param id 조회할 크루 공지사항을 가리키는 ID
+     * @return 조회된 크루 공지사항 결과 DTO
+     */
     @Override
     public NoticeResponseDTO getCrewNotice(Long id) {
         return NoticeResponseDTO.fromEntity(noticeRepository.findById(id).orElseThrow());
     }
 
+    /**
+     * 수정할 크루 공지사항 ID와 수정 정보 DTO를 받아 DB에 수정 내용을 반영하고 수정 결과를 반환한다.
+     * @param id 수정할 크루 공지사항을 나타내는 ID
+     * @param noticeSaveRequestDTO 크루 공지사항 수정 요청 정보를 담은 DTO
+     * @return 크루 공지사항 수정 결과를 담은 DTO
+     */
     @Override
     public NoticeResponseDTO updateCrewNotice(Long id, NoticeSaveRequestDTO noticeSaveRequestDTO) {
         Notice notice = noticeRepository.findById(id).orElseThrow();
@@ -68,6 +89,11 @@ public class NoticeServiceImpl implements NoticeService {
         return NoticeResponseDTO.fromEntity(noticeRepository.save(notice));
     }
 
+    /**
+     * 삭제하려는 크루 공지사항 ID를 받아 DB에서 삭제하고 삭제된 크루 공지사항을 반환한다.
+     * @param id 삭제하려는 크루 공지사항을 가리키는 ID
+     * @return 삭제된 크루 공지사항 정보를 담은 DTO
+     */
     @Override
     public NoticeResponseDTO deleteCrewNotice(Long id) {
         Notice notice = noticeRepository.findById(id).orElseThrow();
