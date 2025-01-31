@@ -5,6 +5,7 @@ import com.ssafy.butter.domain.crew.dto.request.CrewListRequestDTO;
 import com.ssafy.butter.domain.crew.dto.request.CrewMemberRequestDTO;
 import com.ssafy.butter.domain.crew.dto.request.CrewSaveRequestDTO;
 import com.ssafy.butter.domain.crew.dto.response.CrewResponseDTO;
+import com.ssafy.butter.domain.crew.entity.Crew;
 
 import java.util.List;
 
@@ -29,4 +30,6 @@ public interface CrewService {
     void unfollowCrew(Long memberId, Long crewId);
 
     List<CrewResponseDTO> getRecommendedCrewList();
+
+    Crew findById(Long id);
 }

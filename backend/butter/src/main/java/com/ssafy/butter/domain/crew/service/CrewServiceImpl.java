@@ -199,4 +199,14 @@ public class CrewServiceImpl implements CrewService {
     public List<CrewResponseDTO> getRecommendedCrewList() {
         return List.of();
     }
+
+    /**
+     * 크루의 ID를 받아 해당 크루 엔티티를 반환한다.
+     * @param id 크루 ID
+     * @return 해당 크루 엔티티
+     */
+    @Override
+    public Crew findById(Long id) {
+        return crewRepository.findById(id).orElseThrow();
+    }
 }
