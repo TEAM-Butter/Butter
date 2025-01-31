@@ -29,7 +29,7 @@ public class NaverOAuthLoginService implements OAuth2LoginService{
     }
 
     @Override
-    public Member toMemberEntity(String code, Platform platform) {
+    public Member toMemberEntity(String code) {
         String accessToken = getAccessToken(code);
         NaverUserDetailsResponseDTO.NaverUserDetailsDTO userDetails = getUserDetails(accessToken);
 

@@ -6,5 +6,5 @@ import com.ssafy.butter.domain.member.entity.Member;
 public interface OAuth2LoginService {
     Platform supports();
 
-    Member toMemberEntity(String code, Platform platform);
+    Member toMemberEntity(String code);
 }
