@@ -1,4 +1,4 @@
-package com.ssafy.butter.auth;
+package com.ssafy.butter.global.interceptor;
 
 import com.ssafy.butter.global.token.JwtExtractor;
 import com.ssafy.butter.global.token.JwtManager;

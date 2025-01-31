@@ -1,7 +1,7 @@
 package com.ssafy.butter.global.config;
 
 
-import com.ssafy.butter.auth.AuthInterceptor;
+import com.ssafy.butter.global.interceptor.AuthInterceptor;
 import com.ssafy.butter.global.token.AuthenticatedUserArgumentResolver;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
