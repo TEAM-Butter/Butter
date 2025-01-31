@@ -34,7 +34,6 @@ public class Member {
     @OneToMany(mappedBy = "member")
     private List<MemberGenre> memberGenres = new ArrayList<>();
 
-    @NotNull
     private String loginId;
 
     @Embedded

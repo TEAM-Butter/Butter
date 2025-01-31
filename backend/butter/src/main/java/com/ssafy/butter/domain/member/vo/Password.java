@@ -16,7 +16,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Password {
 
-    @NotNull
     @Column(name = "password", length = 200)
     private String value;
 
