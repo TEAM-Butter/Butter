@@ -3,8 +3,11 @@ package com.ssafy.butter.domain.member.vo;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.validation.constraints.NotNull;
+import lombok.EqualsAndHashCode;
+
 import java.util.Objects;
 @Embeddable
+@EqualsAndHashCode
 public class Nickname {
     @NotNull
     @Column(name = "nickname", length = 50)
@@ -21,19 +24,6 @@ public class Nickname {
 
     public String getValue() {
         return value;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Nickname nickname = (Nickname) o;
-        return Objects.equals(value, nickname.value);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(value);
     }
 }
 

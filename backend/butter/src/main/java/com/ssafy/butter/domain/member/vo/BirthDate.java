@@ -4,6 +4,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
@@ -11,6 +12,7 @@ import java.time.Period;
 import java.util.Objects;
 
 @Embeddable
+@EqualsAndHashCode
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class BirthDate {
     @NotNull
@@ -30,19 +32,6 @@ public class BirthDate {
 
     public int calculateAge() {
         return Period.between(this.value, LocalDate.now()).getYears();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        BirthDate birthDate = (BirthDate) o;
-        return Objects.equals(value, birthDate.value);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(value);
     }
 }
 

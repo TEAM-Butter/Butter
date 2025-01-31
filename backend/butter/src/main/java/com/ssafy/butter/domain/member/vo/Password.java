@@ -6,11 +6,13 @@ import jakarta.persistence.Embeddable;
 import jakarta.validation.constraints.NotNull;
 import java.util.Objects;
 import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @Embeddable
+@EqualsAndHashCode
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Password {
 
@@ -52,19 +54,6 @@ public class Password {
         if (!value.matches(".*[!@#$%^&*()_+\\-=[\\]{};':\"\\\\|,.<>/?].*")) {
             throw new IllegalArgumentException("ERR : 패스워드는 최소 하나 이상의 특수문자를 포함해야합니다");
         }
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Password)) return false;
-        Password password = (Password) o;
-        return Objects.equals(value, password.value);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(value);
     }
 
     @Override
