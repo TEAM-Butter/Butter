@@ -5,6 +5,11 @@
 /* googlefont에서 inter font import */
 @import url('https://fonts.googleapis.com/css2?family=42dot+Sans:wght@300..800&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 
+* {
+  box-sizing: border-box; /* 모든 요소에 적용 */
+}
+
+
 html,
 body,
 div,
