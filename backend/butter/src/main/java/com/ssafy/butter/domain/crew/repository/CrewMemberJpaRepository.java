@@ -7,11 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface CrewMemberRepository {
-
-    CrewMember save(CrewMember crewMember);
-
-    void delete(CrewMember crewMember);
+public interface CrewMemberJpaRepository extends JpaRepository<CrewMember, Long> {
 
     Optional<CrewMember> findByCrewAndMember(Crew crew, Member member);
 }
