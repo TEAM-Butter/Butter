@@ -73,6 +73,10 @@ public class Crew {
         this.name = name;
     }
 
+    public void updateDescription(String description) {
+        this.description = description;
+    }
+
     public void updateImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
     }
@@ -81,7 +85,7 @@ public class Crew {
         this.promotionUrl = promotionUrl;
     }
 
-    public void updatePromotionUrl(String promotionUrl, int donationAmount) {
-        this.promotionUrl = promotionUrl;
+    public void updatePortfolioVideoUrl(String portfolioVideoUrl) {
+        this.portfolioVideoUrl = portfolioVideoUrl;
     }
 }
