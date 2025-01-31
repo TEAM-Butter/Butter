@@ -1,5 +1,12 @@
 package com.ssafy.butter.domain.member.service;
 
+<<<<<<< backend/butter/src/main/java/com/ssafy/butter/domain/member/service/MemberServiceImpl.java
+import com.ssafy.butter.domain.member.entity.Member;
+import com.ssafy.butter.domain.member.repository.MemberRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.ssafy.butter.domain.member.dto.request.SignUpDTO;
 import com.ssafy.butter.domain.member.dto.response.MyPageResponseDTO;
 import com.ssafy.butter.domain.member.vo.BirthDate;
@@ -24,9 +31,20 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService{
+
     private final MemberRepository memberRepository;
     private final EncryptUtils encryptUtils;
     private final ImageUploader imageUploader;
+
+    /**
+     * 찾으려는 회원 ID를 받아 해당 회원 정보를 반환한다.
+     * @param id 찾으려는 회원의 ID
+     * @return 회원 정보를 담은 엔티티티
+     */
+    @Override
+    public Member findById(Long id) {
+        return memberRepository.findById(id).orElseThrow();
+    }
 
     /**
      * 회원 가입을 한다
