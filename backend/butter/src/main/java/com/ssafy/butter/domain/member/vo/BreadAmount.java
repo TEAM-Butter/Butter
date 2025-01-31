@@ -3,15 +3,17 @@ package com.ssafy.butter.domain.member.vo;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.validation.constraints.NotNull;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 import java.util.Objects;
 
 @Embeddable
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class BreadAmount {
     @NotNull
     @Column(name = "bread_amount")
     private Integer value;
-
-    protected BreadAmount() {}
 
     public BreadAmount(Integer amount) {
         if (amount < 0) {

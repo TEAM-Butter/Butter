@@ -3,17 +3,19 @@ package com.ssafy.butter.domain.member.vo;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.validation.constraints.NotNull;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.Objects;
 
 @Embeddable
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class BirthDate {
     @NotNull
     @Column(name = "birth_date")
     private LocalDate value;
-
-    protected BirthDate() {}
 
     public BirthDate(LocalDate date) {
         if (date.isAfter(LocalDate.now())) {

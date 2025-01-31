@@ -3,15 +3,17 @@ package com.ssafy.butter.domain.member.vo;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.validation.constraints.NotNull;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 import java.util.Objects;
 
 @Embeddable
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PhoneNumber {
     @NotNull
     @Column(name = "phone_number")
     private String value;
-
-    protected PhoneNumber() {}
 
     public PhoneNumber(String number) {
         if (!number.matches("^\\d{3}-\\d{3,4}-\\d{4}$")) {
