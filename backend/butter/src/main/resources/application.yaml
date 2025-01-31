@@ -9,6 +9,7 @@ spring:
       on-profile: local
   transaction:
     default-timeout: '${custom.transaction.default-timeout}'
+
   datasource:
     hikari:
       maximum-pool-size: '${custom.hikari.maximum-pool-size}'
@@ -17,6 +18,7 @@ spring:
     url: '${custom.db.url}'
     username: '${custom.db.username}'
     password: '${custom.db.password}'
+
   jpa:
     hibernate:
       ddl-auto: create
@@ -27,3 +29,39 @@ spring:
         use_sql_comments: true
         default_batch_fetch_size: 1000
     defer-datasource-initialization : true
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: '${custom.mail.email}'
+    password: '${custom.mail.password}'
+    properties:
+      mail:
+        smtp:
+          auth: true
+          timeout: 5000
+          starttls:
+            enable: true
+
+  security:
+    oauth2:
+      client:
+          naver:
+            client-id: ${custom.oauth.naver.client-id}
+            client-secret: ${custom.oauth.naver.client-secret}
+            scope:
+              - name
+              - email
+            client-name: Naver
+            authorization-grant-type: authorization_code
+            request-token-uri: ${custom.oauth.naver.redirect-uri}
+
+cloud:
+  aws:
+    s3:
+      bucket: ${custom.aws.s3.bucket-name}
+    stack.auto: false
+    region.static: ${custom.aws.s3.region}
+    credentials:
+      accessKey: ${custom.aws.s3.access-key}
+      secretKey: ${custom.aws.s3.secret-key}

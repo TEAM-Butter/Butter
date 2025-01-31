@@ -1,8 +1,14 @@
 import { Route } from "react-router-dom";
-import UserProfilePage from "../pages/user/UserProfilePage";
+import MemberDetailPage from "../pages/user/MemberDetailPage";
+import LoginPage from "../pages/user/LoginPage";
 
 export const userRoutes = (
-  <Route path="/user">
-    <Route path="profile" element={<UserProfilePage />} />
-  </Route>
+  <>
+    <Route path="auth">
+      <Route path="login" element={<LoginPage/>}></Route>
+    </Route>
+    <Route path="member">
+      <Route path="detail/:id" element={<MemberDetailPage />} />
+    </Route>
+  </>
 );
