@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface NoticeRepository extends JpaRepository<Notice, Long> {
 
-    List<Notice> findAllOrderByIdDesc(Pageable pageable);
+    List<Notice> findAllByOrderByIdDesc(Pageable pageable);
 
     List<Notice> findAllByIdLessThanOrderByIdDesc(Long id, Pageable pageable);
 }

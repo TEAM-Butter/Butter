@@ -53,7 +53,7 @@ public class NoticeServiceImpl implements NoticeService {
     public List<NoticeResponseDTO> getCrewNoticeList(NoticeListRequestDTO noticeListRequestDTO) {
         Pageable pageable = PageRequest.of(0, noticeListRequestDTO.pageSize());
         if (noticeListRequestDTO.crewId() == null) {
-            return noticeRepository.findAllOrderByIdDesc(pageable).stream().map(NoticeResponseDTO::fromEntity).toList();
+            return noticeRepository.findAllByOrderByIdDesc(pageable).stream().map(NoticeResponseDTO::fromEntity).toList();
         } else {
             return noticeRepository.findAllByIdLessThanOrderByIdDesc(noticeListRequestDTO.crewId(), pageable).stream().map(NoticeResponseDTO::fromEntity).toList();
         }
