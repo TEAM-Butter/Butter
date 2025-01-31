@@ -10,21 +10,15 @@ import com.ssafy.butter.domain.member.dto.request.SignUpDTO;
 import com.ssafy.butter.domain.member.dto.response.MyPageResponseDTO;
 import com.ssafy.butter.domain.member.vo.BirthDate;
 import com.ssafy.butter.domain.member.vo.Email;
-import com.ssafy.butter.domain.member.entity.Member;
 import com.ssafy.butter.domain.member.vo.Nickname;
 import com.ssafy.butter.domain.member.vo.Password;
-import com.ssafy.butter.domain.member.vo.PhoneNumber;
-import com.ssafy.butter.domain.member.repository.MemberRepository;
 import com.ssafy.butter.global.util.encrypt.EncryptUtils;
 import com.ssafy.butter.infrastructure.awsS3.ImageUploader;
-import com.ssafy.butter.infrastructure.awsS3.S3ImageUploader;
 import com.ssafy.butter.infrastructure.emailAuth.dto.request.EmailDTO;
-import jakarta.mail.Multipart;
+
 import java.util.Optional;
-import lombok.RequiredArgsConstructor;
+
 import org.apache.coyote.BadRequestException;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
@@ -59,7 +53,6 @@ public class MemberServiceImpl implements MemberService{
                 .loginId(signUpDTO.loginId())
                 .nickname(new Nickname(signUpDTO.nickname()))
                 .email(new Email(signUpDTO.email()))
-                .phoneNumber(new PhoneNumber(signUpDTO.phoneNumber()))
                 .birthDate(new BirthDate(signUpDTO.birthDate()))
                 .password(encryptedPassword)
                 .gender(signUpDTO.gender())

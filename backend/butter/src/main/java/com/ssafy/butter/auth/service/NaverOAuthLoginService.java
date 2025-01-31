@@ -6,7 +6,6 @@ import com.ssafy.butter.auth.enums.Platform;
 import com.ssafy.butter.domain.member.entity.Member;
 import com.ssafy.butter.domain.member.vo.Email;
 import com.ssafy.butter.domain.member.vo.Nickname;
-import com.ssafy.butter.domain.member.vo.PhoneNumber;
 import com.ssafy.butter.global.config.NaverOAuthProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
@@ -36,7 +35,6 @@ public class NaverOAuthLoginService implements OAuth2LoginService{
         return Member.builder()
                 .email(new Email(userDetails.email()))
                 .nickname(new Nickname(userDetails.nickname()))
-                .phoneNumber(new PhoneNumber(userDetails.mobile()))
                 .build();
     }
 

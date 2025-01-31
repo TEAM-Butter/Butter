@@ -5,7 +5,6 @@ import com.ssafy.butter.domain.member.vo.BreadAmount;
 import com.ssafy.butter.domain.member.vo.Email;
 import com.ssafy.butter.domain.member.vo.Nickname;
 import com.ssafy.butter.domain.member.vo.Password;
-import com.ssafy.butter.domain.member.vo.PhoneNumber;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import java.util.ArrayList;
@@ -45,9 +44,6 @@ public class Member {
     private Email email;
 
     @Embedded
-    private PhoneNumber phoneNumber;
-
-    @Embedded
     private BirthDate birthDate;
 
     @Embedded
@@ -69,15 +65,12 @@ public class Member {
     private LocalDate createDate;
 
     @Builder
-    public Member(List<MemberGenre> memberGenres, String loginId, Nickname nickname, Email email,
-                  PhoneNumber phoneNumber,
-                  BirthDate birthDate, BreadAmount breadAmount, Password password, String imageUrl, Integer gender,
-                  Integer avatarType, LocalDate createDate, MemberType memberType) {
+    public Member(MemberType memberType, List<MemberGenre> memberGenres, String loginId, Nickname nickname, Email email, BirthDate birthDate, BreadAmount breadAmount, Password password, String imageUrl, Integer gender, Integer avatarType, LocalDate createDate) {
+        this.memberType = memberType;
         this.memberGenres = memberGenres;
         this.loginId = loginId;
         this.nickname = nickname;
         this.email = email;
-        this.phoneNumber = phoneNumber;
         this.birthDate = birthDate;
         this.breadAmount = breadAmount;
         this.password = password;
@@ -85,7 +78,6 @@ public class Member {
         this.gender = gender;
         this.avatarType = avatarType;
         this.createDate = createDate;
-        this.memberType = memberType;
     }
 }
 
