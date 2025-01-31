@@ -29,17 +29,14 @@ public class Notice extends TimestampedEntity {
     @NotNull
     private Crew crew;
 
-    @Setter
     @Column(length = 50)
     @NotNull
     private String title;
 
-    @Setter
     @Column(length = 200)
     @NotNull
     private String content;
 
-    @Setter
     @Column(length = 2048)
     private String imageUrl;
 
@@ -48,6 +45,18 @@ public class Notice extends TimestampedEntity {
         this.crew = crew;
         this.title = title;
         this.content = content;
+        this.imageUrl = imageUrl;
+    }
+
+    public void updateTitle(String title) {
+        this.title = title;
+    }
+
+    public void updateContent(String content) {
+        this.content = content;
+    }
+
+    public void updateImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
     }
 }
