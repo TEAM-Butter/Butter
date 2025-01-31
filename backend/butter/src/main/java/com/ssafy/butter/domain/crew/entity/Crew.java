@@ -36,25 +36,20 @@ public class Crew {
     @OneToMany(mappedBy = "crew")
     private List<Live> lives = new ArrayList<>();
 
-    @Setter
     @Column(length = 50)
     @NotNull
     private String name;
 
-    @Setter
     @Column(length = 200)
     @NotNull
     private String description;
 
-    @Setter
     @Column(length = 2048)
     private String imageUrl;
 
-    @Setter
     @Column(length = 2048)
     private String promotionUrl;
 
-    @Setter
     @Column(length = 2048)
     @NotNull
     private String portfolioVideoUrl;
@@ -72,5 +67,21 @@ public class Crew {
         this.promotionUrl = promotionUrl;
         this.portfolioVideoUrl = portfolioVideoUrl;
         this.donationAmount = donationAmount;
+    }
+
+    public void updateName(String name) {
+        this.name = name;
+    }
+
+    public void updateImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public void updatePromotionUrl(String promotionUrl) {
+        this.promotionUrl = promotionUrl;
+    }
+
+    public void updatePromotionUrl(String promotionUrl, int donationAmount) {
+        this.promotionUrl = promotionUrl;
     }
 }
