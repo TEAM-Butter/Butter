@@ -124,13 +124,13 @@ const subProfileVariants = {
     },
 };
 
-function Header(){
+function Navbar(){
     const homeMatch = useMatch("");
     const buskingMatch = useMatch("busking");
     const streamMatch = useMatch("stream");
     const crewMatch = useMatch("crew");
-    const loginMatch = useMatch("login");
-    const [isLogin, setIsLogin] = useState(true)
+    const loginMatch = useMatch("auth/login");
+    const [isLogin, setIsLogin] = useState(false)
     const [isCrewUser, setIsCrewUser] = useState(true)
     const [isHovered, setIsHovered] = useState(false);
     return (
@@ -179,7 +179,7 @@ function Header(){
                                 <Link to="/"><SubItem>로그아웃</SubItem></Link>    
                             </SubProfile>
                         </Profile> 
-                        : <Link to="/login"><Item>LOGIN { loginMatch && <Bar layoutId="bar" />}</Item></Link> }
+                        : <Link to="/auth/login"><Item>LOGIN { loginMatch && <Bar layoutId="bar" />}</Item></Link> }
                     
                 </Items>
             </Col_r>            
@@ -187,4 +187,4 @@ function Header(){
     );
 };
 
-export default Header;
+export default Navbar;
