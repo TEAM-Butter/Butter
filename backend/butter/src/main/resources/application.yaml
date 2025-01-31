@@ -54,7 +54,7 @@ spring:
               - email
             client-name: Naver
             authorization-grant-type: authorization_code
-            redirect-uri: ${custom.oauth.naver.redirect-uri}
+            request-token-uri: ${custom.oauth.naver.redirect-uri}
 
 cloud:
   aws:
