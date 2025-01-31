@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface CrewRepository extends JpaRepository<Crew, Long> {
 
-    List<Crew> findAllOrderByIdDesc(Pageable pageable);
+    List<Crew> findAllByOrderByIdDesc(Pageable pageable);
 
     List<Crew> findAllByIdLessThanOrderByIdDesc(Long id, Pageable pageable);
 }

@@ -12,7 +12,6 @@ import com.ssafy.butter.domain.crew.repository.CrewMemberRepository;
 import com.ssafy.butter.domain.crew.repository.CrewRepository;
 import com.ssafy.butter.domain.crew.repository.FollowRepository;
 import com.ssafy.butter.domain.member.entity.Member;
-import com.ssafy.butter.domain.member.repository.MemberRepository;
 import com.ssafy.butter.domain.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -105,7 +104,7 @@ public class CrewServiceImpl implements CrewService {
         Pageable pageable = PageRequest.of(0, crewListRequestDTO.pageSize());
         if (crewListRequestDTO.keyword() == null) {
             if (crewListRequestDTO.crewId() == null) {
-                return crewRepository.findAllOrderByIdDesc(pageable).stream().map(CrewResponseDTO::fromEntity).toList();
+                return crewRepository.findAllByOrderByIdDesc(pageable).stream().map(CrewResponseDTO::fromEntity).toList();
             } else {
                 return crewRepository.findAllByIdLessThanOrderByIdDesc(crewListRequestDTO.crewId(), pageable).stream().map(CrewResponseDTO::fromEntity).toList();
             }
