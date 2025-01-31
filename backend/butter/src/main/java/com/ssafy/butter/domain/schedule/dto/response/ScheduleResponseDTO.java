@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 public record ScheduleResponseDTO(Long id, CrewResponseDTO crew, String title, String content, String place, Double latitude, Double longitude, LocalDateTime createDate, LocalDateTime updateDate) {
 
-    public ScheduleResponseDTO fromEntity(Schedule schedule) {
+    public static ScheduleResponseDTO fromEntity(Schedule schedule) {
         return new ScheduleResponseDTO(
                 schedule.getId(),
                 CrewResponseDTO.fromEntity(schedule.getCrew()),
