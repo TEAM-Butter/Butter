@@ -32,7 +32,7 @@ public class NoticeServiceImpl implements NoticeService {
 
         if (noticeSaveRequestDTO.image() != null) {
             String filenamePrefix = savedNotice.getId() + "_" + System.currentTimeMillis() + "_";
-            savedNotice.setImageUrl(filenamePrefix + noticeSaveRequestDTO.image().getOriginalFilename());
+            savedNotice.updateImageUrl(filenamePrefix + noticeSaveRequestDTO.image().getOriginalFilename());
             return NoticeResponseDTO.fromEntity(noticeRepository.save(savedNotice));
         } else {
             return NoticeResponseDTO.fromEntity(notice);
@@ -57,13 +57,13 @@ public class NoticeServiceImpl implements NoticeService {
     @Override
     public NoticeResponseDTO updateCrewNotice(Long id, NoticeSaveRequestDTO noticeSaveRequestDTO) {
         Notice notice = noticeRepository.findById(id).orElseThrow();
-        notice.setTitle(noticeSaveRequestDTO.title());
-        notice.setContent(noticeSaveRequestDTO.content());
+        notice.updateTitle(noticeSaveRequestDTO.title());
+        notice.updateContent(noticeSaveRequestDTO.content());
         if (noticeSaveRequestDTO.image() != null) {
             String filenamePrefix = notice.getId() + "_" + System.currentTimeMillis() + "_";
-            notice.setImageUrl(filenamePrefix + noticeSaveRequestDTO.image().getOriginalFilename());
+            notice.updateImageUrl(filenamePrefix + noticeSaveRequestDTO.image().getOriginalFilename());
         } else {
-            notice.setImageUrl(null);
+            notice.updateImageUrl(null);
         }
         return NoticeResponseDTO.fromEntity(noticeRepository.save(notice));
     }

@@ -54,8 +54,8 @@ public class CrewServiceImpl implements CrewService {
         }
         String portfolioVideoUrl = filenamePrefix + crewSaveRequestDTO.portfolioVideo().getOriginalFilename();
 
-        savedCrew.setImageUrl(imageUrl);
-        savedCrew.setPortfolioVideoUrl(portfolioVideoUrl);
+        savedCrew.updateImageUrl(imageUrl);
+        savedCrew.updatePortfolioVideoUrl(portfolioVideoUrl);
         return CrewResponseDTO.fromEntity(crewRepository.save(savedCrew));
     }
 
@@ -110,11 +110,11 @@ public class CrewServiceImpl implements CrewService {
         }
         String portfolioVideoUrl = filenamePrefix + crewSaveRequestDTO.portfolioVideo().getOriginalFilename();
 
-        crew.setName(crewSaveRequestDTO.name());
-        crew.setDescription(crewSaveRequestDTO.description());
-        crew.setPromotionUrl(crewSaveRequestDTO.promotionUrl());
-        crew.setImageUrl(imageUrl);
-        crew.setPortfolioVideoUrl(portfolioVideoUrl);
+        crew.updateName(crewSaveRequestDTO.name());
+        crew.updateDescription(crewSaveRequestDTO.description());
+        crew.updatePromotionUrl(crewSaveRequestDTO.promotionUrl());
+        crew.updateImageUrl(imageUrl);
+        crew.updatePortfolioVideoUrl(portfolioVideoUrl);
         return CrewResponseDTO.fromEntity(crewRepository.save(crew));
     }
 
