@@ -1,11 +1,13 @@
 package com.ssafy.butter.auth.dto.request;
 
 import com.ssafy.butter.auth.enums.Platform;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public record SocialLoginRequestDTO(String code, String platform) {
     public SocialLoginRequestDTO {
         if (!isValidPlatform(platform)) {
-            throw new IllegalArgumentException("ERR : platform" + "은 유효하지 않은 로그인 플랫폼입니다");
+            throw new IllegalArgumentException("ERR : " + platform + "은 유효하지 않은 로그인 플랫폼입니다");
         }
     }
 
