@@ -29,7 +29,6 @@ public class Member {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_type_id")
-    @NotNull
     private MemberType memberType;
 
     @OneToMany(mappedBy = "member")
@@ -59,7 +58,6 @@ public class Member {
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
-    @NotNull
     private Integer avatarType;
 
     @NotNull
