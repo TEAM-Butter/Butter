@@ -13,6 +13,8 @@ public interface ScheduleRepository {
 
     Optional<Schedule> findById(Long id);
 
+    void delete(Schedule schedule);
+
     List<Schedule> findAllByOrderByIdDesc(Pageable pageable);
 
     List<Schedule> findAllByIdLessThanOrderByIdDesc(Long id, Pageable pageable);

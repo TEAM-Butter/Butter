@@ -26,6 +26,11 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
     }
 
     @Override
+    public void delete(Schedule schedule) {
+        scheduleJpaRepository.delete(schedule);
+    }
+
+    @Override
     public List<Schedule> findAllByOrderByIdDesc(Pageable pageable) {
         return scheduleJpaRepository.findAllByOrderByIdDesc(pageable);
     }
