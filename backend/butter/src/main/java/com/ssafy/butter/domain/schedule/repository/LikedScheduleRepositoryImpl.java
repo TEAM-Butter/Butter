@@ -20,6 +20,11 @@ public class LikedScheduleRepositoryImpl implements LikedScheduleRepository {
     }
 
     @Override
+    public void delete(LikedSchedule likedSchedule) {
+        likedScheduleJpaRepository.delete(likedSchedule);
+    }
+
+    @Override
     public Optional<LikedSchedule> findByMemberAndSchedule(Member member, Schedule schedule) {
         return likedScheduleJpaRepository.findByMemberAndSchedule(member, schedule);
     }

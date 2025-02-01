@@ -10,5 +10,7 @@ public interface LikedScheduleRepository {
 
     LikedSchedule save(LikedSchedule likedSchedule);
 
+    void delete(LikedSchedule likedSchedule);
+
     Optional<LikedSchedule> findByMemberAndSchedule(Member member, Schedule schedule);
 }
