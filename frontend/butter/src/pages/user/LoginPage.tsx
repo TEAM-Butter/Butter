@@ -43,7 +43,7 @@ const LoginInput = styled.input`
     margin-top: 10px;
 `
 
-const Modal = styled.div`
+const ForgetComment = styled.div`
     width: 100%;
     color: #6D6D6D;
     font-size: 14px;
@@ -91,7 +91,7 @@ const LoginPage = () => {
             <LgText textColor="black">Log into<br/>your account</LgText>
             <LoginInput placeholder="type your id."></LoginInput>
             <LoginInput placeholder="type your password."></LoginInput>
-            <Modal>아이디/ 비밀번호를 잊어버리셨나요?</Modal>
+            <ForgetComment>아이디/ 비밀번호를 잊어버리셨나요?</ForgetComment>
             <LoginBtn bgColor="rgba(0,0,0,0.4)">Log in</LoginBtn>
             <LoginBtn bgColor="black">Log in with <span>kakao</span></LoginBtn>
         </LoginFormWrapper>
