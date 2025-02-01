@@ -4,10 +4,17 @@ import com.ssafy.butter.auth.dto.response.NaverAccessTokenResponseDTO;
 import com.ssafy.butter.auth.dto.response.NaverUserDetailsResponseDTO;
 import com.ssafy.butter.auth.enums.Platform;
 import com.ssafy.butter.domain.member.entity.Member;
+import com.ssafy.butter.domain.member.enums.Gender;
+import com.ssafy.butter.domain.member.vo.BirthDate;
 import com.ssafy.butter.domain.member.vo.Email;
 import com.ssafy.butter.domain.member.vo.Nickname;
 import com.ssafy.butter.global.config.NaverOAuthProperties;
+import java.time.DateTimeException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cglib.core.Local;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -32,9 +39,13 @@ public class NaverOAuthLoginService implements OAuth2LoginService{
         String accessToken = getAccessToken(code);
         NaverUserDetailsResponseDTO.NaverUserDetailsDTO userDetails = getUserDetails(accessToken);
 
+        LocalDate UserBirthDate = convertToBirthDate(userDetails.birthyear(), userDetails.birthday());
+        Gender userGender = parseGender(userDetails.gender());
+
         return Member.builder()
                 .email(new Email(userDetails.email()))
-                .nickname(new Nickname(userDetails.nickname()))
+                .birthDate(new BirthDate(UserBirthDate))
+                .gender(userGender)
                 .build();
     }
 
@@ -56,5 +67,35 @@ public class NaverOAuthLoginService implements OAuth2LoginService{
         //TODO : 토큰 유효성 검사 추가
 
         return response.getBody().accessToken();
+    }
+
+    private LocalDate convertToBirthDate(String birthYear, String birthdate){
+        if(birthdate==null || birthdate.isEmpty() || birthYear==null || birthYear.isEmpty()){
+            return null;
+        }
+
+        try {
+            String fullDateString = birthYear + "-" + birthdate;
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            return LocalDate.parse(fullDateString, formatter);
+        } catch (DateTimeException e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static Gender parseGender(String genderStr) {
+        if (genderStr == null || genderStr.isEmpty()) {
+            return null;
+        }
+
+        switch (genderStr.toUpperCase()) {
+            case "M":
+                return Gender.MALE;
+            case "F":
+                return Gender.FEMALE;
+            default:
+                return null;
+        }
     }
 }
