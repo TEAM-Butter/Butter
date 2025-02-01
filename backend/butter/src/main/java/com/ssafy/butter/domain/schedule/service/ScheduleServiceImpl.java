@@ -2,11 +2,16 @@ package com.ssafy.butter.domain.schedule.service;
 
 import com.ssafy.butter.domain.crew.entity.Crew;
 import com.ssafy.butter.domain.crew.service.CrewService;
+import com.ssafy.butter.domain.member.entity.Member;
+import com.ssafy.butter.domain.member.service.MemberService;
 import com.ssafy.butter.domain.schedule.dto.request.ScheduleCalendarRequestDTO;
+import com.ssafy.butter.domain.schedule.dto.request.ScheduleLikeRequestDTO;
 import com.ssafy.butter.domain.schedule.dto.request.ScheduleSaveRequestDTO;
 import com.ssafy.butter.domain.schedule.dto.request.ScheduleSearchRequestDTO;
 import com.ssafy.butter.domain.schedule.dto.response.ScheduleResponseDTO;
+import com.ssafy.butter.domain.schedule.entity.LikedSchedule;
 import com.ssafy.butter.domain.schedule.entity.Schedule;
+import com.ssafy.butter.domain.schedule.repository.LikedScheduleRepository;
 import com.ssafy.butter.domain.schedule.repository.ScheduleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -15,7 +20,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -23,7 +27,9 @@ import java.util.stream.Collectors;
 public class ScheduleServiceImpl implements ScheduleService {
 
     private final ScheduleRepository scheduleRepository;
+    private final LikedScheduleRepository likedScheduleRepository;
 
+    private final MemberService memberService;
     private final CrewService crewService;
 
     @Override
@@ -74,5 +80,19 @@ public class ScheduleServiceImpl implements ScheduleService {
         Schedule schedule = scheduleRepository.findById(id).orElseThrow();
         scheduleRepository.delete(schedule);
         return ScheduleResponseDTO.fromEntity(schedule);
+    }
+
+    @Override
+    public void likeSchedule(Long memberId, ScheduleLikeRequestDTO scheduleLikeRequestDTO) {
+        Member member = memberService.findById(memberId);
+        Schedule schedule = scheduleRepository.findById(scheduleLikeRequestDTO.scheduleId()).orElseThrow();
+        likedScheduleRepository.findByMemberAndSchedule(member, schedule).ifPresent(likedSchedule -> {
+            throw new IllegalArgumentException("");
+        });
+        likedScheduleRepository.save(LikedSchedule.builder()
+                .member(member)
+                .schedule(schedule)
+                .isLiked(true)
+                .build());
     }
 }

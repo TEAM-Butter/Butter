@@ -1,6 +1,7 @@
 package com.ssafy.butter.domain.schedule.service;
 
 import com.ssafy.butter.domain.schedule.dto.request.ScheduleCalendarRequestDTO;
+import com.ssafy.butter.domain.schedule.dto.request.ScheduleLikeRequestDTO;
 import com.ssafy.butter.domain.schedule.dto.request.ScheduleSaveRequestDTO;
 import com.ssafy.butter.domain.schedule.dto.request.ScheduleSearchRequestDTO;
 import com.ssafy.butter.domain.schedule.dto.response.ScheduleResponseDTO;
@@ -20,4 +21,6 @@ public interface ScheduleService {
     ScheduleResponseDTO updateSchedule(Long id, ScheduleSaveRequestDTO scheduleSaveRequestDTO);
 
     ScheduleResponseDTO deleteSchedule(Long id);
+
+    void likeSchedule(Long memberId, ScheduleLikeRequestDTO scheduleLikeRequestDTO);
 }

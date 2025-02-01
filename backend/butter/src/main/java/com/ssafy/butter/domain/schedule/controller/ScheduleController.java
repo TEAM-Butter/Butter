@@ -54,8 +54,8 @@ public class ScheduleController {
 
     @PostMapping("/like")
     public ResponseEntity<?> likeSchedule(@RequestBody ScheduleLikeRequestDTO scheduleLikeRequestDTO) {
-        log.info("Like schedule: {}", scheduleLikeRequestDTO);
-        return ResponseEntity.ok(null);
+        scheduleService.likeSchedule(1L, scheduleLikeRequestDTO);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/like/{id}")
