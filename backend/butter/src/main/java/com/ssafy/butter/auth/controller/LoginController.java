@@ -3,6 +3,7 @@ package com.ssafy.butter.auth.controller;
 import com.ssafy.butter.auth.dto.AuthInfoDTO;
 import com.ssafy.butter.auth.dto.request.LoginRequestDTO;
 import com.ssafy.butter.auth.dto.request.SocialLoginRequestDTO;
+import com.ssafy.butter.auth.dto.response.AuthResponseDTO;
 import com.ssafy.butter.auth.enums.Platform;
 import com.ssafy.butter.auth.service.LoginService;
 import com.ssafy.butter.auth.service.RefreshTokenService;
@@ -12,6 +13,7 @@ import com.ssafy.butter.global.token.JwtManager;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +22,7 @@ import java.util.Enumeration;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 
+@Slf4j
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -30,29 +33,33 @@ public class LoginController {
     private final JwtExtractor jwtExtractor;
 
     @PostMapping("/login")
-    public ResponseEntity<Void> login(@RequestBody LoginRequestDTO loginRequestDTO){
-        AuthInfoDTO authInfoDTO = loginService.login(loginRequestDTO);
-        String accessToken = jwtManager.createAccessToken(authInfoDTO);
+    public ResponseEntity<AuthResponseDTO> login(@RequestBody LoginRequestDTO loginRequestDTO){
+        AuthInfoDTO authInfo = loginService.login(loginRequestDTO);
+        String accessToken = jwtManager.createAccessToken(authInfo);
         String refreshToken = jwtManager.createRefreshToken();
-        refreshTokenService.saveToken(refreshToken, authInfoDTO.id());
+        refreshTokenService.saveToken(refreshToken, authInfo.id());
+
+        AuthResponseDTO response = new AuthResponseDTO(accessToken, refreshToken, authInfo);
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.AUTHORIZATION, "Bearer "+accessToken)
                 .header("refresh-token", "Bearer "+refreshToken)
-                .build();
+                .body(response);
     }
 
     @PostMapping("/login/social")
-    public ResponseEntity<Void> socialLogin(SocialLoginRequestDTO socialLoginRequestDTO){
-        AuthInfoDTO authInfoDTO = loginService.loginByOAuth(socialLoginRequestDTO.code(), Platform.valueOf(socialLoginRequestDTO.platform()));
-        String accessToken = jwtManager.createAccessToken(authInfoDTO);
+    public ResponseEntity<AuthResponseDTO> socialLogin(@RequestBody SocialLoginRequestDTO socialLoginRequestDTO){
+        AuthInfoDTO authInfo = loginService.loginByOAuth(socialLoginRequestDTO.code(), Platform.valueOf(socialLoginRequestDTO.platform()));
+        String accessToken = jwtManager.createAccessToken(authInfo);
         String refreshToken = jwtManager.createRefreshToken();
-        refreshTokenService.saveToken(refreshToken, authInfoDTO.id());
+        refreshTokenService.saveToken(refreshToken, authInfo.id());
+
+        AuthResponseDTO response = new AuthResponseDTO(accessToken, refreshToken, authInfo);
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.AUTHORIZATION, "Bearer "+accessToken)
                 .header("refresh-token", "Bearer "+refreshToken)
-                .build();
+                .body(response);
     }
 
     @GetMapping("/reissue")
