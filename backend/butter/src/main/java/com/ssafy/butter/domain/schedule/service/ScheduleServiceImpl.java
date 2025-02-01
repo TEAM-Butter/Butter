@@ -2,6 +2,7 @@ package com.ssafy.butter.domain.schedule.service;
 
 import com.ssafy.butter.domain.crew.entity.Crew;
 import com.ssafy.butter.domain.crew.service.CrewService;
+import com.ssafy.butter.domain.schedule.dto.request.ScheduleCalendarRequestDTO;
 import com.ssafy.butter.domain.schedule.dto.request.ScheduleSaveRequestDTO;
 import com.ssafy.butter.domain.schedule.dto.request.ScheduleSearchRequestDTO;
 import com.ssafy.butter.domain.schedule.dto.response.ScheduleResponseDTO;
@@ -49,5 +50,10 @@ public class ScheduleServiceImpl implements ScheduleService {
             return scheduleRepository.findAllByIdLessThanOrderByIdDesc(scheduleSearchRequestDTO.scheduleId(), pageable).stream().map(ScheduleResponseDTO::fromEntity).collect(Collectors.toList());
         }
         // TODO 날짜와 위치가 주어진 경우 로직 작성
+    }
+
+    @Override
+    public List<ScheduleResponseDTO> getScheduleCalendarList(ScheduleCalendarRequestDTO scheduleCalendarRequestDTO) {
+        return scheduleRepository.findAllByBuskingDate(scheduleCalendarRequestDTO.buskingDate()).stream().map(ScheduleResponseDTO::fromEntity).collect(Collectors.toList());
     }
 }

@@ -30,8 +30,7 @@ public class ScheduleController {
 
     @GetMapping("/calendar-list")
     public ResponseEntity<?> getScheduleCalendarList(@ModelAttribute ScheduleCalendarRequestDTO scheduleCalendarRequestDTO) {
-        log.info("Get schedule list: {}", scheduleCalendarRequestDTO);
-        return ResponseEntity.ok(null);
+        return ResponseEntity.ok(scheduleService.getScheduleCalendarList(scheduleCalendarRequestDTO));
     }
 
     @GetMapping("/detail/{id}")
