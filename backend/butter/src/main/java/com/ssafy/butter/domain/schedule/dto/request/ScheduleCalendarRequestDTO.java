@@ -1,6 +1,6 @@
 package com.ssafy.butter.domain.schedule.dto.request;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
-public record ScheduleCalendarRequestDTO(LocalDate date) {
+public record ScheduleCalendarRequestDTO(LocalDateTime buskingDate) {
 }
