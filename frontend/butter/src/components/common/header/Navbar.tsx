@@ -3,6 +3,7 @@ import styled from "@emotion/styled";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { Link, useMatch } from "react-router-dom";
+import { StreamingModal } from "../modals/modal";
 
 const Nav = styled.nav`
     display: flex;
@@ -130,10 +131,13 @@ function Navbar(){
     const streamMatch = useMatch("stream");
     const crewMatch = useMatch("crew");
     const loginMatch = useMatch("auth/login");
-    const [isLogin, setIsLogin] = useState(false)
+    // isLogin이 true일 경우 profile dropdown 적용, false일 경우 login link만 렌더링링 
+    const [isLogin, setIsLogin] = useState(true)
     const [isCrewUser, setIsCrewUser] = useState(true)
     const [isHovered, setIsHovered] = useState(false);
+    const [toggleModal, setToggleModal] = useState(false);
     return (
+        <>
         <Nav>
             <Col>
                 {/* variants, whileHover를 통해 Hover시 동작할 모션 정의 초기값(initial)은 normal*/}
@@ -169,7 +173,7 @@ function Navbar(){
                                 <Link to="/"><SubItem>마이 크루</SubItem></Link>    
                                 <Link to="/"><SubItem>브레드 충전</SubItem></Link>
                                 {   isCrewUser ? 
-                                    <><Link to="/"><SubItem>스트리밍 라이브</SubItem></Link>    
+                                    <><SubItem className="openModalBtn" onClick={()=>{ setToggleModal(true)}}>스트리밍 라이브</SubItem>    
                                     <Link to="/"><SubItem>버스킹 일정 등록</SubItem></Link>    
                                     <Link to="/"><SubItem>크루 탈퇴</SubItem></Link></>    
                                     : 
@@ -180,10 +184,11 @@ function Navbar(){
                             </SubProfile>
                         </Profile> 
                         : <Link to="/auth/login"><Item>LOGIN { loginMatch && <Bar layoutId="bar" />}</Item></Link> }
-                    
                 </Items>
             </Col_r>            
         </Nav>
+        { toggleModal && <StreamingModal width="450px" height="230px" setToggleModal={setToggleModal}></StreamingModal>}
+        </>
     );
 };
 

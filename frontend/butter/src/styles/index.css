@@ -1,1 +1,6 @@
 @import "./reset.css";
+
+:root {
+    --red: #EA2323;
+    --red-hover: #ea2323ef;
+}
