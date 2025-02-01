@@ -56,4 +56,9 @@ public class ScheduleServiceImpl implements ScheduleService {
     public List<ScheduleResponseDTO> getScheduleCalendarList(ScheduleCalendarRequestDTO scheduleCalendarRequestDTO) {
         return scheduleRepository.findAllByBuskingDate(scheduleCalendarRequestDTO.buskingDate()).stream().map(ScheduleResponseDTO::fromEntity).toList();
     }
+
+    @Override
+    public ScheduleResponseDTO getScheduleDetail(Long id) {
+        return scheduleRepository.findById(id).map(ScheduleResponseDTO::fromEntity).orElseThrow();
+    }
 }

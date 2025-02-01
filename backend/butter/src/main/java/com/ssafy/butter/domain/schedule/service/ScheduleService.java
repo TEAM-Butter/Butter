@@ -14,4 +14,6 @@ public interface ScheduleService {
     List<ScheduleResponseDTO> searchSchedule(ScheduleSearchRequestDTO scheduleSearchRequestDTO);
 
     List<ScheduleResponseDTO> getScheduleCalendarList(ScheduleCalendarRequestDTO scheduleCalendarRequestDTO);
+
+    ScheduleResponseDTO getScheduleDetail(Long id);
 }

@@ -39,8 +39,7 @@ public class ScheduleController {
 
     @GetMapping("/detail/{id}")
     public ResponseEntity<?> getScheduleDetail(@PathVariable Long id) {
-        log.info("Get schedule detail: {}", id);
-        return ResponseEntity.ok(null);
+        return ResponseEntity.ok(scheduleService.getScheduleDetail(id));
     }
 
     @PutMapping("/{id}")
