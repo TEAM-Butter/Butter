@@ -42,6 +42,8 @@ dependencies {
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.6'
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.6'
     implementation 'software.amazon.awssdk:s3:2.20.49'
+    implementation group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: '2.18.2'
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.18.2'
 }
 
 tasks.named('test') {
