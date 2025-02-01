@@ -5,7 +5,7 @@ import com.ssafy.butter.auth.enums.Platform;
 public record SocialLoginRequestDTO(String code, String platform) {
     public SocialLoginRequestDTO {
         if (!isValidPlatform(platform)) {
-            throw new IllegalArgumentException("Invalid platform: " + platform);
+            throw new IllegalArgumentException("ERR : platform" + "은 유효하지 않은 로그인 플랫폼입니다");
         }
     }
 
