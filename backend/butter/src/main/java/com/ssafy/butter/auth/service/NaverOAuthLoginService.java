@@ -14,6 +14,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cglib.core.Local;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -26,6 +28,10 @@ import org.springframework.web.client.RestTemplate;
 @RequiredArgsConstructor
 @Service
 public class NaverOAuthLoginService implements OAuth2LoginService{
+
+    @Value("${spring.security.oauth2.client.naver.request-user-info-uri}")
+    private String requestUserInfoUri;
+
     private final NaverOAuthProperties naverOAuthProperties;
     private final RestTemplate restTemplate;
 
@@ -55,7 +61,7 @@ public class NaverOAuthLoginService implements OAuth2LoginService{
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(headers);
 
         ResponseEntity<NaverUserDetailsResponseDTO> response =
-                restTemplate.exchange("https://openapi.naver.com/v1/nid/me", HttpMethod.GET, request, NaverUserDetailsResponseDTO.class);
+                restTemplate.exchange(requestUserInfoUri, HttpMethod.GET, request, NaverUserDetailsResponseDTO.class);
 
         return response.getBody().naverUserDetail();
     }
