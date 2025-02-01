@@ -60,7 +60,7 @@ public class ScheduleController {
 
     @DeleteMapping("/like/{id}")
     public ResponseEntity<?> unlikeSchedule(@PathVariable Long id) {
-        log.info("Unlike schedule: {}", id);
-        return ResponseEntity.ok(null);
+        scheduleService.unlikeSchedule(1L, id);
+        return ResponseEntity.noContent().build();
     }
 }

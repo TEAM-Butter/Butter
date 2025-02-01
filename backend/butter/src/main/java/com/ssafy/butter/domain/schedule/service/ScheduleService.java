@@ -23,4 +23,6 @@ public interface ScheduleService {
     ScheduleResponseDTO deleteSchedule(Long id);
 
     void likeSchedule(Long memberId, ScheduleLikeRequestDTO scheduleLikeRequestDTO);
+
+    void unlikeSchedule(Long memberId, Long scheduleId);
 }

@@ -95,4 +95,12 @@ public class ScheduleServiceImpl implements ScheduleService {
                 .isLiked(true)
                 .build());
     }
+
+    @Override
+    public void unlikeSchedule(Long memberId, Long scheduleId) {
+        Member member = memberService.findById(memberId);
+        Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow();
+        LikedSchedule likedSchedule = likedScheduleRepository.findByMemberAndSchedule(member, schedule).orElseThrow();
+        likedScheduleRepository.delete(likedSchedule);
+    }
 }
