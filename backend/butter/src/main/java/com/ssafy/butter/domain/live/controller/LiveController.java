@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 public class LiveController {
 
     @PostMapping
-    public ResponseEntity<?> createLive(LiveSaveRequestDTO liveSaveRequestDTO) {
+    public ResponseEntity<?> createLive(@RequestBody LiveSaveRequestDTO liveSaveRequestDTO) {
         log.info("Create live request: {}", liveSaveRequestDTO);
         return ResponseEntity.ok(null);
     }
