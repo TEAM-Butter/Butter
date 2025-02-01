@@ -1,5 +1,6 @@
 package com.ssafy.butter.domain.schedule.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ssafy.butter.domain.common.TimestampedEntity;
 import com.ssafy.butter.domain.crew.entity.Crew;
 import jakarta.persistence.Column;
@@ -29,6 +30,7 @@ public class Schedule extends TimestampedEntity {
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "crew_id")
+    @JsonIgnore
     private Crew crew;
 
     @Column(length = 50)
