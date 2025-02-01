@@ -3,6 +3,7 @@ package com.ssafy.butter.domain.schedule.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ssafy.butter.domain.common.TimestampedEntity;
 import com.ssafy.butter.domain.crew.entity.Crew;
+import com.ssafy.butter.domain.schedule.dto.request.ScheduleSaveRequestDTO;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -67,5 +68,14 @@ public class Schedule extends TimestampedEntity {
         this.buskingDate = buskingDate;
         this.latitude = latitude;
         this.longitude = longitude;
+    }
+
+    public void update(ScheduleSaveRequestDTO scheduleSaveRequestDTO) {
+        this.title = scheduleSaveRequestDTO.title();
+        this.content = scheduleSaveRequestDTO.content();
+        this.place = scheduleSaveRequestDTO.place();
+        this.buskingDate = scheduleSaveRequestDTO.buskingDate();
+        this.latitude = scheduleSaveRequestDTO.latitude();
+        this.longitude = scheduleSaveRequestDTO.longitude();
     }
 }
