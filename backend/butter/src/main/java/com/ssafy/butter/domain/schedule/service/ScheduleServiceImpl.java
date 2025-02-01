@@ -33,6 +33,7 @@ public class ScheduleServiceImpl implements ScheduleService {
                 .title(scheduleSaveRequestDTO.title())
                 .content(scheduleSaveRequestDTO.content())
                 .place(scheduleSaveRequestDTO.place())
+                .buskingDate(scheduleSaveRequestDTO.buskingDate())
                 .latitude(scheduleSaveRequestDTO.latitude())
                 .longitude(scheduleSaveRequestDTO.longitude())
                 .build();

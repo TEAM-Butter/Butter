@@ -4,7 +4,7 @@ import com.ssafy.butter.domain.schedule.entity.Schedule;
 
 import java.time.LocalDateTime;
 
-public record ScheduleResponseDTO(Long id, Crew crew, String title, String content, String place, Double latitude, Double longitude, LocalDateTime createDate, LocalDateTime updateDate) {
+public record ScheduleResponseDTO(Long id, Crew crew, String title, String content, String place, LocalDateTime buskingDate, Double latitude, Double longitude, LocalDateTime createDate, LocalDateTime updateDate) {
 
     public static ScheduleResponseDTO fromEntity(Schedule schedule) {
         return new ScheduleResponseDTO(
@@ -13,6 +13,7 @@ public record ScheduleResponseDTO(Long id, Crew crew, String title, String conte
                 schedule.getTitle(),
                 schedule.getContent(),
                 schedule.getPlace(),
+                schedule.getBuskingDate(),
                 schedule.getLatitude(),
                 schedule.getLongitude(),
                 schedule.getCreateDate(),

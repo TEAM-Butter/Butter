@@ -17,6 +17,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -46,6 +49,9 @@ public class Schedule extends TimestampedEntity {
     private String place;
 
     @NotNull
+    private LocalDateTime buskingDate;
+
+    @NotNull
     private double latitude;
 
     @NotNull
@@ -53,11 +59,12 @@ public class Schedule extends TimestampedEntity {
 
     @Builder
     public Schedule(Crew crew, String title, String content,
-                    String place, double latitude, double longitude) {
+                    String place, LocalDateTime buskingDate, double latitude, double longitude) {
         this.crew = crew;
         this.title = title;
         this.content = content;
         this.place = place;
+        this.buskingDate = buskingDate;
         this.latitude = latitude;
         this.longitude = longitude;
     }
