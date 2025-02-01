@@ -1,7 +1,7 @@
 package com.ssafy.butter.domain.schedule.controller;
 
 import com.ssafy.butter.domain.schedule.dto.request.ScheduleLikeRequestDTO;
-import com.ssafy.butter.domain.schedule.dto.request.ScheduleRequestDTO;
+import com.ssafy.butter.domain.schedule.dto.request.ScheduleCalendarRequestDTO;
 import com.ssafy.butter.domain.schedule.dto.request.ScheduleSaveRequestDTO;
 import com.ssafy.butter.domain.schedule.dto.request.ScheduleSearchRequestDTO;
 import com.ssafy.butter.domain.schedule.service.ScheduleService;
@@ -29,8 +29,8 @@ public class ScheduleController {
     }
 
     @GetMapping("/calendar-list")
-    public ResponseEntity<?> getScheduleCalendarList(@ModelAttribute ScheduleRequestDTO scheduleRequestDTO) {
-        log.info("Get schedule list: {}", scheduleRequestDTO);
+    public ResponseEntity<?> getScheduleCalendarList(@ModelAttribute ScheduleCalendarRequestDTO scheduleCalendarRequestDTO) {
+        log.info("Get schedule list: {}", scheduleCalendarRequestDTO);
         return ResponseEntity.ok(null);
     }
 
