@@ -1,18 +1,18 @@
 import styled from "@emotion/styled";
-import { LoginForm } from "../../components/user/UserForm";
+import { SignupForm } from "../../components/user/UserForm";
 import { Link } from "react-router-dom";
 
-const LoginPageWrapper = styled.div`
+const SignupPageWrapper = styled.div`
   width: 100%;
   height: 100%;
   padding: 10px 20px;
-  display: grid; 
-  grid-template-columns: 1fr 2.5fr; 
+  display: grid; /* 부모에 grid 적용 */
+  grid-template-columns: 1fr 2.5fr; /* 좌우 동일 비율 */
   `;
 
 const LtContainer = styled.div`
-    grid-template-rows: 1fr auto; 
     display: grid;
+    grid-template-rows: 1fr auto; /* 좌우 동일 비율 */
     gap: 15px;
 `
 const RtContainer = styled.div``
@@ -30,7 +30,7 @@ const LoginFormWrapper = styled.div`
 
 const SignupLink = styled.div`
     min-width: 370px;
-    min-height: 150px;
+    min-height: 100px;
     background-color: black;
     border-radius: 30px;
     padding: 20px 40px;
@@ -48,21 +48,21 @@ const SignupLink = styled.div`
     }
 `
 
-const LoginPage = () => {
-  return <LoginPageWrapper>
+const SignupPage = () => {
+  return <SignupPageWrapper>
     <LtContainer>
         <LoginFormWrapper>
-            <LoginForm />
+            <SignupForm />
         </LoginFormWrapper>
-        <Link to="/auth/signup">
+        <Link to="/auth/login">
             <SignupLink>
-                <div>Sign up</div>
-                <span>create your account</span>
+                <div>Log in</div>
+                <span>if you already have account?</span>
             </SignupLink>
         </Link>
     </LtContainer>
     <RtContainer></RtContainer>
-  </LoginPageWrapper>;
+  </SignupPageWrapper>;
 };
 
-export default LoginPage;
+export default SignupPage;
