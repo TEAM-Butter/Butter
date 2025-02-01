@@ -1,5 +1,6 @@
 package com.ssafy.butter.domain.member.entity;
 
+import com.ssafy.butter.domain.member.enums.Gender;
 import com.ssafy.butter.domain.member.vo.BirthDate;
 import com.ssafy.butter.domain.member.vo.BreadAmount;
 import com.ssafy.butter.domain.member.vo.Email;
@@ -55,7 +56,8 @@ public class Member {
     private String imageUrl;
 
     @NotNull
-    private Integer gender;
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
 
     @NotNull
     private Integer avatarType;
@@ -64,7 +66,9 @@ public class Member {
     private LocalDate createDate;
 
     @Builder
-    public Member(MemberType memberType, List<MemberGenre> memberGenres, String loginId, Nickname nickname, Email email, BirthDate birthDate, BreadAmount breadAmount, Password password, String imageUrl, Integer gender, Integer avatarType, LocalDate createDate) {
+    public Member(MemberType memberType, List<MemberGenre> memberGenres, String loginId, Nickname nickname, Email email,
+                  BirthDate birthDate, BreadAmount breadAmount, Password password, String imageUrl, Gender gender,
+                  Integer avatarType, LocalDate createDate) {
         this.memberType = memberType;
         this.memberGenres = memberGenres;
         this.loginId = loginId;
