@@ -3,12 +3,18 @@ package com.ssafy.butter.domain.schedule.service;
 import com.ssafy.butter.domain.crew.entity.Crew;
 import com.ssafy.butter.domain.crew.service.CrewService;
 import com.ssafy.butter.domain.schedule.dto.request.ScheduleSaveRequestDTO;
+import com.ssafy.butter.domain.schedule.dto.request.ScheduleSearchRequestDTO;
 import com.ssafy.butter.domain.schedule.dto.response.ScheduleResponseDTO;
 import com.ssafy.butter.domain.schedule.entity.Schedule;
 import com.ssafy.butter.domain.schedule.repository.ScheduleRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -31,5 +37,16 @@ public class ScheduleServiceImpl implements ScheduleService {
                 .longitude(scheduleSaveRequestDTO.longitude())
                 .build();
         return ScheduleResponseDTO.fromEntity(scheduleRepository.save(schedule));
+    }
+
+    @Override
+    public List<ScheduleResponseDTO> searchSchedule(ScheduleSearchRequestDTO scheduleSearchRequestDTO) {
+        Pageable pageable = PageRequest.of(0, scheduleSearchRequestDTO.pageSize());
+        if (scheduleSearchRequestDTO.scheduleId() == null) {
+            return scheduleRepository.findAllByOrderByIdDesc(pageable).stream().map(ScheduleResponseDTO::fromEntity).collect(Collectors.toList());
+        } else {
+            return scheduleRepository.findAllByIdLessThanOrderByIdDesc(scheduleSearchRequestDTO.scheduleId(), pageable).stream().map(ScheduleResponseDTO::fromEntity).collect(Collectors.toList());
+        }
+        // TODO 날짜와 위치가 주어진 경우 로직 작성
     }
 }

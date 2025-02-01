@@ -25,8 +25,7 @@ public class ScheduleController {
 
     @GetMapping
     public ResponseEntity<?> searchSchedule(@ModelAttribute ScheduleSearchRequestDTO scheduleSearchRequestDTO) {
-        log.info("Search schedule: {}", scheduleSearchRequestDTO);
-        return ResponseEntity.ok(null);
+        return ResponseEntity.ok(scheduleService.searchSchedule(scheduleSearchRequestDTO));
     }
 
     @GetMapping("/calendar-list")
