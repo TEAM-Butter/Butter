@@ -20,23 +20,19 @@ public class LoginService {
         Member member = memberRepository.findByEmail(loginRequestDTO.email())
                 .orElseThrow(NoClassDefFoundError::new);
 
-        return new AuthInfoDTO(member.getId(), member.getEmail().getValue(), member.getNickname().getValue());
+        return new AuthInfoDTO(member.getId(),member.getEmail().getValue(), member.getGender().name(), member.getBirthDate().getDate());
     }
 
-    public String loginByOAuth(String code, Platform platform){
-        Member member = null;
+    public AuthInfoDTO loginByOAuth(String code, Platform platform){
+        Member loginMember = oAuth2LoginServices.stream()
+                .filter(service -> service.supports().equals(platform))
+                .findFirst()
+                .map(service -> service.convertUserDetailsToMemberEntity(code))
+                .orElse(null);
 
-        for(OAuth2LoginService oAuth2LoginService : oAuth2LoginServices){
-            if(oAuth2LoginService.supports().equals(platform)){
-                member = oAuth2LoginService.toMemberEntity(code);
-                break;
-            }
-        }
+        Member findMember = memberRepository.findByEmail(loginMember.getEmail().getValue())
+                .orElse(memberRepository.save(loginMember));
 
-        if(member == null){
-            throw new IllegalArgumentException("존재하지 않는 사용자 로그인입니다.");
-        }
-
-        return null;
+        return new AuthInfoDTO(findMember.getId(),findMember.getEmail().getValue(), findMember.getGender().name(), findMember.getBirthDate().getDate());
     }
 }
