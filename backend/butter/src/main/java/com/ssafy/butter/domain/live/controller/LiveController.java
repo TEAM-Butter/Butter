@@ -27,8 +27,7 @@ public class LiveController {
 
     @GetMapping("/watch/{id}")
     public ResponseEntity<?> getLiveDetail(@PathVariable Long id) {
-        log.info("Watch live request: {}", id);
-        return ResponseEntity.ok(null);
+        return ResponseEntity.ok(liveService.getLiveDetail(id));
     }
 
     @GetMapping("/list")

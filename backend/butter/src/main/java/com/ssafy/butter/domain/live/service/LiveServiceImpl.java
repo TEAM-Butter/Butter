@@ -27,4 +27,9 @@ public class LiveServiceImpl implements LiveService {
                 .build();
         return LiveResponseDTO.fromEntity(liveRepository.save(live));
     }
+
+    @Override
+    public LiveResponseDTO getLiveDetail(Long id) {
+        return LiveResponseDTO.fromEntity(liveRepository.findById(id).orElseThrow());
+    }
 }
