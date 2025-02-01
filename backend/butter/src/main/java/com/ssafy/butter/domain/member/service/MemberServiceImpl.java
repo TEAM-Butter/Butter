@@ -1,6 +1,7 @@
 package com.ssafy.butter.domain.member.service;
 
 import com.ssafy.butter.domain.member.entity.Member;
+import com.ssafy.butter.domain.member.enums.Gender;
 import com.ssafy.butter.domain.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -55,7 +56,7 @@ public class MemberServiceImpl implements MemberService{
                 .email(new Email(signUpDTO.email()))
                 .birthDate(new BirthDate(signUpDTO.birthDate()))
                 .password(encryptedPassword)
-                .gender(signUpDTO.gender())
+                .gender(Gender.valueOf(signUpDTO.gender()))
                 .imageUrl(imageUrl)
                 .build());
     }
