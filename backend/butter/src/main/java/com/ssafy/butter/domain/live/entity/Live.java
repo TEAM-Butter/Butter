@@ -1,5 +1,6 @@
 package com.ssafy.butter.domain.live.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ssafy.butter.domain.clip.entity.Clip;
 import com.ssafy.butter.domain.crew.entity.Crew;
 import jakarta.persistence.Column;
@@ -33,6 +34,7 @@ public class Live {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "crew_id")
     @NotNull
+    @JsonIgnore
     private Crew crew;
 
     @OneToMany(mappedBy = "live")
