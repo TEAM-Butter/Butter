@@ -7,16 +7,12 @@ import com.ssafy.butter.domain.member.entity.Member;
 import com.ssafy.butter.domain.member.enums.Gender;
 import com.ssafy.butter.domain.member.vo.BirthDate;
 import com.ssafy.butter.domain.member.vo.Email;
-import com.ssafy.butter.domain.member.vo.Nickname;
 import com.ssafy.butter.global.config.NaverOAuthProperties;
 import java.time.DateTimeException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.cglib.core.Local;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -25,12 +21,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class NaverOAuthLoginService implements OAuth2LoginService{
-
-    @Value("${spring.security.oauth2.client.naver.request-user-info-uri}")
-    private String requestUserInfoUri;
 
     private final NaverOAuthProperties naverOAuthProperties;
     private final RestTemplate restTemplate;
@@ -43,6 +37,7 @@ public class NaverOAuthLoginService implements OAuth2LoginService{
     @Override
     public Member convertUserDetailsToMemberEntity(String code) {
         String accessToken = getAccessToken(code);
+        log.info("Access Token : "+accessToken);
         NaverUserDetailsResponseDTO.NaverUserDetailsDTO userDetails = getUserDetails(accessToken);
 
         LocalDate UserBirthDate = convertToBirthDate(userDetails.birthyear(), userDetails.birthday());
@@ -52,6 +47,7 @@ public class NaverOAuthLoginService implements OAuth2LoginService{
                 .email(new Email(userDetails.email()))
                 .birthDate(new BirthDate(UserBirthDate))
                 .gender(userGender)
+                .createDate(LocalDate.now())
                 .build();
     }
 
@@ -61,7 +57,7 @@ public class NaverOAuthLoginService implements OAuth2LoginService{
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(headers);
 
         ResponseEntity<NaverUserDetailsResponseDTO> response =
-                restTemplate.exchange(requestUserInfoUri, HttpMethod.GET, request, NaverUserDetailsResponseDTO.class);
+                restTemplate.exchange(naverOAuthProperties.getUserInfoUri(), HttpMethod.GET, request, NaverUserDetailsResponseDTO.class);
 
         return response.getBody().naverUserDetail();
     }
