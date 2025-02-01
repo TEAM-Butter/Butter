@@ -30,12 +30,6 @@ public class AuthenticatedUserArgumentResolver implements HandlerMethodArgumentR
             throw new NoSuchElementException();
         }
 
-        String extractedToken = jwtExtractor.extract(token);
-
-        if(extractedToken.contains(".")){
-            return jwtManager.getParsedClaims(extractedToken);
-        } else {
-            return naverOAuthLoginService.getUserDetails(extractedToken);
-        }
+        return jwtManager.getParsedClaims(jwtExtractor.extract(token));
     }
 }
