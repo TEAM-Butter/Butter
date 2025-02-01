@@ -15,6 +15,11 @@ public class LikedScheduleRepositoryImpl implements LikedScheduleRepository {
     private final LikedScheduleJpaRepository likedScheduleJpaRepository;
 
     @Override
+    public LikedSchedule save(LikedSchedule likedSchedule) {
+        return likedScheduleJpaRepository.save(likedSchedule);
+    }
+
+    @Override
     public Optional<LikedSchedule> findByMemberAndSchedule(Member member, Schedule schedule) {
         return likedScheduleJpaRepository.findByMemberAndSchedule(member, schedule);
     }

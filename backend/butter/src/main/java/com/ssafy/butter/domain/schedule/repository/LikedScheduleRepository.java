@@ -8,5 +8,7 @@ import java.util.Optional;
 
 public interface LikedScheduleRepository {
 
+    LikedSchedule save(LikedSchedule likedSchedule);
+
     Optional<LikedSchedule> findByMemberAndSchedule(Member member, Schedule schedule);
 }
