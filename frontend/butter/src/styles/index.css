@@ -2,5 +2,8 @@
 
 :root {
     --red: #EA2323;
-    --red-hover: #ea2323ef;
+    --liner: linear-gradient(225deg, #FFF9E1, #E0F1ED);
+    --yellow: #F6D048;
+    --butter: #FEFFE9;
+    --gray-bright: #FEFFE9;
 }

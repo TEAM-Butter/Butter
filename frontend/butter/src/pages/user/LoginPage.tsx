@@ -22,7 +22,7 @@ const LoginFormWrapper = styled.div`
     min-width: 400px;
     /* height: 500px; */
     border-radius: 30px;
-    background: linear-gradient(225deg, #FFF9E1, #E0F1ED);
+    background: var(--liner);
 `
 
 const LgText = styled.div<ColorProps>`
@@ -61,7 +61,7 @@ const LoginBtn = styled.button<ColorProps>`
     margin-top: 12px;
 
     span {
-        color: #F6D048;
+        color: var(--yellow);
     }
 `
 

@@ -35,7 +35,7 @@ const Logo = styled(motion.div)`
     padding: 0 20px;
     font-size:30px;
     font-weight: bold;
-    color: #FEFFE9;
+    color: var(--butter);
 `;
 
 const Items= styled.ul`
@@ -98,7 +98,7 @@ const Bar = styled(motion.span)`
     position: absolute;
     width: 120px;
     height: 2px;
-    background-color: #FEFFE9; 
+    background-color: var(--butter); 
     bottom: -15px;
     border-radius: 30px;
 `;
@@ -132,7 +132,7 @@ function Navbar(){
     const crewMatch = useMatch("crew");
     const loginMatch = useMatch("auth/login");
     // isLogin이 true일 경우 profile dropdown 적용, false일 경우 login link만 렌더링링 
-    const [isLogin, setIsLogin] = useState(true)
+    const [isLogin, setIsLogin] = useState(false)
     const [isCrewUser, setIsCrewUser] = useState(true)
     const [isHovered, setIsHovered] = useState(false);
     const [toggleModal, setToggleModal] = useState(false);
