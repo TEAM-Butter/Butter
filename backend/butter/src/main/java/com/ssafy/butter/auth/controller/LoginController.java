@@ -2,6 +2,8 @@ package com.ssafy.butter.auth.controller;
 
 import com.ssafy.butter.auth.dto.AuthInfoDTO;
 import com.ssafy.butter.auth.dto.request.LoginRequestDTO;
+import com.ssafy.butter.auth.dto.request.SocialLoginRequestDTO;
+import com.ssafy.butter.auth.enums.Platform;
 import com.ssafy.butter.auth.service.LoginService;
 import com.ssafy.butter.auth.service.RefreshTokenService;
 import com.ssafy.butter.global.token.CurrentUser;
@@ -28,7 +30,7 @@ public class LoginController {
     private final JwtExtractor jwtExtractor;
 
     @PostMapping("/login")
-    public ResponseEntity<Void> login(@Valid @RequestBody LoginRequestDTO loginRequestDTO){
+    public ResponseEntity<Void> login(@RequestBody LoginRequestDTO loginRequestDTO){
         AuthInfoDTO authInfoDTO = loginService.login(loginRequestDTO);
         String accessToken = jwtManager.createAccessToken(authInfoDTO);
         String refreshToken = jwtManager.createRefreshToken();
@@ -38,6 +40,11 @@ public class LoginController {
                 .header(HttpHeaders.AUTHORIZATION, "Bearer "+accessToken)
                 .header("refresh-token", "Bearer "+refreshToken)
                 .build();
+    }
+
+    @PostMapping("/login/social/{platform}")
+    public ResponseEntity<Void> socialLogin(SocialLoginRequestDTO socialLoginRequestDTO){
+
     }
 
     @GetMapping("/reissue")
