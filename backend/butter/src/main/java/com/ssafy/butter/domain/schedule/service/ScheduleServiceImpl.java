@@ -45,15 +45,15 @@ public class ScheduleServiceImpl implements ScheduleService {
     public List<ScheduleResponseDTO> searchSchedule(ScheduleSearchRequestDTO scheduleSearchRequestDTO) {
         Pageable pageable = PageRequest.of(0, scheduleSearchRequestDTO.pageSize());
         if (scheduleSearchRequestDTO.scheduleId() == null) {
-            return scheduleRepository.findAllByOrderByIdDesc(pageable).stream().map(ScheduleResponseDTO::fromEntity).collect(Collectors.toList());
+            return scheduleRepository.findAllByOrderByIdDesc(pageable).stream().map(ScheduleResponseDTO::fromEntity).toList();
         } else {
-            return scheduleRepository.findAllByIdLessThanOrderByIdDesc(scheduleSearchRequestDTO.scheduleId(), pageable).stream().map(ScheduleResponseDTO::fromEntity).collect(Collectors.toList());
+            return scheduleRepository.findAllByIdLessThanOrderByIdDesc(scheduleSearchRequestDTO.scheduleId(), pageable).stream().map(ScheduleResponseDTO::fromEntity).toList();
         }
         // TODO 날짜와 위치가 주어진 경우 로직 작성
     }
 
     @Override
     public List<ScheduleResponseDTO> getScheduleCalendarList(ScheduleCalendarRequestDTO scheduleCalendarRequestDTO) {
-        return scheduleRepository.findAllByBuskingDate(scheduleCalendarRequestDTO.buskingDate()).stream().map(ScheduleResponseDTO::fromEntity).collect(Collectors.toList());
+        return scheduleRepository.findAllByBuskingDate(scheduleCalendarRequestDTO.buskingDate()).stream().map(ScheduleResponseDTO::fromEntity).toList();
     }
 }
