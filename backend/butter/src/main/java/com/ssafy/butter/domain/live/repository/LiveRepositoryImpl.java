@@ -4,6 +4,8 @@ import com.ssafy.butter.domain.live.entity.Live;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @RequiredArgsConstructor
 @Repository
 public class LiveRepositoryImpl implements LiveRepository {
@@ -13,5 +15,10 @@ public class LiveRepositoryImpl implements LiveRepository {
     @Override
     public Live save(Live live) {
         return liveJpaRepository.save(live);
+    }
+
+    @Override
+    public Optional<Live> findById(Long id) {
+        return liveJpaRepository.findById(id);
     }
 }
