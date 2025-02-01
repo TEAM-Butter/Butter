@@ -4,6 +4,7 @@ import com.ssafy.butter.global.token.JwtExtractor;
 import com.ssafy.butter.global.token.JwtManager;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.Enumeration;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +29,9 @@ public class AuthInterceptor implements HandlerInterceptor {
      * @return
      */
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
+            throws IOException {
+
         Enumeration<String> headers = request.getHeaders(HttpHeaders.AUTHORIZATION);
         String token = jwtTokenExtractor.extract(headers);
 
@@ -36,8 +39,9 @@ public class AuthInterceptor implements HandlerInterceptor {
             return true;
         }
 
-        log.info("no token" + request.getRequestURI());
-        response.setStatus(HttpStatus.UNAUTHORIZED.value());
+        log.info("ERR : 인가되지 않은 요청 " + request.getRequestURI());
+        response.sendError(HttpStatus.UNAUTHORIZED.value(), "Unauthorized");
         return false;
     }
+
 }
