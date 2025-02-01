@@ -21,9 +21,11 @@ public class WebMvcConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(authInterceptor)
                 .addPathPatterns("/**")
-                .excludePathPatterns("/api/v1/auth/login")
+                .excludePathPatterns("/error")
+                .excludePathPatterns("/api/v1/auth/login/**")
                 .excludePathPatterns("/api/v1/member/signup")
-                .excludePathPatterns("/api/v1/email/**");
+                .excludePathPatterns("/api/v1/email/**")
+                .excludePathPatterns("https://openapi.naver.com/v1/nid/me");
         //TODO : 테스트할 때 엔드포인트 확인하기
     }
 
