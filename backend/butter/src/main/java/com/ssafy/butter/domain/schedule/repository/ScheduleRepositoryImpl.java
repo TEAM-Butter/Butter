@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -26,5 +27,10 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
     @Override
     public List<Schedule> findAllByIdLessThanOrderByIdDesc(Long id, Pageable pageable) {
         return scheduleJpaRepository.findAllByIdLessThanOrderByIdDesc(id, pageable);
+    }
+
+    @Override
+    public List<Schedule> findAllByBuskingDate(LocalDateTime buskingDate) {
+        return scheduleJpaRepository.findAllByBuskingDate(buskingDate);
     }
 }
