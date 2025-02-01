@@ -68,4 +68,11 @@ public class ScheduleServiceImpl implements ScheduleService {
         schedule.update(scheduleSaveRequestDTO);
         return ScheduleResponseDTO.fromEntity(scheduleRepository.save(schedule));
     }
+
+    @Override
+    public ScheduleResponseDTO deleteSchedule(Long id) {
+        Schedule schedule = scheduleRepository.findById(id).orElseThrow();
+        scheduleRepository.delete(schedule);
+        return ScheduleResponseDTO.fromEntity(schedule);
+    }
 }

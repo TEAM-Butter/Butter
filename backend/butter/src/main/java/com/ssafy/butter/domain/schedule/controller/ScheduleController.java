@@ -49,8 +49,7 @@ public class ScheduleController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteSchedule(@PathVariable Long id) {
-        log.info("Delete schedule: {}", id);
-        return ResponseEntity.ok(null);
+        return ResponseEntity.ok(scheduleService.deleteSchedule(id));
     }
 
     @PostMapping("/like")
