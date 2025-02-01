@@ -42,9 +42,17 @@ public class LoginController {
                 .build();
     }
 
-    @PostMapping("/login/social/{platform}")
+    @PostMapping("/login/social")
     public ResponseEntity<Void> socialLogin(SocialLoginRequestDTO socialLoginRequestDTO){
+        AuthInfoDTO authInfoDTO = loginService.loginByOAuth(socialLoginRequestDTO.code(), Platform.valueOf(socialLoginRequestDTO.platform()));
+        String accessToken = jwtManager.createAccessToken(authInfoDTO);
+        String refreshToken = jwtManager.createRefreshToken();
+        refreshTokenService.saveToken(refreshToken, authInfoDTO.id());
 
+        return ResponseEntity.ok()
+                .header(HttpHeaders.AUTHORIZATION, "Bearer "+accessToken)
+                .header("refresh-token", "Bearer "+refreshToken)
+                .build();
     }
 
     @GetMapping("/reissue")
