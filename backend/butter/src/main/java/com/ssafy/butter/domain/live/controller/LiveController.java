@@ -32,7 +32,6 @@ public class LiveController {
 
     @GetMapping("/list")
     public ResponseEntity<?> getLiveList(@ModelAttribute LiveListRequestDTO liveListRequestDTO) {
-        log.info("List live request: {}", liveListRequestDTO);
-        return ResponseEntity.ok(null);
+        return ResponseEntity.ok(liveService.getLiveList(liveListRequestDTO));
     }
 }
