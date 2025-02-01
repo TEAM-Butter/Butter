@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Repository
@@ -17,6 +18,11 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
     @Override
     public Schedule save(Schedule schedule) {
         return scheduleJpaRepository.save(schedule);
+    }
+
+    @Override
+    public Optional<Schedule> findById(Long id) {
+        return scheduleJpaRepository.findById(id);
     }
 
     @Override
