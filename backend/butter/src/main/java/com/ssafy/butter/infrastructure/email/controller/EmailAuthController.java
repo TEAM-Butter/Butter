@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class EmailAuthController {
     private final EmailService emailService;
     private final MemberService memberService;
-    private final MemberJpaRepository memberJpaRepository;
 
     @PostMapping("/exists")
     public ResponseEntity<SendEmailDTO> existsEmail(@Valid @RequestBody SendEmailDTO email){
@@ -50,7 +49,7 @@ public class EmailAuthController {
 
         String loginId = null;
         if(verifyCodeEmailDTO.type().equals(EmailType.FIND_ID)) {
-            loginId = memberJpaRepository.findByEmail(verifyCodeEmailDTO.email())
+            loginId = memberService.findByEmail(verifyCodeEmailDTO.email())
                     .map(Member::getLoginId)
                     .orElseThrow(() -> new IllegalArgumentException("ERR : 해당 이메일로 가입된 계정을 찾을 수 없습니다."));
         }

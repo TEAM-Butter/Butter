@@ -40,6 +40,17 @@ public class MemberServiceImpl implements MemberService{
         return memberRepository.findById(id).orElseThrow();
     }
 
+
+    /**
+     * 찾으려는 회원의 email로 해당 회원 정보를 반환한다
+     * @param email 찾으려는 회원 email
+     * @return 회원 정보 엔티티
+     */
+    @Override
+    public Optional<Member> findByEmail(String email) {
+        return memberRepository.findByEmail(email);
+    }
+
     /**
      * 회원 가입을 한다
      * @param signUpDTO 회원 가입 요청에 필요한 DTO
