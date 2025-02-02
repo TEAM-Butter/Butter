@@ -133,12 +133,10 @@ public class CrewServiceImpl implements CrewService {
     @Override
     public CrewResponseDTO updateCrew(Long id, CrewSaveRequestDTO crewSaveRequestDTO) {
         Crew crew = crewRepository.findById(id).orElseThrow();
-        String filenamePrefix = crew.getId() + "_" + System.currentTimeMillis() + "_";
         String imageUrl = null;
         if (crewSaveRequestDTO.image() != null) {
-            imageUrl = filenamePrefix + crewSaveRequestDTO.image().getOriginalFilename();
+            imageUrl = s3ImageUploader.uploadImage(crewSaveRequestDTO.image());
         }
-        String portfolioVideoUrl = filenamePrefix + crewSaveRequestDTO.portfolioVideo().getOriginalFilename();
 
         crew.update(crewSaveRequestDTO, imageUrl);
         return CrewResponseDTO.fromEntity(crewRepository.save(crew));
