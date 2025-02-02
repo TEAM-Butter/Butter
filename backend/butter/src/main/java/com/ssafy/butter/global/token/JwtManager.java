@@ -87,7 +87,7 @@ public class JwtManager {
 
         Long id = claims.get("id", Long.class);
         String email = claims.get("email", String.class);
-        String gender = claims.get("name", String.class);
+        String gender = claims.get("gender", String.class);
         String birthdate = claims.get("birthdate", String.class);
         return new AuthInfoDTO(id, email, gender, LocalDate.parse(birthdate));
     }
