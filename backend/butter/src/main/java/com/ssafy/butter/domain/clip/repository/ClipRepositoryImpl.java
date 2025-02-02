@@ -25,6 +25,11 @@ public class ClipRepositoryImpl implements ClipRepository {
     }
 
     @Override
+    public void delete(Clip clip) {
+        clipJpaRepository.delete(clip);
+    }
+
+    @Override
     public List<Clip> findAllByOrderByIdDesc(Pageable pageable) {
         return clipJpaRepository.findAllByOrderByIdDesc(pageable);
     }
