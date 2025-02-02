@@ -24,7 +24,7 @@ public class ScheduleController {
     @PostMapping
     public ResponseEntity<?> createSchedule(@RequestBody ScheduleSaveRequestDTO scheduleSaveRequestDTO) {
         ScheduleResponseDTO scheduleResponseDTO = scheduleService.createSchedule(scheduleSaveRequestDTO);
-        return ResponseEntity.created(URI.create("/api/v1/schedule/" + scheduleResponseDTO.id())).body(scheduleResponseDTO);
+        return ResponseEntity.created(URI.create("/api/v1/schedule/detail/" + scheduleResponseDTO.id())).body(scheduleResponseDTO);
     }
 
     @GetMapping
