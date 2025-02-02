@@ -1,5 +1,6 @@
 package com.ssafy.butter.domain.crew.entity;
 
+import com.ssafy.butter.domain.crew.dto.request.CrewSaveRequestDTO;
 import com.ssafy.butter.domain.live.entity.Live;
 import com.ssafy.butter.domain.schedule.entity.Schedule;
 import jakarta.persistence.Column;
@@ -69,23 +70,15 @@ public class Crew {
         this.donationAmount = donationAmount;
     }
 
-    public void updateName(String name) {
-        this.name = name;
-    }
-
-    public void updateDescription(String description) {
-        this.description = description;
-    }
-
-    public void updateImageUrl(String imageUrl) {
+    public void update(CrewSaveRequestDTO crewSaveRequestDTO, String imageUrl) {
+        this.name = crewSaveRequestDTO.name();
+        this.description = crewSaveRequestDTO.description();
+        this.promotionUrl = crewSaveRequestDTO.promotionUrl();
         this.imageUrl = imageUrl;
     }
 
-    public void updatePromotionUrl(String promotionUrl) {
-        this.promotionUrl = promotionUrl;
-    }
-
-    public void updatePortfolioVideoUrl(String portfolioVideoUrl) {
+    public void updateFileUrl(String imageUrl, String portfolioVideoUrl) {
+        this.imageUrl = imageUrl;
         this.portfolioVideoUrl = portfolioVideoUrl;
     }
 }
