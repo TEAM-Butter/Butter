@@ -48,4 +48,9 @@ public class LiveServiceImpl implements LiveService {
         }
         // TODO search type에 따른 처리 로직 추가
     }
+
+    @Override
+    public Live findById(Long id) {
+        return liveRepository.findById(id).orElseThrow();
+    }
 }
