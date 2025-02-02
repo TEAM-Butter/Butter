@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,6 +32,12 @@ public class ClipController {
     @GetMapping("/detail/{id}")
     public ResponseEntity<?> getClipDetail(@PathVariable Long id) {
         log.info("Get clip detail: {}", id);
+        return ResponseEntity.ok(null);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteClip(@PathVariable Long id) {
+        log.info("Delete clip: {}", id);
         return ResponseEntity.ok(null);
     }
 }
