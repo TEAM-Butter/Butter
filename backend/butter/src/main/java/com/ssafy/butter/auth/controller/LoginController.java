@@ -4,6 +4,7 @@ import com.ssafy.butter.auth.dto.AuthInfoDTO;
 import com.ssafy.butter.auth.dto.request.LoginRequestDTO;
 import com.ssafy.butter.auth.dto.request.SocialLoginRequestDTO;
 import com.ssafy.butter.auth.dto.response.AuthResponseDTO;
+import com.ssafy.butter.auth.dto.response.ReissueResponseDTO;
 import com.ssafy.butter.auth.enums.Platform;
 import com.ssafy.butter.auth.service.LoginService;
 import com.ssafy.butter.auth.service.RefreshTokenService;
@@ -63,7 +64,7 @@ public class LoginController {
     }
 
     @GetMapping("/reissue")
-    public ResponseEntity<Void> reissueAccessToken(HttpServletRequest request, @CurrentUser AuthInfoDTO authInfoDTO){
+    public ResponseEntity<ReissueResponseDTO> reissueAccessToken(HttpServletRequest request, @CurrentUser AuthInfoDTO authInfoDTO){
         validateHeaderExists(request);
 
         Long memberId = authInfoDTO.id();
@@ -74,9 +75,11 @@ public class LoginController {
 
         String accessToken = jwtManager.createAccessToken(authInfoDTO);
 
+        ReissueResponseDTO response = new ReissueResponseDTO(accessToken, authInfoDTO);
+
         return ResponseEntity.ok()
                 .header(HttpHeaders.AUTHORIZATION, "Bearer "+accessToken)
-                .build();
+                .body(response);
     }
 
     private void validateHeaderExists(HttpServletRequest request){
