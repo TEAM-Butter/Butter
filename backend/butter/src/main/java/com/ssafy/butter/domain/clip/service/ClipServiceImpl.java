@@ -72,11 +72,19 @@ public class ClipServiceImpl implements ClipService {
     public void likeClip(Long memberId, ClipLikeRequestDTO clipLikeRequestDTO) {
         Member member = memberService.findById(memberId);
         Clip clip = clipRepository.findById(clipLikeRequestDTO.clipId()).orElseThrow();
-        likedClipRepository.save(LikedClip.builder()
-                .member(member)
-                .clip(clip)
-                .isLiked(true)
-                .build());
+        likedClipRepository.findByMemberAndClip(member, clip).ifPresentOrElse(likedClip -> {
+            if (likedClip.getIsLiked()) {
+                throw new IllegalArgumentException("Already liked clip");
+            }
+            likedClip.updateIsLiked(true);
+            likedClipRepository.save(likedClip);
+        }, () -> {
+            likedClipRepository.save(LikedClip.builder()
+                    .member(member)
+                    .clip(clip)
+                    .isLiked(true)
+                    .build());
+        });
     }
 
     @Override
