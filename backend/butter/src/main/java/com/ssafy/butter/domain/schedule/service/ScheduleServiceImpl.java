@@ -101,6 +101,7 @@ public class ScheduleServiceImpl implements ScheduleService {
         Member member = memberService.findById(memberId);
         Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow();
         LikedSchedule likedSchedule = likedScheduleRepository.findByMemberAndSchedule(member, schedule).orElseThrow();
-        likedScheduleRepository.delete(likedSchedule);
+        likedSchedule.updateIsLiked(false);
+        likedScheduleRepository.save(likedSchedule);
     }
 }
