@@ -13,6 +13,7 @@ import com.ssafy.butter.domain.crew.repository.CrewRepository;
 import com.ssafy.butter.domain.crew.repository.FollowRepository;
 import com.ssafy.butter.domain.member.entity.Member;
 import com.ssafy.butter.domain.member.service.MemberService;
+import com.ssafy.butter.infrastructure.awsS3.S3ImageUploader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -27,6 +28,7 @@ import java.util.List;
 public class CrewServiceImpl implements CrewService {
 
     private final MemberService memberService;
+    private final S3ImageUploader s3ImageUploader;
 
     private final CrewRepository crewRepository;
     private final CrewMemberRepository crewMemberRepository;
@@ -51,12 +53,11 @@ public class CrewServiceImpl implements CrewService {
                 .build();
         Crew savedCrew = crewRepository.save(crew);
 
-        String filenamePrefix = crew.getId() + "_" + System.currentTimeMillis() + "_";
         String imageUrl = null;
         if (crewSaveRequestDTO.image() != null) {
-            imageUrl = filenamePrefix + crewSaveRequestDTO.image().getOriginalFilename();
+            imageUrl = s3ImageUploader.uploadImage(crewSaveRequestDTO.image());
         }
-        String portfolioVideoUrl = filenamePrefix + crewSaveRequestDTO.portfolioVideo().getOriginalFilename();
+        String portfolioVideoUrl = s3ImageUploader.uploadImage(crewSaveRequestDTO.portfolioVideo());
 
         savedCrew.updateFileUrl(imageUrl, portfolioVideoUrl);
         return CrewResponseDTO.fromEntity(crewRepository.save(savedCrew));
