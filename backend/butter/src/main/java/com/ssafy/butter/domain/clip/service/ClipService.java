@@ -11,4 +11,6 @@ public interface ClipService {
     ClipResponseDTO createClip(ClipSaveRequestDTO clipSaveRequestDTO);
 
     ClipResponseDTO getClipDetail(Long id);
+
+    List<ClipResponseDTO> getClipList(ClipListRequestDTO clipListRequestDTO);
 }

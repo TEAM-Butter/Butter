@@ -8,9 +8,12 @@ import com.ssafy.butter.domain.clip.repository.ClipRepository;
 import com.ssafy.butter.domain.live.entity.Live;
 import com.ssafy.butter.domain.live.service.LiveService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -40,5 +43,15 @@ public class ClipServiceImpl implements ClipService {
     @Override
     public ClipResponseDTO getClipDetail(Long id) {
         return ClipResponseDTO.fromEntity(clipRepository.findById(id).orElseThrow());
+    }
+
+    @Override
+    public List<ClipResponseDTO> getClipList(ClipListRequestDTO clipListRequestDTO) {
+        Pageable pageable = PageRequest.of(0, clipListRequestDTO.pageSize());
+        if (clipListRequestDTO.clipId() == null) {
+            return clipRepository.findAllByOrderByIdDesc(pageable).stream().map(ClipResponseDTO::fromEntity).toList();
+        } else {
+            return clipRepository.findAllByIdLessThanOrderByIdDesc(clipListRequestDTO.clipId(), pageable).stream().map(ClipResponseDTO::fromEntity).toList();
+        }
     }
 }

@@ -36,8 +36,7 @@ public class ClipController {
 
     @GetMapping("/list")
     public ResponseEntity<?> getClipList(@ModelAttribute ClipListRequestDTO clipListRequestDTO) {
-        log.info("Get clip list: {}", clipListRequestDTO);
-        return ResponseEntity.ok(null);
+        return ResponseEntity.ok(clipService.getClipList(clipListRequestDTO));
     }
 
     @GetMapping("/detail/{id}")
