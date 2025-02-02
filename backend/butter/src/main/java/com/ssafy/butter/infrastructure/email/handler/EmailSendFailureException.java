@@ -1,4 +1,4 @@
-package com.ssafy.butter.infrastructure.emailAuth.handler;
+package com.ssafy.butter.infrastructure.email.handler;
 
 public class EmailSendFailureException extends RuntimeException {
 
