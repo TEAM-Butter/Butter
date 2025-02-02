@@ -52,7 +52,7 @@ public class Member {
     private Password password;
 
     @Column(length = 2048)
-    private String imageUrl;
+    private String profile_image;
 
     @NotNull
     @Enumerated(EnumType.STRING)
@@ -65,7 +65,7 @@ public class Member {
 
     @Builder
     public Member(MemberType memberType, List<MemberGenre> memberGenres, String loginId, Nickname nickname, Email email,
-                  BirthDate birthDate, BreadAmount breadAmount, Password password, String imageUrl, Gender gender,
+                  BirthDate birthDate, BreadAmount breadAmount, Password password, String profile_image, Gender gender,
                   Integer avatarType, LocalDate createDate) {
         this.memberType = memberType;
         this.memberGenres = memberGenres;
@@ -75,7 +75,7 @@ public class Member {
         this.birthDate = birthDate;
         this.breadAmount = breadAmount;
         this.password = password;
-        this.imageUrl = imageUrl;
+        this.profile_image = profile_image;
         this.gender = gender;
         this.avatarType = avatarType;
         this.createDate = createDate;
