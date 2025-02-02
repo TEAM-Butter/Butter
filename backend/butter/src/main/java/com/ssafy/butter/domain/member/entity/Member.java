@@ -6,16 +6,26 @@ import com.ssafy.butter.domain.member.vo.BreadAmount;
 import com.ssafy.butter.domain.member.vo.Email;
 import com.ssafy.butter.domain.member.vo.Nickname;
 import com.ssafy.butter.domain.member.vo.Password;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotNull;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDate;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -52,7 +62,7 @@ public class Member {
     private Password password;
 
     @Column(length = 2048)
-    private String profile_image;
+    private String profileImage;
 
     @NotNull
     @Enumerated(EnumType.STRING)
@@ -65,7 +75,7 @@ public class Member {
 
     @Builder
     public Member(MemberType memberType, List<MemberGenre> memberGenres, String loginId, Nickname nickname, Email email,
-                  BirthDate birthDate, BreadAmount breadAmount, Password password, String profile_image, Gender gender,
+                  BirthDate birthDate, BreadAmount breadAmount, Password password, String profileImage, Gender gender,
                   Integer avatarType, LocalDate createDate) {
         this.memberType = memberType;
         this.memberGenres = memberGenres;
@@ -75,10 +85,27 @@ public class Member {
         this.birthDate = birthDate;
         this.breadAmount = breadAmount;
         this.password = password;
-        this.profile_image = profile_image;
+        this.profileImage = profileImage;
         this.gender = gender;
         this.avatarType = avatarType;
         this.createDate = createDate;
     }
+
+    public void updateProfile(String nickname, String gender, String profileImage){
+        if(nickname != null){
+            this.nickname = new Nickname(nickname);
+        }
+        if(gender != null){
+            this.gender = Gender.from(gender);
+        }
+        if(profileImage != null){
+            this.profileImage = profileImage;
+        }
+    }
+
+    public void changePassword(Password password){
+        this.password = password;
+    }
+
 }
 
