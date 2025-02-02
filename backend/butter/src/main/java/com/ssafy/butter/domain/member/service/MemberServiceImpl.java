@@ -1,30 +1,24 @@
 package com.ssafy.butter.domain.member.service;
 
-import com.ssafy.butter.auth.dto.AuthInfoDTO;
-import com.ssafy.butter.domain.member.dto.request.PasswordUpdateRequestDTO;
-import com.ssafy.butter.domain.member.dto.response.PasswordUpdateResponseDTO;
-import com.ssafy.butter.domain.member.dto.response.ProfileUpdateResponseDTO;
 import com.ssafy.butter.domain.member.dto.request.ProfileUpdateRequestDTO;
+import com.ssafy.butter.domain.member.dto.request.SignUpDTO;
+import com.ssafy.butter.domain.member.dto.response.MyPageResponseDTO;
+import com.ssafy.butter.domain.member.dto.response.ProfileUpdateResponseDTO;
 import com.ssafy.butter.domain.member.entity.Member;
 import com.ssafy.butter.domain.member.enums.Gender;
 import com.ssafy.butter.domain.member.repository.MemberRepository;
-import com.ssafy.butter.global.token.JwtManager;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import com.ssafy.butter.domain.member.dto.request.SignUpDTO;
-import com.ssafy.butter.domain.member.dto.response.MyPageResponseDTO;
 import com.ssafy.butter.domain.member.vo.BirthDate;
 import com.ssafy.butter.domain.member.vo.Email;
 import com.ssafy.butter.domain.member.vo.Password;
+import com.ssafy.butter.global.token.JwtManager;
 import com.ssafy.butter.global.util.encrypt.EncryptUtils;
 import com.ssafy.butter.infrastructure.awsS3.ImageUploader;
 import com.ssafy.butter.infrastructure.email.dto.request.SendEmailDTO;
-
 import java.util.Optional;
-
+import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
@@ -111,6 +105,15 @@ public class MemberServiceImpl implements MemberService{
      * @param memberId 회원의 데이터베이스 상 고유 id
      * @return
      */
+    @Override
+    public ProfileUpdateResponseDTO updateProfile(ProfileUpdateRequestDTO profileUpdateRequestDTO, Long memberId) {
+        Member findMember = memberRepository.findById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("ERR : 존재하지 않는 회원입니다."));
+
+        String imageUrl = insertProfileImage(profileUpdateRequestDTO.profileImage());
+
+        return transactionalMemberService.updateProfileInTransaction(findMember, profileUpdateRequestDTO, imageUrl);
+    }
 
     /**
      * 파라미터 이메일과 동일한 이메일로 가입한 멤버의 존재 여부를 반환한다
