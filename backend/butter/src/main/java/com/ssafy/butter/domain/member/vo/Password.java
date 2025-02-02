@@ -37,6 +37,10 @@ public class Password {
         return new Password(encrypted);
     }
 
+    public boolean match(EncryptUtils encryptUtils, String typedPassword){
+        return encryptUtils.isMatch(typedPassword, this.value);
+    }
+
     private static void validate(String value) {
         if (value == null || value.isEmpty()) {
             throw new IllegalArgumentException("ERR : 패스워드가 공백입니다");
