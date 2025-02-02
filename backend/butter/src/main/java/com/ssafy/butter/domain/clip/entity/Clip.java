@@ -48,4 +48,8 @@ public class Clip {
         this.videoUrl = videoUrl;
         this.hitCount = hitCount;
     }
+
+    public void updateVideoUrl(String videoUrl) {
+        this.videoUrl = videoUrl;
+    }
 }
