@@ -1,4 +1,4 @@
-package com.ssafy.butter.infrastructure.emailAuth.handler;
+package com.ssafy.butter.infrastructure.email.handler;
 
 import java.util.NoSuchElementException;
 import org.springframework.http.ResponseEntity;
