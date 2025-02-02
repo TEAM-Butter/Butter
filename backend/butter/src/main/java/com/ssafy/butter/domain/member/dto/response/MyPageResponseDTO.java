@@ -14,7 +14,7 @@ public class MyPageResponseDTO {
     private final String email;
     private final String nickname;
     private final LocalDate birthDate;
-    private final String imageUrl;
+    private final String profile_image;
     private final List<MemberGenre> memberGenres;
 
     @Builder
@@ -22,7 +22,7 @@ public class MyPageResponseDTO {
         this.email = member.getEmail().getValue();
         this.nickname = member.getNickname().getValue();
         this.birthDate = member.getBirthDate().getDate();
-        this.imageUrl = member.getImageUrl();
+        this.profile_image = member.getProfileImage();
         this.memberGenres = member.getMemberGenres();
     }
 }
