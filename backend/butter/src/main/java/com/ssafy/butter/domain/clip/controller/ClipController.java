@@ -42,8 +42,7 @@ public class ClipController {
 
     @GetMapping("/detail/{id}")
     public ResponseEntity<?> getClipDetail(@PathVariable Long id) {
-        log.info("Get clip detail: {}", id);
-        return ResponseEntity.ok(null);
+        return ResponseEntity.ok(clipService.getClipDetail(id));
     }
 
     @DeleteMapping("/{id}")

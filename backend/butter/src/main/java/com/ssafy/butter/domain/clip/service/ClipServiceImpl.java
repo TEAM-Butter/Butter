@@ -1,5 +1,6 @@
 package com.ssafy.butter.domain.clip.service;
 
+import com.ssafy.butter.domain.clip.dto.request.ClipListRequestDTO;
 import com.ssafy.butter.domain.clip.dto.request.ClipSaveRequestDTO;
 import com.ssafy.butter.domain.clip.dto.response.ClipResponseDTO;
 import com.ssafy.butter.domain.clip.entity.Clip;
@@ -8,6 +9,8 @@ import com.ssafy.butter.domain.live.entity.Live;
 import com.ssafy.butter.domain.live.service.LiveService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @Service
@@ -32,5 +35,10 @@ public class ClipServiceImpl implements ClipService {
         String videoUrl = filenamePrefix + clipSaveRequestDTO.video().getOriginalFilename();
         savedClip.updateVideoUrl(videoUrl);
         return ClipResponseDTO.fromEntity(clipRepository.save(savedClip));
+    }
+
+    @Override
+    public ClipResponseDTO getClipDetail(Long id) {
+        return ClipResponseDTO.fromEntity(clipRepository.findById(id).orElseThrow());
     }
 }
