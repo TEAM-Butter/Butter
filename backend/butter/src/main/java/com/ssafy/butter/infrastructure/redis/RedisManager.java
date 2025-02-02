@@ -1,4 +1,4 @@
-package com.ssafy.butter.global.util;
+package com.ssafy.butter.infrastructure.redis;
 
 import java.time.Duration;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -6,11 +6,11 @@ import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Component;
 
 @Component
-public class RedisUtil {
+public class RedisManager {
 
     private final StringRedisTemplate redisTemplate;
 
-    public RedisUtil(StringRedisTemplate redisTemplate) {
+    public RedisManager(StringRedisTemplate redisTemplate) {
         this.redisTemplate = redisTemplate;
     }
 
