@@ -164,14 +164,20 @@ public class CrewServiceImpl implements CrewService {
     public void followCrew(Long memberId, CrewFollowRequestDTO crewFollowRequestDTO) {
         Crew crew = crewRepository.findById(crewFollowRequestDTO.crewId()).orElseThrow();
         Member member = memberService.findById(memberId);
-        followRepository.findByCrewAndMember(crew, member).ifPresent(follow -> {
-            throw new IllegalArgumentException("Crew follower already exists");
+        followRepository.findByCrewAndMember(crew, member).ifPresentOrElse(follow -> {
+            if (follow.getIsFollowed()) {
+                throw new IllegalArgumentException("Crew follower already exists");
+            }
+            follow.updateIsFollowed(true);
+            followRepository.save(follow);
+        }, () -> {
+            Follow follow = Follow.builder()
+                    .crew(crew)
+                    .member(member)
+                    .isFollowed(true)
+                    .build();
+            followRepository.save(follow);
         });
-        Follow follow = Follow.builder()
-                .crew(crew)
-                .member(member)
-                .build();
-        followRepository.save(follow);
     }
 
     /**
