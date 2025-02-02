@@ -1,4 +1,10 @@
 package com.ssafy.butter.domain.crew.dto.request;
 
-public record CrewFollowRequestDTO(Long crewId) {
+import jakarta.validation.constraints.NotNull;
+
+public record CrewFollowRequestDTO(
+
+        @NotNull
+        Long crewId
+) {
 }
