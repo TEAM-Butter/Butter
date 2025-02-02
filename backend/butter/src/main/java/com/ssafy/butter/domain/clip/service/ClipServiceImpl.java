@@ -13,7 +13,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -53,5 +52,12 @@ public class ClipServiceImpl implements ClipService {
         } else {
             return clipRepository.findAllByIdLessThanOrderByIdDesc(clipListRequestDTO.clipId(), pageable).stream().map(ClipResponseDTO::fromEntity).toList();
         }
+    }
+
+    @Override
+    public ClipResponseDTO deleteClip(Long id) {
+        Clip clip = clipRepository.findById(id).orElseThrow();
+        clipRepository.delete(clip);
+        return ClipResponseDTO.fromEntity(clip);
     }
 }

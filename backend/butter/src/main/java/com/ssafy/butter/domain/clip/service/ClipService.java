@@ -13,4 +13,6 @@ public interface ClipService {
     ClipResponseDTO getClipDetail(Long id);
 
     List<ClipResponseDTO> getClipList(ClipListRequestDTO clipListRequestDTO);
+
+    ClipResponseDTO deleteClip(Long id);
 }
