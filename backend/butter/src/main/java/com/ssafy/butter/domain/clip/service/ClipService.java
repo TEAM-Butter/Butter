@@ -18,4 +18,6 @@ public interface ClipService {
     ClipResponseDTO deleteClip(Long id);
 
     void likeClip(Long memberId, ClipLikeRequestDTO clipLikeRequestDTO);
+
+    void unlikeClip(Long memberId, Long clipId);
 }

@@ -78,4 +78,13 @@ public class ClipServiceImpl implements ClipService {
                 .isLiked(true)
                 .build());
     }
+
+    @Override
+    public void unlikeClip(Long memberId, Long clipId) {
+        Member member = memberService.findById(memberId);
+        Clip clip = clipRepository.findById(clipId).orElseThrow();
+        LikedClip likedClip = likedClipRepository.findByMemberAndClip(member, clip).orElseThrow();
+        likedClip.updateIsLiked(false);
+        likedClipRepository.save(likedClip);
+    }
 }

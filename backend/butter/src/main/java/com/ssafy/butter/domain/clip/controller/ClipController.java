@@ -57,7 +57,7 @@ public class ClipController {
 
     @DeleteMapping("/like/{id}")
     public ResponseEntity<?> unlikeClip(@PathVariable Long id) {
-        log.info("Unlike clip: {}", id);
-        return ResponseEntity.ok(null);
+        clipService.unlikeClip(1L, id);
+        return ResponseEntity.noContent().build();
     }
 }
