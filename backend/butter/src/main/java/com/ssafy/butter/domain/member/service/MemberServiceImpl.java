@@ -1,8 +1,14 @@
 package com.ssafy.butter.domain.member.service;
 
+import com.ssafy.butter.auth.dto.AuthInfoDTO;
+import com.ssafy.butter.domain.member.dto.request.PasswordUpdateRequestDTO;
+import com.ssafy.butter.domain.member.dto.response.PasswordUpdateResponseDTO;
+import com.ssafy.butter.domain.member.dto.response.ProfileUpdateResponseDTO;
+import com.ssafy.butter.domain.member.dto.request.ProfileUpdateRequestDTO;
 import com.ssafy.butter.domain.member.entity.Member;
 import com.ssafy.butter.domain.member.enums.Gender;
 import com.ssafy.butter.domain.member.repository.MemberRepository;
+import com.ssafy.butter.global.token.JwtManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,7 +17,6 @@ import com.ssafy.butter.domain.member.dto.request.SignUpDTO;
 import com.ssafy.butter.domain.member.dto.response.MyPageResponseDTO;
 import com.ssafy.butter.domain.member.vo.BirthDate;
 import com.ssafy.butter.domain.member.vo.Email;
-import com.ssafy.butter.domain.member.vo.Nickname;
 import com.ssafy.butter.domain.member.vo.Password;
 import com.ssafy.butter.global.util.encrypt.EncryptUtils;
 import com.ssafy.butter.infrastructure.awsS3.ImageUploader;
@@ -26,6 +31,8 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService{
 
+    private final TransactionalMemberService transactionalMemberService;
+    private final JwtManager jwtManager;
     private final MemberRepository memberRepository;
     private final EncryptUtils encryptUtils;
     private final ImageUploader imageUploader;
@@ -85,6 +92,25 @@ public class MemberServiceImpl implements MemberService{
                 .member(findMember)
                 .build();
     }
+
+    /**
+     * 파라미터 이메일과 동일한 닉네임을 가진 멤버의 존재 여부를 반환한다
+     * @param nickname 닉네임
+     * @return 동일 닉네임을 가지는 멤버의 존재 여부
+     */
+    @Override
+    public boolean checkIfNickNameExists(String nickname) {
+        Optional<Member> findMember = memberRepository.findByEmail(nickname);
+        return findMember.isPresent();
+    }
+
+    /**
+     * 프로필 업데이트 후, 업데이트한 회원의 정보를 반환한다
+     *
+     * @param profileUpdateRequestDTO 업데이트 할 회원의 프로필 정보
+     * @param memberId 회원의 데이터베이스 상 고유 id
+     * @return
+     */
 
     /**
      * 파라미터 이메일과 동일한 이메일로 가입한 멤버의 존재 여부를 반환한다
