@@ -22,7 +22,7 @@ public class LiveController {
     @PostMapping
     public ResponseEntity<?> createLive(@RequestBody LiveSaveRequestDTO liveSaveRequestDTO) {
         LiveResponseDTO liveResponseDTO = liveService.createLive(liveSaveRequestDTO);
-        return ResponseEntity.created(URI.create("/api/v1/live/" + liveResponseDTO.id())).body(liveResponseDTO);
+        return ResponseEntity.created(URI.create("/api/v1/live/watch/" + liveResponseDTO.id())).body(liveResponseDTO);
     }
 
     @GetMapping("/watch/{id}")
