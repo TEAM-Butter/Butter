@@ -93,6 +93,9 @@ public class ClipServiceImpl implements ClipService {
         Clip clip = clipRepository.findById(clipId).orElseThrow();
         LikedClip likedClip = likedClipRepository.findByMemberAndClip(member, clip).orElseThrow();
         likedClip.updateIsLiked(false);
+        if (likedClip.getIsLiked()) {
+            throw new IllegalArgumentException("Already unliked clip");
+        }
         likedClipRepository.save(likedClip);
     }
 }
