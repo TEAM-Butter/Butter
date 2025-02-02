@@ -13,7 +13,7 @@ import java.util.NoSuchElementException;
 @Component
 @RequiredArgsConstructor
 public class AuthenticatedUserArgumentResolver implements HandlerMethodArgumentResolver {
-    private final NaverOAuthLoginService naverOAuthLoginService;
+
     private final JwtManager jwtManager;
     private final JwtExtractor jwtExtractor;
 
