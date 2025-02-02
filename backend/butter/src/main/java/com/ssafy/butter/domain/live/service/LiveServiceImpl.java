@@ -41,10 +41,10 @@ public class LiveServiceImpl implements LiveService {
     @Override
     public List<LiveResponseDTO> getLiveList(LiveListRequestDTO liveListRequestDTO) {
         Pageable pageable = PageRequest.of(0, liveListRequestDTO.pageSize());
-        if (liveListRequestDTO.id() == null) {
+        if (liveListRequestDTO.liveId() == null) {
             return liveRepository.findAllByOrderByIdDesc(pageable).stream().map(LiveResponseDTO::fromEntity).toList();
         } else {
-            return liveRepository.findAllByIdLessThanOrderByIdDesc(liveListRequestDTO.id(), pageable).stream().map(LiveResponseDTO::fromEntity).toList();
+            return liveRepository.findAllByIdLessThanOrderByIdDesc(liveListRequestDTO.liveId(), pageable).stream().map(LiveResponseDTO::fromEntity).toList();
         }
         // TODO search type에 따른 처리 로직 추가
     }
