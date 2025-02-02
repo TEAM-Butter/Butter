@@ -1,5 +1,6 @@
 package com.ssafy.butter.domain.clip.controller;
 
+import com.ssafy.butter.domain.clip.dto.request.ClipLikeRequestDTO;
 import com.ssafy.butter.domain.clip.dto.request.ClipListRequestDTO;
 import com.ssafy.butter.domain.clip.dto.request.ClipSaveRequestDTO;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @RequiredArgsConstructor
 @Controller
@@ -38,6 +40,12 @@ public class ClipController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteClip(@PathVariable Long id) {
         log.info("Delete clip: {}", id);
+        return ResponseEntity.ok(null);
+    }
+
+    @PostMapping("/like")
+    public ResponseEntity<?> likeClip(@RequestBody ClipLikeRequestDTO likeRequestDTO) {
+        log.info("Like clip: {}", likeRequestDTO);
         return ResponseEntity.ok(null);
     }
 }
