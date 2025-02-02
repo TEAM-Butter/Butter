@@ -59,16 +59,13 @@ public class MemberServiceImpl implements MemberService{
     @Override
     public Member signUp(SignUpDTO signUpDTO, MultipartFile profileImage) {
         Password encryptedPassword = createEncryptedPassword(signUpDTO.password().getValue());
-        String imageUrl = insertProfileImage(profileImage);
 
         return memberRepository.save(Member.builder()
                 .loginId(signUpDTO.loginId())
-                .nickname(new Nickname(signUpDTO.nickname()))
                 .email(new Email(signUpDTO.email()))
                 .birthDate(new BirthDate(signUpDTO.birthDate()))
                 .password(encryptedPassword)
                 .gender(Gender.valueOf(signUpDTO.gender()))
-                .imageUrl(imageUrl)
                 .build());
     }
 

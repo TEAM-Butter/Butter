@@ -10,15 +10,11 @@ public record SignUpDTO(
         @Size(min = 3, max = 50)
         String loginId,
 
-        String nickname,
         String email,
-        String phoneNumber,
         LocalDate birthDate,
         Password password,
 
         @NotNull
-        String gender,
-
-        String imageUrl
+        String gender
 ) {
 }
