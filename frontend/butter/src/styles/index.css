@@ -1,7 +1,9 @@
-/* html,
-body,
-#root {
-  height: 100%;
-  margin: 0;
-  padding: 0;
-} */
+@import "./reset.css";
+
+:root {
+  --red: #EA2323;
+  --liner: linear-gradient(225deg, #FFF9E1, #E0F1ED);
+  --yellow: #F6D048;
+  --butter: #FEFFE9;
+  --gray-bright: #FEFFE9;
+}
