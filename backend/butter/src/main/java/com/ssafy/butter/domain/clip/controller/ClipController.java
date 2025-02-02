@@ -51,8 +51,8 @@ public class ClipController {
 
     @PostMapping("/like")
     public ResponseEntity<?> likeClip(@RequestBody ClipLikeRequestDTO likeRequestDTO) {
-        log.info("Like clip: {}", likeRequestDTO);
-        return ResponseEntity.ok(null);
+        clipService.likeClip(1L, likeRequestDTO);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/like/{id}")

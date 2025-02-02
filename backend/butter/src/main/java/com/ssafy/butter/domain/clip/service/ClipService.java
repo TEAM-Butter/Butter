@@ -1,5 +1,6 @@
 package com.ssafy.butter.domain.clip.service;
 
+import com.ssafy.butter.domain.clip.dto.request.ClipLikeRequestDTO;
 import com.ssafy.butter.domain.clip.dto.request.ClipListRequestDTO;
 import com.ssafy.butter.domain.clip.dto.request.ClipSaveRequestDTO;
 import com.ssafy.butter.domain.clip.dto.response.ClipResponseDTO;
@@ -15,4 +16,6 @@ public interface ClipService {
     List<ClipResponseDTO> getClipList(ClipListRequestDTO clipListRequestDTO);
 
     ClipResponseDTO deleteClip(Long id);
+
+    void likeClip(Long memberId, ClipLikeRequestDTO clipLikeRequestDTO);
 }

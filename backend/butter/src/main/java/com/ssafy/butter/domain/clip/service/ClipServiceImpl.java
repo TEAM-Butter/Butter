@@ -1,12 +1,17 @@
 package com.ssafy.butter.domain.clip.service;
 
+import com.ssafy.butter.domain.clip.dto.request.ClipLikeRequestDTO;
 import com.ssafy.butter.domain.clip.dto.request.ClipListRequestDTO;
 import com.ssafy.butter.domain.clip.dto.request.ClipSaveRequestDTO;
 import com.ssafy.butter.domain.clip.dto.response.ClipResponseDTO;
 import com.ssafy.butter.domain.clip.entity.Clip;
+import com.ssafy.butter.domain.clip.entity.LikedClip;
 import com.ssafy.butter.domain.clip.repository.ClipRepository;
+import com.ssafy.butter.domain.clip.repository.LikedClipRepository;
 import com.ssafy.butter.domain.live.entity.Live;
 import com.ssafy.butter.domain.live.service.LiveService;
+import com.ssafy.butter.domain.member.entity.Member;
+import com.ssafy.butter.domain.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -18,9 +23,11 @@ import java.util.List;
 @Service
 public class ClipServiceImpl implements ClipService {
 
+    private final MemberService memberService;
     private final LiveService liveService;
 
     private final ClipRepository clipRepository;
+    private final LikedClipRepository likedClipRepository;
 
     @Override
     public ClipResponseDTO createClip(ClipSaveRequestDTO clipSaveRequestDTO) {
@@ -59,5 +66,16 @@ public class ClipServiceImpl implements ClipService {
         Clip clip = clipRepository.findById(id).orElseThrow();
         clipRepository.delete(clip);
         return ClipResponseDTO.fromEntity(clip);
+    }
+
+    @Override
+    public void likeClip(Long memberId, ClipLikeRequestDTO clipLikeRequestDTO) {
+        Member member = memberService.findById(memberId);
+        Clip clip = clipRepository.findById(clipLikeRequestDTO.clipId()).orElseThrow();
+        likedClipRepository.save(LikedClip.builder()
+                .member(member)
+                .clip(clip)
+                .isLiked(true)
+                .build());
     }
 }
