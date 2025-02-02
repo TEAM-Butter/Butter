@@ -41,26 +41,19 @@ public class CrewServiceImpl implements CrewService {
      */
     @Override
     public CrewResponseDTO createCrew(CrewSaveRequestDTO crewSaveRequestDTO) {
-        if (crewSaveRequestDTO.portfolioVideo() == null) {
-            throw new IllegalArgumentException("Portfolio video required");
-        }
-
-        Crew crew = Crew.builder()
-                .name(crewSaveRequestDTO.name())
-                .description(crewSaveRequestDTO.description())
-                .promotionUrl(crewSaveRequestDTO.promotionUrl())
-                .portfolioVideoUrl("")
-                .build();
-        Crew savedCrew = crewRepository.save(crew);
-
         String imageUrl = null;
         if (crewSaveRequestDTO.image() != null) {
             imageUrl = s3ImageUploader.uploadImage(crewSaveRequestDTO.image());
         }
         String portfolioVideoUrl = s3ImageUploader.uploadImage(crewSaveRequestDTO.portfolioVideo());
-
-        savedCrew.updateFileUrl(imageUrl, portfolioVideoUrl);
-        return CrewResponseDTO.fromEntity(crewRepository.save(savedCrew));
+        Crew crew = Crew.builder()
+                .name(crewSaveRequestDTO.name())
+                .description(crewSaveRequestDTO.description())
+                .promotionUrl(crewSaveRequestDTO.promotionUrl())
+                .imageUrl(imageUrl)
+                .portfolioVideoUrl(portfolioVideoUrl)
+                .build();
+        return CrewResponseDTO.fromEntity(crewRepository.save(crew));
     }
 
     /**
