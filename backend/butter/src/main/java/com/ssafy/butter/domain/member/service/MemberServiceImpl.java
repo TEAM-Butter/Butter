@@ -15,7 +15,7 @@ import com.ssafy.butter.domain.member.vo.Nickname;
 import com.ssafy.butter.domain.member.vo.Password;
 import com.ssafy.butter.global.util.encrypt.EncryptUtils;
 import com.ssafy.butter.infrastructure.awsS3.ImageUploader;
-import com.ssafy.butter.infrastructure.emailAuth.dto.request.EmailDTO;
+import com.ssafy.butter.infrastructure.email.dto.request.SendEmailDTO;
 
 import java.util.Optional;
 
@@ -84,7 +84,7 @@ public class MemberServiceImpl implements MemberService{
      * @return 동일 이메일로 가입한 멤버의 존재 여부
      */
     @Override
-    public boolean checkIfEmailExists(EmailDTO emailDTO) {
+    public boolean checkIfEmailExists(SendEmailDTO emailDTO) {
         Optional<Member> findMember = memberRepository.findByEmail(emailDTO.email());
         return findMember.isPresent();
     }
