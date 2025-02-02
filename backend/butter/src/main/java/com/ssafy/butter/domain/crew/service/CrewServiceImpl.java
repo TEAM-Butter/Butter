@@ -184,7 +184,8 @@ public class CrewServiceImpl implements CrewService {
         Crew crew = crewRepository.findById(crewId).orElseThrow();
         Member member = memberService.findById(memberId);
         Follow follow = followRepository.findByCrewAndMember(crew, member).orElseThrow();
-        followRepository.delete(follow);
+        follow.updateIsFollowed(false);
+        followRepository.save(follow);
     }
 
     /**
