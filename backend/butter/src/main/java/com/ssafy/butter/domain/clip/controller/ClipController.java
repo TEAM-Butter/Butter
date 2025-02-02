@@ -1,5 +1,6 @@
 package com.ssafy.butter.domain.clip.controller;
 
+import com.ssafy.butter.domain.clip.dto.request.ClipListRequestDTO;
 import com.ssafy.butter.domain.clip.dto.request.ClipSaveRequestDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +19,12 @@ public class ClipController {
     @PostMapping
     public ResponseEntity<?> createClip(@ModelAttribute ClipSaveRequestDTO clipSaveRequestDTO) {
         log.info("Create new clip: {}", clipSaveRequestDTO);
+        return ResponseEntity.ok(null);
+    }
+
+    @GetMapping("/list")
+    public ResponseEntity<?> getClipList(@ModelAttribute ClipListRequestDTO clipListRequestDTO) {
+        log.info("Get clip list: {}", clipListRequestDTO);
         return ResponseEntity.ok(null);
     }
 
