@@ -1,11 +1,13 @@
 package com.ssafy.butter.domain.member.entity;
 
+import com.ssafy.butter.domain.crew.entity.Genre;
 import com.ssafy.butter.domain.member.enums.Gender;
 import com.ssafy.butter.domain.member.vo.BirthDate;
 import com.ssafy.butter.domain.member.vo.BreadAmount;
 import com.ssafy.butter.domain.member.vo.Email;
 import com.ssafy.butter.domain.member.vo.Nickname;
 import com.ssafy.butter.domain.member.vo.Password;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -41,7 +43,7 @@ public class Member {
     @JoinColumn(name = "member_type_id")
     private MemberType memberType;
 
-    @OneToMany(mappedBy = "member")
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MemberGenre> memberGenres = new ArrayList<>();
 
     private String loginId;
@@ -92,7 +94,7 @@ public class Member {
         this.isExtraInfoRegistered = isExtraInfoRegistered;
     }
 
-    public void updateProfile(String nickname, String gender, String profileImage){
+    public void updateProfile(String nickname, String gender, String profileImage, List<Genre> genres){
         if(nickname != null){
             this.nickname = new Nickname(nickname);
         }
@@ -102,11 +104,18 @@ public class Member {
         if(profileImage != null){
             this.profileImage = profileImage;
         }
+        if(genres != null){
+            updateMemberGenres(genres);
+        }
     }
 
     public void changePassword(Password password){
         this.password = password;
     }
 
+    private void updateMemberGenres(List<Genre> newGenres){
+        memberGenres.clear();
+        newGenres.forEach(genre -> this.memberGenres.add(new MemberGenre(this, genre)));
+    }
 }
 
