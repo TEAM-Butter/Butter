@@ -67,15 +67,23 @@ public class CrewServiceImpl implements CrewService {
 
     /**
      * 크루 ID와 멤버 ID가 담긴 DTO를 받아 크루 멤버를 DB에 저장한다.
+     * @param currentUser 현재 로그인한 유저 정보
      * @param crewMemberRequestDTO 크루와 크루 멤버 정보를 담은 DTO
      */
     @Override
-    public void createCrewMember(CrewMemberRequestDTO crewMemberRequestDTO) {
+    public void createCrewMember(AuthInfoDTO currentUser, CrewMemberRequestDTO crewMemberRequestDTO) {
+        Member currentMember = memberService.findById(currentUser.id());
         Crew crew = crewRepository.findById(crewMemberRequestDTO.crewId()).orElseThrow();
+        CrewMember currentCrewMember = crewMemberRepository.findByCrewAndMember(crew, currentMember).orElseThrow();
+        if (!currentCrewMember.getIsCrewAdmin()) {
+            throw new IllegalArgumentException("Current user is not crew admin");
+        }
+
         Member member = memberService.findById(crewMemberRequestDTO.memberId());
         crewMemberRepository.findByCrewAndMember(crew, member).ifPresent(crewMember -> {
             throw new IllegalArgumentException("Crew member already exists");
         });
+
         CrewMember crewMember = CrewMember.builder()
                 .crew(crew)
                 .member(member)

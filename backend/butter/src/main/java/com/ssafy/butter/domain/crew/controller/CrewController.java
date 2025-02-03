@@ -30,8 +30,8 @@ public class CrewController {
     }
 
     @PostMapping("/member")
-    public ResponseEntity<?> createCrewMember(@RequestBody CrewMemberRequestDTO crewMemberRequestDTO) {
-        crewService.createCrewMember(crewMemberRequestDTO);
+    public ResponseEntity<?> createCrewMember(@CurrentUser AuthInfoDTO currentUser, @RequestBody CrewMemberRequestDTO crewMemberRequestDTO) {
+        crewService.createCrewMember(currentUser, crewMemberRequestDTO);
         return ResponseEntity.noContent().build();
     }
 
