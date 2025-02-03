@@ -66,7 +66,7 @@ const LoginPage = () => {
             </Link>
         </LtContainer>
         <RtContainer></RtContainer>
-    </LoginPageWrapper>;
+    </LoginPageWrapper>
     {modalType === "forgotAuth" && <ForgotAuthModal width="600px" height="300px" setModalType={setModalType}></ForgotAuthModal>}
     </>
     )
