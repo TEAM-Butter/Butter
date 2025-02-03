@@ -46,8 +46,8 @@ public class ClipController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteClip(@PathVariable Long id) {
-        return ResponseEntity.ok(clipService.deleteClip(id));
+    public ResponseEntity<?> deleteClip(@CurrentUser AuthInfoDTO currentUser, @PathVariable Long id) {
+        return ResponseEntity.ok(clipService.deleteClip(currentUser, id));
     }
 
     @PostMapping("/like")

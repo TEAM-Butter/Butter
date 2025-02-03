@@ -72,8 +72,14 @@ public class ClipServiceImpl implements ClipService {
     }
 
     @Override
-    public ClipResponseDTO deleteClip(Long id) {
+    public ClipResponseDTO deleteClip(AuthInfoDTO currentUser, Long id) {
+        Member member = memberService.findById(currentUser.id());
         Clip clip = clipRepository.findById(id).orElseThrow();
+        Crew crew = clip.getLive().getCrew();
+        if (!crewMemberService.findByCrewAndMember(crew, member).getIsCrewAdmin()) {
+            throw new IllegalArgumentException("Current user is not crew admin");
+        }
+
         clipRepository.delete(clip);
         return ClipResponseDTO.fromEntity(clip);
     }
