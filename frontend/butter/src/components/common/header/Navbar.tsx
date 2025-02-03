@@ -3,7 +3,7 @@ import styled from "@emotion/styled";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { Link, useMatch } from "react-router-dom";
-import { StreamingModal } from "../modals/modal";
+import { StreamingModal, ForgotAuthModal } from "../modals/modal";
 
 const Nav = styled.nav`
     display: flex;
@@ -38,7 +38,7 @@ const Logo = styled(motion.div)`
     color: var(--butter);
 `;
 
-const Items= styled.ul`
+const Items = styled.ul`
     display:flex;
     font-size: 15px;
     font-weight: medium;
@@ -114,80 +114,80 @@ const logoVariants = {
 
 const subProfileVariants = {
     normal: {
-      opacity: 0,
-      // as const를 통해 변경할 수 없는 리터럴 값임을 명시 *안할 경우, 코드는 돌아가지만 "hidden", "visible"을 string으로 착각하여 variants에 오류가 뜸
-      visibility: "hidden" as const,
+        opacity: 0,
+        // as const를 통해 변경할 수 없는 리터럴 값임을 명시 *안할 경우, 코드는 돌아가지만 "hidden", "visible"을 string으로 착각하여 variants에 오류가 뜸
+        visibility: "hidden" as const,
     },
     active: {
-      opacity: 1,
-      visibility: "visible" as const,
-      transition: { duration: 0.3 },
+        opacity: 1,
+        visibility: "visible" as const,
+        transition: { duration: 0.3 },
     },
 };
 
-function Navbar(){
+function Navbar() {
     const homeMatch = useMatch("");
     const buskingMatch = useMatch("busking");
     const streamMatch = useMatch("stream");
     const crewMatch = useMatch("crew");
     const loginMatch = useMatch("auth/login");
     // isLogin이 true일 경우 profile dropdown 적용, false일 경우 login link만 렌더링링 
-    const [isLogin, setIsLogin] = useState(false)
+    const [isLogin, setIsLogin] = useState(true)
     const [isCrewUser, setIsCrewUser] = useState(true)
     const [isHovered, setIsHovered] = useState(false);
-    const [toggleModal, setToggleModal] = useState(false);
+    const [modalType, setModalType] = useState<string>("");
     return (
         <>
-        <Nav>
-            <Col>
-                {/* variants, whileHover를 통해 Hover시 동작할 모션 정의 초기값(initial)은 normal*/}
-                <Link to="/">
-                <Logo 
-                    variants={logoVariants}
-                    initial="normal"
-                    whileHover="active">
-                    B
-                </Logo>
-                </Link>
-            </Col>
-            <Col_r>
-                <Items>
-                    <Link to="/"><Item>HOME { homeMatch && <Bar layoutId="bar" />}</Item></Link>
-                    <Link to="/busking"><Item>BUSKING { buskingMatch && <Bar layoutId="bar" />}</Item></Link>
-                    <Link to="/stream"><Item>STREAMING { streamMatch && <Bar layoutId="bar" />}</Item></Link>
-                    <Link to="/crew"><Item>CREW { crewMatch && <Bar layoutId="bar" />}</Item></Link>
-                </Items>
-                <Items>
-                    { isLogin ?
-                        <Profile
-                            onMouseEnter={() => setIsHovered(true)} 
-                            onMouseLeave={() => setIsHovered(false)}
+            <Nav>
+                <Col>
+                    {/* variants, whileHover를 통해 Hover시 동작할 모션 정의 초기값(initial)은 normal*/}
+                    <Link to="/">
+                        <Logo
+                            variants={logoVariants}
+                            initial="normal"
+                            whileHover="active">
+                            B
+                        </Logo>
+                    </Link>
+                </Col>
+                <Col_r>
+                    <Items>
+                        <Link to="/"><Item>HOME {homeMatch && <Bar layoutId="bar" />}</Item></Link>
+                        <Link to="/busking"><Item>BUSKING {buskingMatch && <Bar layoutId="bar" />}</Item></Link>
+                        <Link to="/stream"><Item>STREAMING {streamMatch && <Bar layoutId="bar" />}</Item></Link>
+                        <Link to="/crew"><Item>CREW {crewMatch && <Bar layoutId="bar" />}</Item></Link>
+                    </Items>
+                    <Items>
+                        {isLogin ?
+                            <Profile
+                                onMouseEnter={() => setIsHovered(true)}
+                                onMouseLeave={() => setIsHovered(false)}
                             >PROFILE
-                            <SubProfile
-                                variants={subProfileVariants} 
-                                initial="normal" 
-                                animate={isHovered ? "active" : "normal"}
+                                <SubProfile
+                                    variants={subProfileVariants}
+                                    initial="normal"
+                                    animate={isHovered ? "active" : "normal"}
                                 >
-                                <SubItemComment>안녕하세요,<br/> Username님!</SubItemComment>
-                                <Link to="/"><SubItem>마이 캘린더</SubItem></Link>    
-                                <Link to="/"><SubItem>마이 크루</SubItem></Link>    
-                                <Link to="/"><SubItem>브레드 충전</SubItem></Link>
-                                {   isCrewUser ? 
-                                    <><SubItem className="openModalBtn" onClick={()=>{ setToggleModal(true)}}>스트리밍 라이브</SubItem>    
-                                    <Link to="/"><SubItem>버스킹 일정 등록</SubItem></Link>    
-                                    <Link to="/"><SubItem>크루 탈퇴</SubItem></Link></>    
-                                    : 
-                                    <Link to="/"><SubItem>크루 등록</SubItem></Link>
-                                }    
-                                <Link to="/"><SubItem>회원정보 수정</SubItem></Link>    
-                                <Link to="/"><SubItem>로그아웃</SubItem></Link>    
-                            </SubProfile>
-                        </Profile> 
-                        : <Link to="/auth/login"><Item>LOGIN { loginMatch && <Bar layoutId="bar" />}</Item></Link> }
-                </Items>
-            </Col_r>            
-        </Nav>
-        { toggleModal && <StreamingModal width="450px" height="230px" setToggleModal={setToggleModal}></StreamingModal>}
+                                    <SubItemComment>안녕하세요,<br /> Username님!</SubItemComment>
+                                    <Link to="/"><SubItem>마이 캘린더</SubItem></Link>
+                                    <Link to="/"><SubItem>마이 크루</SubItem></Link>
+                                    <Link to="/"><SubItem>브레드 충전</SubItem></Link>
+                                    {isCrewUser ?
+                                        <><SubItem className="openModalBtn" onClick={() => { setModalType("streaming") }}>스트리밍 라이브</SubItem>
+                                            <Link to="/"><SubItem>버스킹 일정 등록</SubItem></Link>
+                                            <Link to="/"><SubItem>크루 탈퇴</SubItem></Link></>
+                                        :
+                                        <Link to="/"><SubItem>크루 등록</SubItem></Link>
+                                    }
+                                    <Link to="/"><SubItem>회원정보 수정</SubItem></Link>
+                                    <Link to="/"><SubItem>로그아웃</SubItem></Link>
+                                </SubProfile>
+                            </Profile>
+                            : <Link to="/auth/login"><Item>LOGIN {loginMatch && <Bar layoutId="bar" />}</Item></Link>}
+                    </Items>
+                </Col_r>
+            </Nav>
+            {modalType === "streaming" && <StreamingModal width="450px" height="230px" setModalType={setModalType}></StreamingModal>}
         </>
     );
 };

@@ -1,0 +1,103 @@
+package com.ssafy.butter.domain.crew.service;
+
+import com.ssafy.butter.domain.crew.dto.request.NoticeListRequestDTO;
+import com.ssafy.butter.domain.crew.dto.request.NoticeSaveRequestDTO;
+import com.ssafy.butter.domain.crew.dto.response.NoticeResponseDTO;
+import com.ssafy.butter.domain.crew.entity.Notice;
+import com.ssafy.butter.domain.crew.repository.CrewRepository;
+import com.ssafy.butter.domain.crew.repository.NoticeRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@RequiredArgsConstructor
+@Service
+public class NoticeServiceImpl implements NoticeService {
+
+    private final CrewRepository crewRepository;
+    private final NoticeRepository noticeRepository;
+
+    /**
+     * 크루 공지사항 정보를 담은 DTO를 받아 DB에 저장하고 생성된 공지사항 정보를 담은 DTO를 반환한다.
+     * @param noticeSaveRequestDTO 생성할 공지사항 요청 정보를 담은 DTO
+     * @return 생성된 공지사항 결과 정보를 담은 DTO
+     */
+    @Override
+    public NoticeResponseDTO createCrewNotice(NoticeSaveRequestDTO noticeSaveRequestDTO) {
+        Notice notice = Notice.builder()
+                .crew(crewRepository.findById(noticeSaveRequestDTO.crewId()).orElseThrow())
+                .title(noticeSaveRequestDTO.title())
+                .content(noticeSaveRequestDTO.content())
+                .imageUrl(null)
+                .build();
+        Notice savedNotice = noticeRepository.save(notice);
+
+        if (noticeSaveRequestDTO.image() != null) {
+            String filenamePrefix = savedNotice.getId() + "_" + System.currentTimeMillis() + "_";
+            savedNotice.updateImageUrl(filenamePrefix + noticeSaveRequestDTO.image().getOriginalFilename());
+            return NoticeResponseDTO.fromEntity(noticeRepository.save(savedNotice));
+        } else {
+            return NoticeResponseDTO.fromEntity(notice);
+        }
+    }
+
+    /**
+     * 크루 공지사항 목록 조회 정보를 담은 DTO를 받아 DB에서 조회 후 결과를 반환한다.
+     * @param noticeListRequestDTO 크루 공지사항 조회 요청 정보를 담은 DTO
+     * @return 크루 공지사항 조회 결과를 담은 DTO 리스트
+     */
+    @Override
+    public List<NoticeResponseDTO> getCrewNoticeList(NoticeListRequestDTO noticeListRequestDTO) {
+        Pageable pageable = PageRequest.of(0, noticeListRequestDTO.pageSize());
+        if (noticeListRequestDTO.crewId() == null) {
+            return noticeRepository.findAllByOrderByIdDesc(pageable).stream().map(NoticeResponseDTO::fromEntity).toList();
+        } else {
+            return noticeRepository.findAllByIdLessThanOrderByIdDesc(noticeListRequestDTO.crewId(), pageable).stream().map(NoticeResponseDTO::fromEntity).toList();
+        }
+    }
+
+    /**
+     * 조회할 크루 공지사항 ID를 받아 DB에서 조회 후 결과를 반환한다.
+     * @param id 조회할 크루 공지사항을 가리키는 ID
+     * @return 조회된 크루 공지사항 결과 DTO
+     */
+    @Override
+    public NoticeResponseDTO getCrewNotice(Long id) {
+        return NoticeResponseDTO.fromEntity(noticeRepository.findById(id).orElseThrow());
+    }
+
+    /**
+     * 수정할 크루 공지사항 ID와 수정 정보 DTO를 받아 DB에 수정 내용을 반영하고 수정 결과를 반환한다.
+     * @param id 수정할 크루 공지사항을 나타내는 ID
+     * @param noticeSaveRequestDTO 크루 공지사항 수정 요청 정보를 담은 DTO
+     * @return 크루 공지사항 수정 결과를 담은 DTO
+     */
+    @Override
+    public NoticeResponseDTO updateCrewNotice(Long id, NoticeSaveRequestDTO noticeSaveRequestDTO) {
+        Notice notice = noticeRepository.findById(id).orElseThrow();
+        notice.updateTitle(noticeSaveRequestDTO.title());
+        notice.updateContent(noticeSaveRequestDTO.content());
+        if (noticeSaveRequestDTO.image() != null) {
+            String filenamePrefix = notice.getId() + "_" + System.currentTimeMillis() + "_";
+            notice.updateImageUrl(filenamePrefix + noticeSaveRequestDTO.image().getOriginalFilename());
+        } else {
+            notice.updateImageUrl(null);
+        }
+        return NoticeResponseDTO.fromEntity(noticeRepository.save(notice));
+    }
+
+    /**
+     * 삭제하려는 크루 공지사항 ID를 받아 DB에서 삭제하고 삭제된 크루 공지사항을 반환한다.
+     * @param id 삭제하려는 크루 공지사항을 가리키는 ID
+     * @return 삭제된 크루 공지사항 정보를 담은 DTO
+     */
+    @Override
+    public NoticeResponseDTO deleteCrewNotice(Long id) {
+        Notice notice = noticeRepository.findById(id).orElseThrow();
+        noticeRepository.delete(notice);
+        return NoticeResponseDTO.fromEntity(notice);
+    }
+}

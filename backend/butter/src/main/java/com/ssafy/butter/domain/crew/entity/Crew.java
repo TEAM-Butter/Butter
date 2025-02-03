@@ -15,6 +15,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Getter
@@ -66,5 +67,25 @@ public class Crew {
         this.promotionUrl = promotionUrl;
         this.portfolioVideoUrl = portfolioVideoUrl;
         this.donationAmount = donationAmount;
+    }
+
+    public void updateName(String name) {
+        this.name = name;
+    }
+
+    public void updateDescription(String description) {
+        this.description = description;
+    }
+
+    public void updateImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public void updatePromotionUrl(String promotionUrl) {
+        this.promotionUrl = promotionUrl;
+    }
+
+    public void updatePortfolioVideoUrl(String portfolioVideoUrl) {
+        this.portfolioVideoUrl = portfolioVideoUrl;
     }
 }

@@ -1,7 +1,15 @@
 package com.ssafy.butter.domain.member.entity;
 
+import com.ssafy.butter.domain.member.vo.BirthDate;
+import com.ssafy.butter.domain.member.vo.BreadAmount;
+import com.ssafy.butter.domain.member.vo.Email;
+import com.ssafy.butter.domain.member.vo.Nickname;
+import com.ssafy.butter.domain.member.vo.Password;
+import com.ssafy.butter.domain.member.vo.PhoneNumber;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,55 +27,65 @@ public class Member {
     @Column(name = "member_id")
     private Long id;
 
-    @Column(length = 50)
-    @NotNull
-    private String nickname;
-
-    @Column(length = 50)
-    @NotNull
-    private String email;
-
-    @Column(length = 200)
-    private String password;
-
-    @Column(length = 2048)
-    private String imageUrl;
-
-    @NotNull
-    private LocalDate createDate;
-
-    @NotNull
-    private LocalDate birthDate;
-
-    @NotNull
-    private Integer gender;
-
-    @NotNull
-    private String phoneNumber;
-
-    @NotNull
-    private Integer breadAmount;
-
-    @NotNull
-    private Integer avatarType;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_type_id")
     @NotNull
     private MemberType memberType;
 
+    @OneToMany(mappedBy = "member")
+    private List<MemberGenre> memberGenres = new ArrayList<>();
+
+    @NotNull
+    private String loginId;
+
+    @Embedded
+    private Nickname nickname;
+
+    @Embedded
+    private Email email;
+
+    @Embedded
+    private PhoneNumber phoneNumber;
+
+    @Embedded
+    private BirthDate birthDate;
+
+    @Embedded
+    private BreadAmount breadAmount;
+
+    @Embedded
+    private Password password;
+
+    @Column(length = 2048)
+    private String imageUrl;
+
+    @NotNull
+    private Integer gender;
+
+    @NotNull
+    private Integer avatarType;
+
+    @NotNull
+    private LocalDate createDate;
+
     @Builder
-    public Member(String nickname, String email, String password, String imageUrl, LocalDate createDate, LocalDate birthDate, Integer gender, String phoneNumber, Integer breadAmount, Integer avatarType, MemberType memberType) {
+    public Member(List<MemberGenre> memberGenres, String loginId, Nickname nickname, Email email,
+                  PhoneNumber phoneNumber,
+                  BirthDate birthDate, BreadAmount breadAmount, Password password, String imageUrl, Integer gender,
+                  Integer avatarType, LocalDate createDate, MemberType memberType) {
+        this.memberGenres = memberGenres;
+        this.loginId = loginId;
         this.nickname = nickname;
         this.email = email;
+        this.phoneNumber = phoneNumber;
+        this.birthDate = birthDate;
+        this.breadAmount = breadAmount;
         this.password = password;
         this.imageUrl = imageUrl;
-        this.createDate = createDate;
-        this.birthDate = birthDate;
         this.gender = gender;
-        this.phoneNumber = phoneNumber;
-        this.breadAmount = breadAmount;
         this.avatarType = avatarType;
+        this.createDate = createDate;
         this.memberType = memberType;
     }
 }
+

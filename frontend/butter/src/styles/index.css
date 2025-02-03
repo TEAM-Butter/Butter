@@ -6,4 +6,27 @@
     --yellow: #F6D048;
     --butter: #FEFFE9;
     --gray-bright: #FEFFE9;
+    --darkgray: #6d6d6d;
+}
+
+[type="radio"] {
+    appearance: none;
+    background-clip: content-box;
+    padding: 0.1rem;
+    width: 1rem;
+    height: 1rem;
+    border: 1px solid var(--darkgray);
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+[type="radio"]:checked {
+    border-color: var(--yellow);
+    background-color: var(--yellow);
+}
+
+[type="date"] {
+    border: none;
+    border-radius: 5px;;
+    padding: 5px 10px;
 }
