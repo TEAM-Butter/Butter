@@ -4,7 +4,7 @@ import com.ssafy.butter.domain.crew.entity.Genre;
 import com.ssafy.butter.domain.member.dto.request.ProfileUpdateRequestDTO;
 import com.ssafy.butter.domain.member.dto.response.ProfileUpdateResponseDTO;
 import com.ssafy.butter.domain.member.entity.Member;
-import com.ssafy.butter.domain.member.repository.MemberRepository;
+import com.ssafy.butter.domain.member.repository.member.MemberRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
