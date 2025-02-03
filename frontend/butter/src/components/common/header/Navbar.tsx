@@ -154,7 +154,7 @@ function Navbar() {
                 <Items>
                     <Link to="/"><Item>HOME { homeMatch && <Bar layoutId="bar" />}</Item></Link>
                     <Link to="/busking"><Item>BUSKING { buskingMatch && <Bar layoutId="bar" />}</Item></Link>
-                    <Link to="/stream"><Item>STREAMING { streamMatch && <Bar layoutId="bar" />}</Item></Link>
+                    <Link to="/stream-list"><Item>STREAMING { streamMatch && <Bar layoutId="bar" />}</Item></Link>
                     <Link to="/crew/list"><Item>CREW { crewMatch && <Bar layoutId="bar" />}</Item></Link>
                 </Items>
                 <Items>
