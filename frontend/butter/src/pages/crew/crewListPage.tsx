@@ -99,6 +99,7 @@ const Box1 = styled.div`
  margin-top : 50px;
  font-size : 30px
 `
+
 const P1 = styled.div`
 font-weight : bold;
 white-space: pre; /* 띄어쓰기를 그대로 유지 */
@@ -113,6 +114,9 @@ const Box2 = styled.div`
  font-size : 15px;
 `
 
+let ServerUrl = 'http://i12e204.p.ssafy.io:8081'
+
+
 function CrewListPage() {
     let [crewId, setCrewId] = useState(0)  
     let [ loading, setLoading ] = useState(true) // 로딩 표시하는 변수
@@ -124,7 +128,7 @@ function CrewListPage() {
     //     const fetchCrewDetail = async () => {
     //         try {
     //             setLoading(true);
-    //             const response = await axios.get(`/api/v1/crew/list`) // 크루 리스트 정보 받아옴
+    //             const response = await axios.get(`${ServerUrl}/api/v1/crew/list`) // 크루 리스트 정보 받아옴
     //             setCrewList(response.data);
     //         } catch (err:any) {
     //             setError(err.message); //요청 놓치면 에러 메세지 띄우기

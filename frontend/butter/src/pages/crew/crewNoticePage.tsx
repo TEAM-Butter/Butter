@@ -2,11 +2,11 @@ import axios from "axios"
 import { useParams, useNavigate, Navigate } from "react-router-dom"
 import { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
-import { Button } from "react-bootstrap"
+
 import styled from "styled-components"
 
 
-
+let ServerUrl = 'http://i12e204.p.ssafy.io:8081'
 
 
 function CrewNoticePage() {
@@ -48,9 +48,9 @@ function CrewNoticePage() {
     useEffect (() => {
         const fetchCrewDetail = async () => {
             try {
-                const noticeResponse = await axios.get(`/api/v1/crew/notice/detail/${crewId}`) // 크루 공지사항 정보 받아옴
+                const noticeResponse = await axios.get(`${ServerUrl}/api/v1/crew/notice/detail/${crewId}`) // 크루 공지사항 정보 받아옴
                 setCrewNoticeDetail(noticeResponse.data);
-                const response = await axios.get(`/api/v1/crew/detail/${crewId}`) // 크루 디테일 정보 받아옴
+                const response = await axios.get(`${ServerUrl}/api/v1/crew/detail/${crewId}`) // 크루 디테일 정보 받아옴
                 setCrewDetail(response.data);
             } catch (err:any) {
                 setError(err.message); //요청 놓치면 에러 메세지 띄우기
