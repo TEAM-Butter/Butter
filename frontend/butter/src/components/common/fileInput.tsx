@@ -1,21 +1,38 @@
 import styled from "@emotion/styled";
 import { useState, useRef } from "react";
 
+const ExtraInputWrapper = styled.div`
+    display: flex;
+    width: 90%;
+    gap: 10px;
+`
 const ExtraInput = styled.input``
-const FileInputBtn = styled.button`
-    background: transparent;
-    border: none;
-    border: 2px solid var(--yellow);
-    width: 90px;
-    height: 90px;
-    border-radius: 50%;
+const FileInputBtn = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 2px dotted var(--yellow);
+    width: 100px;
+    height: 50px;
+    border-radius: 10px;
     color: var(--yellow);
     font-size: 15px;
+    `
+
+const SelectedFile = styled.div`
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    color: var(--darkgray);    
+    flex: 1;
+    border: 1px solid var(--yellow);
+    border-radius: 10px;
+    height: 50px;
 `
 
 export const ExtraFileInput = () => {
     const inputRef = useRef<HTMLInputElement>(null);
-    // const [selectedFile, setSelectedFile] = useState(null)
+    const [selectedFile, setSelectedFile] = useState<File | null>(null)
 
     const onChooseFile = () => {
         if (inputRef.current) {
@@ -23,10 +40,18 @@ export const ExtraFileInput = () => {
         }
     };
 
+    const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        if (event.target.files && event.target.files.length > 0) {
+            setSelectedFile(event.target.files[0])
+        }
+    }
+
     return (
-        <>
-            <ExtraInput type="file" ref={inputRef} style={{ display: "none" }}/>
-            <FileInputBtn onClick={onChooseFile}>upload<br/>profile</FileInputBtn>
-        </>
+        <ExtraInputWrapper>
+            <ExtraInput type="file" id="img" name="img" ref={inputRef} accept=".png, .jpeg, .jpg" onChange={handleOnChange} style={{ display: "none" }} />
+            <FileInputBtn onClick={onChooseFile}>Upload</FileInputBtn>
+
+            {selectedFile && <SelectedFile>{selectedFile?.name}</SelectedFile>}
+        </ExtraInputWrapper>
     )
 }
