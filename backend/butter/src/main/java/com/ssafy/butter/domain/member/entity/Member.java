@@ -43,6 +43,10 @@ public class Member {
     @JoinColumn(name = "member_type_id")
     private MemberType memberType;
 
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "avatar_type_id")
+    private AvatarType avatarType;
+
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MemberGenre> memberGenres = new ArrayList<>();
 
@@ -70,16 +74,18 @@ public class Member {
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
-    private Integer avatarType;
-
     @NotNull
     private LocalDate createDate;
 
+    @NotNull
     private boolean isExtraInfoRegistered;
 
     @Builder
-    public Member(MemberType memberType, List<MemberGenre> memberGenres, String loginId, Nickname nickname, Email email, BirthDate birthDate, BreadAmount breadAmount, Password password, String profileImage, Gender gender, Integer avatarType, LocalDate createDate, boolean isExtraInfoRegistered) {
+    public Member(MemberType memberType, AvatarType avatarType, List<MemberGenre> memberGenres, String loginId,
+                  Nickname nickname, Email email, BirthDate birthDate, BreadAmount breadAmount, Password password,
+                  String profileImage, Gender gender, LocalDate createDate, boolean isExtraInfoRegistered) {
         this.memberType = memberType;
+        this.avatarType = avatarType;
         this.memberGenres = memberGenres;
         this.loginId = loginId;
         this.nickname = nickname;
@@ -89,7 +95,6 @@ public class Member {
         this.password = password;
         this.profileImage = profileImage;
         this.gender = gender;
-        this.avatarType = avatarType;
         this.createDate = createDate;
         this.isExtraInfoRegistered = isExtraInfoRegistered;
     }
