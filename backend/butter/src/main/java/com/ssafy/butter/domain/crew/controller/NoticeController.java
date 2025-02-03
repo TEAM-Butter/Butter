@@ -38,7 +38,7 @@ public class NoticeController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateCrewNotice(@CurrentUser AuthInfoDTO currentUser, @PathVariable Long id, @RequestBody NoticeSaveRequestDTO noticeSaveRequestDTO) {
+    public ResponseEntity<?> updateCrewNotice(@CurrentUser AuthInfoDTO currentUser, @PathVariable Long id, @ModelAttribute NoticeSaveRequestDTO noticeSaveRequestDTO) {
         return ResponseEntity.ok(noticeService.updateCrewNotice(currentUser, id, noticeSaveRequestDTO));
     }
 
