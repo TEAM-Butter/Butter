@@ -1,6 +1,8 @@
 import styled from "@emotion/styled";
 import { LoginForm } from "../../components/user/UserForm";
 import { Link } from "react-router-dom";
+import { ForgotAuthModal } from "../../components/common/modals/modal";
+import { useState } from "react";
 
 const LoginPageWrapper = styled.div`
   width: 100%;
@@ -49,20 +51,25 @@ const SignupLink = styled.div`
 `
 
 const LoginPage = () => {
-  return <LoginPageWrapper>
-    <LtContainer>
-        <LoginFormWrapper>
-            <LoginForm />
-        </LoginFormWrapper>
-        <Link to="/auth/signup">
-            <SignupLink>
-                <div>Sign up</div>
-                <span>create your account</span>
-            </SignupLink>
-        </Link>
-    </LtContainer>
-    <RtContainer></RtContainer>
-  </LoginPageWrapper>;
+    const [modalType, setModalType] = useState<string>("");
+    return (<>
+    <LoginPageWrapper>
+        <LtContainer>
+            <LoginFormWrapper>
+                <LoginForm setModalType={setModalType} />
+            </LoginFormWrapper>
+            <Link to="/auth/signup">
+                <SignupLink>
+                    <div>Sign up</div>
+                    <span>create your account</span>
+                </SignupLink>
+            </Link>
+        </LtContainer>
+        <RtContainer></RtContainer>
+    </LoginPageWrapper>;
+    {modalType === "forgotAuth" && <ForgotAuthModal width="600px" height="300px" setModalType={setModalType}></ForgotAuthModal>}
+    </>
+    )
 };
 
 export default LoginPage;

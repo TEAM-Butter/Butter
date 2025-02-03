@@ -62,7 +62,7 @@ const SignupPage = () => {
         </Link>
     </LtContainer>
     <RtContainer></RtContainer>
-  </SignupPageWrapper>;
+  </SignupPageWrapper>
 };
 
 export default SignupPage;

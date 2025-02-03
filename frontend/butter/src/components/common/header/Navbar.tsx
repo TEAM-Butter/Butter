@@ -132,7 +132,7 @@ function Navbar() {
     const crewMatch = useMatch("crew");
     const loginMatch = useMatch("auth/login");
     // isLogin이 true일 경우 profile dropdown 적용, false일 경우 login link만 렌더링링 
-    const [isLogin, setIsLogin] = useState(true)
+    const [isLogin, setIsLogin] = useState(false)
     const [isCrewUser, setIsCrewUser] = useState(true)
     const [isHovered, setIsHovered] = useState(false);
     const [modalType, setModalType] = useState<string>("");
@@ -174,7 +174,6 @@ function Navbar() {
                                     <Link to="/"><SubItem>브레드 충전</SubItem></Link>
                                     {isCrewUser ?
                                         <><SubItem className="openModalBtn" onClick={() => { setModalType("streaming") }}>스트리밍 라이브</SubItem>
-                                            <SubItem className="openModalBtn" onClick={() => { setModalType("forgotAuth") }}>idps</SubItem>
                                             <Link to="/"><SubItem>버스킹 일정 등록</SubItem></Link>
                                             <Link to="/"><SubItem>크루 탈퇴</SubItem></Link></>
                                         :
@@ -189,7 +188,6 @@ function Navbar() {
                 </Col_r>
             </Nav>
             {modalType === "streaming" && <StreamingModal width="450px" height="230px" setModalType={setModalType}></StreamingModal>}
-            {modalType === "forgotAuth" && <ForgotAuthModal width="600px" height="300px" setModalType={setModalType}></ForgotAuthModal>}
         </>
     );
 };
