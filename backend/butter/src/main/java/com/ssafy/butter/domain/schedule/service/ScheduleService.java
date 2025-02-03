@@ -19,7 +19,7 @@ public interface ScheduleService {
 
     ScheduleResponseDTO getScheduleDetail(Long id);
 
-    ScheduleResponseDTO updateSchedule(Long id, ScheduleSaveRequestDTO scheduleSaveRequestDTO);
+    ScheduleResponseDTO updateSchedule(AuthInfoDTO currentUser, Long id, ScheduleSaveRequestDTO scheduleSaveRequestDTO);
 
     ScheduleResponseDTO deleteSchedule(Long id);
 

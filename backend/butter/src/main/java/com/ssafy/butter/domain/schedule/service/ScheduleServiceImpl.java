@@ -76,7 +76,12 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
-    public ScheduleResponseDTO updateSchedule(Long id, ScheduleSaveRequestDTO scheduleSaveRequestDTO) {
+    public ScheduleResponseDTO updateSchedule(AuthInfoDTO currentUser, Long id, ScheduleSaveRequestDTO scheduleSaveRequestDTO) {
+        Member member = memberService.findById(currentUser.id());
+        Crew crew = crewService.findById(scheduleSaveRequestDTO.crewId());
+        if (!crewMemberService.findByCrewAndMember(crew, member).getIsCrewAdmin()) {
+            throw new IllegalArgumentException("Current user is not crew admin");
+        }
         Schedule schedule = scheduleRepository.findById(id).orElseThrow();
         schedule.update(scheduleSaveRequestDTO);
         return ScheduleResponseDTO.fromEntity(scheduleRepository.save(schedule));
