@@ -85,12 +85,18 @@ public class NoticeServiceImpl implements NoticeService {
 
     /**
      * 수정할 크루 공지사항 ID와 수정 정보 DTO를 받아 DB에 수정 내용을 반영하고 수정 결과를 반환한다.
-     * @param id 수정할 크루 공지사항을 나타내는 ID
+     * @param currentUser 현재 로그인한 유저 정보
+     * @param id                   수정할 크루 공지사항을 나타내는 ID
      * @param noticeSaveRequestDTO 크루 공지사항 수정 요청 정보를 담은 DTO
      * @return 크루 공지사항 수정 결과를 담은 DTO
      */
     @Override
-    public NoticeResponseDTO updateCrewNotice(Long id, NoticeSaveRequestDTO noticeSaveRequestDTO) {
+    public NoticeResponseDTO updateCrewNotice(AuthInfoDTO currentUser, Long id, NoticeSaveRequestDTO noticeSaveRequestDTO) {
+        Member member = memberService.findById(currentUser.id());
+        Crew crew = crewRepository.findById(noticeSaveRequestDTO.crewId()).orElseThrow();
+        if (!crewMemberRepository.findByCrewAndMember(crew, member).orElseThrow().getIsCrewAdmin()) {
+            throw new IllegalArgumentException("Current user is not crew admin");
+        }
         Notice notice = noticeRepository.findById(id).orElseThrow();
         String imageUrl = null;
         if (noticeSaveRequestDTO.image() != null) {

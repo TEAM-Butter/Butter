@@ -15,7 +15,7 @@ public interface NoticeService {
 
     NoticeResponseDTO getCrewNotice(Long id);
 
-    NoticeResponseDTO updateCrewNotice(Long id, NoticeSaveRequestDTO noticeSaveRequestDTO);
+    NoticeResponseDTO updateCrewNotice(AuthInfoDTO currentUser, Long id, NoticeSaveRequestDTO noticeSaveRequestDTO);
 
     NoticeResponseDTO deleteCrewNotice(Long id);
 }
