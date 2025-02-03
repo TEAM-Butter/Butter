@@ -1,6 +1,8 @@
 package com.ssafy.butter.domain.schedule.service;
 
+import com.ssafy.butter.auth.dto.AuthInfoDTO;
 import com.ssafy.butter.domain.crew.entity.Crew;
+import com.ssafy.butter.domain.crew.service.CrewMemberService;
 import com.ssafy.butter.domain.crew.service.CrewService;
 import com.ssafy.butter.domain.member.entity.Member;
 import com.ssafy.butter.domain.member.service.MemberService;
@@ -31,10 +33,15 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     private final MemberService memberService;
     private final CrewService crewService;
+    private final CrewMemberService crewMemberService;
 
     @Override
-    public ScheduleResponseDTO createSchedule(ScheduleSaveRequestDTO scheduleSaveRequestDTO) {
+    public ScheduleResponseDTO createSchedule(AuthInfoDTO currentUser, ScheduleSaveRequestDTO scheduleSaveRequestDTO) {
+        Member member = memberService.findById(currentUser.id());
         Crew crew = crewService.findById(scheduleSaveRequestDTO.crewId());
+        if (!crewMemberService.findByCrewAndMember(crew, member).getIsCrewAdmin()) {
+            throw new IllegalArgumentException("Current user is not crew admin");
+        }
         Schedule schedule = Schedule.builder()
                 .crew(crew)
                 .title(scheduleSaveRequestDTO.title())

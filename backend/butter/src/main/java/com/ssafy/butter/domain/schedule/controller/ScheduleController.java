@@ -1,11 +1,13 @@
 package com.ssafy.butter.domain.schedule.controller;
 
+import com.ssafy.butter.auth.dto.AuthInfoDTO;
 import com.ssafy.butter.domain.schedule.dto.request.ScheduleLikeRequestDTO;
 import com.ssafy.butter.domain.schedule.dto.request.ScheduleCalendarRequestDTO;
 import com.ssafy.butter.domain.schedule.dto.request.ScheduleSaveRequestDTO;
 import com.ssafy.butter.domain.schedule.dto.request.ScheduleSearchRequestDTO;
 import com.ssafy.butter.domain.schedule.dto.response.ScheduleResponseDTO;
 import com.ssafy.butter.domain.schedule.service.ScheduleService;
+import com.ssafy.butter.global.token.CurrentUser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -22,8 +24,8 @@ public class ScheduleController {
     private final ScheduleService scheduleService;
 
     @PostMapping
-    public ResponseEntity<?> createSchedule(@RequestBody ScheduleSaveRequestDTO scheduleSaveRequestDTO) {
-        ScheduleResponseDTO scheduleResponseDTO = scheduleService.createSchedule(scheduleSaveRequestDTO);
+    public ResponseEntity<?> createSchedule(@CurrentUser AuthInfoDTO currentUser, @RequestBody ScheduleSaveRequestDTO scheduleSaveRequestDTO) {
+        ScheduleResponseDTO scheduleResponseDTO = scheduleService.createSchedule(currentUser, scheduleSaveRequestDTO);
         return ResponseEntity.created(URI.create("/api/v1/schedule/detail/" + scheduleResponseDTO.id())).body(scheduleResponseDTO);
     }
 
