@@ -8,13 +8,14 @@ INSERT INTO member_type (member_type_id, name) VALUES (2, 'ADMIN');
 --genre
 INSERT INTO Genre (name) VALUES
                              ('Ballad'),
-                             ('Dance/Pop'),
-                             ('Folk/Acoustic'),
-                             ('Idol'),
-                             ('Rap/Hip-Hop'),
-                             ('R&B/Soul'),
+                             ('Dance'),
+                             ('Pop'),
+                             ('K-Pop'),
+                             ('Acoustic'),
+                             ('Hip-Hop'),
+                             ('R&B'),
                              ('Electronic'),
-                             ('Rock/Metal'),
+                             ('Rock'),
                              ('Jazz'),
                              ('Indie'),
                              ('Trot');
