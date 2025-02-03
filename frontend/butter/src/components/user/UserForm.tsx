@@ -9,7 +9,7 @@ const LgText = styled.div<ColorProps>`
     font-weight: 200;
 `
 
-const LoginInput = styled.input`
+const TextInput = styled.input`
     width: 100%;
     background-color: transparent;
     border: none;
@@ -20,14 +20,8 @@ const LoginInput = styled.input`
     margin-top: 10px;
 `
 
-const Modal = styled.div`
-    width: 100%;
-    color: #6D6D6D;
-    font-size: 14px;
-    padding: 10px 0 15px 0;
-`
 
-const LoginBtn = styled.button<ColorProps>`
+const FormBtn = styled.button<ColorProps>`
     border: none;
     background-color: ${(props) => props.bgColor};
     width: 100%;
@@ -40,35 +34,74 @@ const LoginBtn = styled.button<ColorProps>`
     span {
         color: var(--yellow);
     }
-`
+    `
 interface ColorProps {
     bgColor?: string;
     textColor?: string;
 }
 
+// Login Css
+const ForgetComment = styled.div`
+    width: 100%;
+    color: #6D6D6D;
+    font-size: 14px;
+    padding: 10px 0 15px 0;
+`
+
 export const LoginForm = () => {
   return (
         <FormWrapper>
             <LgText textColor="black">Log into<br/>your account</LgText>
-            <LoginInput placeholder="type your id."></LoginInput>
-            <LoginInput placeholder="type your password."></LoginInput>
-            <Modal>아이디/ 비밀번호를 잊어버리셨나요?</Modal>
-            <LoginBtn bgColor="rgba(0,0,0,0.4)" type="submit">Log in</LoginBtn>
-            <LoginBtn bgColor="black">Log in with <span>kakao</span></LoginBtn>
+            <TextInput placeholder="type your id." />
+            <TextInput placeholder="type your password." />
+            <ForgetComment>아이디/ 비밀번호를 잊어버리셨나요?</ForgetComment>
+            <FormBtn bgColor="rgba(0,0,0,0.4)" type="submit">Log in</FormBtn>
+            <FormBtn bgColor="black">Log in with <span>kakao</span></FormBtn>
         </FormWrapper>
   )
 };
 
+const RadioWrapper = styled.div`
+    display: flex;
+    gap: 5px;
+    padding: 10px 0;`
+
+const InputLabel = styled.label`
+    color: var(--darkgray);
+    display: flex;
+    align-items: center;
+    gap: 3px;
+`
+const RadioInput = styled.input`
+`
+const BirthInput = styled.input`
+    margin-left: 5px;
+`
+
 export const SignupForm = () => {
     return (
-          <FormWrapper>
-              <LgText textColor="black">Log into<br/>your account</LgText>
-              <LoginInput placeholder="type your id."></LoginInput>
-              <LoginInput placeholder="type your password."></LoginInput>
-              <Modal>아이디/ 비밀번호를 잊어버리셨나요?</Modal>
-              <LoginBtn bgColor="rgba(0,0,0,0.4)" type="submit">Log in</LoginBtn>
-              <LoginBtn bgColor="black">Log in with <span>kakao</span></LoginBtn>
-          </FormWrapper>
+        <FormWrapper>
+            <LgText textColor="black">Sign up<br/>your account</LgText>
+            <TextInput placeholder="type your id." />
+            <TextInput placeholder="type your email." />
+            <TextInput placeholder="type your password." />
+            <RadioWrapper>
+                <InputLabel>
+                    <RadioInput type="radio" id="gender" name="gender" />
+                    woman
+                </InputLabel>
+                <InputLabel>
+                    <RadioInput type="radio" id="gender" name="gender" />
+                    man
+                </InputLabel>
+            </RadioWrapper>
+            <InputLabel>
+                Birth Date
+                <BirthInput type="date" required aria-required="true"/>
+            </InputLabel>
+            <FormBtn bgColor="rgba(0,0,0,0.4)" type="submit">Sign up</FormBtn>
+            <FormBtn bgColor="black">Sign up with <span>kakao</span></FormBtn>
+        </FormWrapper>
     )
   };
 

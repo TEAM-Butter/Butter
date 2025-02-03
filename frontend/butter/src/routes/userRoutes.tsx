@@ -1,7 +1,7 @@
 import { Route } from "react-router-dom";
 import MemberDetailPage from "../pages/user/MemberDetailPage";
 import LoginPage from "../pages/user/LoginPage";
-import { SignupPage } from "../pages/user/SignupPage";
+import SignupPage from "../pages/user/SignupPage";
 
 export const userRoutes = (
   <>
