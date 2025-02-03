@@ -52,8 +52,8 @@ public class CrewController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateCrew(@PathVariable Long id, @ModelAttribute CrewSaveRequestDTO crewSaveRequestDTO) {
-        return ResponseEntity.ok(crewService.updateCrew(id, crewSaveRequestDTO));
+    public ResponseEntity<?> updateCrew(@CurrentUser AuthInfoDTO currentUser, @PathVariable Long id, @ModelAttribute CrewSaveRequestDTO crewSaveRequestDTO) {
+        return ResponseEntity.ok(crewService.updateCrew(currentUser, id, crewSaveRequestDTO));
     }
 
     @DeleteMapping("/{id}")

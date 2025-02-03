@@ -22,7 +22,7 @@ public interface CrewService {
 
     CrewResponseDTO getCrewDetail(Long id);
 
-    CrewResponseDTO updateCrew(Long id, CrewSaveRequestDTO crewSaveRequestDTO);
+    CrewResponseDTO updateCrew(AuthInfoDTO currentUser, Long id, CrewSaveRequestDTO crewSaveRequestDTO);
 
     CrewResponseDTO deleteCrew(Long id);
 

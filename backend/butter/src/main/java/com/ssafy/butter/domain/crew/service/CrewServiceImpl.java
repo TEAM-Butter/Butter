@@ -142,13 +142,19 @@ public class CrewServiceImpl implements CrewService {
 
     /**
      * 수정하려는 크루의 ID와 수정할 내용을 받아 DB에 반영하고 수정 결과를 반환한다.
-     * @param id 수정하려는 크루의 ID
+     * @param currentUser 현재 로그인한 유저 정보
+     * @param id                 수정하려는 크루의 ID
      * @param crewSaveRequestDTO 수정할 크루 내용을 담은 DTO
      * @return 수정된 크루 정보를 담은 DTO
      */
     @Override
-    public CrewResponseDTO updateCrew(Long id, CrewSaveRequestDTO crewSaveRequestDTO) {
+    public CrewResponseDTO updateCrew(AuthInfoDTO currentUser, Long id, CrewSaveRequestDTO crewSaveRequestDTO) {
+        Member currentMember = memberService.findById(currentUser.id());
         Crew crew = crewRepository.findById(id).orElseThrow();
+        CrewMember currentCrewMember = crewMemberRepository.findByCrewAndMember(crew, currentMember).orElseThrow();
+        if (!currentCrewMember.getIsCrewAdmin()) {
+            throw new IllegalArgumentException("Current user is not crew admin");
+        }
         String imageUrl = null;
         if (crewSaveRequestDTO.image() != null) {
             imageUrl = s3ImageUploader.uploadImage(crewSaveRequestDTO.image());
