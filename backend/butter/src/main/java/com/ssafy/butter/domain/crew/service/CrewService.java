@@ -1,5 +1,6 @@
 package com.ssafy.butter.domain.crew.service;
 
+import com.ssafy.butter.auth.dto.AuthInfoDTO;
 import com.ssafy.butter.domain.crew.dto.request.CrewFollowRequestDTO;
 import com.ssafy.butter.domain.crew.dto.request.CrewListRequestDTO;
 import com.ssafy.butter.domain.crew.dto.request.CrewMemberRequestDTO;
@@ -11,7 +12,7 @@ import java.util.List;
 
 public interface CrewService {
 
-    CrewResponseDTO createCrew(CrewSaveRequestDTO crewSaveRequestDTO);
+    CrewResponseDTO createCrew(AuthInfoDTO currentUser, CrewSaveRequestDTO crewSaveRequestDTO);
 
     void createCrewMember(CrewMemberRequestDTO crewMemberRequestDTO);
 

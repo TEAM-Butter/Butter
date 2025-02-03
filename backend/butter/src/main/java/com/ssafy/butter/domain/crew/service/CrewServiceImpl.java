@@ -1,5 +1,6 @@
 package com.ssafy.butter.domain.crew.service;
 
+import com.ssafy.butter.auth.dto.AuthInfoDTO;
 import com.ssafy.butter.domain.crew.dto.request.CrewFollowRequestDTO;
 import com.ssafy.butter.domain.crew.dto.request.CrewListRequestDTO;
 import com.ssafy.butter.domain.crew.dto.request.CrewMemberRequestDTO;
@@ -36,11 +37,12 @@ public class CrewServiceImpl implements CrewService {
 
     /**
      * 크루 생성 요청 DTO를 받아 크루를 생성 및 DB에 저장 후 크루 응답 DTO를 반환한다.
+     * @param currentUser 현재 로그인한 유저 정보
      * @param crewSaveRequestDTO 크루 생성 요청 정보를 담은 DTO
      * @return 크루 생성 응답 정보를 담은 DTO
      */
     @Override
-    public CrewResponseDTO createCrew(CrewSaveRequestDTO crewSaveRequestDTO) {
+    public CrewResponseDTO createCrew(AuthInfoDTO currentUser, CrewSaveRequestDTO crewSaveRequestDTO) {
         String imageUrl = null;
         if (crewSaveRequestDTO.image() != null) {
             imageUrl = s3ImageUploader.uploadImage(crewSaveRequestDTO.image());
@@ -53,7 +55,14 @@ public class CrewServiceImpl implements CrewService {
                 .imageUrl(imageUrl)
                 .portfolioVideoUrl(portfolioVideoUrl)
                 .build();
-        return CrewResponseDTO.fromEntity(crewRepository.save(crew));
+        Crew savedCrew = crewRepository.save(crew);
+
+        crewMemberRepository.save(CrewMember.builder()
+                .crew(savedCrew)
+                .member(memberService.findById(currentUser.id()))
+                .build());
+
+        return CrewResponseDTO.fromEntity(savedCrew);
     }
 
     /**
