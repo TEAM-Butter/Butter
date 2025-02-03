@@ -166,12 +166,18 @@ public class CrewServiceImpl implements CrewService {
 
     /**
      * 삭제하려는 크루 ID를 받아 해당 크루를 DB에서 삭제한다.
-     * @param id 삭제하려는 크루 ID
+     * @param currentUser 현재 로그인한 유저 정보
+     * @param id          삭제하려는 크루 ID
      * @return 삭제된 크루 정보를 담은 DTO
      */
     @Override
-    public CrewResponseDTO deleteCrew(Long id) {
+    public CrewResponseDTO deleteCrew(AuthInfoDTO currentUser, Long id) {
+        Member currentMember = memberService.findById(currentUser.id());
         Crew crew = crewRepository.findById(id).orElseThrow();
+        CrewMember currentCrewMember = crewMemberRepository.findByCrewAndMember(crew, currentMember).orElseThrow();
+        if (!currentCrewMember.getIsCrewAdmin()) {
+            throw new IllegalArgumentException("Current user is not crew admin");
+        }
         crewRepository.delete(crew);
         return CrewResponseDTO.fromEntity(crew);
     }
