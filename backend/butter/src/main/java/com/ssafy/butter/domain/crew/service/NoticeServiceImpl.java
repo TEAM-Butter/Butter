@@ -108,12 +108,18 @@ public class NoticeServiceImpl implements NoticeService {
 
     /**
      * 삭제하려는 크루 공지사항 ID를 받아 DB에서 삭제하고 삭제된 크루 공지사항을 반환한다.
-     * @param id 삭제하려는 크루 공지사항을 가리키는 ID
+     * @param currentUser 현재 로그인한 유저 정보
+     * @param id          삭제하려는 크루 공지사항을 가리키는 ID
      * @return 삭제된 크루 공지사항 정보를 담은 DTO
      */
     @Override
-    public NoticeResponseDTO deleteCrewNotice(Long id) {
+    public NoticeResponseDTO deleteCrewNotice(AuthInfoDTO currentUser, Long id) {
+        Member member = memberService.findById(currentUser.id());
         Notice notice = noticeRepository.findById(id).orElseThrow();
+        Crew crew = notice.getCrew();
+        if (!crewMemberRepository.findByCrewAndMember(crew, member).orElseThrow().getIsCrewAdmin()) {
+            throw new IllegalArgumentException("Current user is not crew admin");
+        }
         noticeRepository.delete(notice);
         return NoticeResponseDTO.fromEntity(notice);
     }

@@ -43,7 +43,7 @@ public class NoticeController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteCrewNotice(@PathVariable Long id) {
-        return ResponseEntity.ok(noticeService.deleteCrewNotice(id));
+    public ResponseEntity<?> deleteCrewNotice(@CurrentUser AuthInfoDTO currentUser, @PathVariable Long id) {
+        return ResponseEntity.ok(noticeService.deleteCrewNotice(currentUser, id));
     }
 }
