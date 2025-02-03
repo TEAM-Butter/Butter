@@ -114,6 +114,13 @@ public class Member {
         }
     }
 
+    public void saveExtraInfo(Nickname nickname, String profileImage, AvatarType avatarType, List<Genre> genres){
+        this.nickname = nickname;
+        this.profileImage = profileImage;
+        this.avatarType = avatarType;
+        updateMemberGenres(genres);
+    }
+
     public void changePassword(Password password){
         this.password = password;
     }
