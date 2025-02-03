@@ -58,4 +58,10 @@ export class RoomService {
             console.error("Error sending data to room", error);
         }
     }
+
+    async deleteRoom(roomName) {
+        if(this.exists(roomName))
+            await this.roomClient.deleteRoom(roomName);
+        return null;
+    }
 }

@@ -37,9 +37,9 @@ async function joinRoom() {
         track.detach();
         document.getElementById(track.sid)?.remove();
 
-        if (track.kind === "video") {
-            removeVideoContainer(participant.identity);
-        }
+   //     if (track.kind === "video") {
+   //         removeVideoContainer(participant.identity);
+    //    }
     });
 
     // When recording status changes...
@@ -61,7 +61,8 @@ async function joinRoom() {
         // Get the room name and participant name from the form
         const roomName = document.getElementById("room-name").value;
         const userName = document.getElementById("participant-name").value;
-
+        if (userName == 'Participant') isPublisher = false;
+        if (userName != 'Participant') isPublisher = true;
         // Get a token from your application server with the room name and participant name
         const token = await getToken(roomName, userName, isPublisher);
 
@@ -74,10 +75,11 @@ async function joinRoom() {
         document.getElementById("room").hidden = false;
 
         // Publish your camera and microphone
-        await room.localParticipant.enableCameraAndMicrophone();
-        const localVideoTrack = this.room.localParticipant.videoTrackPublications.values().next().value.track;
-        addTrack(localVideoTrack, userName, true);
-
+        if(isPublisher) {
+            await room.localParticipant.enableCameraAndMicrophone();
+            const localVideoTrack = this.room.localParticipant.videoTrackPublications.values().next().value.track;
+            addTrack(localVideoTrack, userName, true);
+        }
         // Update recording info
         const { recordingStatus } = JSON.parse(room.metadata);
         await updateRecordingInfo(recordingStatus);
@@ -108,8 +110,14 @@ function addTrack(track, participantIdentity, local = false) {
 }
 
 async function leaveRoom() {
-    stopRecording();
+    manageRecording();
+    
+    const roomName = document.getElementById("room-name").value;
+    const userName = document.getElementById("participant-name").value;
+    if (userName == 'Participant') isPublisher = false;
+    if (userName != 'Participant') isPublisher = true;
 
+    await leave(roomName, userName, isPublisher);
     // Leave the room by calling 'disconnect' method over the Room object
     await room.disconnect();
 
@@ -212,10 +220,25 @@ async function getToken(roomName, participantName, isPublisher) {
         participantName,
         role: isPublisher ? "publisher" : "subscriber"
     });
-    console.log(isPublisher ? "publisher" : "subscriber")
+    //console.log(isPublisher ? "publisher" : "subscriber")
 
     if (error) {
         throw new Error(`Failed to get token: ${error.message}`);
+    }
+
+    return body.token;
+}
+
+async function leave(roomName, participantName, isPublisher) {
+    const [error, body] = await httpRequest("POST", "/token/leave", {
+        roomName,
+        participantName,
+        role: isPublisher ? "publisher" : "subscriber"
+    });
+    //console.log(isPublisher ? "out publisher" : "out subscriber")
+
+    if (error) {
+        throw new Error(`Failed to leave room: ${error.message}`);
     }
 
     return body.token;
