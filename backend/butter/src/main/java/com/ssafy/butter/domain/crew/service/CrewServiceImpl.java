@@ -13,6 +13,7 @@ import com.ssafy.butter.domain.crew.repository.CrewRepository;
 import com.ssafy.butter.domain.crew.repository.FollowRepository;
 import com.ssafy.butter.domain.member.entity.Member;
 import com.ssafy.butter.domain.member.service.MemberService;
+import com.ssafy.butter.infrastructure.awsS3.S3ImageUploader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -27,6 +28,7 @@ import java.util.List;
 public class CrewServiceImpl implements CrewService {
 
     private final MemberService memberService;
+    private final S3ImageUploader s3ImageUploader;
 
     private final CrewRepository crewRepository;
     private final CrewMemberRepository crewMemberRepository;
@@ -39,28 +41,19 @@ public class CrewServiceImpl implements CrewService {
      */
     @Override
     public CrewResponseDTO createCrew(CrewSaveRequestDTO crewSaveRequestDTO) {
-        if (crewSaveRequestDTO.portfolioVideo() == null) {
-            throw new IllegalArgumentException("Portfolio video required");
+        String imageUrl = null;
+        if (crewSaveRequestDTO.image() != null) {
+            imageUrl = s3ImageUploader.uploadImage(crewSaveRequestDTO.image());
         }
-
+        String portfolioVideoUrl = s3ImageUploader.uploadImage(crewSaveRequestDTO.portfolioVideo());
         Crew crew = Crew.builder()
                 .name(crewSaveRequestDTO.name())
                 .description(crewSaveRequestDTO.description())
                 .promotionUrl(crewSaveRequestDTO.promotionUrl())
-                .portfolioVideoUrl("")
+                .imageUrl(imageUrl)
+                .portfolioVideoUrl(portfolioVideoUrl)
                 .build();
-        Crew savedCrew = crewRepository.save(crew);
-
-        String filenamePrefix = crew.getId() + "_" + System.currentTimeMillis() + "_";
-        String imageUrl = null;
-        if (crewSaveRequestDTO.image() != null) {
-            imageUrl = filenamePrefix + crewSaveRequestDTO.image().getOriginalFilename();
-        }
-        String portfolioVideoUrl = filenamePrefix + crewSaveRequestDTO.portfolioVideo().getOriginalFilename();
-
-        savedCrew.updateImageUrl(imageUrl);
-        savedCrew.updatePortfolioVideoUrl(portfolioVideoUrl);
-        return CrewResponseDTO.fromEntity(crewRepository.save(savedCrew));
+        return CrewResponseDTO.fromEntity(crewRepository.save(crew));
     }
 
     /**
@@ -111,6 +104,7 @@ public class CrewServiceImpl implements CrewService {
         } else {
             return null;
         }
+        // TODO 키워드가 주어진 경우 처리 로직 필요
     }
 
     /**
@@ -132,18 +126,12 @@ public class CrewServiceImpl implements CrewService {
     @Override
     public CrewResponseDTO updateCrew(Long id, CrewSaveRequestDTO crewSaveRequestDTO) {
         Crew crew = crewRepository.findById(id).orElseThrow();
-        String filenamePrefix = crew.getId() + "_" + System.currentTimeMillis() + "_";
         String imageUrl = null;
         if (crewSaveRequestDTO.image() != null) {
-            imageUrl = filenamePrefix + crewSaveRequestDTO.image().getOriginalFilename();
+            imageUrl = s3ImageUploader.uploadImage(crewSaveRequestDTO.image());
         }
-        String portfolioVideoUrl = filenamePrefix + crewSaveRequestDTO.portfolioVideo().getOriginalFilename();
 
-        crew.updateName(crewSaveRequestDTO.name());
-        crew.updateDescription(crewSaveRequestDTO.description());
-        crew.updatePromotionUrl(crewSaveRequestDTO.promotionUrl());
-        crew.updateImageUrl(imageUrl);
-        crew.updatePortfolioVideoUrl(portfolioVideoUrl);
+        crew.update(crewSaveRequestDTO, imageUrl);
         return CrewResponseDTO.fromEntity(crewRepository.save(crew));
     }
 
@@ -168,14 +156,20 @@ public class CrewServiceImpl implements CrewService {
     public void followCrew(Long memberId, CrewFollowRequestDTO crewFollowRequestDTO) {
         Crew crew = crewRepository.findById(crewFollowRequestDTO.crewId()).orElseThrow();
         Member member = memberService.findById(memberId);
-        followRepository.findByCrewAndMember(crew, member).ifPresent(follow -> {
-            throw new IllegalArgumentException("Crew follower already exists");
+        followRepository.findByCrewAndMember(crew, member).ifPresentOrElse(follow -> {
+            if (follow.getIsFollowed()) {
+                throw new IllegalArgumentException("Crew follower already exists");
+            }
+            follow.updateIsFollowed(true);
+            followRepository.save(follow);
+        }, () -> {
+            Follow follow = Follow.builder()
+                    .crew(crew)
+                    .member(member)
+                    .isFollowed(true)
+                    .build();
+            followRepository.save(follow);
         });
-        Follow follow = Follow.builder()
-                .crew(crew)
-                .member(member)
-                .build();
-        followRepository.save(follow);
     }
 
     /**
@@ -188,7 +182,8 @@ public class CrewServiceImpl implements CrewService {
         Crew crew = crewRepository.findById(crewId).orElseThrow();
         Member member = memberService.findById(memberId);
         Follow follow = followRepository.findByCrewAndMember(crew, member).orElseThrow();
-        followRepository.delete(follow);
+        follow.updateIsFollowed(false);
+        followRepository.save(follow);
     }
 
     /**
@@ -198,5 +193,15 @@ public class CrewServiceImpl implements CrewService {
     @Override
     public List<CrewResponseDTO> getRecommendedCrewList() {
         return List.of();
+    }
+
+    /**
+     * 크루의 ID를 받아 해당 크루 엔티티를 반환한다.
+     * @param id 크루 ID
+     * @return 해당 크루 엔티티
+     */
+    @Override
+    public Crew findById(Long id) {
+        return crewRepository.findById(id).orElseThrow();
     }
 }

@@ -6,6 +6,7 @@ import com.ssafy.butter.domain.crew.dto.response.NoticeResponseDTO;
 import com.ssafy.butter.domain.crew.entity.Notice;
 import com.ssafy.butter.domain.crew.repository.CrewRepository;
 import com.ssafy.butter.domain.crew.repository.NoticeRepository;
+import com.ssafy.butter.infrastructure.awsS3.S3ImageUploader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -17,6 +18,8 @@ import java.util.List;
 @Service
 public class NoticeServiceImpl implements NoticeService {
 
+    private final S3ImageUploader s3ImageUploader;
+
     private final CrewRepository crewRepository;
     private final NoticeRepository noticeRepository;
 
@@ -27,21 +30,17 @@ public class NoticeServiceImpl implements NoticeService {
      */
     @Override
     public NoticeResponseDTO createCrewNotice(NoticeSaveRequestDTO noticeSaveRequestDTO) {
+        String imageUrl = null;
+        if (noticeSaveRequestDTO.image() != null) {
+            imageUrl = s3ImageUploader.uploadImage(noticeSaveRequestDTO.image());
+        }
         Notice notice = Notice.builder()
                 .crew(crewRepository.findById(noticeSaveRequestDTO.crewId()).orElseThrow())
                 .title(noticeSaveRequestDTO.title())
                 .content(noticeSaveRequestDTO.content())
-                .imageUrl(null)
+                .imageUrl(imageUrl)
                 .build();
-        Notice savedNotice = noticeRepository.save(notice);
-
-        if (noticeSaveRequestDTO.image() != null) {
-            String filenamePrefix = savedNotice.getId() + "_" + System.currentTimeMillis() + "_";
-            savedNotice.updateImageUrl(filenamePrefix + noticeSaveRequestDTO.image().getOriginalFilename());
-            return NoticeResponseDTO.fromEntity(noticeRepository.save(savedNotice));
-        } else {
-            return NoticeResponseDTO.fromEntity(notice);
-        }
+        return NoticeResponseDTO.fromEntity(notice);
     }
 
     /**
@@ -78,14 +77,11 @@ public class NoticeServiceImpl implements NoticeService {
     @Override
     public NoticeResponseDTO updateCrewNotice(Long id, NoticeSaveRequestDTO noticeSaveRequestDTO) {
         Notice notice = noticeRepository.findById(id).orElseThrow();
-        notice.updateTitle(noticeSaveRequestDTO.title());
-        notice.updateContent(noticeSaveRequestDTO.content());
+        String imageUrl = null;
         if (noticeSaveRequestDTO.image() != null) {
-            String filenamePrefix = notice.getId() + "_" + System.currentTimeMillis() + "_";
-            notice.updateImageUrl(filenamePrefix + noticeSaveRequestDTO.image().getOriginalFilename());
-        } else {
-            notice.updateImageUrl(null);
+            imageUrl = s3ImageUploader.uploadImage(noticeSaveRequestDTO.image());
         }
+        notice.update(noticeSaveRequestDTO, imageUrl);
         return NoticeResponseDTO.fromEntity(noticeRepository.save(notice));
     }
 
