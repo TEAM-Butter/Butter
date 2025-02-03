@@ -1,4 +1,5 @@
 import styled from "@emotion/styled";
+import { useState } from "react";
 
 const FormWrapper = styled.form``
 
@@ -48,17 +49,21 @@ const ForgetComment = styled.div`
     padding: 10px 0 15px 0;
 `
 
-export const LoginForm = () => {
-  return (
-        <FormWrapper>
-            <LgText textColor="black">Log into<br/>your account</LgText>
-            <TextInput placeholder="type your id." />
-            <TextInput placeholder="type your password." />
-            <ForgetComment>아이디/ 비밀번호를 잊어버리셨나요?</ForgetComment>
-            <FormBtn bgColor="rgba(0,0,0,0.4)" type="submit">Log in</FormBtn>
-            <FormBtn bgColor="black">Log in with <span>kakao</span></FormBtn>
-        </FormWrapper>
-  )
+interface ModalProps{
+    setModalType: React.Dispatch<React.SetStateAction<string>>,
+}
+
+export const LoginForm = ({setModalType}: ModalProps) => {
+    return (
+            <FormWrapper>
+                <LgText textColor="black">Log into<br/>your account</LgText>
+                <TextInput placeholder="type your id." />
+                <TextInput placeholder="type your password." />
+                <ForgetComment className="openModalBtn" onClick={() => { setModalType("forgotAuth") }}>아이디/ 비밀번호를 잊어버리셨나요?</ForgetComment>
+                <FormBtn bgColor="rgba(0,0,0,0.4)" type="submit">Log in</FormBtn>
+                <FormBtn bgColor="black">Log in with <span>kakao</span></FormBtn>
+            </FormWrapper>
+    )
 };
 
 const RadioWrapper = styled.div`
