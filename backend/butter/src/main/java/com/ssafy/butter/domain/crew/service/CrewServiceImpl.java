@@ -184,8 +184,7 @@ public class CrewServiceImpl implements CrewService {
 
     /**
      * 팔로우하는 사용자의 ID와 팔로우 대상의 ID를 담은 DTO를 받아 팔로우 정보를 DB에 저장한다.
-     *
-     * @param currentUser
+     * @param currentUser 현재 로그인한 유저 정보
      * @param crewFollowRequestDTO 팔로우 대상의 ID를 담은 DTO
      */
     @Override
@@ -210,13 +209,13 @@ public class CrewServiceImpl implements CrewService {
 
     /**
      * 팔로우하는 사용자의 ID와 팔로우 대상의 ID를 받아 팔로우 정보를 DB에서 삭제한다.
-     * @param memberId 팔로우하는 사용자의 ID
-     * @param crewId 팔로우 대상의 ID
+     * @param currentUser 현재 로그인한 유저 정보
+     * @param crewId      팔로우 대상의 ID
      */
     @Override
-    public void unfollowCrew(Long memberId, Long crewId) {
+    public void unfollowCrew(AuthInfoDTO currentUser, Long crewId) {
         Crew crew = crewRepository.findById(crewId).orElseThrow();
-        Member member = memberService.findById(memberId);
+        Member member = memberService.findById(currentUser.id());
         Follow follow = followRepository.findByCrewAndMember(crew, member).orElseThrow();
         follow.updateIsFollowed(false);
         followRepository.save(follow);

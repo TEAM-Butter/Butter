@@ -28,7 +28,7 @@ public interface CrewService {
 
     void followCrew(AuthInfoDTO currentUser, CrewFollowRequestDTO crewFollowRequestDTO);
 
-    void unfollowCrew(Long memberId, Long crewId);
+    void unfollowCrew(AuthInfoDTO currentUser, Long crewId);
 
     List<CrewResponseDTO> getRecommendedCrewList();
 

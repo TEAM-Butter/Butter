@@ -68,8 +68,8 @@ public class CrewController {
     }
 
     @DeleteMapping("/{id}/follow")
-    public ResponseEntity<?> unfollowCrew(@PathVariable Long id) {
-        crewService.unfollowCrew(1L, id);
+    public ResponseEntity<?> unfollowCrew(@CurrentUser AuthInfoDTO currentUser, @PathVariable Long id) {
+        crewService.unfollowCrew(currentUser, id);
         return ResponseEntity.noContent().build();
     }
 
