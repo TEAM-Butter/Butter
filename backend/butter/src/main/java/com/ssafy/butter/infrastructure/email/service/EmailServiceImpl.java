@@ -4,6 +4,7 @@ import com.ssafy.butter.infrastructure.email.constants.EmailConstants;
 import com.ssafy.butter.infrastructure.email.constants.EmailErrorMessages;
 import com.ssafy.butter.infrastructure.email.dto.request.SendEmailDTO;
 import com.ssafy.butter.infrastructure.email.dto.request.VerifyCodeEmailDTO;
+import com.ssafy.butter.infrastructure.email.enums.EmailType;
 import com.ssafy.butter.infrastructure.redis.RedisManager;
 import com.ssafy.butter.infrastructure.redis.handler.exception.CustomValidationException;
 import com.ssafy.butter.infrastructure.redis.handler.exception.EmailSendException;
@@ -33,7 +34,7 @@ public class EmailServiceImpl implements EmailService{
         String type = sendEmailDTO.type().name();
 
         String verificationCode = createRandomCode();
-        long expirationTime = (email.equals("signup")) ? EmailConstants.SIGNUP_EXPIRE_MIN : EmailConstants.ELSE_EXPIRE_MIN;
+        long expirationTime = (type.equals(EmailType.SIGNUP.name())) ? EmailConstants.SIGNUP_EXPIRE_MIN : EmailConstants.ELSE_EXPIRE_MIN;
 
         saveCodeToRedis(email, type, verificationCode, expirationTime);
 
