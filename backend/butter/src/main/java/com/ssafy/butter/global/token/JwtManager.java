@@ -9,6 +9,8 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import javax.crypto.SecretKey;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,10 +36,13 @@ public class JwtManager {
         Date now = new Date();
         Date validity = new Date(now.getTime() + validityInMilliseconds);
 
+        String birthdate = authInfo.birthDate().format(DateTimeFormatter.ISO_DATE);
+
         return Jwts.builder()
                 .claim("id", authInfo.id())
                 .claim("email", authInfo.email())
-                .claim("name", authInfo.name())
+                .claim("gender", authInfo.gender())
+                .claim("birthdate", birthdate)
                 .issuedAt(now)
                 .expiration(validity)
                 .signWith(signingKey)
@@ -75,14 +80,16 @@ public class JwtManager {
         } catch (ExpiredJwtException e) {
             Long id = e.getClaims().get("id", Long.class);
             String email = e.getClaims().get("email", String.class);
-            String name = e.getClaims().get("name", String.class);
-            return new AuthInfoDTO(id, email, name);
+            String gender = e.getClaims().get("gender", String.class);
+            String birthdate = e.getClaims().get("birthdate", String.class);
+            return new AuthInfoDTO(id, email, gender, LocalDate.parse(birthdate));
         }
 
         Long id = claims.get("id", Long.class);
         String email = claims.get("email", String.class);
-        String name = claims.get("name", String.class);
-        return new AuthInfoDTO(id, email, name);
+        String gender = claims.get("gender", String.class);
+        String birthdate = claims.get("birthdate", String.class);
+        return new AuthInfoDTO(id, email, gender, LocalDate.parse(birthdate));
     }
 
     public boolean isValid(String token) {
