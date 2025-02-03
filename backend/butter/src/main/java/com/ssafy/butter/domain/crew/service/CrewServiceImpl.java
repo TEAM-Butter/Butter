@@ -184,13 +184,14 @@ public class CrewServiceImpl implements CrewService {
 
     /**
      * 팔로우하는 사용자의 ID와 팔로우 대상의 ID를 담은 DTO를 받아 팔로우 정보를 DB에 저장한다.
-     * @param memberId 팔로우하는 사용자의 ID
+     *
+     * @param currentUser
      * @param crewFollowRequestDTO 팔로우 대상의 ID를 담은 DTO
      */
     @Override
-    public void followCrew(Long memberId, CrewFollowRequestDTO crewFollowRequestDTO) {
+    public void followCrew(AuthInfoDTO currentUser, CrewFollowRequestDTO crewFollowRequestDTO) {
         Crew crew = crewRepository.findById(crewFollowRequestDTO.crewId()).orElseThrow();
-        Member member = memberService.findById(memberId);
+        Member member = memberService.findById(currentUser.id());
         followRepository.findByCrewAndMember(crew, member).ifPresentOrElse(follow -> {
             if (follow.getIsFollowed()) {
                 throw new IllegalArgumentException("Crew follower already exists");

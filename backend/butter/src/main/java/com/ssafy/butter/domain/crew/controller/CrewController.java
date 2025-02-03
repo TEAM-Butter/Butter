@@ -62,8 +62,8 @@ public class CrewController {
     }
 
     @PostMapping("/follow")
-    public ResponseEntity<?> followCrew(@RequestBody CrewFollowRequestDTO crewFollowRequestDTO) {
-        crewService.followCrew(1L, crewFollowRequestDTO);
+    public ResponseEntity<?> followCrew(@CurrentUser AuthInfoDTO currentUser, @RequestBody CrewFollowRequestDTO crewFollowRequestDTO) {
+        crewService.followCrew(currentUser, crewFollowRequestDTO);
         return ResponseEntity.noContent().build();
     }
 
