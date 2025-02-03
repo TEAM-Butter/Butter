@@ -16,7 +16,7 @@ public interface CrewService {
 
     void createCrewMember(AuthInfoDTO currentUser, CrewMemberRequestDTO crewMemberRequestDTO);
 
-    void deleteCrewMember(Long crewId, Long memberId);
+    void deleteCrewMember(AuthInfoDTO currentUser, Long crewId, Long memberId);
 
     List<CrewResponseDTO> getCrewList(CrewListRequestDTO crewListRequestDTO);
 

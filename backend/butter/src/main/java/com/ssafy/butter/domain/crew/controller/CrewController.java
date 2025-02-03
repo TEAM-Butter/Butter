@@ -36,8 +36,8 @@ public class CrewController {
     }
 
     @DeleteMapping("/{crewId}/member/{memberId}")
-    public ResponseEntity<?> deleteCrewMember(@PathVariable Long crewId, @PathVariable Long memberId) {
-        crewService.deleteCrewMember(crewId, memberId);
+    public ResponseEntity<?> deleteCrewMember(@CurrentUser AuthInfoDTO currentUser, @PathVariable Long crewId, @PathVariable Long memberId) {
+        crewService.deleteCrewMember(currentUser, crewId, memberId);
         return ResponseEntity.noContent().build();
     }
 
