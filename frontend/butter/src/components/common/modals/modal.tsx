@@ -283,11 +283,13 @@ const ExtraInfoLabel = styled.label`
 
 const ExtraInfoInput = styled.input`
     width: 90%;
-    padding: 10px 5px;
+    padding: 10px 15px;
     background: none;
     border: none;
     border: 1px solid var(--yellow);
     border-radius: 10px;
+    color: white;
+    font-size: 15px;
 `
 const ExtraInfoInputWrapper = styled.div`
     display: grid;
