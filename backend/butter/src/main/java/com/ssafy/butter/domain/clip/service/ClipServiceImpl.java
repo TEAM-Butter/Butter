@@ -1,5 +1,6 @@
 package com.ssafy.butter.domain.clip.service;
 
+import com.ssafy.butter.auth.dto.AuthInfoDTO;
 import com.ssafy.butter.domain.clip.dto.request.ClipLikeRequestDTO;
 import com.ssafy.butter.domain.clip.dto.request.ClipListRequestDTO;
 import com.ssafy.butter.domain.clip.dto.request.ClipSaveRequestDTO;
@@ -8,6 +9,8 @@ import com.ssafy.butter.domain.clip.entity.Clip;
 import com.ssafy.butter.domain.clip.entity.LikedClip;
 import com.ssafy.butter.domain.clip.repository.ClipRepository;
 import com.ssafy.butter.domain.clip.repository.LikedClipRepository;
+import com.ssafy.butter.domain.crew.entity.Crew;
+import com.ssafy.butter.domain.crew.service.CrewMemberService;
 import com.ssafy.butter.domain.live.entity.Live;
 import com.ssafy.butter.domain.live.service.LiveService;
 import com.ssafy.butter.domain.member.entity.Member;
@@ -25,13 +28,20 @@ public class ClipServiceImpl implements ClipService {
 
     private final MemberService memberService;
     private final LiveService liveService;
+    private final CrewMemberService crewMemberService;
 
     private final ClipRepository clipRepository;
     private final LikedClipRepository likedClipRepository;
 
     @Override
-    public ClipResponseDTO createClip(ClipSaveRequestDTO clipSaveRequestDTO) {
+    public ClipResponseDTO createClip(AuthInfoDTO currentUser, ClipSaveRequestDTO clipSaveRequestDTO) {
+        Member member = memberService.findById(currentUser.id());
         Live live = liveService.findById(clipSaveRequestDTO.liveId());
+        Crew crew = live.getCrew();
+        if (!crewMemberService.findByCrewAndMember(crew, member).getIsCrewAdmin()) {
+            throw new IllegalArgumentException("Current user is not crew admin");
+        }
+
         Clip clip = Clip.builder()
                 .live(live)
                 .title(clipSaveRequestDTO.title())

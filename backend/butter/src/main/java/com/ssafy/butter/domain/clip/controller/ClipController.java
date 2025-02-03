@@ -1,14 +1,15 @@
 package com.ssafy.butter.domain.clip.controller;
 
+import com.ssafy.butter.auth.dto.AuthInfoDTO;
 import com.ssafy.butter.domain.clip.dto.request.ClipLikeRequestDTO;
 import com.ssafy.butter.domain.clip.dto.request.ClipListRequestDTO;
 import com.ssafy.butter.domain.clip.dto.request.ClipSaveRequestDTO;
 import com.ssafy.butter.domain.clip.dto.response.ClipResponseDTO;
 import com.ssafy.butter.domain.clip.service.ClipService;
+import com.ssafy.butter.global.token.CurrentUser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -29,8 +30,8 @@ public class ClipController {
     private final ClipService clipService;
 
     @PostMapping
-    public ResponseEntity<?> createClip(@ModelAttribute ClipSaveRequestDTO clipSaveRequestDTO) {
-        ClipResponseDTO clipResponseDTO = clipService.createClip(clipSaveRequestDTO);
+    public ResponseEntity<?> createClip(@CurrentUser AuthInfoDTO currentUser, @ModelAttribute ClipSaveRequestDTO clipSaveRequestDTO) {
+        ClipResponseDTO clipResponseDTO = clipService.createClip(currentUser, clipSaveRequestDTO);
         return ResponseEntity.created(URI.create("/api/v1/clip/detail/" + clipResponseDTO.id())).body(clipResponseDTO);
     }
 
