@@ -21,7 +21,7 @@ public interface ScheduleService {
 
     ScheduleResponseDTO updateSchedule(AuthInfoDTO currentUser, Long id, ScheduleSaveRequestDTO scheduleSaveRequestDTO);
 
-    ScheduleResponseDTO deleteSchedule(Long id);
+    ScheduleResponseDTO deleteSchedule(AuthInfoDTO currentUser, Long id);
 
     void likeSchedule(Long memberId, ScheduleLikeRequestDTO scheduleLikeRequestDTO);
 

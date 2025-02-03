@@ -88,8 +88,13 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
-    public ScheduleResponseDTO deleteSchedule(Long id) {
+    public ScheduleResponseDTO deleteSchedule(AuthInfoDTO currentUser, Long id) {
+        Member member = memberService.findById(currentUser.id());
         Schedule schedule = scheduleRepository.findById(id).orElseThrow();
+        Crew crew = schedule.getCrew();
+        if (!crewMemberService.findByCrewAndMember(crew, member).getIsCrewAdmin()) {
+            throw new IllegalArgumentException("Current user is not crew admin");
+        }
         scheduleRepository.delete(schedule);
         return ScheduleResponseDTO.fromEntity(schedule);
     }
