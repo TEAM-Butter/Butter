@@ -73,10 +73,9 @@ public class Member {
     @NotNull
     private LocalDate createDate;
 
-    @Builder
-    public Member(MemberType memberType, List<MemberGenre> memberGenres, String loginId, Nickname nickname, Email email,
-                  BirthDate birthDate, BreadAmount breadAmount, Password password, String profileImage, Gender gender,
-                  Integer avatarType, LocalDate createDate) {
+    private boolean isExtraInfoRegistered;
+
+    public Member(MemberType memberType, List<MemberGenre> memberGenres, String loginId, Nickname nickname, Email email, BirthDate birthDate, BreadAmount breadAmount, Password password, String profileImage, Gender gender, Integer avatarType, LocalDate createDate, boolean isExtraInfoRegistered) {
         this.memberType = memberType;
         this.memberGenres = memberGenres;
         this.loginId = loginId;
@@ -89,8 +88,10 @@ public class Member {
         this.gender = gender;
         this.avatarType = avatarType;
         this.createDate = createDate;
+        this.isExtraInfoRegistered = isExtraInfoRegistered;
     }
 
+    @Builder
     public void updateProfile(String nickname, String gender, String profileImage){
         if(nickname != null){
             this.nickname = new Nickname(nickname);
