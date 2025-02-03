@@ -9,8 +9,9 @@ public record NaverUserDetailsResponseDTO(
 ) {
     public static record NaverUserDetailsDTO(
         String id,
-        String nickname,
         String email,
-        String mobile
+        String gender,
+        String birthday,
+        String birthyear
     ){}
 }

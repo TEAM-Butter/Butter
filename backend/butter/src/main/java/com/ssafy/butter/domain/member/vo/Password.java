@@ -16,7 +16,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Password {
 
-    @NotNull
     @Column(name = "password", length = 200)
     private String value;
 
@@ -36,6 +35,10 @@ public class Password {
     public Password encrypt(EncryptUtils encryptUtils){
         String encrypted = encryptUtils.encrypt(this.value);
         return new Password(encrypted);
+    }
+
+    public boolean match(EncryptUtils encryptUtils, String typedPassword){
+        return encryptUtils.isMatch(typedPassword, this.value);
     }
 
     private static void validate(String value) {

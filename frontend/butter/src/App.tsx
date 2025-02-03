@@ -4,7 +4,8 @@ import NotFoundPage from "./pages/error/NotFoundPage";
 import { userRoutes } from "./routes/userRoutes";
 import { streamRoutes } from "./routes/streamRoutes";
 import { buskingRoutes } from "./routes/buskingRoutes";
-import { crewRoutes } from "./routes/crewRoutes";
+import { crewRoutes } from "./routes/crewRoutes"
+import "./styles/index.css";
 import { CommonLayout } from "./layouts/CommonLayout";
 
 import "./styles/reset.css";

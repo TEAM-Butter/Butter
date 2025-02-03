@@ -1,7 +1,14 @@
 package com.ssafy.butter.domain.member.service;
 
+import com.ssafy.butter.auth.dto.AuthInfoDTO;
+import com.ssafy.butter.domain.member.dto.request.PasswordUpdateRequestDTO;
+import com.ssafy.butter.domain.member.dto.response.PasswordUpdateResponseDTO;
+import com.ssafy.butter.domain.member.dto.response.ProfileUpdateResponseDTO;
+import com.ssafy.butter.domain.member.dto.request.ProfileUpdateRequestDTO;
 import com.ssafy.butter.domain.member.entity.Member;
+import com.ssafy.butter.domain.member.enums.Gender;
 import com.ssafy.butter.domain.member.repository.MemberRepository;
+import com.ssafy.butter.global.token.JwtManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,27 +17,22 @@ import com.ssafy.butter.domain.member.dto.request.SignUpDTO;
 import com.ssafy.butter.domain.member.dto.response.MyPageResponseDTO;
 import com.ssafy.butter.domain.member.vo.BirthDate;
 import com.ssafy.butter.domain.member.vo.Email;
-import com.ssafy.butter.domain.member.entity.Member;
-import com.ssafy.butter.domain.member.vo.Nickname;
 import com.ssafy.butter.domain.member.vo.Password;
-import com.ssafy.butter.domain.member.vo.PhoneNumber;
-import com.ssafy.butter.domain.member.repository.MemberRepository;
 import com.ssafy.butter.global.util.encrypt.EncryptUtils;
 import com.ssafy.butter.infrastructure.awsS3.ImageUploader;
-import com.ssafy.butter.infrastructure.awsS3.S3ImageUploader;
-import com.ssafy.butter.infrastructure.emailAuth.dto.request.EmailDTO;
-import jakarta.mail.Multipart;
+import com.ssafy.butter.infrastructure.email.dto.request.SendEmailDTO;
+
 import java.util.Optional;
-import lombok.RequiredArgsConstructor;
+
 import org.apache.coyote.BadRequestException;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService{
 
+    private final TransactionalMemberService transactionalMemberService;
+    private final JwtManager jwtManager;
     private final MemberRepository memberRepository;
     private final EncryptUtils encryptUtils;
     private final ImageUploader imageUploader;
@@ -45,6 +47,17 @@ public class MemberServiceImpl implements MemberService{
         return memberRepository.findById(id).orElseThrow();
     }
 
+
+    /**
+     * 찾으려는 회원의 email로 해당 회원 정보를 반환한다
+     * @param email 찾으려는 회원 email
+     * @return 회원 정보 엔티티
+     */
+    @Override
+    public Optional<Member> findByEmail(String email) {
+        return memberRepository.findByEmail(email);
+    }
+
     /**
      * 회원 가입을 한다
      * @param signUpDTO 회원 가입 요청에 필요한 DTO
@@ -53,17 +66,13 @@ public class MemberServiceImpl implements MemberService{
     @Override
     public Member signUp(SignUpDTO signUpDTO, MultipartFile profileImage) {
         Password encryptedPassword = createEncryptedPassword(signUpDTO.password().getValue());
-        String imageUrl = insertProfileImage(profileImage);
 
         return memberRepository.save(Member.builder()
                 .loginId(signUpDTO.loginId())
-                .nickname(new Nickname(signUpDTO.nickname()))
                 .email(new Email(signUpDTO.email()))
-                .phoneNumber(new PhoneNumber(signUpDTO.phoneNumber()))
                 .birthDate(new BirthDate(signUpDTO.birthDate()))
                 .password(encryptedPassword)
-                .gender(signUpDTO.gender())
-                .imageUrl(imageUrl)
+                .gender(Gender.valueOf(signUpDTO.gender()))
                 .build());
     }
 
@@ -85,12 +94,59 @@ public class MemberServiceImpl implements MemberService{
     }
 
     /**
+     * 파라미터 이메일과 동일한 닉네임을 가진 멤버의 존재 여부를 반환한다
+     * @param nickname 닉네임
+     * @return 동일 닉네임을 가지는 멤버의 존재 여부
+     */
+    @Override
+    public boolean checkIfNickNameExists(String nickname) {
+        Optional<Member> findMember = memberRepository.findByEmail(nickname);
+        return findMember.isPresent();
+    }
+
+    /**
+     * 프로필 업데이트 후, 업데이트한 회원의 정보를 반환한다
+     *
+     * @param profileUpdateRequestDTO 업데이트 할 회원의 프로필 정보
+     * @param memberId 회원의 데이터베이스 상 고유 id
+     * @return
+     */
+    @Override
+    public ProfileUpdateResponseDTO updateProfile(ProfileUpdateRequestDTO profileUpdateRequestDTO, Long memberId) {
+        Member findMember = memberRepository.findById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("ERR : 존재하지 않는 회원입니다."));
+
+        String imageUrl = insertProfileImage(profileUpdateRequestDTO.profileImage());
+
+        return transactionalMemberService.updateProfileInTransaction(findMember, profileUpdateRequestDTO, imageUrl);
+    }
+
+    @Override
+    @Transactional
+    public PasswordUpdateResponseDTO updatePassword(PasswordUpdateRequestDTO passwordUpdateRequestDTO, AuthInfoDTO authInfoDTO) {
+        Member findMember = memberRepository.findById(authInfoDTO.id())
+                .orElseThrow(() -> new IllegalArgumentException("ERR : 존재하지 않는 회원입니다."));
+
+        if(!findMember.getPassword().match(encryptUtils, passwordUpdateRequestDTO.currentPassword())){
+            throw new IllegalStateException("ERR : 현재 비밀 번호가 일치하지 않습니다");
+        }
+
+        Password newPassword = createEncryptedPassword(passwordUpdateRequestDTO.newPassword());
+        findMember.changePassword(newPassword);
+
+        String accessToken = jwtManager.createAccessToken(authInfoDTO);
+        String refreshToken = jwtManager.createRefreshToken();
+
+        return new PasswordUpdateResponseDTO(accessToken, refreshToken);
+    }
+
+    /**
      * 파라미터 이메일과 동일한 이메일로 가입한 멤버의 존재 여부를 반환한다
      * @param emailDTO 이메일 DTO
      * @return 동일 이메일로 가입한 멤버의 존재 여부
      */
     @Override
-    public boolean checkIfEmailExists(EmailDTO emailDTO) {
+    public boolean checkIfEmailExists(SendEmailDTO emailDTO) {
         Optional<Member> findMember = memberRepository.findByEmail(emailDTO.email());
         return findMember.isPresent();
     }
