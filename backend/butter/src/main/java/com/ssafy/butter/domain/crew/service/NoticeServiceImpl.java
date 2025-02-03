@@ -1,11 +1,16 @@
 package com.ssafy.butter.domain.crew.service;
 
+import com.ssafy.butter.auth.dto.AuthInfoDTO;
 import com.ssafy.butter.domain.crew.dto.request.NoticeListRequestDTO;
 import com.ssafy.butter.domain.crew.dto.request.NoticeSaveRequestDTO;
 import com.ssafy.butter.domain.crew.dto.response.NoticeResponseDTO;
+import com.ssafy.butter.domain.crew.entity.Crew;
 import com.ssafy.butter.domain.crew.entity.Notice;
+import com.ssafy.butter.domain.crew.repository.CrewMemberRepository;
 import com.ssafy.butter.domain.crew.repository.CrewRepository;
 import com.ssafy.butter.domain.crew.repository.NoticeRepository;
+import com.ssafy.butter.domain.member.entity.Member;
+import com.ssafy.butter.domain.member.service.MemberService;
 import com.ssafy.butter.infrastructure.awsS3.S3ImageUploader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -20,22 +25,32 @@ public class NoticeServiceImpl implements NoticeService {
 
     private final S3ImageUploader s3ImageUploader;
 
+    private final MemberService memberService;
+
     private final CrewRepository crewRepository;
+    private final CrewMemberRepository crewMemberRepository;
     private final NoticeRepository noticeRepository;
 
     /**
      * 크루 공지사항 정보를 담은 DTO를 받아 DB에 저장하고 생성된 공지사항 정보를 담은 DTO를 반환한다.
+     * @param currentUser 현재 로그인한 유저 정보
      * @param noticeSaveRequestDTO 생성할 공지사항 요청 정보를 담은 DTO
      * @return 생성된 공지사항 결과 정보를 담은 DTO
      */
     @Override
-    public NoticeResponseDTO createCrewNotice(NoticeSaveRequestDTO noticeSaveRequestDTO) {
+    public NoticeResponseDTO createCrewNotice(AuthInfoDTO currentUser, NoticeSaveRequestDTO noticeSaveRequestDTO) {
+        Member member = memberService.findById(currentUser.id());
+        Crew crew = crewRepository.findById(noticeSaveRequestDTO.crewId()).orElseThrow();
+        if (!crewMemberRepository.findByCrewAndMember(crew, member).orElseThrow().getIsCrewAdmin()) {
+            throw new IllegalArgumentException("Current user is not crew admin");
+        }
+
         String imageUrl = null;
         if (noticeSaveRequestDTO.image() != null) {
             imageUrl = s3ImageUploader.uploadImage(noticeSaveRequestDTO.image());
         }
         Notice notice = Notice.builder()
-                .crew(crewRepository.findById(noticeSaveRequestDTO.crewId()).orElseThrow())
+                .crew(crew)
                 .title(noticeSaveRequestDTO.title())
                 .content(noticeSaveRequestDTO.content())
                 .imageUrl(imageUrl)
@@ -70,12 +85,18 @@ public class NoticeServiceImpl implements NoticeService {
 
     /**
      * 수정할 크루 공지사항 ID와 수정 정보 DTO를 받아 DB에 수정 내용을 반영하고 수정 결과를 반환한다.
-     * @param id 수정할 크루 공지사항을 나타내는 ID
+     * @param currentUser 현재 로그인한 유저 정보
+     * @param id                   수정할 크루 공지사항을 나타내는 ID
      * @param noticeSaveRequestDTO 크루 공지사항 수정 요청 정보를 담은 DTO
      * @return 크루 공지사항 수정 결과를 담은 DTO
      */
     @Override
-    public NoticeResponseDTO updateCrewNotice(Long id, NoticeSaveRequestDTO noticeSaveRequestDTO) {
+    public NoticeResponseDTO updateCrewNotice(AuthInfoDTO currentUser, Long id, NoticeSaveRequestDTO noticeSaveRequestDTO) {
+        Member member = memberService.findById(currentUser.id());
+        Crew crew = crewRepository.findById(noticeSaveRequestDTO.crewId()).orElseThrow();
+        if (!crewMemberRepository.findByCrewAndMember(crew, member).orElseThrow().getIsCrewAdmin()) {
+            throw new IllegalArgumentException("Current user is not crew admin");
+        }
         Notice notice = noticeRepository.findById(id).orElseThrow();
         String imageUrl = null;
         if (noticeSaveRequestDTO.image() != null) {
@@ -87,12 +108,18 @@ public class NoticeServiceImpl implements NoticeService {
 
     /**
      * 삭제하려는 크루 공지사항 ID를 받아 DB에서 삭제하고 삭제된 크루 공지사항을 반환한다.
-     * @param id 삭제하려는 크루 공지사항을 가리키는 ID
+     * @param currentUser 현재 로그인한 유저 정보
+     * @param id          삭제하려는 크루 공지사항을 가리키는 ID
      * @return 삭제된 크루 공지사항 정보를 담은 DTO
      */
     @Override
-    public NoticeResponseDTO deleteCrewNotice(Long id) {
+    public NoticeResponseDTO deleteCrewNotice(AuthInfoDTO currentUser, Long id) {
+        Member member = memberService.findById(currentUser.id());
         Notice notice = noticeRepository.findById(id).orElseThrow();
+        Crew crew = notice.getCrew();
+        if (!crewMemberRepository.findByCrewAndMember(crew, member).orElseThrow().getIsCrewAdmin()) {
+            throw new IllegalArgumentException("Current user is not crew admin");
+        }
         noticeRepository.delete(notice);
         return NoticeResponseDTO.fromEntity(notice);
     }

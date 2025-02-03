@@ -1,11 +1,16 @@
 package com.ssafy.butter.domain.live.service;
 
+import com.ssafy.butter.auth.dto.AuthInfoDTO;
+import com.ssafy.butter.domain.crew.entity.Crew;
+import com.ssafy.butter.domain.crew.service.CrewMemberService;
 import com.ssafy.butter.domain.crew.service.CrewService;
 import com.ssafy.butter.domain.live.dto.request.LiveListRequestDTO;
 import com.ssafy.butter.domain.live.dto.request.LiveSaveRequestDTO;
 import com.ssafy.butter.domain.live.dto.response.LiveResponseDTO;
 import com.ssafy.butter.domain.live.entity.Live;
 import com.ssafy.butter.domain.live.repository.LiveRepository;
+import com.ssafy.butter.domain.member.entity.Member;
+import com.ssafy.butter.domain.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -19,14 +24,21 @@ import java.util.List;
 @Transactional
 public class LiveServiceImpl implements LiveService {
 
+    private final MemberService memberService;
     private final CrewService crewService;
+    private final CrewMemberService crewMemberService;
 
     private final LiveRepository liveRepository;
 
     @Override
-    public LiveResponseDTO createLive(LiveSaveRequestDTO liveSaveRequestDTO) {
+    public LiveResponseDTO createLive(AuthInfoDTO currentUser, LiveSaveRequestDTO liveSaveRequestDTO) {
+        Member member = memberService.findById(currentUser.id());
+        Crew crew = crewService.findById(liveSaveRequestDTO.crewId());
+        if (!crewMemberService.findByCrewAndMember(crew, member).getIsCrewAdmin()) {
+            throw new IllegalArgumentException("Current user is not crew admin");
+        }
         Live live = Live.builder()
-                .crew(crewService.findById(liveSaveRequestDTO.crewId()))
+                .crew(crew)
                 .title(liveSaveRequestDTO.title())
                 .startDate(liveSaveRequestDTO.startDate())
                 .build();

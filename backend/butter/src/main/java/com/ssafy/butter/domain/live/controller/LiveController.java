@@ -1,9 +1,11 @@
 package com.ssafy.butter.domain.live.controller;
 
+import com.ssafy.butter.auth.dto.AuthInfoDTO;
 import com.ssafy.butter.domain.live.dto.request.LiveSaveRequestDTO;
 import com.ssafy.butter.domain.live.dto.request.LiveListRequestDTO;
 import com.ssafy.butter.domain.live.dto.response.LiveResponseDTO;
 import com.ssafy.butter.domain.live.service.LiveService;
+import com.ssafy.butter.global.token.CurrentUser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -20,8 +22,8 @@ public class LiveController {
     private final LiveService liveService;
 
     @PostMapping
-    public ResponseEntity<?> createLive(@RequestBody LiveSaveRequestDTO liveSaveRequestDTO) {
-        LiveResponseDTO liveResponseDTO = liveService.createLive(liveSaveRequestDTO);
+    public ResponseEntity<?> createLive(@CurrentUser AuthInfoDTO currentUser, @RequestBody LiveSaveRequestDTO liveSaveRequestDTO) {
+        LiveResponseDTO liveResponseDTO = liveService.createLive(currentUser, liveSaveRequestDTO);
         return ResponseEntity.created(URI.create("/api/v1/live/watch/" + liveResponseDTO.id())).body(liveResponseDTO);
     }
 
