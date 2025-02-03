@@ -1,11 +1,16 @@
 package com.ssafy.butter.domain.crew.service;
 
+import com.ssafy.butter.auth.dto.AuthInfoDTO;
 import com.ssafy.butter.domain.crew.dto.request.NoticeListRequestDTO;
 import com.ssafy.butter.domain.crew.dto.request.NoticeSaveRequestDTO;
 import com.ssafy.butter.domain.crew.dto.response.NoticeResponseDTO;
+import com.ssafy.butter.domain.crew.entity.Crew;
 import com.ssafy.butter.domain.crew.entity.Notice;
+import com.ssafy.butter.domain.crew.repository.CrewMemberRepository;
 import com.ssafy.butter.domain.crew.repository.CrewRepository;
 import com.ssafy.butter.domain.crew.repository.NoticeRepository;
+import com.ssafy.butter.domain.member.entity.Member;
+import com.ssafy.butter.domain.member.service.MemberService;
 import com.ssafy.butter.infrastructure.awsS3.S3ImageUploader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -20,22 +25,32 @@ public class NoticeServiceImpl implements NoticeService {
 
     private final S3ImageUploader s3ImageUploader;
 
+    private final MemberService memberService;
+
     private final CrewRepository crewRepository;
+    private final CrewMemberRepository crewMemberRepository;
     private final NoticeRepository noticeRepository;
 
     /**
      * 크루 공지사항 정보를 담은 DTO를 받아 DB에 저장하고 생성된 공지사항 정보를 담은 DTO를 반환한다.
+     * @param currentUser 현재 로그인한 유저 정보
      * @param noticeSaveRequestDTO 생성할 공지사항 요청 정보를 담은 DTO
      * @return 생성된 공지사항 결과 정보를 담은 DTO
      */
     @Override
-    public NoticeResponseDTO createCrewNotice(NoticeSaveRequestDTO noticeSaveRequestDTO) {
+    public NoticeResponseDTO createCrewNotice(AuthInfoDTO currentUser, NoticeSaveRequestDTO noticeSaveRequestDTO) {
+        Member member = memberService.findById(currentUser.id());
+        Crew crew = crewRepository.findById(noticeSaveRequestDTO.crewId()).orElseThrow();
+        if (!crewMemberRepository.findByCrewAndMember(crew, member).orElseThrow().getIsCrewAdmin()) {
+            throw new IllegalArgumentException("Current user is not crew admin");
+        }
+
         String imageUrl = null;
         if (noticeSaveRequestDTO.image() != null) {
             imageUrl = s3ImageUploader.uploadImage(noticeSaveRequestDTO.image());
         }
         Notice notice = Notice.builder()
-                .crew(crewRepository.findById(noticeSaveRequestDTO.crewId()).orElseThrow())
+                .crew(crew)
                 .title(noticeSaveRequestDTO.title())
                 .content(noticeSaveRequestDTO.content())
                 .imageUrl(imageUrl)
