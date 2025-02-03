@@ -2,7 +2,6 @@ package com.ssafy.butter.infrastructure.email.controller;
 
 import com.ssafy.butter.infrastructure.email.dto.response.VerifyCodeResponseDTO;
 import com.ssafy.butter.domain.member.entity.Member;
-import com.ssafy.butter.domain.member.repository.MemberJpaRepository;
 import com.ssafy.butter.domain.member.service.MemberService;
 import com.ssafy.butter.infrastructure.email.dto.request.SendEmailDTO;
 import com.ssafy.butter.infrastructure.email.dto.request.VerifyCodeEmailDTO;
