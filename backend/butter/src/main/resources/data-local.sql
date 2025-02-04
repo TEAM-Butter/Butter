@@ -23,12 +23,12 @@ INSERT INTO genre (name) VALUES
 
 -- avatar_type
 INSERT INTO avatar_type (name) VALUES
-                                   ('Lion'),
-                                   ('Penguin'),
-                                   ('Monkey'),
-                                   ('Sparrow'),
-                                   ('Elephant'),
-                                   ('Shark');
+                                   ('Avatar1'),
+                                   ('Avatar2'),
+                                   ('Avatar3'),
+                                   ('Avatar4'),
+                                   ('Avatar5'),
+                                   ('Avatar6');
 
 -- member
 INSERT INTO member (member_type_id, avatar_type_id, login_id, nickname, email, birth_date, bread_amount, password, profile_image, gender, create_date, is_extra_info_registered)
