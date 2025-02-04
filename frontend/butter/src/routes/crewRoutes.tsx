@@ -1,13 +1,17 @@
 import { Route } from "react-router-dom";
-
+import CrewListPage from "../pages/crew/crewListPage";
+import CrewDetailPage from "../pages/crew/crewDetailPage";
+import CrewNoticePage from "../pages/crew/crewNoticePage";
 
 
 export const crewRoutes = (
-  <Route path="/crew">
+
+  <Route path="/crew" >
+    <Route path="list" element={ <CrewListPage/> }/>
     <Route path="member" />
-    <Route path="detail/:id" />
+    <Route path="detail/:id" element={ <CrewDetailPage/> }/>
     <Route path="notice" />
-    <Route path="notice/detail/:id" />
+    <Route path="notice/detail/:id/:noticeId" element={ <CrewNoticePage/>}/>
     <Route path="follow" />
     <Route path="recommend" />
   </Route>

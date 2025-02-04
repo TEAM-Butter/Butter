@@ -28,9 +28,13 @@ public class CrewMember {
     @NotNull
     private Member member;
 
+    @NotNull
+    private Boolean isCrewAdmin;
+
     @Builder
-    public CrewMember(Crew crew, Member member) {
+    public CrewMember(Crew crew, Member member, Boolean isCrewAdmin) {
         this.crew = crew;
         this.member = member;
+        this.isCrewAdmin = isCrewAdmin;
     }
 }

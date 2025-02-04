@@ -1,5 +1,6 @@
 package com.ssafy.butter.domain.crew.service;
 
+import com.ssafy.butter.auth.dto.AuthInfoDTO;
 import com.ssafy.butter.domain.crew.dto.request.CrewFollowRequestDTO;
 import com.ssafy.butter.domain.crew.dto.request.CrewListRequestDTO;
 import com.ssafy.butter.domain.crew.dto.request.CrewMemberRequestDTO;
@@ -13,6 +14,7 @@ import com.ssafy.butter.domain.crew.repository.CrewRepository;
 import com.ssafy.butter.domain.crew.repository.FollowRepository;
 import com.ssafy.butter.domain.member.entity.Member;
 import com.ssafy.butter.domain.member.service.MemberService;
+import com.ssafy.butter.infrastructure.awsS3.S3ImageUploader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -27,6 +29,7 @@ import java.util.List;
 public class CrewServiceImpl implements CrewService {
 
     private final MemberService memberService;
+    private final S3ImageUploader s3ImageUploader;
 
     private final CrewRepository crewRepository;
     private final CrewMemberRepository crewMemberRepository;
@@ -34,46 +37,53 @@ public class CrewServiceImpl implements CrewService {
 
     /**
      * 크루 생성 요청 DTO를 받아 크루를 생성 및 DB에 저장 후 크루 응답 DTO를 반환한다.
+     * @param currentUser 현재 로그인한 유저 정보
      * @param crewSaveRequestDTO 크루 생성 요청 정보를 담은 DTO
      * @return 크루 생성 응답 정보를 담은 DTO
      */
     @Override
-    public CrewResponseDTO createCrew(CrewSaveRequestDTO crewSaveRequestDTO) {
-        if (crewSaveRequestDTO.portfolioVideo() == null) {
-            throw new IllegalArgumentException("Portfolio video required");
+    public CrewResponseDTO createCrew(AuthInfoDTO currentUser, CrewSaveRequestDTO crewSaveRequestDTO) {
+        String imageUrl = null;
+        if (crewSaveRequestDTO.image() != null) {
+            imageUrl = s3ImageUploader.uploadImage(crewSaveRequestDTO.image());
         }
-
+        String portfolioVideoUrl = s3ImageUploader.uploadImage(crewSaveRequestDTO.portfolioVideo());
         Crew crew = Crew.builder()
                 .name(crewSaveRequestDTO.name())
                 .description(crewSaveRequestDTO.description())
                 .promotionUrl(crewSaveRequestDTO.promotionUrl())
-                .portfolioVideoUrl("")
+                .imageUrl(imageUrl)
+                .portfolioVideoUrl(portfolioVideoUrl)
                 .build();
         Crew savedCrew = crewRepository.save(crew);
 
-        String filenamePrefix = crew.getId() + "_" + System.currentTimeMillis() + "_";
-        String imageUrl = null;
-        if (crewSaveRequestDTO.image() != null) {
-            imageUrl = filenamePrefix + crewSaveRequestDTO.image().getOriginalFilename();
-        }
-        String portfolioVideoUrl = filenamePrefix + crewSaveRequestDTO.portfolioVideo().getOriginalFilename();
+        crewMemberRepository.save(CrewMember.builder()
+                .crew(savedCrew)
+                .member(memberService.findById(currentUser.id()))
+                .build());
 
-        savedCrew.updateImageUrl(imageUrl);
-        savedCrew.updatePortfolioVideoUrl(portfolioVideoUrl);
-        return CrewResponseDTO.fromEntity(crewRepository.save(savedCrew));
+        return CrewResponseDTO.fromEntity(savedCrew);
     }
 
     /**
      * 크루 ID와 멤버 ID가 담긴 DTO를 받아 크루 멤버를 DB에 저장한다.
+     * @param currentUser 현재 로그인한 유저 정보
      * @param crewMemberRequestDTO 크루와 크루 멤버 정보를 담은 DTO
      */
     @Override
-    public void createCrewMember(CrewMemberRequestDTO crewMemberRequestDTO) {
+    public void createCrewMember(AuthInfoDTO currentUser, CrewMemberRequestDTO crewMemberRequestDTO) {
+        Member currentMember = memberService.findById(currentUser.id());
         Crew crew = crewRepository.findById(crewMemberRequestDTO.crewId()).orElseThrow();
+        CrewMember currentCrewMember = crewMemberRepository.findByCrewAndMember(crew, currentMember).orElseThrow();
+        if (!currentCrewMember.getIsCrewAdmin()) {
+            throw new IllegalArgumentException("Current user is not crew admin");
+        }
+
         Member member = memberService.findById(crewMemberRequestDTO.memberId());
         crewMemberRepository.findByCrewAndMember(crew, member).ifPresent(crewMember -> {
             throw new IllegalArgumentException("Crew member already exists");
         });
+
         CrewMember crewMember = CrewMember.builder()
                 .crew(crew)
                 .member(member)
@@ -83,12 +93,18 @@ public class CrewServiceImpl implements CrewService {
 
     /**
      * 크루 ID와 멤버 ID를 받아 크루 멤버를 DB에서 삭제한다.
-     * @param crewId 크루를 가리키는 ID
-     * @param memberId 멤버를 가리키는 ID
+     * @param currentUser 현재 로그인한 유저 정보
+     * @param crewId      크루를 가리키는 ID
+     * @param memberId    멤버를 가리키는 ID
      */
     @Override
-    public void deleteCrewMember(Long crewId, Long memberId) {
+    public void deleteCrewMember(AuthInfoDTO currentUser, Long crewId, Long memberId) {
+        Member currentMember = memberService.findById(currentUser.id());
         Crew crew = crewRepository.findById(crewId).orElseThrow();
+        CrewMember currentCrewMember = crewMemberRepository.findByCrewAndMember(crew, currentMember).orElseThrow();
+        if (!currentCrewMember.getIsCrewAdmin()) {
+            throw new IllegalArgumentException("Current user is not crew admin");
+        }
         Member member = memberService.findById(memberId);
         CrewMember crewMember = crewMemberRepository.findByCrewAndMember(crew, member).orElseThrow();
         crewMemberRepository.delete(crewMember);
@@ -111,6 +127,7 @@ public class CrewServiceImpl implements CrewService {
         } else {
             return null;
         }
+        // TODO 키워드가 주어진 경우 처리 로직 필요
     }
 
     /**
@@ -125,70 +142,83 @@ public class CrewServiceImpl implements CrewService {
 
     /**
      * 수정하려는 크루의 ID와 수정할 내용을 받아 DB에 반영하고 수정 결과를 반환한다.
-     * @param id 수정하려는 크루의 ID
+     * @param currentUser 현재 로그인한 유저 정보
+     * @param id                 수정하려는 크루의 ID
      * @param crewSaveRequestDTO 수정할 크루 내용을 담은 DTO
      * @return 수정된 크루 정보를 담은 DTO
      */
     @Override
-    public CrewResponseDTO updateCrew(Long id, CrewSaveRequestDTO crewSaveRequestDTO) {
+    public CrewResponseDTO updateCrew(AuthInfoDTO currentUser, Long id, CrewSaveRequestDTO crewSaveRequestDTO) {
+        Member currentMember = memberService.findById(currentUser.id());
         Crew crew = crewRepository.findById(id).orElseThrow();
-        String filenamePrefix = crew.getId() + "_" + System.currentTimeMillis() + "_";
+        CrewMember currentCrewMember = crewMemberRepository.findByCrewAndMember(crew, currentMember).orElseThrow();
+        if (!currentCrewMember.getIsCrewAdmin()) {
+            throw new IllegalArgumentException("Current user is not crew admin");
+        }
         String imageUrl = null;
         if (crewSaveRequestDTO.image() != null) {
-            imageUrl = filenamePrefix + crewSaveRequestDTO.image().getOriginalFilename();
+            imageUrl = s3ImageUploader.uploadImage(crewSaveRequestDTO.image());
         }
-        String portfolioVideoUrl = filenamePrefix + crewSaveRequestDTO.portfolioVideo().getOriginalFilename();
 
-        crew.updateName(crewSaveRequestDTO.name());
-        crew.updateDescription(crewSaveRequestDTO.description());
-        crew.updatePromotionUrl(crewSaveRequestDTO.promotionUrl());
-        crew.updateImageUrl(imageUrl);
-        crew.updatePortfolioVideoUrl(portfolioVideoUrl);
+        crew.update(crewSaveRequestDTO, imageUrl);
         return CrewResponseDTO.fromEntity(crewRepository.save(crew));
     }
 
     /**
      * 삭제하려는 크루 ID를 받아 해당 크루를 DB에서 삭제한다.
-     * @param id 삭제하려는 크루 ID
+     * @param currentUser 현재 로그인한 유저 정보
+     * @param id          삭제하려는 크루 ID
      * @return 삭제된 크루 정보를 담은 DTO
      */
     @Override
-    public CrewResponseDTO deleteCrew(Long id) {
+    public CrewResponseDTO deleteCrew(AuthInfoDTO currentUser, Long id) {
+        Member currentMember = memberService.findById(currentUser.id());
         Crew crew = crewRepository.findById(id).orElseThrow();
+        CrewMember currentCrewMember = crewMemberRepository.findByCrewAndMember(crew, currentMember).orElseThrow();
+        if (!currentCrewMember.getIsCrewAdmin()) {
+            throw new IllegalArgumentException("Current user is not crew admin");
+        }
         crewRepository.delete(crew);
         return CrewResponseDTO.fromEntity(crew);
     }
 
     /**
      * 팔로우하는 사용자의 ID와 팔로우 대상의 ID를 담은 DTO를 받아 팔로우 정보를 DB에 저장한다.
-     * @param memberId 팔로우하는 사용자의 ID
+     * @param currentUser 현재 로그인한 유저 정보
      * @param crewFollowRequestDTO 팔로우 대상의 ID를 담은 DTO
      */
     @Override
-    public void followCrew(Long memberId, CrewFollowRequestDTO crewFollowRequestDTO) {
+    public void followCrew(AuthInfoDTO currentUser, CrewFollowRequestDTO crewFollowRequestDTO) {
         Crew crew = crewRepository.findById(crewFollowRequestDTO.crewId()).orElseThrow();
-        Member member = memberService.findById(memberId);
-        followRepository.findByCrewAndMember(crew, member).ifPresent(follow -> {
-            throw new IllegalArgumentException("Crew follower already exists");
+        Member member = memberService.findById(currentUser.id());
+        followRepository.findByCrewAndMember(crew, member).ifPresentOrElse(follow -> {
+            if (follow.getIsFollowed()) {
+                throw new IllegalArgumentException("Crew follower already exists");
+            }
+            follow.updateIsFollowed(true);
+            followRepository.save(follow);
+        }, () -> {
+            Follow follow = Follow.builder()
+                    .crew(crew)
+                    .member(member)
+                    .isFollowed(true)
+                    .build();
+            followRepository.save(follow);
         });
-        Follow follow = Follow.builder()
-                .crew(crew)
-                .member(member)
-                .build();
-        followRepository.save(follow);
     }
 
     /**
      * 팔로우하는 사용자의 ID와 팔로우 대상의 ID를 받아 팔로우 정보를 DB에서 삭제한다.
-     * @param memberId 팔로우하는 사용자의 ID
-     * @param crewId 팔로우 대상의 ID
+     * @param currentUser 현재 로그인한 유저 정보
+     * @param crewId      팔로우 대상의 ID
      */
     @Override
-    public void unfollowCrew(Long memberId, Long crewId) {
+    public void unfollowCrew(AuthInfoDTO currentUser, Long crewId) {
         Crew crew = crewRepository.findById(crewId).orElseThrow();
-        Member member = memberService.findById(memberId);
+        Member member = memberService.findById(currentUser.id());
         Follow follow = followRepository.findByCrewAndMember(crew, member).orElseThrow();
-        followRepository.delete(follow);
+        follow.updateIsFollowed(false);
+        followRepository.save(follow);
     }
 
     /**
@@ -198,5 +228,15 @@ public class CrewServiceImpl implements CrewService {
     @Override
     public List<CrewResponseDTO> getRecommendedCrewList() {
         return List.of();
+    }
+
+    /**
+     * 크루의 ID를 받아 해당 크루 엔티티를 반환한다.
+     * @param id 크루 ID
+     * @return 해당 크루 엔티티
+     */
+    @Override
+    public Crew findById(Long id) {
+        return crewRepository.findById(id).orElseThrow();
     }
 }

@@ -1,0 +1,68 @@
+package com.ssafy.butter.domain.live.service;
+
+import com.ssafy.butter.auth.dto.AuthInfoDTO;
+import com.ssafy.butter.domain.crew.entity.Crew;
+import com.ssafy.butter.domain.crew.service.CrewMemberService;
+import com.ssafy.butter.domain.crew.service.CrewService;
+import com.ssafy.butter.domain.live.dto.request.LiveListRequestDTO;
+import com.ssafy.butter.domain.live.dto.request.LiveSaveRequestDTO;
+import com.ssafy.butter.domain.live.dto.response.LiveResponseDTO;
+import com.ssafy.butter.domain.live.entity.Live;
+import com.ssafy.butter.domain.live.repository.LiveRepository;
+import com.ssafy.butter.domain.member.entity.Member;
+import com.ssafy.butter.domain.member.service.MemberService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
+@RequiredArgsConstructor
+@Service
+@Transactional
+public class LiveServiceImpl implements LiveService {
+
+    private final MemberService memberService;
+    private final CrewService crewService;
+    private final CrewMemberService crewMemberService;
+
+    private final LiveRepository liveRepository;
+
+    @Override
+    public LiveResponseDTO createLive(AuthInfoDTO currentUser, LiveSaveRequestDTO liveSaveRequestDTO) {
+        Member member = memberService.findById(currentUser.id());
+        Crew crew = crewService.findById(liveSaveRequestDTO.crewId());
+        if (!crewMemberService.findByCrewAndMember(crew, member).getIsCrewAdmin()) {
+            throw new IllegalArgumentException("Current user is not crew admin");
+        }
+        Live live = Live.builder()
+                .crew(crew)
+                .title(liveSaveRequestDTO.title())
+                .startDate(liveSaveRequestDTO.startDate())
+                .build();
+        return LiveResponseDTO.fromEntity(liveRepository.save(live));
+    }
+
+    @Override
+    public LiveResponseDTO getLiveDetail(Long id) {
+        return LiveResponseDTO.fromEntity(liveRepository.findById(id).orElseThrow());
+    }
+
+    @Override
+    public List<LiveResponseDTO> getLiveList(LiveListRequestDTO liveListRequestDTO) {
+        Pageable pageable = PageRequest.of(0, liveListRequestDTO.pageSize());
+        if (liveListRequestDTO.liveId() == null) {
+            return liveRepository.findAllByOrderByIdDesc(pageable).stream().map(LiveResponseDTO::fromEntity).toList();
+        } else {
+            return liveRepository.findAllByIdLessThanOrderByIdDesc(liveListRequestDTO.liveId(), pageable).stream().map(LiveResponseDTO::fromEntity).toList();
+        }
+        // TODO search type에 따른 처리 로직 추가
+    }
+
+    @Override
+    public Live findById(Long id) {
+        return liveRepository.findById(id).orElseThrow();
+    }
+}

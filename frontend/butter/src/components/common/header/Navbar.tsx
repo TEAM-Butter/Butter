@@ -138,30 +138,30 @@ function Navbar() {
     const [modalType, setModalType] = useState<string>("");
     return (
         <>
-            <Nav>
-                <Col>
-                    {/* variants, whileHover를 통해 Hover시 동작할 모션 정의 초기값(initial)은 normal*/}
-                    <Link to="/">
-                        <Logo
-                            variants={logoVariants}
-                            initial="normal"
-                            whileHover="active">
-                            B
-                        </Logo>
-                    </Link>
-                </Col>
-                <Col_r>
-                    <Items>
-                        <Link to="/"><Item>HOME {homeMatch && <Bar layoutId="bar" />}</Item></Link>
-                        <Link to="/busking"><Item>BUSKING {buskingMatch && <Bar layoutId="bar" />}</Item></Link>
-                        <Link to="/stream"><Item>STREAMING {streamMatch && <Bar layoutId="bar" />}</Item></Link>
-                        <Link to="/crew"><Item>CREW {crewMatch && <Bar layoutId="bar" />}</Item></Link>
-                    </Items>
-                    <Items>
-                        {isLogin ?
-                            <Profile
-                                onMouseEnter={() => setIsHovered(true)}
-                                onMouseLeave={() => setIsHovered(false)}
+        <Nav>
+            <Col>
+                {/* variants, whileHover를 통해 Hover시 동작할 모션 정의 초기값(initial)은 normal*/}
+                <Link to="/">
+                <Logo 
+                    variants={logoVariants}
+                    initial="normal"
+                    whileHover="active">
+                    B
+                </Logo>
+                </Link>
+            </Col>
+            <Col_r>
+                <Items>
+                    <Link to="/"><Item>HOME { homeMatch && <Bar layoutId="bar" />}</Item></Link>
+                    <Link to="/busking"><Item>BUSKING { buskingMatch && <Bar layoutId="bar" />}</Item></Link>
+                    <Link to="/stream"><Item>STREAMING { streamMatch && <Bar layoutId="bar" />}</Item></Link>
+                    <Link to="/crew/list"><Item>CREW { crewMatch && <Bar layoutId="bar" />}</Item></Link>
+                </Items>
+                <Items>
+                    { isLogin ?
+                        <Profile
+                            onMouseEnter={() => setIsHovered(true)} 
+                            onMouseLeave={() => setIsHovered(false)}
                             >PROFILE
                                 <SubProfile
                                     variants={subProfileVariants}

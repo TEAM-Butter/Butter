@@ -2,11 +2,17 @@ package com.ssafy.butter.domain.crew.repository;
 
 import com.ssafy.butter.domain.crew.entity.Crew;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
-public interface CrewRepository extends JpaRepository<Crew, Long> {
+public interface CrewRepository {
+
+    Crew save(Crew crew);
+
+    Optional<Crew> findById(Long id);
+
+    void delete(Crew crew);
 
     List<Crew> findAllByOrderByIdDesc(Pageable pageable);
 
