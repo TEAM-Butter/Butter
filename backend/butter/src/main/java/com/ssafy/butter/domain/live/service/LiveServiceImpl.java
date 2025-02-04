@@ -10,7 +10,7 @@ import com.ssafy.butter.domain.live.dto.response.LiveResponseDTO;
 import com.ssafy.butter.domain.live.entity.Live;
 import com.ssafy.butter.domain.live.repository.LiveRepository;
 import com.ssafy.butter.domain.member.entity.Member;
-import com.ssafy.butter.domain.member.service.MemberService;
+import com.ssafy.butter.domain.member.service.member.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;

@@ -1,6 +1,7 @@
 package com.ssafy.butter.domain.member.repository.member;
 
 import com.ssafy.butter.domain.member.entity.Member;
+import com.ssafy.butter.domain.member.vo.Email;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -28,5 +29,10 @@ public class MemberRepositoryImpl implements MemberRepository{
     @Override
     public Optional<Member> findByNickname(String nickname) {
         return memberJpaRepository.findByNickname(nickname);
+    }
+
+    @Override
+    public Optional<Member> findByLoginId(String loginId) {
+        return memberJpaRepository.findByLoginId(loginId);
     }
 }
