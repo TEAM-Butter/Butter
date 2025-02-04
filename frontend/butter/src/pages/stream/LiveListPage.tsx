@@ -185,7 +185,7 @@ const LiveListPage = () => {
       </Header>
       <LiveContainer>
         {liveList.map((live) => (
-          <LiveCard>
+          <LiveCard key={live.id}>
             <LiveBox
               id={live.id}
               title={live.title}
