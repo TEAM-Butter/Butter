@@ -66,8 +66,18 @@ public class MemberServiceImpl implements MemberService{
      * @return 회원 정보 엔티티
      */
     @Override
-    public Optional<Member> findByEmail(String email) {
-        return memberRepository.findByEmail(email);
+    public Optional<Member> findByEmail(Email email) {
+        return memberRepository.findByEmail(email.getValue());
+    }
+
+    @Override
+    public Optional<Member> findByNickname(Nickname nickname) {
+        return memberRepository.findByNickname(nickname.getValue());
+    }
+
+    @Override
+    public Optional<Member> findByLoginId(String loginId) {
+        return memberRepository.findByLoginId(loginId);
     }
 
     /**

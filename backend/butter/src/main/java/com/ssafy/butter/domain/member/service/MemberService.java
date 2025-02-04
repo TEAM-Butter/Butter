@@ -10,6 +10,8 @@ import com.ssafy.butter.domain.member.dto.response.RegisterExtraInfoResponseDTO;
 import com.ssafy.butter.domain.member.dto.response.UserProfileResponseDTO;
 import com.ssafy.butter.domain.member.entity.Member;
 import com.ssafy.butter.domain.member.dto.request.SignUpDTO;
+import com.ssafy.butter.domain.member.vo.Email;
+import com.ssafy.butter.domain.member.vo.Nickname;
 import com.ssafy.butter.infrastructure.email.dto.request.SendEmailDTO;
 import java.util.Optional;
 import org.apache.coyote.BadRequestException;
@@ -19,7 +21,9 @@ public interface MemberService {
 
     Member save(Member member);
     Member findById(Long id);
-    Optional<Member> findByEmail(String email);
+    Optional<Member> findByEmail(Email email);
+    Optional<Member> findByNickname(Nickname nickname);
+    Optional<Member> findByLoginId(String loginId);
     Member signUp(SignUpDTO signUpDTO, MultipartFile profileImage);
     UserProfileResponseDTO getMyProfile(final Long memberId) throws BadRequestException;
     ProfileUpdateResponseDTO updateProfile(ProfileUpdateRequestDTO profileUpdateRequestDTO, Long memberId);

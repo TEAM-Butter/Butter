@@ -2,6 +2,7 @@ package com.ssafy.butter.infrastructure.email.service;
 
 import com.ssafy.butter.domain.member.entity.Member;
 import com.ssafy.butter.domain.member.service.MemberService;
+import com.ssafy.butter.domain.member.vo.Email;
 import com.ssafy.butter.domain.member.vo.Password;
 import com.ssafy.butter.infrastructure.email.constants.EmailConstants;
 import com.ssafy.butter.infrastructure.email.constants.EmailErrorMessages;
@@ -55,14 +56,14 @@ public class EmailServiceImpl implements EmailService{
                 break;
 
             case FIND_ID:
-                Member memberForFindId = memberService.findByEmail(verifyCodeEmailDTO.email())
+                Member memberForFindId = memberService.findByEmail(new Email(verifyCodeEmailDTO.email()))
                         .orElseThrow(() ->
                                 new IllegalArgumentException("ERR : 해당 이메일로 가입된 계정을 찾을 수 없습니다."));
                 additionalInfo = memberForFindId.getLoginId();
                 break;
 
             case RESET_PASSWORD:
-                Member memberForReset = memberService.findByEmail(verifyCodeEmailDTO.email())
+                Member memberForReset = memberService.findByEmail(new Email(verifyCodeEmailDTO.email()))
                         .orElseThrow(() ->
                                 new IllegalArgumentException("ERR : 해당 이메일로 가입된 계정을 찾을 수 없습니다."));
                 String tempPassword = createRandomCode();

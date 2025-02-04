@@ -8,6 +8,7 @@ import com.ssafy.butter.auth.dto.response.ReissueResponseDTO;
 import com.ssafy.butter.domain.member.entity.Member;
 import com.ssafy.butter.domain.member.repository.member.MemberRepository;
 import com.ssafy.butter.domain.member.service.MemberService;
+import com.ssafy.butter.domain.member.vo.Email;
 import com.ssafy.butter.global.token.CurrentUser;
 import com.ssafy.butter.global.token.JwtExtractor;
 import com.ssafy.butter.global.token.JwtManager;
@@ -36,7 +37,7 @@ public class LoginServiceImpl implements LoginService{
     @Override
     @Transactional
     public LoginResponseDTO login(LoginRequestDTO loginRequestDTO){
-        Member member = memberService.findByEmail(loginRequestDTO.email())
+        Member member = memberService.findByEmail(new Email(loginRequestDTO.email()))
                 .orElseThrow(NoClassDefFoundError::new);
 
         AuthInfoDTO authInfo = new AuthInfoDTO(member.getId(),member.getEmail().getValue(), member.getGender().name(), member.getBirthDate().getDate());
@@ -57,7 +58,7 @@ public class LoginServiceImpl implements LoginService{
                 .map(service -> service.convertUserDetailsToMemberEntity(socialLoginRequestDTO.code()))
                 .orElseThrow(() -> new IllegalArgumentException("ERR : 사용할 수 없는 OAuth 플랫폼입니다"));
 
-        Member findMember = memberService.findByEmail(loginMember.getEmail().getValue())
+        Member findMember = memberService.findByEmail(loginMember.getEmail())
                 .orElse(memberService.save(loginMember));
 
         AuthInfoDTO authInfo = new AuthInfoDTO(findMember.getId(),findMember.getEmail().getValue(), findMember.getGender().name(), findMember.getBirthDate().getDate());
