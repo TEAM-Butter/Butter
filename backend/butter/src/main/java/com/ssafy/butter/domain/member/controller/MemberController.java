@@ -2,10 +2,12 @@ package com.ssafy.butter.domain.member.controller;
 
 
 import com.ssafy.butter.auth.dto.AuthInfoDTO;
+import com.ssafy.butter.domain.member.dto.request.CheckLoginIdDTO;
 import com.ssafy.butter.domain.member.dto.request.ExtraInfoDTO;
 import com.ssafy.butter.domain.member.dto.request.PasswordUpdateRequestDTO;
 import com.ssafy.butter.domain.member.dto.request.ProfileUpdateRequestDTO;
 import com.ssafy.butter.domain.member.dto.request.SignUpDTO;
+import com.ssafy.butter.domain.member.dto.response.CheckLoginIdResponseDTO;
 import com.ssafy.butter.domain.member.dto.response.PasswordUpdateResponseDTO;
 import com.ssafy.butter.domain.member.dto.response.ProfileUpdateResponseDTO;
 import com.ssafy.butter.domain.member.dto.response.RegisterExtraInfoResponseDTO;
@@ -13,7 +15,6 @@ import com.ssafy.butter.domain.member.dto.response.SignUpResponseDTO;
 import com.ssafy.butter.domain.member.dto.response.UserProfileResponseDTO;
 import com.ssafy.butter.domain.member.service.member.MemberService;
 import com.ssafy.butter.global.token.CurrentUser;
-import com.ssafy.butter.infrastructure.email.dto.request.SendEmailDTO;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -76,4 +77,12 @@ public class MemberController {
         RegisterExtraInfoResponseDTO response = memberService.saveExtraUserInfo(extraInfoDTO, authInfoDTO.id());
         return ResponseEntity.ok(response);
     }
+
+    @PostMapping("/check-loginId")
+    public ResponseEntity<CheckLoginIdResponseDTO> checkEmailExists(@RequestBody CheckLoginIdDTO loginIdDTO) {
+        CheckLoginIdResponseDTO response = memberService.checkIfLoginIdExists(loginIdDTO);
+
+        return ResponseEntity.ok(response);
+    }
+
 }

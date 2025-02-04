@@ -4,10 +4,12 @@ import com.ssafy.butter.auth.dto.AuthInfoDTO;
 import com.ssafy.butter.domain.crew.entity.Genre;
 import com.ssafy.butter.domain.crew.repository.genre.GenreRepository;
 import com.ssafy.butter.domain.crew.service.genre.GenreService;
+import com.ssafy.butter.domain.member.dto.request.CheckLoginIdDTO;
 import com.ssafy.butter.domain.member.dto.request.ExtraInfoDTO;
 import com.ssafy.butter.domain.member.dto.request.PasswordUpdateRequestDTO;
 import com.ssafy.butter.domain.member.dto.request.ProfileUpdateRequestDTO;
 import com.ssafy.butter.domain.member.dto.request.SignUpDTO;
+import com.ssafy.butter.domain.member.dto.response.CheckLoginIdResponseDTO;
 import com.ssafy.butter.domain.member.dto.response.PasswordUpdateResponseDTO;
 import com.ssafy.butter.domain.member.dto.response.ProfileUpdateResponseDTO;
 import com.ssafy.butter.domain.member.dto.response.RegisterExtraInfoResponseDTO;
@@ -181,6 +183,14 @@ public class MemberServiceImpl implements MemberService{
     public boolean checkIfEmailExists(SendEmailDTO emailDTO) {
         Optional<Member> findMember = memberRepository.findByEmail(emailDTO.email());
         return findMember.isPresent();
+    }
+
+    @Override
+    public CheckLoginIdResponseDTO checkIfLoginIdExists(CheckLoginIdDTO loginIdDTO) {
+        Optional<Member> findMember = memberRepository.findByLoginId(loginIdDTO.loginId());
+        boolean exists = findMember.isPresent();
+        String message = exists ? "요청 ID 회원이 확인 되었습니다" : "요청 ID 회원이 존재하지 않습니다";
+        return new CheckLoginIdResponseDTO(exists, message);
     }
 
     private Member getMember(Long memberId) {
