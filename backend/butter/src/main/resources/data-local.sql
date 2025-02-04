@@ -20,3 +20,13 @@ INSERT INTO genre (name) VALUES
                              ('Jazz'),
                              ('Indie'),
                              ('Trot');
+
+-- avatar_type
+INSERT INTO avatar_type (name) VALUES
+                                   ('Lion'),
+                                   ('Penguin'),
+                                   ('Monkey'),
+                                   ('Sparrow'),
+                                   ('Elephant'),
+                                   ('Shark')
+

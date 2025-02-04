@@ -1,11 +1,13 @@
 package com.ssafy.butter.domain.member.entity;
 
+import com.ssafy.butter.domain.crew.entity.Genre;
 import com.ssafy.butter.domain.member.enums.Gender;
 import com.ssafy.butter.domain.member.vo.BirthDate;
 import com.ssafy.butter.domain.member.vo.BreadAmount;
 import com.ssafy.butter.domain.member.vo.Email;
 import com.ssafy.butter.domain.member.vo.Nickname;
 import com.ssafy.butter.domain.member.vo.Password;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -41,7 +43,11 @@ public class Member {
     @JoinColumn(name = "member_type_id")
     private MemberType memberType;
 
-    @OneToMany(mappedBy = "member")
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "avatar_type_id")
+    private AvatarType avatarType;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MemberGenre> memberGenres = new ArrayList<>();
 
     private String loginId;
@@ -68,16 +74,18 @@ public class Member {
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
-    private Integer avatarType;
-
     @NotNull
     private LocalDate createDate;
 
+    @NotNull
     private boolean isExtraInfoRegistered;
 
     @Builder
-    public Member(MemberType memberType, List<MemberGenre> memberGenres, String loginId, Nickname nickname, Email email, BirthDate birthDate, BreadAmount breadAmount, Password password, String profileImage, Gender gender, Integer avatarType, LocalDate createDate, boolean isExtraInfoRegistered) {
+    public Member(MemberType memberType, AvatarType avatarType, List<MemberGenre> memberGenres, String loginId,
+                  Nickname nickname, Email email, BirthDate birthDate, BreadAmount breadAmount, Password password,
+                  String profileImage, Gender gender, LocalDate createDate, boolean isExtraInfoRegistered) {
         this.memberType = memberType;
+        this.avatarType = avatarType;
         this.memberGenres = memberGenres;
         this.loginId = loginId;
         this.nickname = nickname;
@@ -87,12 +95,11 @@ public class Member {
         this.password = password;
         this.profileImage = profileImage;
         this.gender = gender;
-        this.avatarType = avatarType;
         this.createDate = createDate;
         this.isExtraInfoRegistered = isExtraInfoRegistered;
     }
 
-    public void updateProfile(String nickname, String gender, String profileImage){
+    public void updateProfile(String nickname, String gender, String profileImage, List<Genre> genres){
         if(nickname != null){
             this.nickname = new Nickname(nickname);
         }
@@ -102,11 +109,25 @@ public class Member {
         if(profileImage != null){
             this.profileImage = profileImage;
         }
+        if(genres != null){
+            updateMemberGenres(genres);
+        }
+    }
+
+    public void saveExtraInfo(Nickname nickname, String profileImage, AvatarType avatarType, List<Genre> genres){
+        this.nickname = nickname;
+        this.profileImage = profileImage;
+        this.avatarType = avatarType;
+        updateMemberGenres(genres);
     }
 
     public void changePassword(Password password){
         this.password = password;
     }
 
+    private void updateMemberGenres(List<Genre> newGenres){
+        memberGenres.clear();
+        newGenres.forEach(genre -> this.memberGenres.add(new MemberGenre(this, genre)));
+    }
 }
 

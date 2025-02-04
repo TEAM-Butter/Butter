@@ -1,4 +1,4 @@
-package com.ssafy.butter.domain.member.repository;
+package com.ssafy.butter.domain.member.repository.member;
 
 import com.ssafy.butter.domain.member.entity.Member;
 import java.util.Optional;

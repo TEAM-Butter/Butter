@@ -6,7 +6,7 @@ import com.ssafy.butter.auth.dto.request.SocialLoginRequestDTO;
 import com.ssafy.butter.auth.dto.response.LoginResponseDTO;
 import com.ssafy.butter.auth.dto.response.ReissueResponseDTO;
 import com.ssafy.butter.domain.member.entity.Member;
-import com.ssafy.butter.domain.member.repository.MemberRepository;
+import com.ssafy.butter.domain.member.repository.member.MemberRepository;
 import com.ssafy.butter.global.token.CurrentUser;
 import com.ssafy.butter.global.token.JwtExtractor;
 import com.ssafy.butter.global.token.JwtManager;
