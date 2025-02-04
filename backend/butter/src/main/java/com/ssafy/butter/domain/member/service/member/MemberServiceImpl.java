@@ -27,7 +27,9 @@ import com.ssafy.butter.global.token.JwtManager;
 import com.ssafy.butter.global.util.encrypt.EncryptUtils;
 import com.ssafy.butter.infrastructure.awsS3.ImageUploader;
 import com.ssafy.butter.infrastructure.email.dto.request.SendEmailDTO;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
@@ -97,6 +99,7 @@ public class MemberServiceImpl implements MemberService{
                 .birthDate(new BirthDate(signUpDTO.birthDate()))
                 .password(encryptedPassword)
                 .gender(Gender.valueOf(signUpDTO.gender()))
+                .createDate(LocalDate.now())
                 .build();
 
         save(sigunUpMember);
@@ -108,13 +111,12 @@ public class MemberServiceImpl implements MemberService{
      * 멤버의 마이 페이지에 필요한 정보를 조회한다
      * @param memberId 회원의 ID 값
      * @return 회원의 마이페이지에 필요한 데이터
-     * @throws BadRequestException
      */
     @Override
     @Transactional(readOnly = true)
-    public UserProfileResponseDTO getMyProfile(final Long memberId) throws BadRequestException {
+    public UserProfileResponseDTO getMyProfile(final Long memberId) {
         final Member findMember = memberRepository.findById(memberId)
-                .orElseThrow(() -> new BadRequestException("ERR : 멤버를 찾을 수 없습니다"));
+                .orElseThrow(() -> new NoSuchElementException("ERR : 멤버를 찾을 수 없습니다"));
 
         return UserProfileResponseDTO.from(findMember);
     }
