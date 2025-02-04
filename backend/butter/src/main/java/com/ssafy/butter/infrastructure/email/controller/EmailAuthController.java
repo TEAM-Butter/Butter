@@ -38,21 +38,12 @@ public class EmailAuthController {
     }
 
     @PostMapping("/verify-code")
-    public ResponseEntity<VerifyCodeResponseDTO> verifyCode(@RequestBody VerifyCodeEmailDTO verifyCodeEmailDTO) {
-        boolean isValid = emailService.verifyCode(verifyCodeEmailDTO);
-
-        if(!isValid) {
-            return ResponseEntity.badRequest()
-                    .body(new VerifyCodeResponseDTO("인증 실패", verifyCodeEmailDTO.type().name(), null));
+    public ResponseEntity<VerifyCodeResponseDTO> verifyEmailCode(@RequestBody VerifyCodeEmailDTO verifyCodeEmailDTO) {
+        try {
+            VerifyCodeResponseDTO responseDTO = emailService.verifyCodeAndHandleAction(verifyCodeEmailDTO);
+            return ResponseEntity.ok(responseDTO);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(new VerifyCodeResponseDTO(e.getMessage(), verifyCodeEmailDTO.type().name(), null));
         }
-
-        String loginId = null;
-        if(verifyCodeEmailDTO.type().equals(EmailType.FIND_ID)) {
-            loginId = memberService.findByEmail(verifyCodeEmailDTO.email())
-                    .map(Member::getLoginId)
-                    .orElseThrow(() -> new IllegalArgumentException("ERR : 해당 이메일로 가입된 계정을 찾을 수 없습니다."));
-        }
-
-        return ResponseEntity.ok(new VerifyCodeResponseDTO("인증 성공", verifyCodeEmailDTO.type().name(), loginId));
     }
 }
