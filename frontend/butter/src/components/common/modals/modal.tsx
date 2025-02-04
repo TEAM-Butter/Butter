@@ -2,155 +2,155 @@ import styled from "@emotion/styled";
 import React, { useState } from "react";
 
 const ModalOverlay = styled.div`
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); 
-    z-index: 999; 
-    `
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+`;
 const ModalWrapper = styled.div<ModalSizeProps>`
-    display: grid;
-    grid-template-rows: 60px 1fr;
-    width: ${(props) => props.width};
-    /* height: ${(props) => props.height}; */
-    position: fixed; 
-    top: 50%; 
-    left: 50%;
-    transform: translate(-50%, -50%); 
-    z-index: 1000; 
-    color: white;
-    /* border: 1px solid gray; */
-    `
+  display: grid;
+  grid-template-rows: 60px 1fr;
+  width: ${(props) => props.width};
+  /* height: ${(props) => props.height}; */
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
+  color: white;
+  /* border: 1px solid gray; */
+`;
 
 const ModalWrapper_v2 = styled(ModalWrapper)`
-    border-radius: 20px; 
-    overflow: hidden;
-    color: var(--darkgray);
-    `
+  border-radius: 20px;
+  overflow: hidden;
+  color: var(--darkgray);
+`;
 
 // Modal type 1 (검은 테마의 모달 디자인)
 const ModalHeader = styled.div`
-    display: flex;
-    width: 100%;
-    background-color:black;
-    align-items: center;
-    padding: 0 12px;
-    font-size: 20px;
-    font-weight: 200;
-    border-bottom: 1px dashed gray;
-    justify-content: space-between;
-    border-radius: 0 0 10px 10px;
+  display: flex;
+  width: 100%;
+  background-color: black;
+  align-items: center;
+  padding: 0 12px;
+  font-size: 20px;
+  font-weight: 200;
+  border-bottom: 1px dashed gray;
+  justify-content: space-between;
+  border-radius: 0 0 10px 10px;
 `;
 
 const ModalHeader_v2 = styled(ModalHeader)`
-    background-color:white;
-    border-radius: 0px; 
-    font-size: 17px;
-    `
+  background-color: white;
+  border-radius: 0px;
+  font-size: 17px;
+`;
 
 const ModalBody = styled.div`
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    padding: 17px;
-    background-color: rgba(0, 0, 0, 0.8); 
-    border-radius: 10px 10px 0 0;
-    width: 100%;
-    `
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 17px;
+  background-color: rgba(0, 0, 0, 0.8);
+  border-radius: 10px 10px 0 0;
+  width: 100%;
+`;
 
 const ModalBody_v2 = styled(ModalBody)`
-    border-radius: 0px; 
-    background-color:white;
-    justify-content: center;
-    gap: 20px;
-    `
+  border-radius: 0px;
+  background-color: white;
+  justify-content: center;
+  gap: 20px;
+`;
 
 const Comment = styled.div`
-    font-weight: 200;
-    margin-bottom: 15px;
-`
-const Comment_v2 = styled(Comment) <ColorProps>`
-    color: ${(props) => props.textColor};
-    margin-bottom: 5px;
-`
+  font-weight: 200;
+  margin-bottom: 15px;
+`;
+const Comment_v2 = styled(Comment)<ColorProps>`
+  color: ${(props) => props.textColor};
+  margin-bottom: 5px;
+`;
 
 const ModalCloseBtn = styled.button<ColorProps>`
-    background: none;
-    color: ${(props) => props.textColor};
-    border: none;
-    font-size: 18px;
-`
+  background: none;
+  color: ${(props) => props.textColor};
+  border: none;
+  font-size: 18px;
+`;
 
 // 버튼 좌측으로 이동할 수 있게 끔 flex 설정 styled
 const LtBtnWrapper = styled.div`
-    width: 100%;
-    display:flex;
-    flex-direction: row-reverse;
-`
+  width: 100%;
+  display: flex;
+  flex-direction: row-reverse;
+`;
 
 const BorderBtn = styled.button<BorderProps>`
-    width: ${(props) => props.width};
-    height: ${(props) => props.height};
-    border: none;
-    border: 1px solid ${(props) => props.color};
-    border-radius: 30px;
-    background-color: transparent;
-    font-weight: 500;
-    color: ${(props) => props.color};
-    transition: all ease-in-out 0.3s;
-    
-    &:hover {
-        background-color: ${(props) => props.color};
-        color: black;
-    }
-    `
+  width: ${(props) => props.width};
+  height: ${(props) => props.height};
+  border: none;
+  border: 1px solid ${(props) => props.color};
+  border-radius: 30px;
+  background-color: transparent;
+  font-weight: 500;
+  color: ${(props) => props.color};
+  transition: all ease-in-out 0.3s;
 
-const FilledBtn = styled(BorderBtn) <ColorProps>`
+  &:hover {
     background-color: ${(props) => props.color};
-    color: ${(props) => props.textColor};
-    
-    &:hover {
-        background-color: transparent;
-        color: ${(props) => props.color};
-    }  
-`
+    color: black;
+  }
+`;
+
+const FilledBtn = styled(BorderBtn)<ColorProps>`
+  background-color: ${(props) => props.color};
+  color: ${(props) => props.textColor};
+
+  &:hover {
+    background-color: transparent;
+    color: ${(props) => props.color};
+  }
+`;
 
 interface BorderProps {
-    width: string,
-    height: string,
-    color: string,
+  width: string;
+  height: string;
+  color: string;
 }
 
 interface ModalSizeProps {
-    width: string,
-    height: string,
+  width: string;
+  height: string;
 }
 
 interface ModalProps extends ModalSizeProps {
-    setModalType: React.Dispatch<React.SetStateAction<string>>,
+  setModalType: React.Dispatch<React.SetStateAction<string>>;
 }
 
 interface ColorProps {
-    textColor: string,
+  textColor: string;
 }
 
 // Streaming Styled
 const StreamingForm = styled.form`
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    width: 100%;
-`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+`;
 
 const StreamingTitleInput = styled.input`
-    width: 100%;
-    height: 40px;
-    border-radius: 30px;
-    border: none;
-    padding: 0 15px; 
-`
+  width: 100%;
+  height: 40px;
+  border-radius: 30px;
+  border: none;
+  padding: 0 15px;
+`;
 
 export const StreamingModal = ({ setModalType, width, height }: ModalProps) => {
   const { register, handleSubmit } = useForm();
@@ -451,58 +451,105 @@ export const UserExtraInfoModal = ({
       NewSelectedOptions.push(value);
       setSelectedOptions(NewSelectedOptions);
     }
+  };
 
-    const [selectedOptions, setSelectedOptions] = useState<string[]>([])
-
-    const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        const value = event.target.value;
-
-        if (selectedOptions.length < 3 && !selectedOptions.includes(value)) {
-            const NewSelectedOptions = [...selectedOptions]
-            NewSelectedOptions.push(value)
-            setSelectedOptions(NewSelectedOptions);
-        }
-    };
-    return (
-        <>
-            <ModalOverlay />
-            <ModalWrapper width={width} height={height}>
-                <ModalHeader><div>TYPE YOUR EXTRA INFO</div><ModalCloseBtn textColor="white" onClick={() => { setModalType("") }}>X</ModalCloseBtn></ModalHeader>
-                <ModalBody>
-                    <Comment_v2 textColor="white">버터에 가입하신 것을 축하합니다!</Comment_v2>
-                    <Comment>더 많은 기능을 즐기기 위해 몇 가지 정보를 추가로 입력해 주세요!</Comment>
-                    <ExtraInfoForm>
-                        <ExtraInfoInputWrapper>
-                            <LtExtraWrapper>
-                                <div>
-                                    <ExtraInfoLabel><StepNumber>1</StepNumber>프로필 사진을 등록해 주세요!</ExtraInfoLabel>
-                                    <ExtraFileInput />
-                                </div>
-                                <div>
-                                    <ExtraInfoLabel><StepNumber>2</StepNumber>뭐라고 불러드릴까요?</ExtraInfoLabel>
-                                    <ExtraInfoInput placeholder="사용할 닉네임을 입력해주세요." />
-                                </div>
-                                <div>
-                                    <ExtraInfoLabel><StepNumber>3</StepNumber>선호하는 장르를 알려주세요!</ExtraInfoLabel>
-                                    <SelectWrapper><Select options={options} styles={selectStyles} isMulti></Select></SelectWrapper>
-                                </div>
-                            </LtExtraWrapper>
-                            <RtExtraWrapper>
-                                <ExtraInfoLabel><StepNumber>4</StepNumber>라이브에 사용할 캐릭터를 선택해 주세요!</ExtraInfoLabel>
-                                <ExtraRadioWrapper>
-                                    <ExtraRadioLabel><ExtraRadioInput type="radio" id="pet" name="pet" /><img src={pet1} alt="petImg" width={100} /></ExtraRadioLabel>
-                                    <ExtraRadioLabel><ExtraRadioInput type="radio" id="pet2" name="pet" /><img src={pet2} alt="petImg" width={100} /></ExtraRadioLabel>
-                                    <ExtraRadioLabel><ExtraRadioInput type="radio" id="pet3" name="pet" /><img src={pet3} alt="petImg" width={100} /></ExtraRadioLabel>
-                                    <ExtraRadioLabel><ExtraRadioInput type="radio" id="pet4" name="pet" /><img src={pet4} alt="petImg" width={100} /></ExtraRadioLabel>
-                                    <ExtraRadioLabel><ExtraRadioInput type="radio" id="pet5" name="pet" /><img src={pet5} alt="petImg" width={100} /></ExtraRadioLabel>
-                                    <ExtraRadioLabel><ExtraRadioInput type="radio" id="pet6" name="pet" /><img src={pet6} alt="petImg" width={100} /></ExtraRadioLabel>
-                                </ExtraRadioWrapper>
-                            </RtExtraWrapper>
-                        </ExtraInfoInputWrapper>
-                        <LtBtnWrapper><FilledBtn textColor="black" type="submit" width="90px" height="35px" color="var(--yellow)">SUBMIT</FilledBtn></LtBtnWrapper>
-                    </ExtraInfoForm>
-                </ModalBody>
-            </ModalWrapper>
-        </>
-    )
-}
+  return (
+    <>
+      <ModalOverlay />
+      <ModalWrapper width={width} height={height}>
+        <ModalHeader>
+          <div>TYPE YOUR EXTRA INFO</div>
+          <ModalCloseBtn
+            textColor="white"
+            onClick={() => {
+              setModalType("");
+            }}
+          >
+            X
+          </ModalCloseBtn>
+        </ModalHeader>
+        <ModalBody>
+          <Comment_v2 textColor="white">
+            버터에 가입하신 것을 축하합니다!
+          </Comment_v2>
+          <Comment>
+            더 많은 기능을 즐기기 위해 몇 가지 정보를 추가로 입력해 주세요!
+          </Comment>
+          <ExtraInfoForm>
+            <ExtraInfoInputWrapper>
+              <LtExtraWrapper>
+                <div>
+                  <ExtraInfoLabel>
+                    <StepNumber>1</StepNumber>프로필 사진을 등록해 주세요!
+                  </ExtraInfoLabel>
+                  <ExtraFileInput />
+                </div>
+                <div>
+                  <ExtraInfoLabel>
+                    <StepNumber>2</StepNumber>뭐라고 불러드릴까요?
+                  </ExtraInfoLabel>
+                  <ExtraInfoInput placeholder="사용할 닉네임을 입력해주세요." />
+                </div>
+                <div>
+                  <ExtraInfoLabel>
+                    <StepNumber>3</StepNumber>선호하는 장르를 알려주세요!
+                  </ExtraInfoLabel>
+                  <SelectWrapper>
+                    <Select
+                      options={options}
+                      styles={selectStyles}
+                      isMulti
+                    ></Select>
+                  </SelectWrapper>
+                </div>
+              </LtExtraWrapper>
+              <RtExtraWrapper>
+                <ExtraInfoLabel>
+                  <StepNumber>4</StepNumber>라이브에 사용할 캐릭터를 선택해
+                  주세요!
+                </ExtraInfoLabel>
+                <ExtraRadioWrapper>
+                  <ExtraRadioLabel>
+                    <ExtraRadioInput type="radio" id="pet" name="pet" />
+                    <img src={pet1} alt="petImg" width={100} />
+                  </ExtraRadioLabel>
+                  <ExtraRadioLabel>
+                    <ExtraRadioInput type="radio" id="pet2" name="pet" />
+                    <img src={pet2} alt="petImg" width={100} />
+                  </ExtraRadioLabel>
+                  <ExtraRadioLabel>
+                    <ExtraRadioInput type="radio" id="pet3" name="pet" />
+                    <img src={pet3} alt="petImg" width={100} />
+                  </ExtraRadioLabel>
+                  <ExtraRadioLabel>
+                    <ExtraRadioInput type="radio" id="pet4" name="pet" />
+                    <img src={pet4} alt="petImg" width={100} />
+                  </ExtraRadioLabel>
+                  <ExtraRadioLabel>
+                    <ExtraRadioInput type="radio" id="pet5" name="pet" />
+                    <img src={pet5} alt="petImg" width={100} />
+                  </ExtraRadioLabel>
+                  <ExtraRadioLabel>
+                    <ExtraRadioInput type="radio" id="pet6" name="pet" />
+                    <img src={pet6} alt="petImg" width={100} />
+                  </ExtraRadioLabel>
+                </ExtraRadioWrapper>
+              </RtExtraWrapper>
+            </ExtraInfoInputWrapper>
+            <LtBtnWrapper>
+              <FilledBtn
+                textColor="black"
+                type="submit"
+                width="90px"
+                height="35px"
+                color="var(--yellow)"
+              >
+                SUBMIT
+              </FilledBtn>
+            </LtBtnWrapper>
+          </ExtraInfoForm>
+        </ModalBody>
+      </ModalWrapper>
+    </>
+  );
+};
