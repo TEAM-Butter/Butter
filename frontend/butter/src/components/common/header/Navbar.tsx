@@ -3,7 +3,7 @@ import styled from "@emotion/styled";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { Link, useMatch } from "react-router-dom";
-import { StreamingModal, ForgotAuthModal } from "../modals/modal";
+import { StreamingModal } from "../modals/modal";
 
 const Nav = styled.nav`
     display: flex;
@@ -132,7 +132,7 @@ function Navbar() {
     const crewMatch = useMatch("crew");
     const loginMatch = useMatch("auth/login");
     // isLogin이 true일 경우 profile dropdown 적용, false일 경우 login link만 렌더링링 
-    const [isLogin, setIsLogin] = useState(true)
+    const [isLogin, setIsLogin] = useState(false)
     const [isCrewUser, setIsCrewUser] = useState(true)
     const [isHovered, setIsHovered] = useState(false);
     const [modalType, setModalType] = useState<string>("");
