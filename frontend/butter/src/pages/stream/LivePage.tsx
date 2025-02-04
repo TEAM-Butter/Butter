@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import StreamChat from "../../components/stream/StreamChat";
-import { useCallback, useEffect, useState } from "react";
+import { useState } from "react";
 import {
   LocalVideoTrack,
   RemoteParticipant,
@@ -10,9 +10,6 @@ import {
   RoomEvent,
 } from "livekit-client";
 import StreamLive from "../../components/stream/StreamLive";
-import { RecordingService } from "../../services/RecordingService";
-import { RecordingControls } from "../../components/stream/RecordingControls";
-import { useLocation } from "react-router-dom";
 
 const LivePageWrapper = styled.div`
   display: flex;
@@ -137,11 +134,12 @@ type TrackInfo = {
 
 // When running OpenVidu locally, leave these variables empty
 // For other deployment type, configure them with correct URLs depending on your deployment
+//let APPLICATION_SERVER_URL = "";
+//let APPLICATION_SERVER_URL = "http://192.168.219.52:6080/";
 let APPLICATION_SERVER_URL = "";
-//let APPLICATION_SERVER_URL = "https://192.168.30.199:6080/";
 
+//let LIVEKIT_URL = "";
 let LIVEKIT_URL = "";
-//let LIVEKIT_URL = "wss://192.168.30.199:7880/";
 
 let TOKEN = "";
 configureUrls();
@@ -162,7 +160,6 @@ function configureUrls() {
       LIVEKIT_URL = "ws://localhost:7880/";
     } else {
       LIVEKIT_URL = "wss://" + window.location.hostname + ":7443/";
-      //LIVEKIT_URL = "ws://192.168.219.52:7880/";
     }
   }
 }
@@ -173,37 +170,14 @@ const LivePage = () => {
     undefined
   );
   const [remoteTracks, setRemoteTracks] = useState<TrackInfo[]>([]);
-  const { state } = useLocation();
 
-  const [recordingService, setRecordingService] =
-    useState<RecordingService | null>(null);
+  const [participantName, setParticipantName] = useState(
+    "Participant" + Math.floor(Math.random() * 100)
+  );
+  const [roomName, setRoomName] = useState("Test Room");
 
-  const roomName = state.roomName;
-  const participantName = state.participantName;
-  let role = "";
-  if (!role) {
-    if (window.location.hostname === "localhost") {
-      role = "publisher";
-    } else {
-      role = "subscriber";
-    }
-  }
-
-  const leaveRoom = useCallback(async () => {
-    // Leave the room by calling 'disconnect' method over the Room object
-    if (room) {
-      await room.disconnect();
-      setRoom(undefined);
-      setLocalTrack(undefined);
-      setRemoteTracks([]);
-    }
-  }, [room]);
-
-  const joinRoom = useCallback(async () => {
+  async function joinRoom() {
     // Initialize a new Room object
-
-    console.log("APP" + APPLICATION_SERVER_URL);
-    console.log("LIVE" + LIVEKIT_URL);
     const room = new Room();
     setRoom(room);
 
@@ -240,96 +214,74 @@ const LivePage = () => {
 
     try {
       // Get a token from your application server with the room name and participant name
-      const token = await getToken(roomName, participantName, role);
+      const token = await getToken(roomName, participantName);
       // Connect to the room with the LiveKit URL and the token
-
-      console.log("token!!!!", token);
-      console.log(role);
       await room.connect(LIVEKIT_URL, token);
 
-      console.log("Connected to room successfully");
-      console.log(room);
-
-      if (role == "publisher") {
-        // Publish your camera and microphone
-        await room.localParticipant.enableCameraAndMicrophone();
-
-        console.log("enableCameraAndMicrophone");
-
-        setLocalTrack(
-          room.localParticipant.videoTrackPublications.values().next().value
-            ?.videoTrack
-        );
-      }
+      // Publish your camera and microphone
+      await room.localParticipant.enableCameraAndMicrophone();
+      setLocalTrack(
+        room.localParticipant.videoTrackPublications.values().next().value
+          .videoTrack
+      );
     } catch (error) {
       console.log(
         "There was an error connecting to the room:",
         (error as Error).message
       );
-      // await leaveRoom();
-    }
-  }, [participantName, role, roomName]);
-
-  async function getToken(
-    roomName: string,
-    participantName: string,
-    role: string
-  ) {
-    try {
-      const response = await fetch(APPLICATION_SERVER_URL + "token", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          roomName,
-          participantName,
-          role,
-        }),
-      });
-
-      if (!response.ok) {
-        const error = await response.json();
-        console.error("Token response error:", error); // 에러 로깅 추가
-        throw new Error(`Failed to get token: ${error.errorMessage}`);
-      }
-
-      const data = await response.json();
-      console.log("Token received:", data); // 토큰 로깅 추가
-      TOKEN = data.token;
-      return data.token;
-    } catch (error) {
-      console.error("Token fetch error:", error); // 에러 로깅 추가
-      throw error;
+      await leaveRoom();
     }
   }
-  console.log("localTrack", localTrack);
-  useEffect(() => {
-    if (room) {
-      setRecordingService(new RecordingService(room));
+
+  async function leaveRoom() {
+    // Leave the room by calling 'disconnect' method over the Room object
+    await room?.disconnect();
+
+    // Reset the state
+    setRoom(undefined);
+    setLocalTrack(undefined);
+    setRemoteTracks([]);
+  }
+
+  /**
+   * --------------------------------------------
+   * GETTING A TOKEN FROM YOUR APPLICATION SERVER
+   * --------------------------------------------
+   * The method below request the creation of a token to
+   * your application server. This prevents the need to expose
+   * your LiveKit API key and secret to the client side.
+   *
+   * In this sample code, there is no user control at all. Anybody could
+   * access your application server endpoints. In a real production
+   * environment, your application server must identify the user to allow
+   * access to the endpoints.
+   */
+  async function getToken(roomName: string, participantName: string) {
+    const response = await fetch(APPLICATION_SERVER_URL + "token", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        roomName: roomName,
+        participantName: participantName,
+      }),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(`Failed to get token: ${error.errorMessage}`);
     }
-  }, [room]);
 
-  useEffect(() => {
-    console.log("CHANGE");
-  }, [room]);
-
-  useEffect(() => {
-    joinRoom();
-  }, [joinRoom]);
+    const data = await response.json();
+    TOKEN = data.token;
+    return data.token;
+  }
   //조건부 렌더링
-
-  useEffect(() => {
-    return () => {
-      leaveRoom();
-    };
-  }, [leaveRoom]);
-
-  console.log("room", room);
-
+  const user = "crew";
   return (
     <>
-      {role === "publisher" ? (
+      {user === "crew" ? (
         <>
           <LivePageWrapper>
             <Left>
@@ -337,17 +289,22 @@ const LivePage = () => {
                 <StreamChat />
               </LeftTop>
               <CharacterBox>b</CharacterBox>
-              {recordingService && (
-                <RecordingControls recordingService={recordingService} />
-              )}
             </Left>
 
             <Right>
               <RightTop>
                 <StreamLive
                   room={room}
+                  onSubmit={(e) => {
+                    joinRoom();
+                    e.preventDefault();
+                  }}
                   participantName={participantName}
+                  onParticipantNameChange={(e) =>
+                    setParticipantName(e.target.value)
+                  }
                   roomName={roomName}
+                  onRoomNameChange={(e) => setRoomName(e.target.value)}
                   localTrack={localTrack}
                   remoteTracks={remoteTracks}
                   serverUrl={APPLICATION_SERVER_URL}
@@ -367,12 +324,18 @@ const LivePage = () => {
             <LeftTop>
               <StreamLive
                 room={room}
+                onSubmit={(e) => {
+                  joinRoom();
+                  e.preventDefault();
+                }}
                 participantName={participantName}
+                onParticipantNameChange={(e) =>
+                  setParticipantName(e.target.value)
+                }
                 roomName={roomName}
+                onRoomNameChange={(e) => setRoomName(e.target.value)}
                 localTrack={localTrack}
                 remoteTracks={remoteTracks}
-                serverUrl={APPLICATION_SERVER_URL}
-                token={TOKEN}
               />
             </LeftTop>
             <CharacterBox>b</CharacterBox>
