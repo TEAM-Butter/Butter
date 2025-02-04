@@ -180,7 +180,14 @@ const LivePage = () => {
 
   const roomName = state.roomName;
   const participantName = state.participantName;
-  const role = state.role;
+  let role = "";
+  if (!role) {
+    if (window.location.hostname === "localhost") {
+      role = "publisher";
+    } else {
+      role = "subscriber";
+    }
+  }
 
   const leaveRoom = useCallback(async () => {
     // Leave the room by calling 'disconnect' method over the Room object
@@ -237,19 +244,23 @@ const LivePage = () => {
       // Connect to the room with the LiveKit URL and the token
 
       console.log("token!!!!", token);
+      console.log(role);
       await room.connect(LIVEKIT_URL, token);
 
       console.log("Connected to room successfully");
+      console.log(room);
 
-      // Publish your camera and microphone
-      await room.localParticipant.enableCameraAndMicrophone();
+      if (role == "publisher") {
+        // Publish your camera and microphone
+        await room.localParticipant.enableCameraAndMicrophone();
 
-      console.log("enableCameraAndMicrophone");
+        console.log("enableCameraAndMicrophone");
 
-      setLocalTrack(
-        room.localParticipant.videoTrackPublications.values().next().value
-          ?.videoTrack
-      );
+        setLocalTrack(
+          room.localParticipant.videoTrackPublications.values().next().value
+            ?.videoTrack
+        );
+      }
     } catch (error) {
       console.log(
         "There was an error connecting to the room:",
@@ -318,7 +329,7 @@ const LivePage = () => {
 
   return (
     <>
-      {state.role === "publisher" ? (
+      {role === "publisher" ? (
         <>
           <LivePageWrapper>
             <Left>
