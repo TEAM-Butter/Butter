@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 public interface MemberService {
 
+    void save(Member member);
     Member findById(Long id);
     Optional<Member> findByEmail(String email);
     Member signUp(SignUpDTO signUpDTO, MultipartFile profileImage);

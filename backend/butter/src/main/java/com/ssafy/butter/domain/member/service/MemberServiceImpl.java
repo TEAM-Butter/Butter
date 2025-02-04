@@ -44,6 +44,11 @@ public class MemberServiceImpl implements MemberService{
     private final EncryptUtils encryptUtils;
     private final ImageUploader imageUploader;
 
+    @Override
+    public void save(Member member) {
+        memberRepository.save(member);
+    }
+
     /**
      * 찾으려는 회원 ID를 받아 해당 회원 정보를 반환한다.
      * @param id 찾으려는 회원의 ID
