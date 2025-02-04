@@ -3,6 +3,7 @@ package com.ssafy.butter.domain.member.service.member;
 import com.ssafy.butter.auth.dto.AuthInfoDTO;
 import com.ssafy.butter.domain.crew.entity.Genre;
 import com.ssafy.butter.domain.crew.repository.genre.GenreRepository;
+import com.ssafy.butter.domain.crew.service.genre.GenreService;
 import com.ssafy.butter.domain.member.dto.request.ExtraInfoDTO;
 import com.ssafy.butter.domain.member.dto.request.PasswordUpdateRequestDTO;
 import com.ssafy.butter.domain.member.dto.request.ProfileUpdateRequestDTO;
@@ -40,7 +41,7 @@ public class MemberServiceImpl implements MemberService{
     private final TransactionalMemberService transactionalMemberService;
     private final JwtManager jwtManager;
     private final MemberRepository memberRepository;
-    private final GenreRepository genreRepository;
+    private final GenreService genreService;
     private final AvatarTypeService avatarTypeService;
     private final EncryptUtils encryptUtils;
     private final ImageUploader imageUploader;
@@ -211,7 +212,7 @@ public class MemberServiceImpl implements MemberService{
 
     private List<Genre> getValidGenres(List<String> genres) {
         return genres.stream()
-                .map(genreName -> genreRepository.findByName(genreName)
+                .map(genreName -> genreService.findByName(genreName)
                         .orElseThrow(() -> new IllegalArgumentException("ERR : "+genreName+"은 존재하지 않는 장르입니다")))
                 .toList();
     }
