@@ -41,4 +41,21 @@ public class MemberController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
     }
+
+    @GetMapping("/profile")
+    public ResponseEntity<UserProfileResponseDTO> getMyProfile(
+            @CurrentUser AuthInfoDTO authInfoDTO) {
+
+        UserProfileResponseDTO profile = memberService.getMyProfile(authInfoDTO.id());
+        return ResponseEntity.ok(profile);
+    }
+
+    @PutMapping("/profile")
+    public ResponseEntity<ProfileUpdateResponseDTO> updateProfile(
+            @CurrentUser AuthInfoDTO authInfoDTO,
+            @ModelAttribute ProfileUpdateRequestDTO profileUpdateRequestDTO) {
+
+        ProfileUpdateResponseDTO response = memberService.updateProfile(profileUpdateRequestDTO, authInfoDTO.id());
+        return ResponseEntity.ok(response);
+    }
 }

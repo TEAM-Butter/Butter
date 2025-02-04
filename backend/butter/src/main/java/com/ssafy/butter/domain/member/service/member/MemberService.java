@@ -26,7 +26,7 @@ public interface MemberService {
     Optional<Member> findByNickname(Nickname nickname);
     Optional<Member> findByLoginId(String loginId);
     SignUpResponseDTO signUp(SignUpDTO signUpDTO);
-    UserProfileResponseDTO getMyProfile(final Long memberId) throws BadRequestException;
+    UserProfileResponseDTO getMyProfile(final Long memberId);
     ProfileUpdateResponseDTO updateProfile(ProfileUpdateRequestDTO profileUpdateRequestDTO, Long memberId);
     PasswordUpdateResponseDTO updatePassword(PasswordUpdateRequestDTO passwordUpdateRequestDTO, AuthInfoDTO authInfoDTO);
     RegisterExtraInfoResponseDTO saveExtraUserInfo(ExtraInfoDTO extraInfoDTO, Long memberId);
