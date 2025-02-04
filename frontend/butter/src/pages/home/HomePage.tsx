@@ -7,7 +7,7 @@ const HomePageWrapper = styled.div`
 `;
 
 const HomePage = () => {
-  const [modalType, setModalType] = useState<string>("extraInfo");
+  const [modalType, setModalType] = useState<string>("");
   return (<>
   <HomePageWrapper>Homepage</HomePageWrapper>
   {modalType === "extraInfo" && <UserExtraInfoModal width="800px" height="400px" setModalType={setModalType}></UserExtraInfoModal>}
