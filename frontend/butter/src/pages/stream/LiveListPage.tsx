@@ -1,6 +1,7 @@
 import styled from "@emotion/styled";
 import { motion } from "framer-motion";
 import { useState } from "react";
+import LiveBox from "../../components/stream/LiveBox";
 
 const LiveListPageWrapper = styled.div`
   width: 90vw;
@@ -92,74 +93,22 @@ const LiveContainer = styled.div`
   justify-content: first baseline;
 `;
 
-const LiveBox = styled.div`
+const LiveCard = styled.div`
   width: 400px;
   height: 350px;
   border-radius: 20px;
-  background-color: wheat;
-  display: flex;
-  flex-direction: column;
 `;
 
-const LiveGenres = styled.div`
-  width: 100%;
-  height: 50px;
-  border-top-left-radius: 20px;
-  border-top-right-radius: 20px;
-  display: flex;
-`;
-const LiveGenre = styled.div`
-  margin: 10px 6px;
-  padding: 6px 15px;
-  font-size: 20px;
-  height: 32px;
-  border-radius: 20px;
-  background-color: rgba(0, 0, 0, 0.85);
-  color: white;
-`;
+// const LiveBox = styled.div`
+//   width: 400px;
+//   height: 350px;
+//   border-radius: 20px;
+//   background-color: wheat;
+//   display: flex;
+//   flex-direction: column;
+// `;
 
-const LiveInfoContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
-  padding: 20px;
-  width: 100%;
-  height: 100px;
-  background-color: #c7c7c7;
-  border-bottom-left-radius: 20px;
-  border-bottom-right-radius: 20px;
-  margin-top: auto;
-`;
-
-const LiveInfo = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  height: 100%;
-`;
-
-const LiveTitle = styled.div`
-  font-size: 30px;
-  font-weight: 500;
-  color: black;
-`;
-const LiveLocation = styled.div`
-  color: #317fde;
-  font-size: 18px;
-`;
-
-const LiveBtn = styled.div`
-  background-color: #ea2323;
-  display: flex;
-  align-items: center;
-  padding: 20px;
-  border-radius: 30px;
-  font-size: 30px;
-  font-weight: 300;
-  height: 60px;
-`;
-
-const allIngredients = ["Popular", "Most Follower"];
-const tabs = allIngredients;
+const tabs = ["Popular", "Most Follower"];
 
 const liveList = [
   {
@@ -202,9 +151,7 @@ const liveList = [
 
 const LiveListPage = () => {
   const [selectedTab, setSelectedTab] = useState(tabs[0]);
-  const goLive = (roomName: string) => {
-    console.log(roomName);
-  };
+
   return (
     <LiveListPageWrapper>
       <Header>
@@ -238,20 +185,14 @@ const LiveListPage = () => {
       </Header>
       <LiveContainer>
         {liveList.map((live) => (
-          <LiveBox key={live.id}>
-            <LiveGenres>
-              {live.genres.map((genre) => (
-                <LiveGenre key={genre}>{genre}</LiveGenre>
-              ))}
-            </LiveGenres>
-            <LiveInfoContainer>
-              <LiveInfo>
-                <LiveTitle>{live.title}</LiveTitle>
-                <LiveLocation>{live.location}</LiveLocation>
-              </LiveInfo>
-              <LiveBtn onClick={() => goLive(live.title)}>Live</LiveBtn>
-            </LiveInfoContainer>
-          </LiveBox>
+          <LiveCard>
+            <LiveBox
+              id={live.id}
+              title={live.title}
+              genres={live.genres}
+              location={live.location}
+            />
+          </LiveCard>
         ))}
       </LiveContainer>
     </LiveListPageWrapper>

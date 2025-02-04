@@ -1,8 +1,8 @@
 import styled from "styled-components";
 
-const Container = styled.div`
-  width: 400px;
-  height: 350px;
+const LiveBoxWrapper = styled.div`
+  width: 100%;
+  height: 100%;
   border-radius: 20px;
   background-color: wheat;
   display: flex;
@@ -82,7 +82,7 @@ const LiveBox = ({ id, title, genres, location }: LiveProps) => {
   };
 
   return (
-    <Container>
+    <LiveBoxWrapper key={id}>
       <LiveGenres>
         {genres.map((genre) => (
           <LiveGenre key={genre}>{genre}</LiveGenre>
@@ -95,7 +95,7 @@ const LiveBox = ({ id, title, genres, location }: LiveProps) => {
         </LiveInfo>
         <LiveBtn onClick={() => goLive(title)}>Live</LiveBtn>
       </LiveInfoContainer>
-    </Container>
+    </LiveBoxWrapper>
   );
 };
 
