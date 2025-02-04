@@ -1,4 +1,4 @@
-package com.ssafy.butter.domain.member.service;
+package com.ssafy.butter.domain.member.service.member;
 
 import com.ssafy.butter.auth.dto.AuthInfoDTO;
 import com.ssafy.butter.domain.crew.entity.Genre;
@@ -16,6 +16,7 @@ import com.ssafy.butter.domain.member.entity.Member;
 import com.ssafy.butter.domain.member.enums.Gender;
 import com.ssafy.butter.domain.member.repository.avatarType.AvatarTypeRepository;
 import com.ssafy.butter.domain.member.repository.member.MemberRepository;
+import com.ssafy.butter.domain.member.service.avatarType.AvatarTypeService;
 import com.ssafy.butter.domain.member.vo.BirthDate;
 import com.ssafy.butter.domain.member.vo.Email;
 import com.ssafy.butter.domain.member.vo.Nickname;
@@ -40,7 +41,7 @@ public class MemberServiceImpl implements MemberService{
     private final JwtManager jwtManager;
     private final MemberRepository memberRepository;
     private final GenreRepository genreRepository;
-    private final AvatarTypeRepository avatarTypeRepository;
+    private final AvatarTypeService avatarTypeService;
     private final EncryptUtils encryptUtils;
     private final ImageUploader imageUploader;
 
@@ -216,7 +217,7 @@ public class MemberServiceImpl implements MemberService{
     }
 
     private AvatarType getAvatarType(String avatarTypeName) {
-        return avatarTypeRepository.findByName(avatarTypeName)
+        return avatarTypeService.findByName(avatarTypeName)
                 .orElseThrow(() -> new IllegalArgumentException("ERR : "+ avatarTypeName+"은 존재하지 않는 장르입니다"));
     }
 }

@@ -1,4 +1,4 @@
-package com.ssafy.butter.domain.member.service;
+package com.ssafy.butter.domain.member.service.member;
 
 import com.ssafy.butter.auth.dto.AuthInfoDTO;
 import com.ssafy.butter.domain.member.dto.request.ExtraInfoDTO;

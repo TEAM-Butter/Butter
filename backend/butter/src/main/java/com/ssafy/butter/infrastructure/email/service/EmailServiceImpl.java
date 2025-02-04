@@ -1,7 +1,7 @@
 package com.ssafy.butter.infrastructure.email.service;
 
 import com.ssafy.butter.domain.member.entity.Member;
-import com.ssafy.butter.domain.member.service.MemberService;
+import com.ssafy.butter.domain.member.service.member.MemberService;
 import com.ssafy.butter.domain.member.vo.Email;
 import com.ssafy.butter.domain.member.vo.Password;
 import com.ssafy.butter.infrastructure.email.constants.EmailConstants;
