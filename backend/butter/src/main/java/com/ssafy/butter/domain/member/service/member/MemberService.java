@@ -7,6 +7,7 @@ import com.ssafy.butter.domain.member.dto.response.PasswordUpdateResponseDTO;
 import com.ssafy.butter.domain.member.dto.response.ProfileUpdateResponseDTO;
 import com.ssafy.butter.domain.member.dto.request.ProfileUpdateRequestDTO;
 import com.ssafy.butter.domain.member.dto.response.RegisterExtraInfoResponseDTO;
+import com.ssafy.butter.domain.member.dto.response.SignUpResponseDTO;
 import com.ssafy.butter.domain.member.dto.response.UserProfileResponseDTO;
 import com.ssafy.butter.domain.member.entity.Member;
 import com.ssafy.butter.domain.member.dto.request.SignUpDTO;
@@ -24,7 +25,7 @@ public interface MemberService {
     Optional<Member> findByEmail(Email email);
     Optional<Member> findByNickname(Nickname nickname);
     Optional<Member> findByLoginId(String loginId);
-    Member signUp(SignUpDTO signUpDTO, MultipartFile profileImage);
+    SignUpResponseDTO signUp(SignUpDTO signUpDTO);
     UserProfileResponseDTO getMyProfile(final Long memberId) throws BadRequestException;
     ProfileUpdateResponseDTO updateProfile(ProfileUpdateRequestDTO profileUpdateRequestDTO, Long memberId);
     PasswordUpdateResponseDTO updatePassword(PasswordUpdateRequestDTO passwordUpdateRequestDTO, AuthInfoDTO authInfoDTO);

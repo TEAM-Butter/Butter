@@ -11,6 +11,7 @@ import com.ssafy.butter.domain.member.dto.request.SignUpDTO;
 import com.ssafy.butter.domain.member.dto.response.PasswordUpdateResponseDTO;
 import com.ssafy.butter.domain.member.dto.response.ProfileUpdateResponseDTO;
 import com.ssafy.butter.domain.member.dto.response.RegisterExtraInfoResponseDTO;
+import com.ssafy.butter.domain.member.dto.response.SignUpResponseDTO;
 import com.ssafy.butter.domain.member.dto.response.UserProfileResponseDTO;
 import com.ssafy.butter.domain.member.entity.AvatarType;
 import com.ssafy.butter.domain.member.entity.Member;
@@ -61,7 +62,6 @@ public class MemberServiceImpl implements MemberService{
         return memberRepository.findById(id).orElseThrow();
     }
 
-
     /**
      * 찾으려는 회원의 email로 해당 회원 정보를 반환한다
      * @param email 찾으려는 회원 email
@@ -88,16 +88,20 @@ public class MemberServiceImpl implements MemberService{
      * @return 회원 가입 성공한 Member를 반환
      */
     @Override
-    public Member signUp(SignUpDTO signUpDTO, MultipartFile profileImage) {
-        Password encryptedPassword = createEncryptedPassword(signUpDTO.password().getValue());
+    public SignUpResponseDTO signUp(SignUpDTO signUpDTO) {
+        Password encryptedPassword = createEncryptedPassword(signUpDTO.password());
 
-        return memberRepository.save(Member.builder()
+        Member sigunUpMember = Member.builder()
                 .loginId(signUpDTO.loginId())
                 .email(new Email(signUpDTO.email()))
                 .birthDate(new BirthDate(signUpDTO.birthDate()))
                 .password(encryptedPassword)
                 .gender(Gender.valueOf(signUpDTO.gender()))
-                .build());
+                .build();
+
+        save(sigunUpMember);
+
+        return SignUpResponseDTO.from(sigunUpMember);
     }
 
     /**
