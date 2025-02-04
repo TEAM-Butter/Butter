@@ -13,7 +13,7 @@ import java.util.NoSuchElementException;
 @Component
 @RequiredArgsConstructor
 public class AuthenticatedUserArgumentResolver implements HandlerMethodArgumentResolver {
-    private final NaverOAuthLoginService naverOAuthLoginService;
+
     private final JwtManager jwtManager;
     private final JwtExtractor jwtExtractor;
 
@@ -24,18 +24,12 @@ public class AuthenticatedUserArgumentResolver implements HandlerMethodArgumentR
 
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
-                                  NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
+                                  NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         String token = webRequest.getHeader("Authorization");
         if (token == null) {
             throw new NoSuchElementException();
         }
 
-        String extractedToken = jwtExtractor.extract(token);
-
-        if(extractedToken.contains(".")){
-            return jwtManager.getParsedClaims(extractedToken);
-        } else {
-            return naverOAuthLoginService.getUserDetails(extractedToken);
-        }
+        return jwtManager.getParsedClaims(jwtExtractor.extract(token));
     }
 }

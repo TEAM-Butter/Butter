@@ -1,7 +1,9 @@
 package com.ssafy.butter.domain.schedule.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ssafy.butter.domain.common.TimestampedEntity;
 import com.ssafy.butter.domain.crew.entity.Crew;
+import com.ssafy.butter.domain.schedule.dto.request.ScheduleSaveRequestDTO;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -16,6 +18,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -29,6 +34,7 @@ public class Schedule extends TimestampedEntity {
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "crew_id")
+    @JsonIgnore
     private Crew crew;
 
     @Column(length = 50)
@@ -44,6 +50,9 @@ public class Schedule extends TimestampedEntity {
     private String place;
 
     @NotNull
+    private LocalDateTime buskingDate;
+
+    @NotNull
     private double latitude;
 
     @NotNull
@@ -51,12 +60,22 @@ public class Schedule extends TimestampedEntity {
 
     @Builder
     public Schedule(Crew crew, String title, String content,
-                    String place, double latitude, double longitude) {
+                    String place, LocalDateTime buskingDate, double latitude, double longitude) {
         this.crew = crew;
         this.title = title;
         this.content = content;
         this.place = place;
+        this.buskingDate = buskingDate;
         this.latitude = latitude;
         this.longitude = longitude;
+    }
+
+    public void update(ScheduleSaveRequestDTO scheduleSaveRequestDTO) {
+        this.title = scheduleSaveRequestDTO.title();
+        this.content = scheduleSaveRequestDTO.content();
+        this.place = scheduleSaveRequestDTO.place();
+        this.buskingDate = scheduleSaveRequestDTO.buskingDate();
+        this.latitude = scheduleSaveRequestDTO.latitude();
+        this.longitude = scheduleSaveRequestDTO.longitude();
     }
 }

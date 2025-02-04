@@ -13,11 +13,5 @@ public record NaverAccessTokenResponseDTO(
         String tokenType,
 
         @JsonProperty("expires_in")
-        String expiresIn,
-
-        @JsonProperty("error")
-        String error,
-
-        @JsonProperty("error_description")
-        String errorDescription
+        String expiresIn
 ) {}

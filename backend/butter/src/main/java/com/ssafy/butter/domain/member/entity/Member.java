@@ -1,21 +1,33 @@
 package com.ssafy.butter.domain.member.entity;
 
+import com.ssafy.butter.domain.crew.entity.Genre;
+import com.ssafy.butter.domain.member.enums.Gender;
 import com.ssafy.butter.domain.member.vo.BirthDate;
 import com.ssafy.butter.domain.member.vo.BreadAmount;
 import com.ssafy.butter.domain.member.vo.Email;
 import com.ssafy.butter.domain.member.vo.Nickname;
 import com.ssafy.butter.domain.member.vo.Password;
-import com.ssafy.butter.domain.member.vo.PhoneNumber;
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotNull;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDate;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -29,13 +41,15 @@ public class Member {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_type_id")
-    @NotNull
     private MemberType memberType;
 
-    @OneToMany(mappedBy = "member")
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "avatar_type_id")
+    private AvatarType avatarType;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MemberGenre> memberGenres = new ArrayList<>();
 
-    @NotNull
     private String loginId;
 
     @Embedded
@@ -43,9 +57,6 @@ public class Member {
 
     @Embedded
     private Email email;
-
-    @Embedded
-    private PhoneNumber phoneNumber;
 
     @Embedded
     private BirthDate birthDate;
@@ -57,35 +68,66 @@ public class Member {
     private Password password;
 
     @Column(length = 2048)
-    private String imageUrl;
+    private String profileImage;
 
     @NotNull
-    private Integer gender;
-
-    @NotNull
-    private Integer avatarType;
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
 
     @NotNull
     private LocalDate createDate;
 
+    @NotNull
+    private boolean isExtraInfoRegistered;
+
     @Builder
-    public Member(List<MemberGenre> memberGenres, String loginId, Nickname nickname, Email email,
-                  PhoneNumber phoneNumber,
-                  BirthDate birthDate, BreadAmount breadAmount, Password password, String imageUrl, Integer gender,
-                  Integer avatarType, LocalDate createDate, MemberType memberType) {
+    public Member(MemberType memberType, AvatarType avatarType, List<MemberGenre> memberGenres, String loginId,
+                  Nickname nickname, Email email, BirthDate birthDate, BreadAmount breadAmount, Password password,
+                  String profileImage, Gender gender, LocalDate createDate, boolean isExtraInfoRegistered) {
+        this.memberType = memberType;
+        this.avatarType = avatarType;
         this.memberGenres = memberGenres;
         this.loginId = loginId;
         this.nickname = nickname;
         this.email = email;
-        this.phoneNumber = phoneNumber;
         this.birthDate = birthDate;
         this.breadAmount = breadAmount;
         this.password = password;
-        this.imageUrl = imageUrl;
+        this.profileImage = profileImage;
         this.gender = gender;
-        this.avatarType = avatarType;
         this.createDate = createDate;
-        this.memberType = memberType;
+        this.isExtraInfoRegistered = isExtraInfoRegistered;
+    }
+
+    public void updateProfile(String nickname, String gender, String profileImage, List<Genre> genres){
+        if(nickname != null){
+            this.nickname = new Nickname(nickname);
+        }
+        if(gender != null){
+            this.gender = Gender.from(gender);
+        }
+        if(profileImage != null){
+            this.profileImage = profileImage;
+        }
+        if(genres != null){
+            updateMemberGenres(genres);
+        }
+    }
+
+    public void saveExtraInfo(Nickname nickname, String profileImage, AvatarType avatarType, List<Genre> genres){
+        this.nickname = nickname;
+        this.profileImage = profileImage;
+        this.avatarType = avatarType;
+        updateMemberGenres(genres);
+    }
+
+    public void changePassword(Password password){
+        this.password = password;
+    }
+
+    private void updateMemberGenres(List<Genre> newGenres){
+        memberGenres.clear();
+        newGenres.forEach(genre -> this.memberGenres.add(new MemberGenre(this, genre)));
     }
 }
 

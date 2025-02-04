@@ -37,4 +37,8 @@ public class Follow {
         this.crew = crew;
         this.isFollowed = isFollowed;
     }
+
+    public void updateIsFollowed(Boolean isFollowed) {
+        this.isFollowed = isFollowed;
+    }
 }

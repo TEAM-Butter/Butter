@@ -37,4 +37,8 @@ public class LikedSchedule {
         this.schedule = schedule;
         this.isLiked = isLiked;
     }
+
+    public void updateIsLiked(Boolean isLiked) {
+        this.isLiked = isLiked;
+    }
 }
