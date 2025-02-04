@@ -132,7 +132,7 @@ function Navbar() {
     const crewMatch = useMatch("crew");
     const loginMatch = useMatch("auth/login");
     // isLogin이 true일 경우 profile dropdown 적용, false일 경우 login link만 렌더링링 
-    const [isLogin, setIsLogin] = useState(false)
+    const [isLogin, setIsLogin] = useState(true)
     const [isCrewUser, setIsCrewUser] = useState(true)
     const [isHovered, setIsHovered] = useState(false);
     const [modalType, setModalType] = useState<string>("");
@@ -179,7 +179,7 @@ function Navbar() {
                                         :
                                         <Link to="/"><SubItem>크루 등록</SubItem></Link>
                                     }
-                                    <Link to="/"><SubItem>회원정보 수정</SubItem></Link>
+                                    <Link to="/member/detail/guest"><SubItem>회원정보 수정</SubItem></Link>
                                     <Link to="/"><SubItem>로그아웃</SubItem></Link>
                                 </SubProfile>
                             </Profile>

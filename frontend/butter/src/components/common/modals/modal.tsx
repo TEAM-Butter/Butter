@@ -251,7 +251,12 @@ export const ForgotAuthModal = ({ setModalType, width, height }: ModalProps) => 
 
 import { ExtraFileInput } from "../fileInput";
 import Select from "react-select";
-import pet1 from "/src/assets/pet1.png";
+import pet1 from "/src/assets/pets/pet1.png";
+import pet2 from "/src/assets/pets/pet2.png";
+import pet3 from "/src/assets/pets/pet3.png";
+import pet4 from "/src/assets/pets/pet4.png";
+import pet5 from "/src/assets/pets/pet5.png";
+import pet6 from "/src/assets/pets/pet6.png";
 
 const ExtraInfoForm = styled.form`
     display: flex;
@@ -381,11 +386,11 @@ export const UserExtraInfoModal = ({ setModalType, width, height }: ModalProps) 
                                 <ExtraInfoLabel><StepNumber>4</StepNumber>라이브에 사용할 캐릭터를 선택해 주세요!</ExtraInfoLabel>
                                 <ExtraRadioWrapper>
                                     <ExtraRadioLabel><ExtraRadioInput type="radio" id="pet" name="pet" /><img src={pet1} alt="petImg" width={100} /></ExtraRadioLabel>
-                                    <ExtraRadioLabel><ExtraRadioInput type="radio" id="pet2" name="pet" /><img src={pet1} alt="petImg" width={100} /></ExtraRadioLabel>
-                                    <ExtraRadioLabel><ExtraRadioInput type="radio" id="pet3" name="pet" /><img src={pet1} alt="petImg" width={100} /></ExtraRadioLabel>
-                                    <ExtraRadioLabel><ExtraRadioInput type="radio" id="pet4" name="pet" /><img src={pet1} alt="petImg" width={100} /></ExtraRadioLabel>
-                                    <ExtraRadioLabel><ExtraRadioInput type="radio" id="pet5" name="pet" /><img src={pet1} alt="petImg" width={100} /></ExtraRadioLabel>
-                                    <ExtraRadioLabel><ExtraRadioInput type="radio" id="pet6" name="pet" /><img src={pet1} alt="petImg" width={100} /></ExtraRadioLabel>
+                                    <ExtraRadioLabel><ExtraRadioInput type="radio" id="pet2" name="pet" /><img src={pet2} alt="petImg" width={100} /></ExtraRadioLabel>
+                                    <ExtraRadioLabel><ExtraRadioInput type="radio" id="pet3" name="pet" /><img src={pet3} alt="petImg" width={100} /></ExtraRadioLabel>
+                                    <ExtraRadioLabel><ExtraRadioInput type="radio" id="pet4" name="pet" /><img src={pet4} alt="petImg" width={100} /></ExtraRadioLabel>
+                                    <ExtraRadioLabel><ExtraRadioInput type="radio" id="pet5" name="pet" /><img src={pet5} alt="petImg" width={100} /></ExtraRadioLabel>
+                                    <ExtraRadioLabel><ExtraRadioInput type="radio" id="pet6" name="pet" /><img src={pet6} alt="petImg" width={100} /></ExtraRadioLabel>
                                 </ExtraRadioWrapper>
                             </RtExtraWrapper>
                         </ExtraInfoInputWrapper>

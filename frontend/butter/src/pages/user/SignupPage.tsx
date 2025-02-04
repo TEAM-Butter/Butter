@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { SignupForm } from "../../components/user/UserForm";
+import { SignupForm } from "../../components/user/AuthForm";
 import { Link } from "react-router-dom";
 
 const SignupPageWrapper = styled.div`

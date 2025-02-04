@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { LoginForm } from "../../components/user/UserForm";
+import { LoginForm } from "../../components/user/AuthForm";
 import { Link } from "react-router-dom";
 import { ForgotAuthModal } from "../../components/common/modals/modal";
 import { useState } from "react";

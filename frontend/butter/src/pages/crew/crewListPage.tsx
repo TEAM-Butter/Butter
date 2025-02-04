@@ -2,7 +2,7 @@ import axios from "axios"
 import { useState } from "react"
 import { Link } from "react-router-dom"
 import { useEffect } from "react"
-import styled from "styled-components"
+import styled from "@emotion/styled"
 import sample1 from "../../assets/sample1.png";
 import sample2 from "../../assets/sample2.jpg";
 import sample3 from "../../assets/sample3.jpg";

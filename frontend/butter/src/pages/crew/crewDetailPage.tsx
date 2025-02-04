@@ -1,7 +1,7 @@
 import axios from "axios"
 import { useParams, useNavigate } from "react-router-dom"
 import { useState, useEffect } from "react"
-import styled from "styled-components"
+import styled from "@emotion/styled"
 
 
 
