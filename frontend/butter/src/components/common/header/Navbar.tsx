@@ -6,123 +6,123 @@ import { Link, useMatch } from "react-router-dom";
 import { StreamingModal } from "../modals/modal";
 
 const Nav = styled.nav`
-    display: flex;
-    justify-content:space-between;
-    align-items:center;
-    width: 100%;
-    height: 55px;
-    position: fixed;
-    top: 0;
-    color: white;
-    `;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  height: 55px;
+  position: fixed;
+  top: 0;
+  color: white;
+`;
 
 const Col = styled.div``;
 
 const Col_r = styled.div`
-    flex: 1;
-    display: flex;
-    justify-content:space-between;
-    height: 100%;
-    align-items: center;
-    
-    /* @media (max-width: 768px) {
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+  height: 100%;
+  align-items: center;
+
+  /* @media (max-width: 768px) {
         display: none;
         } */
-        `;
+`;
 
 // logo motion(hover 애니메이션)사용
 const Logo = styled(motion.div)`
-    padding: 0 20px;
-    font-size:30px;
-    font-weight: bold;
-    color: var(--butter);
+  padding: 0 20px;
+  font-size: 30px;
+  font-weight: bold;
+  color: var(--butter);
 `;
 
 const Items = styled.ul`
-    display:flex;
-    font-size: 15px;
-    font-weight: medium;
-    height: 100%;
-    align-items: center;
-    `;
+  display: flex;
+  font-size: 15px;
+  font-weight: medium;
+  height: 100%;
+  align-items: center;
+`;
 
 const Item = styled.li`
-    width: 120px;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    height: 100%;
-    align-items: center;
-    `;
+  width: 120px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  align-items: center;
+`;
 
 const Profile = styled.li`
-    width: 120px;
-    height: 100%;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    `;
+  width: 120px;
+  height: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+`;
 
 const SubProfile = styled(motion.ul)`
-    overflow: hidden;
-    right: 3px;
-    position: absolute;
-    top: 55px;
-    margin-top: 3px;
-    width: 170px;
-    border-radius: 10px;    
-    background-color: #040A14;
-    padding: 5px 0;
-    `
+  overflow: hidden;
+  right: 3px;
+  position: absolute;
+  top: 55px;
+  margin-top: 3px;
+  width: 170px;
+  border-radius: 10px;
+  background-color: #040a14;
+  padding: 5px 0;
+`;
 
 const SubItem = styled(motion.div)`
-    width: 160px;
-    display: block;
-    padding: 10px 0 10px 15px;
-    transition: background-color 0.2s ease-in-out; 
-    &:hover {
-        background-color: #202226;
-     } 
-    `
+  width: 160px;
+  display: block;
+  padding: 10px 0 10px 15px;
+  transition: background-color 0.2s ease-in-out;
+  &:hover {
+    background-color: #202226;
+  }
+`;
 
 const SubItemComment = styled.li`
-    width: 160px;
-    padding: 10px 0 10px 15px;
-    border-bottom: 1px solid white;
-`
+  width: 160px;
+  padding: 10px 0 10px 15px;
+  border-bottom: 1px solid white;
+`;
 
 const Bar = styled(motion.span)`
-    position: absolute;
-    width: 120px;
-    height: 2px;
-    background-color: var(--butter); 
-    bottom: -15px;
-    border-radius: 30px;
+  position: absolute;
+  width: 120px;
+  height: 2px;
+  background-color: var(--butter);
+  bottom: -15px;
+  border-radius: 30px;
 `;
 
 const logoVariants = {
-    normal: {
-        opacity: 1,
-    },
-    active: {
-        opacity: 0.8,
-    },
-}
+  normal: {
+    opacity: 1,
+  },
+  active: {
+    opacity: 0.8,
+  },
+};
 
 const subProfileVariants = {
-    normal: {
-        opacity: 0,
-        // as const를 통해 변경할 수 없는 리터럴 값임을 명시 *안할 경우, 코드는 돌아가지만 "hidden", "visible"을 string으로 착각하여 variants에 오류가 뜸
-        visibility: "hidden" as const,
-    },
-    active: {
-        opacity: 1,
-        visibility: "visible" as const,
-        transition: { duration: 0.3 },
-    },
+  normal: {
+    opacity: 0,
+    // as const를 통해 변경할 수 없는 리터럴 값임을 명시 *안할 경우, 코드는 돌아가지만 "hidden", "visible"을 string으로 착각하여 variants에 오류가 뜸
+    visibility: "hidden" as const,
+  },
+  active: {
+    opacity: 1,
+    visibility: "visible" as const,
+    transition: { duration: 0.3 },
+  },
 };
 
 function Navbar() {
