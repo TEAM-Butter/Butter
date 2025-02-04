@@ -5,8 +5,9 @@ use butter;
 INSERT INTO member_type (member_type_id, name) VALUES (1, 'USER');
 INSERT INTO member_type (member_type_id, name) VALUES (2, 'ADMIN');
 
--- genre
-INSERT INTO Genre (name) VALUES
+--genre
+INSERT INTO genre (name) VALUES
+                             ('All'),
                              ('Ballad'),
                              ('Dance'),
                              ('Pop'),

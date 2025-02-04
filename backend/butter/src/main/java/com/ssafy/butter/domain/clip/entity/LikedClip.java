@@ -37,4 +37,8 @@ public class LikedClip {
         this.member = member;
         this.isLiked = isLiked;
     }
+
+    public void updateIsLiked(Boolean isLiked) {
+        this.isLiked = isLiked;
+    }
 }

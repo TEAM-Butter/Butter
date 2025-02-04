@@ -1,32 +1,36 @@
 package com.ssafy.butter.domain.crew.service;
 
+import com.ssafy.butter.auth.dto.AuthInfoDTO;
 import com.ssafy.butter.domain.crew.dto.request.CrewFollowRequestDTO;
 import com.ssafy.butter.domain.crew.dto.request.CrewListRequestDTO;
 import com.ssafy.butter.domain.crew.dto.request.CrewMemberRequestDTO;
 import com.ssafy.butter.domain.crew.dto.request.CrewSaveRequestDTO;
 import com.ssafy.butter.domain.crew.dto.response.CrewResponseDTO;
+import com.ssafy.butter.domain.crew.entity.Crew;
 
 import java.util.List;
 
 public interface CrewService {
 
-    CrewResponseDTO createCrew(CrewSaveRequestDTO crewSaveRequestDTO);
+    CrewResponseDTO createCrew(AuthInfoDTO currentUser, CrewSaveRequestDTO crewSaveRequestDTO);
 
-    void createCrewMember(CrewMemberRequestDTO crewMemberRequestDTO);
+    void createCrewMember(AuthInfoDTO currentUser, CrewMemberRequestDTO crewMemberRequestDTO);
 
-    void deleteCrewMember(Long crewId, Long memberId);
+    void deleteCrewMember(AuthInfoDTO currentUser, Long crewId, Long memberId);
 
     List<CrewResponseDTO> getCrewList(CrewListRequestDTO crewListRequestDTO);
 
     CrewResponseDTO getCrewDetail(Long id);
 
-    CrewResponseDTO updateCrew(Long id, CrewSaveRequestDTO crewSaveRequestDTO);
+    CrewResponseDTO updateCrew(AuthInfoDTO currentUser, Long id, CrewSaveRequestDTO crewSaveRequestDTO);
 
-    CrewResponseDTO deleteCrew(Long id);
+    CrewResponseDTO deleteCrew(AuthInfoDTO currentUser, Long id);
 
-    void followCrew(Long memberId, CrewFollowRequestDTO crewFollowRequestDTO);
+    void followCrew(AuthInfoDTO currentUser, CrewFollowRequestDTO crewFollowRequestDTO);
 
-    void unfollowCrew(Long memberId, Long crewId);
+    void unfollowCrew(AuthInfoDTO currentUser, Long crewId);
 
     List<CrewResponseDTO> getRecommendedCrewList();
+
+    Crew findById(Long id);
 }
