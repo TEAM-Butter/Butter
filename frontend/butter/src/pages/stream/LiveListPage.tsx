@@ -104,7 +104,6 @@ const LiveBox = styled.div`
 const LiveGenres = styled.div`
   width: 100%;
   height: 50px;
-  padding-left: 10px;
   border-top-left-radius: 20px;
   border-top-right-radius: 20px;
   display: flex;
@@ -162,9 +161,50 @@ const LiveBtn = styled.div`
 const allIngredients = ["Popular", "Most Follower"];
 const tabs = allIngredients;
 
+const liveList = [
+  {
+    id: 1,
+    title: "Street Soul",
+    genres: ["Jazz", "Blues"],
+    location: "Downtown Park",
+  },
+  {
+    id: 2,
+    title: "Urban Beats",
+    genres: ["Hip Hop", "Rap", "R&B"],
+    location: "City Square",
+  },
+  {
+    id: 3,
+    title: "Acoustic Afternoon",
+    genres: ["Folk", "Acoustic"],
+    location: "Central Plaza",
+  },
+  {
+    id: 4,
+    title: "Rock on the Road",
+    genres: ["Rock", "Indie"],
+    location: "Market Street",
+  },
+  {
+    id: 5,
+    title: "Electric Evening",
+    genres: ["EDM", "Pop"],
+    location: "Riverside Walk",
+  },
+  {
+    id: 6,
+    title: "Classical Corners",
+    genres: ["Classical", "Instrumental", "Baroque"],
+    location: "Old Town",
+  },
+];
+
 const LiveListPage = () => {
   const [selectedTab, setSelectedTab] = useState(tabs[0]);
-
+  const goLive = (roomName: string) => {
+    console.log(roomName);
+  };
   return (
     <LiveListPageWrapper>
       <Header>
@@ -197,20 +237,22 @@ const LiveListPage = () => {
         </Container>
       </Header>
       <LiveContainer>
-        <LiveBox>
-          <LiveGenres>
-            <LiveGenre>Soul</LiveGenre>
-            <LiveGenre>R&B</LiveGenre>
-            <LiveGenre>Indie Rock</LiveGenre>
-          </LiveGenres>
-          <LiveInfoContainer>
-            <LiveInfo>
-              <LiveTitle>Busking Title</LiveTitle>
-              <LiveLocation>busking position info</LiveLocation>
-            </LiveInfo>
-            <LiveBtn>Live</LiveBtn>
-          </LiveInfoContainer>
-        </LiveBox>
+        {liveList.map((live) => (
+          <LiveBox key={live.id}>
+            <LiveGenres>
+              {live.genres.map((genre) => (
+                <LiveGenre key={genre}>{genre}</LiveGenre>
+              ))}
+            </LiveGenres>
+            <LiveInfoContainer>
+              <LiveInfo>
+                <LiveTitle>{live.title}</LiveTitle>
+                <LiveLocation>{live.location}</LiveLocation>
+              </LiveInfo>
+              <LiveBtn onClick={() => goLive(live.title)}>Live</LiveBtn>
+            </LiveInfoContainer>
+          </LiveBox>
+        ))}
       </LiveContainer>
     </LiveListPageWrapper>
   );
