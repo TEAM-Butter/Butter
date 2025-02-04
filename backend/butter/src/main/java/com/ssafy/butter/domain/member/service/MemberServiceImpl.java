@@ -45,8 +45,8 @@ public class MemberServiceImpl implements MemberService{
     private final ImageUploader imageUploader;
 
     @Override
-    public void save(Member member) {
-        memberRepository.save(member);
+    public Member save(Member member) {
+        return memberRepository.save(member);
     }
 
     /**
