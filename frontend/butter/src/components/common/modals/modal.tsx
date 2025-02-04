@@ -451,104 +451,58 @@ export const UserExtraInfoModal = ({
       NewSelectedOptions.push(value);
       setSelectedOptions(NewSelectedOptions);
     }
-  };
-  return (
-    <>
-      <ModalOverlay />
-      <ModalWrapper width={width} height={height}>
-        <ModalHeader>
-          <div>TYPE YOUR EXTRA INFO</div>
-          <ModalCloseBtn
-            textColor="white"
-            onClick={() => {
-              setModalType("");
-            }}
-          >
-            X
-          </ModalCloseBtn>
-        </ModalHeader>
-        <ModalBody>
-          <Comment_v2 textColor="white">
-            버터에 가입하신 것을 축하합니다!
-          </Comment_v2>
-          <Comment>
-            더 많은 기능을 즐기기 위해 몇 가지 정보를 추가로 입력해 주세요!
-          </Comment>
-          <ExtraInfoForm>
-            <ExtraInfoInputWrapper>
-              <LtExtraWrapper>
-                <div>
-                  <ExtraInfoLabel>
-                    <StepNumber>1</StepNumber>프로필 사진을 등록해 주세요!
-                  </ExtraInfoLabel>
-                  <ExtraFileInput />
-                </div>
-                <div>
-                  <ExtraInfoLabel>
-                    <StepNumber>2</StepNumber>뭐라고 불러드릴까요?
-                  </ExtraInfoLabel>
-                  <ExtraInfoInput placeholder="사용할 닉네임을 입력해주세요." />
-                </div>
-                <div>
-                  <ExtraInfoLabel>
-                    <StepNumber>3</StepNumber>선호하는 장르를 알려주세요!
-                  </ExtraInfoLabel>
-                  <SelectWrapper>
-                    <Select
-                      options={options}
-                      styles={selectStyles}
-                      isMulti
-                    ></Select>
-                  </SelectWrapper>
-                </div>
-              </LtExtraWrapper>
-              <RtExtraWrapper>
-                <ExtraInfoLabel>
-                  <StepNumber>4</StepNumber>라이브에 사용할 캐릭터를 선택해
-                  주세요!
-                </ExtraInfoLabel>
-                <ExtraRadioWrapper>
-                  <ExtraRadioLabel>
-                    <ExtraRadioInput type="radio" id="pet" name="pet" />
-                    <img src={pet1} alt="petImg" width={100} />
-                  </ExtraRadioLabel>
-                  <ExtraRadioLabel>
-                    <ExtraRadioInput type="radio" id="pet2" name="pet" />
-                    <img src={pet2} alt="petImg" width={100} />
-                  </ExtraRadioLabel>
-                  <ExtraRadioLabel>
-                    <ExtraRadioInput type="radio" id="pet3" name="pet" />
-                    <img src={pet3} alt="petImg" width={100} />
-                  </ExtraRadioLabel>
-                  <ExtraRadioLabel>
-                    <ExtraRadioInput type="radio" id="pet4" name="pet" />
-                    <img src={pet4} alt="petImg" width={100} />
-                  </ExtraRadioLabel>
-                  <ExtraRadioLabel>
-                    <ExtraRadioInput type="radio" id="pet5" name="pet" />
-                    <img src={pet5} alt="petImg" width={100} />
-                  </ExtraRadioLabel>
-                  <ExtraRadioLabel>
-                    <ExtraRadioInput type="radio" id="pet6" name="pet" />
-                    <img src={pet6} alt="petImg" width={100} />
-                  </ExtraRadioLabel>
-                </ExtraRadioWrapper>
-              </RtExtraWrapper>
-            </ExtraInfoInputWrapper>
-            <LtBtnWrapper>
-              <FilledBtn
-                textColor="black"
-                type="submit"
-                width="90px"
-                height="35px"
-                color="var(--yellow)"
-              >
-                SUBMIT
-              </FilledBtn>
-            </LtBtnWrapper>
-          </ExtraInfoForm>
-        </ModalBody>
-      </ModalWrapper>
-    </>
-  );
-};
+
+    const [selectedOptions, setSelectedOptions] = useState<string[]>([])
+
+    const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        const value = event.target.value;
+
+        if (selectedOptions.length < 3 && !selectedOptions.includes(value)) {
+            const NewSelectedOptions = [...selectedOptions]
+            NewSelectedOptions.push(value)
+            setSelectedOptions(NewSelectedOptions);
+        }
+    };
+    return (
+        <>
+            <ModalOverlay />
+            <ModalWrapper width={width} height={height}>
+                <ModalHeader><div>TYPE YOUR EXTRA INFO</div><ModalCloseBtn textColor="white" onClick={() => { setModalType("") }}>X</ModalCloseBtn></ModalHeader>
+                <ModalBody>
+                    <Comment_v2 textColor="white">버터에 가입하신 것을 축하합니다!</Comment_v2>
+                    <Comment>더 많은 기능을 즐기기 위해 몇 가지 정보를 추가로 입력해 주세요!</Comment>
+                    <ExtraInfoForm>
+                        <ExtraInfoInputWrapper>
+                            <LtExtraWrapper>
+                                <div>
+                                    <ExtraInfoLabel><StepNumber>1</StepNumber>프로필 사진을 등록해 주세요!</ExtraInfoLabel>
+                                    <ExtraFileInput />
+                                </div>
+                                <div>
+                                    <ExtraInfoLabel><StepNumber>2</StepNumber>뭐라고 불러드릴까요?</ExtraInfoLabel>
+                                    <ExtraInfoInput placeholder="사용할 닉네임을 입력해주세요." />
+                                </div>
+                                <div>
+                                    <ExtraInfoLabel><StepNumber>3</StepNumber>선호하는 장르를 알려주세요!</ExtraInfoLabel>
+                                    <SelectWrapper><Select options={options} styles={selectStyles} isMulti></Select></SelectWrapper>
+                                </div>
+                            </LtExtraWrapper>
+                            <RtExtraWrapper>
+                                <ExtraInfoLabel><StepNumber>4</StepNumber>라이브에 사용할 캐릭터를 선택해 주세요!</ExtraInfoLabel>
+                                <ExtraRadioWrapper>
+                                    <ExtraRadioLabel><ExtraRadioInput type="radio" id="pet" name="pet" /><img src={pet1} alt="petImg" width={100} /></ExtraRadioLabel>
+                                    <ExtraRadioLabel><ExtraRadioInput type="radio" id="pet2" name="pet" /><img src={pet2} alt="petImg" width={100} /></ExtraRadioLabel>
+                                    <ExtraRadioLabel><ExtraRadioInput type="radio" id="pet3" name="pet" /><img src={pet3} alt="petImg" width={100} /></ExtraRadioLabel>
+                                    <ExtraRadioLabel><ExtraRadioInput type="radio" id="pet4" name="pet" /><img src={pet4} alt="petImg" width={100} /></ExtraRadioLabel>
+                                    <ExtraRadioLabel><ExtraRadioInput type="radio" id="pet5" name="pet" /><img src={pet5} alt="petImg" width={100} /></ExtraRadioLabel>
+                                    <ExtraRadioLabel><ExtraRadioInput type="radio" id="pet6" name="pet" /><img src={pet6} alt="petImg" width={100} /></ExtraRadioLabel>
+                                </ExtraRadioWrapper>
+                            </RtExtraWrapper>
+                        </ExtraInfoInputWrapper>
+                        <LtBtnWrapper><FilledBtn textColor="black" type="submit" width="90px" height="35px" color="var(--yellow)">SUBMIT</FilledBtn></LtBtnWrapper>
+                    </ExtraInfoForm>
+                </ModalBody>
+            </ModalWrapper>
+        </>
+    )
+}
