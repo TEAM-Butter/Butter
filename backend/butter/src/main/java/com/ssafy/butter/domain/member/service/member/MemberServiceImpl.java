@@ -1,21 +1,26 @@
-package com.ssafy.butter.domain.member.service;
+package com.ssafy.butter.domain.member.service.member;
 
 import com.ssafy.butter.auth.dto.AuthInfoDTO;
 import com.ssafy.butter.domain.crew.entity.Genre;
 import com.ssafy.butter.domain.crew.repository.genre.GenreRepository;
+import com.ssafy.butter.domain.crew.service.genre.GenreService;
+import com.ssafy.butter.domain.member.dto.request.CheckLoginIdDTO;
 import com.ssafy.butter.domain.member.dto.request.ExtraInfoDTO;
 import com.ssafy.butter.domain.member.dto.request.PasswordUpdateRequestDTO;
 import com.ssafy.butter.domain.member.dto.request.ProfileUpdateRequestDTO;
 import com.ssafy.butter.domain.member.dto.request.SignUpDTO;
+import com.ssafy.butter.domain.member.dto.response.CheckLoginIdResponseDTO;
 import com.ssafy.butter.domain.member.dto.response.PasswordUpdateResponseDTO;
 import com.ssafy.butter.domain.member.dto.response.ProfileUpdateResponseDTO;
 import com.ssafy.butter.domain.member.dto.response.RegisterExtraInfoResponseDTO;
+import com.ssafy.butter.domain.member.dto.response.SignUpResponseDTO;
 import com.ssafy.butter.domain.member.dto.response.UserProfileResponseDTO;
 import com.ssafy.butter.domain.member.entity.AvatarType;
 import com.ssafy.butter.domain.member.entity.Member;
 import com.ssafy.butter.domain.member.enums.Gender;
 import com.ssafy.butter.domain.member.repository.avatarType.AvatarTypeRepository;
 import com.ssafy.butter.domain.member.repository.member.MemberRepository;
+import com.ssafy.butter.domain.member.service.avatarType.AvatarTypeService;
 import com.ssafy.butter.domain.member.vo.BirthDate;
 import com.ssafy.butter.domain.member.vo.Email;
 import com.ssafy.butter.domain.member.vo.Nickname;
@@ -24,7 +29,9 @@ import com.ssafy.butter.global.token.JwtManager;
 import com.ssafy.butter.global.util.encrypt.EncryptUtils;
 import com.ssafy.butter.infrastructure.awsS3.ImageUploader;
 import com.ssafy.butter.infrastructure.email.dto.request.SendEmailDTO;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
@@ -39,10 +46,15 @@ public class MemberServiceImpl implements MemberService{
     private final TransactionalMemberService transactionalMemberService;
     private final JwtManager jwtManager;
     private final MemberRepository memberRepository;
-    private final GenreRepository genreRepository;
-    private final AvatarTypeRepository avatarTypeRepository;
+    private final GenreService genreService;
+    private final AvatarTypeService avatarTypeService;
     private final EncryptUtils encryptUtils;
     private final ImageUploader imageUploader;
+
+    @Override
+    public Member save(Member member) {
+        return memberRepository.save(member);
+    }
 
     /**
      * 찾으려는 회원 ID를 받아 해당 회원 정보를 반환한다.
@@ -54,15 +66,24 @@ public class MemberServiceImpl implements MemberService{
         return memberRepository.findById(id).orElseThrow();
     }
 
-
     /**
      * 찾으려는 회원의 email로 해당 회원 정보를 반환한다
      * @param email 찾으려는 회원 email
      * @return 회원 정보 엔티티
      */
     @Override
-    public Optional<Member> findByEmail(String email) {
-        return memberRepository.findByEmail(email);
+    public Optional<Member> findByEmail(Email email) {
+        return memberRepository.findByEmail(email.getValue());
+    }
+
+    @Override
+    public Optional<Member> findByNickname(Nickname nickname) {
+        return memberRepository.findByNickname(nickname.getValue());
+    }
+
+    @Override
+    public Optional<Member> findByLoginId(String loginId) {
+        return memberRepository.findByLoginId(loginId);
     }
 
     /**
@@ -71,29 +92,33 @@ public class MemberServiceImpl implements MemberService{
      * @return 회원 가입 성공한 Member를 반환
      */
     @Override
-    public Member signUp(SignUpDTO signUpDTO, MultipartFile profileImage) {
-        Password encryptedPassword = createEncryptedPassword(signUpDTO.password().getValue());
+    public SignUpResponseDTO signUp(SignUpDTO signUpDTO) {
+        Password encryptedPassword = createEncryptedPassword(signUpDTO.password());
 
-        return memberRepository.save(Member.builder()
+        Member sigunUpMember = Member.builder()
                 .loginId(signUpDTO.loginId())
                 .email(new Email(signUpDTO.email()))
                 .birthDate(new BirthDate(signUpDTO.birthDate()))
                 .password(encryptedPassword)
                 .gender(Gender.valueOf(signUpDTO.gender()))
-                .build());
+                .createDate(LocalDate.now())
+                .build();
+
+        save(sigunUpMember);
+
+        return SignUpResponseDTO.from(sigunUpMember);
     }
 
     /**
      * 멤버의 마이 페이지에 필요한 정보를 조회한다
      * @param memberId 회원의 ID 값
      * @return 회원의 마이페이지에 필요한 데이터
-     * @throws BadRequestException
      */
     @Override
     @Transactional(readOnly = true)
-    public UserProfileResponseDTO getMyProfile(final Long memberId) throws BadRequestException {
+    public UserProfileResponseDTO getMyProfile(final Long memberId) {
         final Member findMember = memberRepository.findById(memberId)
-                .orElseThrow(() -> new BadRequestException("ERR : 멤버를 찾을 수 없습니다"));
+                .orElseThrow(() -> new NoSuchElementException("ERR : 멤버를 찾을 수 없습니다"));
 
         return UserProfileResponseDTO.from(findMember);
     }
@@ -142,7 +167,9 @@ public class MemberServiceImpl implements MemberService{
 
         AvatarType avatarType = getAvatarType(extraInfoDTO.avatarType());
 
-        findMember.saveExtraInfo(new Nickname(extraInfoDTO.nickname()), extraInfoDTO.profileImage(), avatarType, validGenres);
+        String profileImageUrl = insertProfileImage(extraInfoDTO.profileImage());
+
+        findMember.saveExtraInfo(new Nickname(extraInfoDTO.nickname()), profileImageUrl, avatarType, validGenres);
 
         return RegisterExtraInfoResponseDTO.from(findMember);
     }
@@ -156,6 +183,14 @@ public class MemberServiceImpl implements MemberService{
     public boolean checkIfEmailExists(SendEmailDTO emailDTO) {
         Optional<Member> findMember = memberRepository.findByEmail(emailDTO.email());
         return findMember.isPresent();
+    }
+
+    @Override
+    public CheckLoginIdResponseDTO checkIfLoginIdExists(CheckLoginIdDTO loginIdDTO) {
+        Optional<Member> findMember = memberRepository.findByLoginId(loginIdDTO.loginId());
+        boolean exists = findMember.isPresent();
+        String message = exists ? "요청 ID 회원이 확인 되었습니다" : "요청 ID 회원이 존재하지 않습니다";
+        return new CheckLoginIdResponseDTO(exists, message);
     }
 
     private Member getMember(Long memberId) {
@@ -195,13 +230,13 @@ public class MemberServiceImpl implements MemberService{
 
     private List<Genre> getValidGenres(List<String> genres) {
         return genres.stream()
-                .map(genreName -> genreRepository.findByName(genreName)
+                .map(genreName -> genreService.findByName(genreName)
                         .orElseThrow(() -> new IllegalArgumentException("ERR : "+genreName+"은 존재하지 않는 장르입니다")))
                 .toList();
     }
 
     private AvatarType getAvatarType(String avatarTypeName) {
-        return avatarTypeRepository.findByName(avatarTypeName)
+        return avatarTypeService.findByName(avatarTypeName)
                 .orElseThrow(() -> new IllegalArgumentException("ERR : "+ avatarTypeName+"은 존재하지 않는 장르입니다"));
     }
 }
