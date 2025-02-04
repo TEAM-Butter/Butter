@@ -67,4 +67,13 @@ public class MemberController {
         PasswordUpdateResponseDTO response = memberService.updatePassword(passwordUpdateRequestDTO, authInfoDTO);
         return ResponseEntity.ok(response);
     }
+
+    @PostMapping("/extra-info")
+    public ResponseEntity<RegisterExtraInfoResponseDTO> saveExtraUserInfo(
+            @CurrentUser AuthInfoDTO authInfoDTO,
+            @ModelAttribute ExtraInfoDTO extraInfoDTO) {
+
+        RegisterExtraInfoResponseDTO response = memberService.saveExtraUserInfo(extraInfoDTO, authInfoDTO.id());
+        return ResponseEntity.ok(response);
+    }
 }
