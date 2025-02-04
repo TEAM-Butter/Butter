@@ -2,7 +2,7 @@ import axios from "axios"
 import { useState } from "react"
 import { Link } from "react-router-dom"
 import { useEffect } from "react"
-import styled from "styled-components"
+import styled from "@emotion/styled";
 import sample1 from "../../assets/sample1.png";
 import sample2 from "../../assets/sample2.jpg";
 import sample3 from "../../assets/sample3.jpg";
@@ -10,8 +10,8 @@ import sample4 from "../../assets/sample4.jpg";
 import sample5 from "../../assets/sample5.png";
 
 
-let Write = styled.div`
- font-size : 230px;
+const Write = styled.div`
+ font-size : 200px;
  display : flex;
  text-align: center;
  align-items: center;
@@ -38,7 +38,7 @@ interface ImgProps {
     size?: string;
 }
 
-let Div1 = styled.div`
+const Div1 = styled.div`
  right : 70px;
  position : relative;
 `
@@ -62,7 +62,7 @@ const ImgStyle = styled.img<ImgProps>`
 `;
 
 // CrewListContainer: 화면 가로 전체에 꽉 차게
-let CrewListContainer = styled.div`
+const CrewListContainer = styled.div`
     display: flex;  /* 한 줄에 정렬 */
     flex-wrap: wrap; /* 화면이 좁으면 줄 바꿈 */
     padding: 0 10px; /* 양쪽 끝에서 20px만큼 떨어지게 */
@@ -72,7 +72,7 @@ let CrewListContainer = styled.div`
 `;
 
 // CrewBox: 각 크루 박스의 크기 조정
-let CrewBox = styled.div`
+const CrewBox = styled.div`
     color: white;
     width: 15%; /* 각 박스가 화면 가로 15%씩 차지 */
     padding: 20px 0px;
@@ -86,7 +86,7 @@ let CrewBox = styled.div`
 // 이미지 스타일2
 const ImgStyle2 = styled.img<any>`
     width: 100%; /* 부모 div의 너비에 맞춰 이미지 크기 */
-    height: 230px; /* 비율에 맞게 높이 설정 */
+    height: 170px; /* 비율에 맞게 높이 설정 */
 
 `;
 
@@ -97,7 +97,7 @@ const Box1 = styled.div`
  justify-content : right;
  margin-right : 30px;
  margin-top : 50px;
- font-size : 30px
+ font-size : 30px;
 `
 
 const P1 = styled.div`
@@ -114,15 +114,15 @@ const Box2 = styled.div`
  font-size : 15px;
 `
 
-let ServerUrl = 'http://i12e204.p.ssafy.io:8081'
+const ServerUrl = 'http://i12e204.p.ssafy.io:8081'
 
 
 function CrewListPage() {
-    let [crewId, setCrewId] = useState(0)  
-    let [ loading, setLoading ] = useState(true) // 로딩 표시하는 변수
-    let [ error, setError] = useState(null) // 에러 상태
-    let [ crewList, setCrewList] = useState(['1번크루','2번크루','3번크루','4번크루','5번크루'])
-    let images = [sample1,sample2,sample3,sample4,sample5]
+    const [crewId, setCrewId] = useState(0)  
+    const [ loading, setLoading ] = useState(true) // 로딩 표시하는 변수
+    const [ error, setError] = useState(null) // 에러 상태
+    const [ crewList, setCrewList] = useState(['1번크루','2번크루','3번크루','4번크루','5번크루'])
+    const images = [sample1,sample2,sample3,sample4,sample5]
     
     // useEffect (() => {
     //     const fetchCrewDetail = async () => {

@@ -3,24 +3,23 @@ import { useParams, useNavigate, Navigate } from "react-router-dom"
 import { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
 
-import styled from "styled-components"
+import styled from "@emotion/styled";
 
 
-let ServerUrl = 'http://i12e204.p.ssafy.io:8081'
-
+const ServerUrl = 'http://i12e204.p.ssafy.io:8081'
 
 function CrewNoticePage() {
 
-    let { crewId, noticeId } : any = useParams(); // crewId 파라미터 가져옴
-    let [ crewDetail, setCrewDetail ] = useState(null) // 크루 정보 받아오면 담을 변수
-    let [ crewNoticeDetail, setCrewNoticeDetail] = useState(['1번 공지사항','2번 공지사항','3번 공지사항', ])
-    let [ loading, setLoading ] = useState(true) // 로딩 표시하는 변수
-    let [error, setError] = useState(null) // 에러 상태
-    let navigate = useNavigate()
-    let [noticeSwitch, setNoticeSwitch ] = useState(true)
-    let [noticePlusSwitch, setNoticePlusSwitch ] =useState(false)
-    let [noticeEditSwitch, setNoticeEditSwitch ] = useState(false)
-    let [basicNum , setBasicNum] = useState(noticeId)
+    const { crewId, noticeId } : any = useParams(); // crewId 파라미터 가져옴
+    const [ crewDetail, setCrewDetail ] = useState(null) // 크루 정보 받아오면 담을 변수
+    const [ crewNoticeDetail, setCrewNoticeDetail] = useState(['1번 공지사항','2번 공지사항','3번 공지사항', ])
+    const [ loading, setLoading ] = useState(true) // 로딩 표시하는 변수
+    const [error, setError] = useState(null) // 에러 상태
+    const navigate = useNavigate()
+    const [noticeSwitch, setNoticeSwitch ] = useState(true)
+    const [noticePlusSwitch, setNoticePlusSwitch ] =useState(false)
+    const [noticeEditSwitch, setNoticeEditSwitch ] = useState(false)
+    const [basicNum , setBasicNum] = useState<number>(noticeId)
 
 
     const plusHandlerOn = () => {

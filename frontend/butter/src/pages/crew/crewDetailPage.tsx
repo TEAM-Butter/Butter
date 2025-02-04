@@ -1,9 +1,10 @@
 import axios from "axios"
 import { useParams, useNavigate } from "react-router-dom"
 import { useState, useEffect } from "react"
-import styled from "styled-components"
+
 import rightArrow from "../../assets/rightArrow.png"
 import leftArrow from "../../assets/leftArrow.png"
+import upArrow from "../../assets/upArrow.png"
 import editButton from "../../assets/editButton.png"
 import followButton from "../../assets/followButton.png"
 import sample1 from "../../assets/sample1.png";
@@ -11,18 +12,21 @@ import sample2 from "../../assets/sample2.jpg";
 import sample3 from "../../assets/sample3.jpg";
 import sample4 from "../../assets/sample4.jpg";
 import sample5 from "../../assets/sample5.png";
+import styled from "@emotion/styled";
 
 
-let PageContainer=styled.div`
+const images = [sample1,sample2,sample3,sample4,sample5]
+
+
+const PageContainer=styled.div`
   display: flex; /* Flexbox 레이아웃 */
   width: 100%;   /* 전체 너비 100% */
   padding: 20px 50px; /* 양쪽 끝에 20px의 여백 추가 */
   box-sizing: border-box; /* 패딩이 포함된 크기 계산 */
- 
 `
 
 
-let LayOut1=styled.div`
+const LayOut1=styled.div`
   width: 55%; /* 6/10 너비 */
   padding: 20px;
   background-color: #202020(rgb 32, 32, 32);
@@ -31,145 +35,198 @@ let LayOut1=styled.div`
   flex-direction: column; /* 세로로 배치 */
   
 `
-let LayOut2=styled.div`
+const LayOut2=styled.div`
   width: 45%; /* 나머지 4/10 너비 */
   padding: 20px;
   background-color: #202020(rgb 32, 32, 32);
   box-sizing: border-box;
 `
-let LayOut3=styled.div`
+const LayOut3=styled.div`
   display: flex;
-  padding: 5px;
-
   box-sizing: border-box;
- 
+  justify-content: space-between;
 `
 
-let Box1=styled.div`
+const Box1=styled.div`
+  
   background-color: gray;
   width : 100%;
   box-sizing: border-box;
-  height: 500px;
+  height: 400px;
   border-radius: 20px;
-  margin-bottom: 50px;
+  margin-bottom: 20px;
 `
 
-let Box2=styled.div`
-  background-color: #239152;
+const Box2=styled.div`
   border-radius: 20px;
   height: 150px;
-  width: 150px;
-  margin-right: 200px;
+  width: 45%;
 `
-let Box3=styled.div`
+const Box3=styled.div`
   background-color: rgb(22, 22, 22);
   border-radius: 20px;
-  height: 150px;
-  width : 150px;
-  margin-right: 50px;
+  height: 180px;
+  width : 37%;
+  display: flex;
+  padding-left: 20px;
+  text-align: left;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 110px;
+  padding-right: 20px;
+  margin-left: 180px;
 `
-let Box4=styled.button`
+
+const Box4=styled.button`
   background-color: rgb(234, 36, 35);
   border-radius: 20px;
-  height: 150px;
+  height: 180px;
+  width: 18%;
+  color: white;
+  display: flex;
+  padding-top: 20px;
+  padding-left: 20px;
+  flex-direction: column;
+  
 `
 
-let Box5=styled.div`
-  background-color: #fffde4;
+const Box5=styled.div`
+  background: var(--liner);
   color : black;
   border-radius: 20px;
-  height: 380px;
-  margin-bottom: 40px;
+  height: 300px;
+  margin-bottom: 25px;
 
 `
 
-let Box6=styled.div`
+const Box6=styled.div`
   background-color: black;
-  border-radius: 0 0 20px 20px; /* 상단은 0, 하단만 둥글게 */
-  height: 80px;
-  margin-bottom: 5px;
+  border-radius: 0 0 10px 10px; /* 상단은 0, 하단만 둥글게 */
+  height: 50px;
   color: white;
-  font-size: 30px;
-  padding-top: 5%;
-  padding-left: 5%;
+  font-size: 20px;
+  border-bottom: 1px dashed var(--darkgray);
+  display: flex;
+  align-items: center;
+  padding-left: 20px;
+  gap : 20px;
 `
-let Box7=styled.div`
-  border-radius: 20px 20px 0 0; /* 하단은 0, 상단만 둥글게 */
+const Box7=styled.div`
+  border-radius: 10px 10px 0 0; /* 하단은 0, 상단만 둥글게 */
   background-color: #161616;
-  height: 200px;
+  height: 220px;
   color: white;
-  text-align: start;
-  padding-top: 7%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  padding-left: 20px;
 `
 
-let Arrow = styled.img`
+const Arrow = styled.img`
     height: 35px;
 `
 
-let EditButton = styled.img`
+const EditButton = styled.img`
     height:  20px;
     
 `
 
-let Right = styled.div`
+const Right = styled.div`
     text-align: end;
     padding-right: 3%;
     padding-top: 2%;
 `
-let TextName = styled.div`
+const TextName = styled.div`
     font-size: 60px;
     font-weight: 500;
     padding-left: 5%;
 `
-let TextGenre = styled.div`
+const TextGenre = styled.div`
     font-size: 15px;
     padding-left: 8%;
     white-space: pre;
 `
-let TextExplain = styled.div`
+const TextExplain = styled.div`
     font-size: 17px;
     padding-left: 8%;
-    padding-top: 2%
+    padding-top: 2%;
 `
 
-let CrewMemberImage = styled.img`
+const CrewMemberImage = styled.img`
     height: 40px;
     margin-left: 10px;
 `
-let ImageMovingBox = styled.div`
+const ImageMovingBox = styled.div`
 margin-top: 30%;
 margin-left : 3%;
 
 `
 
-let FollowButton = styled.img`
+const FollowButton = styled.img`
     height: 30px;
     margin-left: 65%;
     margin-top: 3%;
 
 `
-let CrewPicture = styled.img`
+const CrewPicture = styled.img`
     height: 150px;
     width: 150px;
 `
 
-let TextFollowNum = styled.div`
-    position: absolute;
-    top: 91.5%;
-    left: 5%;
+const PlusBtn = styled.div`
+    
+`
+const TextFollowNum = styled.div`
+    
 `
 
-let ServerUrl = 'http://i12e204.p.ssafy.io:8081'
+const NoticeBox = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-right: 20px;
+    
+`
+const NoticeWrapperBox = styled.div`
+    flex-direction: column;
+    width: 75%;
+`
+
+const NoticeTitle = styled.div`
+`
+
+const NoticeContent = styled.div`
+`
+const NoticeImg = styled.img`
+    height: 50px;
+    width: 60px;
+`
+
+const LiveText1 = styled.div`
+    font-weight: bold;
+`
+const UpArrowTag = styled.img`
+    height: 30px;
+`
+
+const SnsText = styled.div`
+    display: flex;
+    flex-direction: column;
+`
+
+const ServerUrl = 'http://i12e204.p.ssafy.io:8081'
 
 function CrewDetailPage() {
     
-    let navigate = useNavigate()
-    let { id } = useParams(); // crewId 파라미터 가져옴
-    let [ crewDetail, setCrewDetail ] = useState(null) // 크루 정보 받아오면 담을 변수
-    let [ loading, setLoading ] = useState(true) // 로딩 표시하는 변수
-    let [error, setError] = useState(null) // 에러 상태
-    let [ crewScheduleDetail, setCrewScheduleDetail] = useState(['1번','2번','3번'])
-    let [ crewNoticeDetail, setCrewNoticeDetail] = useState(['1번 공지사항','2번 공지사항','3번 공지사항', ])
+    const navigate = useNavigate()
+    const { id } = useParams(); // crewId 파라미터 가져옴
+    const [ crewDetail, setCrewDetail ] = useState(null) // 크루 정보 받아오면 담을 변수
+    const [ loading, setLoading ] = useState(true) // 로딩 표시하는 변수
+    const [error, setError] = useState(null) // 에러 상태
+    const [ crewScheduleDetail, setCrewScheduleDetail] = useState(['1번','2번','3번'])
+    const [ crewNoticeDetail, setCrewNoticeDetail] = useState(['1번 공지사항','2번 공지사항','3번 공지사항', ])
  
     const [crewEditSwitch , setCrewEditSwitch] =  useState(false)
     const [crewDetailSwitch, setcrewDetailSwitch] = useState(true)
@@ -238,20 +295,17 @@ function CrewDetailPage() {
             </div>}
           
             {crewEditSwitch && <CrewEditComponent crewDetail = {crewDetail} handleEditClick={handleEditClick}/>}
-                <Box3> SNS {crewDetail}</Box3>
-                <Box4 onClick={()=>{navigate(`/stream/live/${id}`)}}>Live 시청하기</Box4>
+                <Box3> <SnsText><div style={{ fontSize : "20px"}}>SNS</div><div>link</div></SnsText> {crewDetail} <UpArrowTag src={upArrow} alt="upArrow"></UpArrowTag></Box3>
+                <Box4 onClick={()=>{navigate(`/stream/live/${id}`)}}><LiveText1>Live</LiveText1><div>On</div> </Box4>
         </LayOut3>       
                 </LayOut1>
                 <LayOut2>
                 <ScheduleEditComponent crewScheduleDetail={crewScheduleDetail} crewDetail={crewDetail} />
                 
-                <Box6>Notice</Box6>
-                <Box7> {crewNoticeDetail.map((a, i)=>{return(<div key={i}>{i+1}번 공지사항 - 내용 : {a} <Arrow onClick={() => {navigate(`/crew/notice/detail/${id}/${i}`)}} src={rightArrow} alt="rightArrow"></Arrow></div>)})}</Box7>
+                <Box6><div>Notice</div><PlusBtn>+</PlusBtn></Box6>
+                <Box7> {crewNoticeDetail.map((a, i)=>{return(<NoticeBox key={i}><NoticeImg src={images[i+1]}></NoticeImg><NoticeWrapperBox> <NoticeTitle>{i+1}번 Notice Title</NoticeTitle><NoticeContent> 내용{a}</NoticeContent></NoticeWrapperBox> <Arrow onClick={() => {navigate(`/crew/notice/detail/${id}/${i}`)}} src={rightArrow} alt="rightArrow"></Arrow></NoticeBox>)})}</Box7>
                 </LayOut2>
 
-
-             
-                
          
        </PageContainer >
     )
@@ -373,45 +427,73 @@ const ScheduleDetailModalContent = styled.div`
     text-align: center;
 `;
 
-let ScheduleText = styled.div`
+const ScheduleText = styled.div`
     display: flex;
     white-space: pre; /* 띄어쓰기를 그대로 유지 */
-    padding-top: 5%;
-    padding-left: 5%;
+    align-items: center;
+    padding-top: 25px;
+    padding-left: 25px;
+    padding-bottom: 10px;
     font-size: 23px;
     
 `
 
-let BuskingText = styled.p`
+const BuskingText = styled.p`
     font-weight: 550;
     
 `
 
-let Hr = styled.hr`
+const Hr = styled.hr`
     border: none;
   border-top: 3px solid black; /* 가로줄 스타일 */
   margin: 10px 0; /* 위아래 여백 */
 `
 
-let LeftArrowTag= styled.img`
+const LeftArrowTag= styled.img`
     height: 35px;
 `
 
-let ScheduleList = styled.div`
+const ScheduleList = styled.div`
     display: grid;
-    padding-left: 5%;
-    padding-top: 5%;
-    gap: 50px;
+    padding-left: 20px;
+    padding-top: 10px;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
 `
 
+const ScheduleWrapper = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-right: 20px;
+`
 
+const ScheduleTitle = styled.div`
+    flex-direction : column;
+    width: 80%;
+    color: rgb(74, 81, 73);
+`
 
+const ScheduleTitleComponent1 = styled.div`
+    font-weight: 500;
+    font-size: 20px;
+    margin-bottom: 10px;
+`
+
+const ScheduleImg = styled.img`
+    height: 50px;
+    width: 50px;
+`
 
 function ScheduleEditComponent({crewScheduleDetail,crewDetail}:any) {
     const [isSchedulePlusModalOpen, setisSchedulePlusModalOpen] = useState(false) // 스케쥴 추가 스위치
     const [isScheduleDetailModalOpen, setisScheduleDetailModalOpen] = useState(false) // 스케쥴 디테일 스위치
     const [isScheduleEditModalOpen, setisScheduleEditModalOpen] = useState(false) // 스케쥴 디테일 스위치
-    let [selectedScheduleIndex, setSelectedScheduleIndex] = useState<any>(null); // 선택된 스케줄 인덱스
+    const [selectedScheduleIndex, setSelectedScheduleIndex] = useState<any>(null); // 선택된 스케줄 인덱스
+    
+
+
 
     const openModal = () => {
         setisSchedulePlusModalOpen(true)
@@ -434,7 +516,7 @@ function ScheduleEditComponent({crewScheduleDetail,crewDetail}:any) {
         <ScheduleList> 
             {
             crewScheduleDetail.map((a:any, i:any) => {
-                return ( <div key={i}> {i+1}번 스케쥴: {a} <LeftArrowTag onClick={()=> {setisScheduleDetailModalOpen(true); setSelectedScheduleIndex(i+1)}} src={leftArrow} alt="leftArrow"></LeftArrowTag></div>)
+                return ( <ScheduleWrapper key={i}> <ScheduleImg src={images[i+1]} alt="ScheduleImg"></ScheduleImg> <ScheduleTitle><ScheduleTitleComponent1>{i+1}번 스케쥴 Title Section</ScheduleTitleComponent1><div>schedule detail content{a}</div></ScheduleTitle><LeftArrowTag onClick={()=> {setisScheduleDetailModalOpen(true); setSelectedScheduleIndex(i+1)}} src={leftArrow} alt="leftArrow"></LeftArrowTag></ScheduleWrapper>)
             })
             }
         </ScheduleList>
