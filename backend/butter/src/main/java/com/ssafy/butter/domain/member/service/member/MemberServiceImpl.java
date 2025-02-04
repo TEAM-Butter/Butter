@@ -165,7 +165,9 @@ public class MemberServiceImpl implements MemberService{
 
         AvatarType avatarType = getAvatarType(extraInfoDTO.avatarType());
 
-        findMember.saveExtraInfo(new Nickname(extraInfoDTO.nickname()), extraInfoDTO.profileImage(), avatarType, validGenres);
+        String profileImageUrl = insertProfileImage(extraInfoDTO.profileImage());
+
+        findMember.saveExtraInfo(new Nickname(extraInfoDTO.nickname()), profileImageUrl, avatarType, validGenres);
 
         return RegisterExtraInfoResponseDTO.from(findMember);
     }
