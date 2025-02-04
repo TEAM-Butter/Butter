@@ -58,4 +58,13 @@ public class MemberController {
         ProfileUpdateResponseDTO response = memberService.updateProfile(profileUpdateRequestDTO, authInfoDTO.id());
         return ResponseEntity.ok(response);
     }
+
+    @PutMapping("/password")
+    public ResponseEntity<PasswordUpdateResponseDTO> updatePassword(
+            @CurrentUser AuthInfoDTO authInfoDTO,
+            @RequestBody PasswordUpdateRequestDTO passwordUpdateRequestDTO) {
+
+        PasswordUpdateResponseDTO response = memberService.updatePassword(passwordUpdateRequestDTO, authInfoDTO);
+        return ResponseEntity.ok(response);
+    }
 }
