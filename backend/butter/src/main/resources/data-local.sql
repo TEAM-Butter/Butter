@@ -32,7 +32,7 @@ INSERT INTO avatar_type (name) VALUES
 
 -- member
 INSERT INTO member (member_type_id, avatar_type_id, login_id, nickname, email, birth_date, bread_amount, password, profile_image, gender, create_date, is_extra_info_registered)
-VALUES (1, 1, 'user123', 'User One', 'user1@example.com', '1990-01-01', 100, 'encryptedPassword1!', NULL, 'MALE', NOW(), TRUE);
+VALUES (1, 1, 'user123', 'User One', 'user1@example.com', '1990-01-01', 100, '$2a$12$dQo54URbmGg6L59qXSgLPOk/vuBg45UOfjSbY7MB/VanylMZhhHw2', NULL, 'MALE', NOW(), TRUE);
 
 INSERT INTO member (member_type_id, avatar_type_id, login_id, nickname, email, birth_date, bread_amount, password, profile_image, gender, create_date, is_extra_info_registered)
-VALUES (2, 2, 'user456', 'User Two', 'user2@example.com', '1995-05-15', 200, 'encryptedPassword2!', NULL, 'FEMALE', NOW(), FALSE);
+VALUES (2, 2, 'user456', 'User Two', 'user2@example.com', '1995-05-15', 200, '$2a$12$XoEzMrF9cwmKafmDaH62P.YcL554rfwGfghxNFH6.CmQZ0S7NUxRW', NULL, 'FEMALE', NOW(), FALSE);
