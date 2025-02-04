@@ -39,7 +39,7 @@ public class AuthInterceptor implements HandlerInterceptor {
             return true;
         }
 
-        log.info("ERR : 인가되지 않은 요청 " + request.getRequestURI());
+        log.info("ERR : 권한 없음" + request.getRequestURI());
         response.sendError(HttpStatus.UNAUTHORIZED.value(), "Unauthorized");
         return false;
     }
