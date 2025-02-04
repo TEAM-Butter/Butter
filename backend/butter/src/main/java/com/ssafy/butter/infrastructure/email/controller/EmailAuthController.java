@@ -1,5 +1,6 @@
 package com.ssafy.butter.infrastructure.email.controller;
 
+import com.ssafy.butter.infrastructure.email.dto.response.SendCodeResponseDTO;
 import com.ssafy.butter.infrastructure.email.dto.response.VerifyCodeResponseDTO;
 import com.ssafy.butter.domain.member.service.member.MemberService;
 import com.ssafy.butter.infrastructure.email.dto.request.SendEmailDTO;
@@ -30,9 +31,9 @@ public class EmailAuthController {
     }
 
     @PostMapping("/send-code")
-    public ResponseEntity<String> sendVerificationCode(@Valid @RequestBody SendEmailDTO sendEmailDTO) {
-        emailService.sendVerificationCode(sendEmailDTO);
-        return ResponseEntity.ok("인증 코드가 전송되었습니다.");
+    public ResponseEntity<SendCodeResponseDTO> sendVerificationCode(@Valid @RequestBody SendEmailDTO sendEmailDTO) {
+        SendCodeResponseDTO response = emailService.sendVerificationCode(sendEmailDTO);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/verify-code")

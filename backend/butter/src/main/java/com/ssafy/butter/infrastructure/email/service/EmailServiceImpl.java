@@ -8,6 +8,7 @@ import com.ssafy.butter.infrastructure.email.constants.EmailConstants;
 import com.ssafy.butter.infrastructure.email.constants.EmailErrorMessages;
 import com.ssafy.butter.infrastructure.email.dto.request.SendEmailDTO;
 import com.ssafy.butter.infrastructure.email.dto.request.VerifyCodeEmailDTO;
+import com.ssafy.butter.infrastructure.email.dto.response.SendCodeResponseDTO;
 import com.ssafy.butter.infrastructure.email.dto.response.VerifyCodeResponseDTO;
 import com.ssafy.butter.infrastructure.email.enums.EmailType;
 import com.ssafy.butter.infrastructure.redis.RedisManager;
@@ -80,7 +81,7 @@ public class EmailServiceImpl implements EmailService{
     }
 
     @Override
-    public void sendVerificationCode(SendEmailDTO sendEmailDTO) {
+    public SendCodeResponseDTO sendVerificationCode(SendEmailDTO sendEmailDTO) {
         String email = sendEmailDTO.email();
         String type = sendEmailDTO.type().name();
 
@@ -90,6 +91,8 @@ public class EmailServiceImpl implements EmailService{
         saveCodeToRedis(email, type, verificationCode, expirationTime);
 
         sendEmail(email, verificationCode);
+
+        return new SendCodeResponseDTO("인증 코드가 성공적으로 전송되었습니다.", verificationCode);
     }
 
     public boolean verifyCode(VerifyCodeEmailDTO verifyCodeEmailDTO) {
