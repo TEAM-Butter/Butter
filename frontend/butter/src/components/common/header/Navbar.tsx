@@ -128,11 +128,11 @@ const subProfileVariants = {
 function Navbar() {
   const homeMatch = useMatch("");
   const buskingMatch = useMatch("busking");
-  const streamMatch = useMatch("stream");
-  const crewMatch = useMatch("crew");
+  const streamMatch = useMatch("stream-list");
+  const crewMatch = useMatch("crew/list");
   const loginMatch = useMatch("auth/login");
   // isLogin이 true일 경우 profile dropdown 적용, false일 경우 login link만 렌더링링
-  const [isLogin, setIsLogin] = useState(true);
+  const [isLogin, setIsLogin] = useState(false);
   const [isCrewUser, setIsCrewUser] = useState(true);
   const [isHovered, setIsHovered] = useState(false);
   const [modalType, setModalType] = useState<string>("");
