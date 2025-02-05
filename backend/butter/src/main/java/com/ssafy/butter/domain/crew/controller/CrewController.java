@@ -17,6 +17,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -39,7 +40,7 @@ public class CrewController {
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> createCrew(
             @Parameter(hidden = true) @CurrentUser AuthInfoDTO currentUser,
-            @Parameter(content = @Content(mediaType = "multipart/form-data"))
+            @Parameter(content = @Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE))
             @ModelAttribute CrewSaveRequestDTO crewSaveRequestDTO) {
         CrewResponseDTO crewResponseDTO = crewService.createCrew(currentUser, crewSaveRequestDTO);
         return ResponseEntity.created(URI.create("/api/v1/crew/detail/" + crewResponseDTO.id())).body(crewResponseDTO);
@@ -73,8 +74,7 @@ public class CrewController {
     @Operation(summary = "크루 목록 조회", description = "크루 목록을 조회합니다.")
     @GetMapping("/list")
     public ResponseEntity<?> getCrewList(
-            @Parameter(description = "크루 목록 요청 정보", in = ParameterIn.QUERY)
-            @ModelAttribute CrewListRequestDTO crewListRequestDTO) {
+            @ParameterObject @ModelAttribute CrewListRequestDTO crewListRequestDTO) {
         return ResponseEntity.ok(crewService.getCrewList(crewListRequestDTO));
     }
 
@@ -89,7 +89,7 @@ public class CrewController {
     public ResponseEntity<?> updateCrew(
             @Parameter(hidden = true) @CurrentUser AuthInfoDTO currentUser,
             @PathVariable Long id,
-            @Parameter(content = @Content(mediaType = "multipart/form-data"))
+            @Parameter(content = @Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE))
             @ModelAttribute CrewSaveRequestDTO crewSaveRequestDTO) {
         return ResponseEntity.ok(crewService.updateCrew(currentUser, id, crewSaveRequestDTO));
     }
