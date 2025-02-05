@@ -21,9 +21,7 @@ const RtContainer = styled.div``;
 
 const LoginFormWrapper = styled.div`
   display: flex;
-  flex-direction: column;
   align-items: center;
-  justify-content: center;
   padding: 50px 40px;
   min-width: 400px;
   border-radius: 30px;

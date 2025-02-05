@@ -1,4 +1,4 @@
-import { ExtraFileInput } from "../fileInput";
+import { ExtraFileInput } from "../input/FileInput";
 import { useState } from "react";
 import * as MC from "./modalComponents/modalComponents"
 import styled from "@emotion/styled";
@@ -74,12 +74,12 @@ const ExtraRadioWrapper = styled.div`
 `;
 
 interface ModalSizeProps {
-    width: string;
-    height: string;
-  }
+  width: string;
+  height: string;
+}
 
 interface ModalProps extends ModalSizeProps {
-setModalType: React.Dispatch<React.SetStateAction<string>>;
+  setModalType: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export const UserExtraInfoModal = ({
