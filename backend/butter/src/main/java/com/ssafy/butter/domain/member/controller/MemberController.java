@@ -12,7 +12,7 @@ import com.ssafy.butter.domain.member.dto.response.PasswordUpdateResponseDTO;
 import com.ssafy.butter.domain.member.dto.response.ProfileUpdateResponseDTO;
 import com.ssafy.butter.domain.member.dto.response.RegisterExtraInfoResponseDTO;
 import com.ssafy.butter.domain.member.dto.response.SignUpResponseDTO;
-import com.ssafy.butter.domain.member.dto.response.UserProfileResponseDTO;
+import com.ssafy.butter.domain.member.dto.response.MyPageResponseDTO;
 import com.ssafy.butter.domain.member.service.member.MemberService;
 import com.ssafy.butter.global.token.CurrentUser;
 import jakarta.validation.Valid;
@@ -43,11 +43,11 @@ public class MemberController {
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
     }
 
-    @GetMapping("/profile")
-    public ResponseEntity<UserProfileResponseDTO> getMyProfile(
+    @GetMapping("/my-page")
+    public ResponseEntity<MyPageResponseDTO> getMyPage(
             @CurrentUser AuthInfoDTO authInfoDTO) {
 
-        UserProfileResponseDTO profile = memberService.getMyProfile(authInfoDTO.id());
+        MyPageResponseDTO profile = memberService.getMyProfile(authInfoDTO.id());
         return ResponseEntity.ok(profile);
     }
 
