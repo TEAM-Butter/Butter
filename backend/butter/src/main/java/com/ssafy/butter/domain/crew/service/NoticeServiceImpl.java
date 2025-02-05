@@ -10,7 +10,7 @@ import com.ssafy.butter.domain.crew.repository.CrewMemberRepository;
 import com.ssafy.butter.domain.crew.repository.CrewRepository;
 import com.ssafy.butter.domain.crew.repository.NoticeRepository;
 import com.ssafy.butter.domain.member.entity.Member;
-import com.ssafy.butter.domain.member.service.MemberService;
+import com.ssafy.butter.domain.member.service.member.MemberService;
 import com.ssafy.butter.infrastructure.awsS3.S3ImageUploader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;

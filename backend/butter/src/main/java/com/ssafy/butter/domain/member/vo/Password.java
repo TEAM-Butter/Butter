@@ -54,7 +54,7 @@ public class Password {
         if (!value.matches(".*[0-9].*")) {
             throw new IllegalArgumentException("ERR : 패스워드는 최소 하나 이상의 숫자를 포함해야합니다");
         }
-        if (!value.matches(".*[!@#$%^&*()_+\\-=[\\]{};':\"\\\\|,.<>/?].*")) {
+        if (!value.matches(".*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>/?].*")) {
             throw new IllegalArgumentException("ERR : 패스워드는 최소 하나 이상의 특수문자를 포함해야합니다");
         }
     }

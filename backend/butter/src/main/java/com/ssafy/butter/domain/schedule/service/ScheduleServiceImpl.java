@@ -5,7 +5,7 @@ import com.ssafy.butter.domain.crew.entity.Crew;
 import com.ssafy.butter.domain.crew.service.CrewMemberService;
 import com.ssafy.butter.domain.crew.service.CrewService;
 import com.ssafy.butter.domain.member.entity.Member;
-import com.ssafy.butter.domain.member.service.MemberService;
+import com.ssafy.butter.domain.member.service.member.MemberService;
 import com.ssafy.butter.domain.schedule.dto.request.ScheduleCalendarRequestDTO;
 import com.ssafy.butter.domain.schedule.dto.request.ScheduleLikeRequestDTO;
 import com.ssafy.butter.domain.schedule.dto.request.ScheduleSaveRequestDTO;

@@ -14,7 +14,7 @@ import com.ssafy.butter.domain.crew.service.CrewMemberService;
 import com.ssafy.butter.domain.live.entity.Live;
 import com.ssafy.butter.domain.live.service.LiveService;
 import com.ssafy.butter.domain.member.entity.Member;
-import com.ssafy.butter.domain.member.service.MemberService;
+import com.ssafy.butter.domain.member.service.member.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;

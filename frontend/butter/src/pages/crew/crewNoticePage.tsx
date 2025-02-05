@@ -2,8 +2,7 @@ import axios from "axios"
 import { useParams, useNavigate, Navigate } from "react-router-dom"
 import { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
-import { Button } from "react-bootstrap"
-import styled from "styled-components"
+import styled from "@emotion/styled"
 
 
 
