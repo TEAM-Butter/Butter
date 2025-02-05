@@ -2,23 +2,21 @@ package com.ssafy.butter.domain.member.service.member;
 
 import com.ssafy.butter.auth.dto.AuthInfoDTO;
 import com.ssafy.butter.domain.crew.entity.Genre;
-import com.ssafy.butter.domain.crew.repository.genre.GenreRepository;
 import com.ssafy.butter.domain.crew.service.genre.GenreService;
 import com.ssafy.butter.domain.member.dto.request.CheckLoginIdDTO;
 import com.ssafy.butter.domain.member.dto.request.ExtraInfoDTO;
 import com.ssafy.butter.domain.member.dto.request.PasswordUpdateRequestDTO;
-import com.ssafy.butter.domain.member.dto.request.ProfileUpdateRequestDTO;
+import com.ssafy.butter.domain.member.dto.request.ExtraInfoUpdateRequestDTO;
 import com.ssafy.butter.domain.member.dto.request.SignUpDTO;
 import com.ssafy.butter.domain.member.dto.response.CheckLoginIdResponseDTO;
 import com.ssafy.butter.domain.member.dto.response.PasswordUpdateResponseDTO;
 import com.ssafy.butter.domain.member.dto.response.ProfileUpdateResponseDTO;
 import com.ssafy.butter.domain.member.dto.response.RegisterExtraInfoResponseDTO;
 import com.ssafy.butter.domain.member.dto.response.SignUpResponseDTO;
-import com.ssafy.butter.domain.member.dto.response.UserProfileResponseDTO;
+import com.ssafy.butter.domain.member.dto.response.MyPageResponseDTO;
 import com.ssafy.butter.domain.member.entity.AvatarType;
 import com.ssafy.butter.domain.member.entity.Member;
 import com.ssafy.butter.domain.member.enums.Gender;
-import com.ssafy.butter.domain.member.repository.avatarType.AvatarTypeRepository;
 import com.ssafy.butter.domain.member.repository.member.MemberRepository;
 import com.ssafy.butter.domain.member.service.avatarType.AvatarTypeService;
 import com.ssafy.butter.domain.member.vo.BirthDate;
@@ -34,7 +32,6 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.BadRequestException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -116,27 +113,27 @@ public class MemberServiceImpl implements MemberService{
      */
     @Override
     @Transactional(readOnly = true)
-    public UserProfileResponseDTO getMyProfile(final Long memberId) {
+    public MyPageResponseDTO getMyProfile(final Long memberId) {
         final Member findMember = memberRepository.findById(memberId)
                 .orElseThrow(() -> new NoSuchElementException("ERR : 멤버를 찾을 수 없습니다"));
 
-        return UserProfileResponseDTO.from(findMember);
+        return MyPageResponseDTO.from(findMember);
     }
 
     /**
      * 프로필 업데이트 후, 업데이트한 회원의 정보를 반환한다
      *
-     * @param profileUpdateRequestDTO 업데이트 할 회원의 프로필 정보
+     * @param extraInfoUpdateRequestDTO 업데이트 할 회원의 프로필 정보
      * @param memberId 회원의 데이터베이스 상 고유 id
      * @return
      */
     @Override
-    public ProfileUpdateResponseDTO updateProfile(ProfileUpdateRequestDTO profileUpdateRequestDTO, Long memberId) {
+    public ProfileUpdateResponseDTO updateProfile(ExtraInfoUpdateRequestDTO extraInfoUpdateRequestDTO, Long memberId) {
         Member findMember = getMember(memberId);
 
-        String imageUrl = insertProfileImage(profileUpdateRequestDTO.profileImage());
+        String imageUrl = insertProfileImage(extraInfoUpdateRequestDTO.profileImage());
 
-        return transactionalMemberService.updateProfileInTransaction(findMember, profileUpdateRequestDTO, imageUrl);
+        return transactionalMemberService.updateProfileInTransaction(findMember, extraInfoUpdateRequestDTO, imageUrl);
     }
 
     @Override
