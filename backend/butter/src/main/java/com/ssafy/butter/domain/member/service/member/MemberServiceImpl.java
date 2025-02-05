@@ -6,7 +6,7 @@ import com.ssafy.butter.domain.crew.service.genre.GenreService;
 import com.ssafy.butter.domain.member.dto.request.CheckLoginIdDTO;
 import com.ssafy.butter.domain.member.dto.request.ExtraInfoDTO;
 import com.ssafy.butter.domain.member.dto.request.PasswordUpdateRequestDTO;
-import com.ssafy.butter.domain.member.dto.request.ProfileUpdateRequestDTO;
+import com.ssafy.butter.domain.member.dto.request.ExtraInfoUpdateRequestDTO;
 import com.ssafy.butter.domain.member.dto.request.SignUpDTO;
 import com.ssafy.butter.domain.member.dto.response.CheckLoginIdResponseDTO;
 import com.ssafy.butter.domain.member.dto.response.PasswordUpdateResponseDTO;
@@ -123,17 +123,17 @@ public class MemberServiceImpl implements MemberService{
     /**
      * 프로필 업데이트 후, 업데이트한 회원의 정보를 반환한다
      *
-     * @param profileUpdateRequestDTO 업데이트 할 회원의 프로필 정보
+     * @param extraInfoUpdateRequestDTO 업데이트 할 회원의 프로필 정보
      * @param memberId 회원의 데이터베이스 상 고유 id
      * @return
      */
     @Override
-    public ProfileUpdateResponseDTO updateProfile(ProfileUpdateRequestDTO profileUpdateRequestDTO, Long memberId) {
+    public ProfileUpdateResponseDTO updateProfile(ExtraInfoUpdateRequestDTO extraInfoUpdateRequestDTO, Long memberId) {
         Member findMember = getMember(memberId);
 
-        String imageUrl = insertProfileImage(profileUpdateRequestDTO.profileImage());
+        String imageUrl = insertProfileImage(extraInfoUpdateRequestDTO.profileImage());
 
-        return transactionalMemberService.updateProfileInTransaction(findMember, profileUpdateRequestDTO, imageUrl);
+        return transactionalMemberService.updateProfileInTransaction(findMember, extraInfoUpdateRequestDTO, imageUrl);
     }
 
     @Override

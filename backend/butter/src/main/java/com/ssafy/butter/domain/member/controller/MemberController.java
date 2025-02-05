@@ -5,7 +5,7 @@ import com.ssafy.butter.auth.dto.AuthInfoDTO;
 import com.ssafy.butter.domain.member.dto.request.CheckLoginIdDTO;
 import com.ssafy.butter.domain.member.dto.request.ExtraInfoDTO;
 import com.ssafy.butter.domain.member.dto.request.PasswordUpdateRequestDTO;
-import com.ssafy.butter.domain.member.dto.request.ProfileUpdateRequestDTO;
+import com.ssafy.butter.domain.member.dto.request.ExtraInfoUpdateRequestDTO;
 import com.ssafy.butter.domain.member.dto.request.SignUpDTO;
 import com.ssafy.butter.domain.member.dto.response.CheckLoginIdResponseDTO;
 import com.ssafy.butter.domain.member.dto.response.PasswordUpdateResponseDTO;
@@ -51,12 +51,12 @@ public class MemberController {
         return ResponseEntity.ok(profile);
     }
 
-    @PutMapping("/profile")
+    @PutMapping("/extra-info")
     public ResponseEntity<ProfileUpdateResponseDTO> updateProfile(
             @CurrentUser AuthInfoDTO authInfoDTO,
-            @ModelAttribute ProfileUpdateRequestDTO profileUpdateRequestDTO) {
+            @ModelAttribute ExtraInfoUpdateRequestDTO extraInfoUpdateRequestDTO) {
 
-        ProfileUpdateResponseDTO response = memberService.updateProfile(profileUpdateRequestDTO, authInfoDTO.id());
+        ProfileUpdateResponseDTO response = memberService.updateProfile(extraInfoUpdateRequestDTO, authInfoDTO.id());
         return ResponseEntity.ok(response);
     }
 

@@ -7,7 +7,7 @@ import com.ssafy.butter.domain.member.dto.request.PasswordUpdateRequestDTO;
 import com.ssafy.butter.domain.member.dto.response.CheckLoginIdResponseDTO;
 import com.ssafy.butter.domain.member.dto.response.PasswordUpdateResponseDTO;
 import com.ssafy.butter.domain.member.dto.response.ProfileUpdateResponseDTO;
-import com.ssafy.butter.domain.member.dto.request.ProfileUpdateRequestDTO;
+import com.ssafy.butter.domain.member.dto.request.ExtraInfoUpdateRequestDTO;
 import com.ssafy.butter.domain.member.dto.response.RegisterExtraInfoResponseDTO;
 import com.ssafy.butter.domain.member.dto.response.SignUpResponseDTO;
 import com.ssafy.butter.domain.member.dto.response.MyPageResponseDTO;
@@ -27,7 +27,7 @@ public interface MemberService {
     Optional<Member> findByLoginId(String loginId);
     SignUpResponseDTO signUp(SignUpDTO signUpDTO);
     MyPageResponseDTO getMyProfile(final Long memberId);
-    ProfileUpdateResponseDTO updateProfile(ProfileUpdateRequestDTO profileUpdateRequestDTO, Long memberId);
+    ProfileUpdateResponseDTO updateProfile(ExtraInfoUpdateRequestDTO extraInfoUpdateRequestDTO, Long memberId);
     PasswordUpdateResponseDTO updatePassword(PasswordUpdateRequestDTO passwordUpdateRequestDTO, AuthInfoDTO authInfoDTO);
     RegisterExtraInfoResponseDTO saveExtraUserInfo(ExtraInfoDTO extraInfoDTO, Long memberId);
     boolean checkIfEmailExists(SendEmailDTO emailDTO);
