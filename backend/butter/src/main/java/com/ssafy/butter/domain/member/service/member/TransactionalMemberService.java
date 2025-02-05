@@ -37,7 +37,7 @@ public class TransactionalMemberService {
         member.updateProfile(extraInfoUpdateRequestDTO.nickname(), extraInfoUpdateRequestDTO.gender(), imageUrl, newGenres);
         memberRepository.save(member);
 
-        return new ProfileUpdateResponseDTO(member);
+        return ProfileUpdateResponseDTO.from(member);
     }
 
 }
