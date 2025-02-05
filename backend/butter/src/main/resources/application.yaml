@@ -78,7 +78,7 @@ cloud:
 spring:
   config:
     activate:
-      on-profile: dev
+      on-profile: prod
   transaction:
     default-timeout: '${custom.transaction.default-timeout}'
 
