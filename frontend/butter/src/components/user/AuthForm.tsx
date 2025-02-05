@@ -1,5 +1,9 @@
 import styled from "@emotion/styled";
 import { useState } from "react";
+import { LoginRequestDto } from "../../apis/request/auth";
+import { loginRequest, signupRequest } from "../../apis/request";
+import { LoginResponseDto } from "../../apis/response/auth";
+import { SignUpRequestDto } from "../../apis/request/member";
 
 const FormWrapper = styled.form`
     width: 100%;
@@ -63,14 +67,22 @@ interface ModalProps {
 }
 
 export const LoginForm = ({ setModalType }: ModalProps) => {
+    const [loginId, setLoginId] = useState<string>('')
+    const [password, setPassword] = useState<string>('')
+
+    const LoginBtnHandler = () => {
+        console.log(loginId, password)
+        const requestBody: LoginRequestDto = { loginId, password };
+        loginRequest(requestBody).then()
+    }
     return (
         <FormWrapper>
             <LgText textColor="black">Log into<br />your account</LgText>
-            <TextInput placeholder="type your id." />
-            <TextInput placeholder="type your password." />
+            <TextInput type="text" value={loginId} onChange={(e) => setLoginId(e.target.value)} placeholder="type your id." />
+            <TextInput type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="type your password." />
             <ForgetComment className="openModalBtn" onClick={() => { setModalType("forgotAuth") }}>아이디/ 비밀번호를 잊어버리셨나요?</ForgetComment>
             <WrongComment></WrongComment>
-            <FormBtn bgColor="rgba(0,0,0,0.4)" type="submit">Log in</FormBtn>
+            <FormBtn bgColor="rgba(0,0,0,0.4)" type="button" onClick={LoginBtnHandler}>Log in</FormBtn>
             <FormBtn bgColor="black">Log in with <span>kakao</span></FormBtn>
         </FormWrapper>
     )
@@ -94,28 +106,39 @@ const BirthInput = styled.input`
 `
 
 export const SignupForm = () => {
+    const [loginId, setLoginId] = useState<string>('')
+    const [email, setEmail] = useState<string>('')
+    const [password, setPassword] = useState<string>('')
+    const [gender, setGender] = useState<string>('')
+    const [birthDate, setBirthDate] = useState<string>('')
+
+    const SignUpBtnHandler = () => {
+        const requestBody: SignUpRequestDto = { loginId, password, email, gender, birthDate };
+        signupRequest(requestBody).then()
+    }
+
     return (
         <FormWrapper>
             <LgText textColor="black">Sign up<br />your account</LgText>
-            <TextInput type="text" placeholder="type your id." />
-            <TextInput type="password" placeholder="type your email." />
-            <TextInput placeholder="type your password." />
+            <TextInput type="text" value={loginId} onChange={(e) => setLoginId(e.target.value)} placeholder="type your id." />
+            <TextInput type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="type your email." />
+            <TextInput type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="type your password." />
             <RadioWrapper>
                 <InputLabel>
-                    <RadioInput type="radio" id="gender" name="gender" />
+                    <RadioInput type="radio" id="female" name="gender" value="FEMALE" onChange={(e) => setGender(e.target.value)} />
                     woman
                 </InputLabel>
                 <InputLabel>
-                    <RadioInput type="radio" id="gender" name="gender" />
+                    <RadioInput type="radio" id="male" name="gender" value="MALE" onChange={(e) => setGender(e.target.value)} />
                     man
                 </InputLabel>
             </RadioWrapper>
             <InputLabel>
                 Birth Date
-                <BirthInput type="date" required aria-required="true" />
+                <BirthInput type="date" value={birthDate} onChange={(e) => setBirthDate(e.target.value)} required aria-required="true" />
             </InputLabel>
             <WrongComment></WrongComment>
-            <FormBtn bgColor="rgba(0,0,0,0.4)" type="submit">Sign up</FormBtn>
+            <FormBtn bgColor="rgba(0,0,0,0.4)" type="button" onClick={SignUpBtnHandler}>Sign up</FormBtn>
         </FormWrapper>
     )
 };

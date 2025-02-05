@@ -1,8 +1,8 @@
 import { SignUpRequestDto } from "./member";
 import { LoginRequestDto } from "./auth";
-import { request } from "http";
 import axios from "axios";
 import { LoginResponseDto } from "../response/auth";
+import { SignUpResponseDto } from "../response/member";
 
 const DOMAIN = `http://localhost:8080`;
 
@@ -15,10 +15,25 @@ export const loginRequest = async (requestBody: LoginRequestDto) => {
     const result = await axios.post(LOGIN_URL(), requestBody)
         .then(response => {
             const responseBody: LoginResponseDto = response.data;
+            console.log("Login response:", responseBody)
             return responseBody;
         })
         .catch(error => {
             console.log("Login api error:", error)
+        })
+
+    return result
+}
+
+export const signupRequest = async (requestBody: SignUpRequestDto) => {
+    const result = await axios.post(SIGNUP_URL(), requestBody)
+        .then(response => {
+            const responseBody: SignUpResponseDto = response.data;
+            console.log("Signup response:", responseBody)
+            return responseBody
+        })
+        .catch(error => {
+            console.log("Signup api error:", error)
         })
 
     return result
