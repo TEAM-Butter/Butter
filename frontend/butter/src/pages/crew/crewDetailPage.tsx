@@ -27,7 +27,7 @@ const PageContainer=styled.div`
 
 
 const LayOut1=styled.div`
-  width: 55%; /* 6/10 너비 */
+  width: 50%; /* 6/10 너비 */
   padding: 20px;
   background-color: #202020(rgb 32, 32, 32);
   box-sizing: border-box;
@@ -36,7 +36,7 @@ const LayOut1=styled.div`
   
 `
 const LayOut2=styled.div`
-  width: 45%; /* 나머지 4/10 너비 */
+  width: 50%; /* 나머지 4/10 너비 */
   padding: 20px;
   background-color: #202020(rgb 32, 32, 32);
   box-sizing: border-box;
@@ -48,40 +48,47 @@ const LayOut3=styled.div`
 `
 
 const Box1=styled.div`
-  
   background-color: gray;
   width : 100%;
   box-sizing: border-box;
   height: 400px;
   border-radius: 20px;
   margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
 `
 
 const Box2=styled.div`
   border-radius: 20px;
-  height: 150px;
-  width: 45%;
+  height: 140px;
+  width: 140px;
+  display: flex;
+  position: relative;
 `
 const Box3=styled.div`
   background-color: rgb(22, 22, 22);
   border-radius: 20px;
   height: 180px;
-  width : 37%;
+  width : 45%;
   display: flex;
   padding-left: 20px;
   text-align: left;
   align-items: center;
   justify-content: space-between;
+  padding-top : 10px;
+  padding-left: 20px;
   padding-bottom: 110px;
   padding-right: 20px;
-  margin-left: 180px;
+  margin-left: 90px;
 `
 
 const Box4=styled.button`
   background-color: rgb(234, 36, 35);
   border-radius: 20px;
   height: 180px;
-  width: 18%;
+  width: 20%;
   color: white;
   display: flex;
   padding-top: 20px;
@@ -109,7 +116,7 @@ const Box6=styled.div`
   display: flex;
   align-items: center;
   padding-left: 20px;
-  gap : 20px;
+  gap : 12px;
 `
 const Box7=styled.div`
   border-radius: 10px 10px 0 0; /* 하단은 0, 상단만 둥글게 */
@@ -130,7 +137,8 @@ const Arrow = styled.img`
 
 const EditButton = styled.img`
     height:  20px;
-    
+    margin-top: 8px;
+    margin-right: 5px;
 `
 
 const Right = styled.div`
@@ -141,45 +149,60 @@ const Right = styled.div`
 const TextName = styled.div`
     font-size: 60px;
     font-weight: 500;
-    padding-left: 5%;
+
+    margin-bottom: 10px;
 `
 const TextGenre = styled.div`
     font-size: 15px;
-    padding-left: 8%;
+    
     white-space: pre;
 `
 const TextExplain = styled.div`
     font-size: 17px;
-    padding-left: 8%;
+
     padding-top: 2%;
 `
 
 const CrewMemberImage = styled.img`
-    height: 40px;
+    border-radius: 50%;
+    height: 45px;
+    width: 45px;
     margin-left: 10px;
 `
-const ImageMovingBox = styled.div`
-margin-top: 30%;
-margin-left : 3%;
 
+
+const ImageMovingBox = styled.div`
+padding-right : 10px;
+display: flex;
+gap: 10px;
 `
+
+const Box1BottomWrapper = styled.div`
+    display: flex;
+    justify-content: space-between;
+    padding-right: 10px;
+    padding-bottom: 15px;
+    padding-left: 10px;
+`
+
 
 const FollowButton = styled.img`
-    height: 30px;
-    margin-left: 65%;
-    margin-top: 3%;
-
+    height: 35px;
 `
 const CrewPicture = styled.img`
-    height: 150px;
-    width: 150px;
+    height: 180px;
+    width: 180px;
+    border-radius: 20px;
 `
 
 const PlusBtn = styled.div`
-    
+
 `
 const TextFollowNum = styled.div`
-    
+ width: 150px;
+ position: absolute;
+ top: 160px;
+ left: 13px;
 `
 
 const NoticeBox = styled.div`
@@ -194,10 +217,18 @@ const NoticeWrapperBox = styled.div`
     width: 75%;
 `
 
+
+const CrewNameWrapper = styled.div`
+    padding-bottom: 180px;
+    padding-left: 40px;
+`
+
 const NoticeTitle = styled.div`
+
 `
 
 const NoticeContent = styled.div`
+
 `
 const NoticeImg = styled.img`
     height: 50px;
@@ -273,30 +304,33 @@ function CrewDetailPage() {
                     <Right>
                     <EditButton onClick={() => handleEditClick()} src={editButton} alt="editButton"></EditButton>
                     </Right>
-                    <TextName>Crew Name {id} {crewDetail}</TextName>
-                    <TextGenre> 크루 장르1     크루 장르2     크루 장르3 </TextGenre>
-                    <TextExplain>이 크루는 이 세상 최고의 크루이며,,,{crewDetail}</TextExplain>
+                    <CrewNameWrapper>
+                        <TextName>Crew Name {id} {crewDetail}</TextName>
+                        <TextGenre>크루 장르1     크루 장르2     크루 장르3 </TextGenre>
+                        <TextExplain>이 크루는 이 세상 최고의 크루이며,,,{crewDetail}</TextExplain>
+                    </CrewNameWrapper>
+                    <Box1BottomWrapper>
                       <ImageMovingBox>
-                        <CrewMemberImage src={rightArrow} alt="CrewMemberImage1"></CrewMemberImage>
-                        <CrewMemberImage src={leftArrow} alt="CrewMemberImage2"></CrewMemberImage>
-                        <CrewMemberImage src={rightArrow} alt="CrewMemberImage1"></CrewMemberImage>
-                        <CrewMemberImage src={leftArrow} alt="CrewMemberImage2"></CrewMemberImage>
-                        <FollowButton src={followButton} alt="followButton"></FollowButton>
+                        {images.map((a, i)=>{return(<CrewMemberImage src={a} alt="CrewMemberImage2"></CrewMemberImage>)})}
                       </ImageMovingBox>  
+                        <FollowButton src={followButton} alt="followButton"></FollowButton>
+                    </Box1BottomWrapper>
                 </Box1>
+                
                 </div>}
+                {crewEditSwitch && <CrewEditComponent1 crewDetail = {crewDetail} handleEditClick={handleEditClick}/>}
         <LayOut3>        
-            {crewDetailSwitch && <div className="크루 디테일 정보">  
+      
+            {crewDetailSwitch &&   
                 <Box2>
                     <CrewPicture src={sample3}></CrewPicture>
                     <TextFollowNum> 크루 팔로우 수 :</TextFollowNum>
                 </Box2>
-          
-            </div>}
-          
-            {crewEditSwitch && <CrewEditComponent crewDetail = {crewDetail} handleEditClick={handleEditClick}/>}
-                <Box3> <SnsText><div style={{ fontSize : "20px"}}>SNS</div><div>link</div></SnsText> {crewDetail} <UpArrowTag src={upArrow} alt="upArrow"></UpArrowTag></Box3>
-                <Box4 onClick={()=>{navigate(`/stream/live/${id}`)}}><LiveText1>Live</LiveText1><div>On</div> </Box4>
+            }
+            {crewEditSwitch && <CrewEditComponent2 />}
+           
+            <Box3> <SnsText><div style={{ fontSize : "20px"}}>SNS</div><div>link</div></SnsText> {crewDetail} <UpArrowTag src={upArrow} alt="upArrow"></UpArrowTag></Box3>
+            <Box4 onClick={()=>{navigate(`/stream/live/${id}`)}}><LiveText1>Live</LiveText1><div>On</div> </Box4>
         </LayOut3>       
                 </LayOut1>
                 <LayOut2>
@@ -339,14 +373,14 @@ const CrewMemberEditModalContent = styled.div`
 
 
 
-function CrewEditComponent({ crewDetail, handleEditClick }: { crewDetail: any; handleEditClick: () => void }) {
+function CrewEditComponent1({ crewDetail, handleEditClick }: { crewDetail: any; handleEditClick: () => void }) {
 
     const [crewMemberPlusModalOpen, setCrewMemberPlusModalOpen] = useState(false) // 크루 멤버 추가 모달 스위치
 
     return (
     <div>
-      
-        <div>
+     
+        <Box1>
             <button onClick={handleEditClick}>취소</button>
             <button onClick={handleEditClick}>수정확정</button>
                   
@@ -359,12 +393,7 @@ function CrewEditComponent({ crewDetail, handleEditClick }: { crewDetail: any; h
           
             
             <button onClick={() =>setCrewMemberPlusModalOpen(true)}>멤버추가</button>
-        </div>
-        <div>
-            <div>크루 사진 : {crewDetail}</div>
-            <div> 크루 팔로우 수 : {crewDetail}</div>
-            <button>이미지로드</button>
-        </div>
+        </Box1>
         {crewMemberPlusModalOpen && (
             <CrewMemberEditModalOverlay>
                 <CrewMemberEditModalContent>
@@ -380,6 +409,19 @@ function CrewEditComponent({ crewDetail, handleEditClick }: { crewDetail: any; h
     )
 }
 
+function CrewEditComponent2() {
+
+    const [crewMemberPlusModalOpen, setCrewMemberPlusModalOpen] = useState(false) // 크루 멤버 추가 모달 스위치
+
+    return (
+   
+        <Box2>
+            <CrewPicture src={sample3}></CrewPicture>
+            <TextFollowNum> 크루 팔로우 수 :</TextFollowNum>
+           </Box2>
+           
+    )
+}
 
 
 
@@ -440,7 +482,6 @@ const ScheduleText = styled.div`
 
 const BuskingText = styled.p`
     font-weight: 550;
-    
 `
 
 const Hr = styled.hr`
@@ -507,7 +548,7 @@ function ScheduleEditComponent({crewScheduleDetail,crewDetail}:any) {
        <Box5>
         <div>
             <ScheduleText>
-            <BuskingText >Busking </BuskingText> <p>Schedule</p>
+            <BuskingText >Busking </BuskingText> <p>Schedule </p>
             <p onClick={openModal}>+</p>
             
             </ScheduleText>
