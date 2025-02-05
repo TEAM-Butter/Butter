@@ -179,16 +179,17 @@ const LivePage = () => {
     useState<RecordingService | null>(null);
 
   const roomName = state.roomName;
-  const participantName = state.participantName;
+  let participantName = "user";
   let role = "";
   if (!role) {
     if (window.location.hostname === "localhost") {
       role = "publisher";
+      participantName = state.participantName;
     } else {
       role = "subscriber";
     }
   }
-
+  console.log("askjdbfkasdjbkjabsdlfknl");
   const leaveRoom = useCallback(async () => {
     // Leave the room by calling 'disconnect' method over the Room object
     if (room) {
@@ -316,12 +317,14 @@ const LivePage = () => {
 
   useEffect(() => {
     joinRoom();
+    console.log("방에 입장하겠습니다");
   }, [joinRoom]);
   //조건부 렌더링
 
   useEffect(() => {
     return () => {
       leaveRoom();
+      console.log("방을 떠나겠습니다");
     };
   }, [leaveRoom]);
 
@@ -345,6 +348,7 @@ const LivePage = () => {
             <Right>
               <RightTop>
                 <StreamLive
+                  role={role}
                   room={room}
                   participantName={participantName}
                   roomName={roomName}
