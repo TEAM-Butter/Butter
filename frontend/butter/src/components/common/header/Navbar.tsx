@@ -3,7 +3,7 @@ import styled from "@emotion/styled";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { Link, useMatch } from "react-router-dom";
-import { StreamingModal } from "../modals/modal";
+import { StreamingModal } from "../modals/StreamingModal";
 
 const Nav = styled.nav`
   display: flex;
@@ -209,7 +209,7 @@ function Navbar() {
                       <SubItem>크루 등록</SubItem>
                     </Link>
                   )}
-                  <Link to="/">
+                  <Link to="/member/detail/guest">
                     <SubItem>회원정보 수정</SubItem>
                   </Link>
                   <Link to="/">

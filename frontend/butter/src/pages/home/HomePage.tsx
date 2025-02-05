@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { UserExtraInfoModal } from "../../components/common/modals/modal";
+import { UserExtraInfoModal } from "../../components/common/modals/UserExtraInfoModal";
 import { useState } from "react";
 
 const HomePageWrapper = styled.div`
