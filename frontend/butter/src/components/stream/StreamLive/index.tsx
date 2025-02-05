@@ -15,7 +15,6 @@ type TrackInfo = {
 };
 
 interface StreamLiveProps {
-  role: string;
   room?: Room;
   participantName: string;
   roomName: string;

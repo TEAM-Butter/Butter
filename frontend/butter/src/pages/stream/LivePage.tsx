@@ -10,9 +10,14 @@ import {
   RoomEvent,
 } from "livekit-client";
 import StreamLive from "../../components/stream/StreamLive";
-import { RecordingService } from "../../services/RecordingService";
 import { RecordingControls } from "../../components/stream/RecordingControls";
-import { useLocation } from "react-router-dom";
+import { Navigate, useLocation, useNavigate } from "react-router-dom";
+// import { RecordingManager } from "../../components/recording/RecordingManger";
+
+import { RecordingService } from "../../components/recording/RecordingService";
+import { LiveOffModal } from "../../components/recording/LiveOffModal";
+import { RecordingModal } from "../../components/recording/RecordingModal";
+import { Recording } from "../../types/recording";
 
 const LivePageWrapper = styled.div`
   display: flex;
@@ -20,6 +25,7 @@ const LivePageWrapper = styled.div`
   column-gap: 10px;
   row-gap: 10px;
   max-width: 1300px;
+  max-height: 1000px;
   margin: 0 auto;
   padding-top: 15px;
   height: 90vh;
@@ -92,11 +98,12 @@ const RightMiddle = styled.div`
   overflow: hidden;
   background-color: bisque;
   flex: 1;
+  max-height: 500px;
 
   @media (max-width: 780px) {
     width: calc(50% - 4px); /* 여백을 고려한 너비 */
     aspect-ratio: 16 / 9; /* RightTop과 동일한 비율 */
-    height: auto;
+    max-height: 300px;
     flex: none;
   }
 `;
@@ -177,6 +184,12 @@ const LivePage = () => {
 
   const [recordingService, setRecordingService] =
     useState<RecordingService | null>(null);
+  const [isLiveOffModalOpen, setIsLiveOffModalOpen] = useState(false);
+  const [recordings, setRecordings] = useState<Recording[]>([]);
+  const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
+  const [currentVideoUrl, setCurrentVideoUrl] = useState("");
+
+  const navigate = useNavigate();
 
   const roomName = state.roomName;
   let participantName = "user";
@@ -189,7 +202,67 @@ const LivePage = () => {
       role = "subscriber";
     }
   }
-  console.log("askjdbfkasdjbkjabsdlfknl");
+
+  const handleBackBtnClick = () => {
+    leaveRoom();
+    navigate("/");
+  };
+  // LiveOffBtn 클릭 핸들러
+  const handleLiveOffBtnClick = async () => {
+    try {
+      // 녹화 목록 불러오기
+      if (recordingService && room) {
+        const recordingList = await recordingService.listRecordings(
+          roomName,
+          room.sid
+        );
+        setRecordings(recordingList);
+      }
+      // 모달 열기
+      setIsLiveOffModalOpen(true);
+    } catch (error) {
+      console.error("Failed to load recordings:", error);
+    }
+  };
+
+  // 실제 종료 처리 함수
+  const handleRealLiveOffBtnClick = async () => {
+    try {
+      await leaveRoom();
+      setIsLiveOffModalOpen(false);
+      navigate("/");
+
+      // 필요한 경우 추가 정리 작업 수행
+    } catch (error) {
+      console.error("Failed to leave room:", error);
+    }
+  };
+
+  // 녹화 재생 핸들러
+  const handlePlayRecording = async (recordingName: string) => {
+    try {
+      if (recordingService) {
+        const url = await recordingService.getRecordingUrl(recordingName);
+        setCurrentVideoUrl(url);
+        setIsVideoModalOpen(true);
+      }
+    } catch (error) {
+      console.error("Failed to get recording URL:", error);
+    }
+  };
+
+  // 녹화 삭제 핸들러
+  const handleDeleteRecording = async (recordingName: string) => {
+    try {
+      if (recordingService) {
+        await recordingService.deleteRecording(recordingName);
+        setRecordings(recordings.filter((r) => r.name !== recordingName));
+      }
+    } catch (error) {
+      console.error("Failed to delete recording:", error);
+    }
+  };
+
   const leaveRoom = useCallback(async () => {
     // Leave the room by calling 'disconnect' method over the Room object
     if (room) {
@@ -318,6 +391,7 @@ const LivePage = () => {
   useEffect(() => {
     joinRoom();
     console.log("방에 입장하겠습니다");
+    console.log("room정보", room);
   }, [joinRoom]);
   //조건부 렌더링
 
@@ -340,15 +414,11 @@ const LivePage = () => {
                 <StreamChat />
               </LeftTop>
               <CharacterBox>b</CharacterBox>
-              {recordingService && (
-                <RecordingControls recordingService={recordingService} />
-              )}
             </Left>
 
             <Right>
               <RightTop>
                 <StreamLive
-                  role={role}
                   room={room}
                   participantName={participantName}
                   roomName={roomName}
@@ -359,11 +429,33 @@ const LivePage = () => {
                 />
               </RightTop>
               <RightMiddle>v</RightMiddle>
-              <LiveOffBtn onClick={leaveRoom}>
+              {recordingService && (
+                <RecordingControls recordingService={recordingService} />
+              )}
+
+              <LiveOffBtn onClick={handleLiveOffBtnClick}>
                 <span style={{ fontWeight: 700 }}>Off </span>the Live
               </LiveOffBtn>
             </Right>
           </LivePageWrapper>
+          <LiveOffModal
+            isOpen={isLiveOffModalOpen}
+            recordings={recordings}
+            onClose={() => setIsLiveOffModalOpen(false)}
+            onConfirm={handleRealLiveOffBtnClick}
+            onPlay={handlePlayRecording}
+            onDelete={handleDeleteRecording}
+          />
+
+          {/* 비디오 재생 모달 */}
+          <RecordingModal
+            isOpen={isVideoModalOpen}
+            onClose={() => {
+              setIsVideoModalOpen(false);
+              setCurrentVideoUrl("");
+            }}
+            videoUrl={currentVideoUrl}
+          />
         </>
       ) : (
         <LivePageWrapper>
@@ -387,8 +479,8 @@ const LivePage = () => {
             <RightMiddle>
               <StreamChat />
             </RightMiddle>
-            <BackBtn onClick={leaveRoom}>
-              <div>
+            <BackBtn onClick={handleBackBtnClick}>
+              <div style={{ color: "black" }}>
                 <span style={{ fontWeight: 700 }}>Back </span>to the live
               </div>
               <div> &gt;</div>
@@ -397,34 +489,6 @@ const LivePage = () => {
         </LivePageWrapper>
       )}
     </>
-    // <LivePageWrapper>
-    //   <Left>
-    //     <LiveBox>
-    //       <StreamLive
-    //         room={room}
-    //         onSubmit={(e) => {
-    //           joinRoom();
-    //           e.preventDefault();
-    //         }}
-    //         participantName={participantName}
-    //         onParticipantNameChange={(e) => setParticipantName(e.target.value)}
-    //         roomName={roomName}
-    //         onRoomNameChange={(e) => setRoomName(e.target.value)}
-    //         onLeaveButtonClick={leaveRoom}
-    //         localTrack={localTrack}
-    //         remoteTracks={remoteTracks}
-    //       />
-    //     </LiveBox>
-    //     <CharacterBox>b</CharacterBox>
-    //   </Left>
-
-    //   <Right>
-    //     <MyBox>c</MyBox>
-    //     <ChatBox>
-    //       <StreamChat />
-    //     </ChatBox>
-    //   </Right>
-    // </LivePageWrapper>
   );
 };
 
