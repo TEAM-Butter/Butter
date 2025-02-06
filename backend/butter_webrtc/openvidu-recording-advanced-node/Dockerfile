@@ -17,4 +17,4 @@ COPY . .
 EXPOSE 6080
 
 # 7️⃣ 애플리케이션 실행 명령어
-CMD ["node", "server.js"]
+CMD ["node", "app.js"]
