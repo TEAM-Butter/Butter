@@ -4,6 +4,9 @@ import { LoginRequestDto } from "../../apis/request/auth";
 import { loginRequest, signupRequest } from "../../apis/request";
 import { LoginResponseDto } from "../../apis/response/auth";
 import { SignUpRequestDto } from "../../apis/request/member";
+import { setAccessToken } from "../../apis/auth";
+import { useNavigate } from "react-router-dom";
+
 
 const FormWrapper = styled.form`
     width: 100%;
@@ -68,6 +71,7 @@ interface ModalProps {
 }
 
 export const LoginForm = ({ setModalType }: ModalProps) => {
+    const navigator = useNavigate();
 
     const [loginId, setLoginId] = useState<string>('')
     const [password, setPassword] = useState<string>('')
@@ -77,8 +81,8 @@ export const LoginForm = ({ setModalType }: ModalProps) => {
         const requestBody: LoginRequestDto = { loginId, password };
         loginRequest(requestBody).then((responseBody: LoginResponseDto | null) => {
             const { accessToken } = responseBody as LoginResponseDto;
-            
-
+            setAccessToken(accessToken)
+            navigator(``)
         }
         )
     }
