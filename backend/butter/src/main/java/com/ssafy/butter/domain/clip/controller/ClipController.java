@@ -76,8 +76,10 @@ public class ClipController {
             @ApiResponse(responseCode = "204", description = "좋아요 등록 성공")
     })
     @PostMapping("/like")
-    public ResponseEntity<?> likeClip(@RequestBody ClipLikeRequestDTO likeRequestDTO) {
-        clipService.likeClip(1L, likeRequestDTO);
+    public ResponseEntity<?> likeClip(
+            @Parameter(hidden = true) @CurrentUser AuthInfoDTO currentUser,
+            @RequestBody ClipLikeRequestDTO likeRequestDTO) {
+        clipService.likeClip(currentUser, likeRequestDTO);
         return ResponseEntity.noContent().build();
     }
 
@@ -86,8 +88,9 @@ public class ClipController {
             @ApiResponse(responseCode = "204", description = "좋아요 해제 성공")
     })
     @DeleteMapping("/like/{id}")
-    public ResponseEntity<?> unlikeClip(@PathVariable Long id) {
-        clipService.unlikeClip(1L, id);
+    public ResponseEntity<?> unlikeClip(
+            @Parameter(hidden = true) @CurrentUser AuthInfoDTO currentUser, @PathVariable Long id) {
+        clipService.unlikeClip(currentUser, id);
         return ResponseEntity.noContent().build();
     }
 }
