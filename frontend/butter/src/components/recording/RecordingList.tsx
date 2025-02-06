@@ -75,6 +75,7 @@ export const RecordingList: React.FC<RecordingListProps> = ({
         <RecordingItem key={recording.name}>
           <RecordingInfo>
             <h3>{recording.name}</h3>
+            {/* <h2>{}</h2> */}
             <p>{formatDate(recording.startedAt)}</p>
           </RecordingInfo>
           <ButtonGroup>

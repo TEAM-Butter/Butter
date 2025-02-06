@@ -10,4 +10,5 @@ export interface Recording {
   duration?: number;
   size?: number;
   startedAt: string;
+  recordingUrl: string;
 }

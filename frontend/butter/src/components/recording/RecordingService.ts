@@ -67,6 +67,8 @@ export class RecordingService {
     if (response.error) {
       throw new Error(`Failed to get recording URL: ${response.error.message}`);
     }
+    console.log("녹화본 이름", response.data?.recordingName);
+    console.log("녹화본 Url", response.data?.recordingUrl);
     return response.data?.recordingUrl;
   }
 
