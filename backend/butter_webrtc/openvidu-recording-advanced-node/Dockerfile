@@ -14,7 +14,7 @@ RUN npm install
 COPY . .
 
 # 6️⃣ 컨테이너 실행 시 노출할 포트
-EXPOSE 3000
+EXPOSE 6080
 
 # 7️⃣ 애플리케이션 실행 명령어
 CMD ["node", "server.js"]
