@@ -82,7 +82,7 @@ export const LoginForm = ({ setModalType }: ModalProps) => {
         loginRequest(requestBody).then((responseBody: LoginResponseDto | null) => {
             const { accessToken } = responseBody as LoginResponseDto;
             setAccessToken(accessToken)
-            navigator(``)
+            navigator(`/`)
         }
         )
     }
