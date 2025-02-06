@@ -30,7 +30,7 @@ const LoginFormWrapper = styled.div`
 
 const SignupLink = styled.div`
   min-width: 370px;
-  min-height: 150px;
+  min-height: 130px;
   background-color: black;
   border-radius: 30px;
   padding: 20px 40px;

@@ -13,7 +13,7 @@ const FormWrapper = styled.form`
 `
 
 const LgText = styled.div<ColorProps>`
-    min-height: 120px;
+    min-height: 100px;
     display: flex;
     flex-direction: column-reverse;
     font-size: 35px;
@@ -53,6 +53,7 @@ interface ColorProps {
 
 const WrongComment = styled.div`
     flex: 1;
+    min-height: 30px;
 `
 
 // Login Css
@@ -67,13 +68,19 @@ interface ModalProps {
 }
 
 export const LoginForm = ({ setModalType }: ModalProps) => {
+
     const [loginId, setLoginId] = useState<string>('')
     const [password, setPassword] = useState<string>('')
 
     const LoginBtnHandler = () => {
         console.log(loginId, password)
         const requestBody: LoginRequestDto = { loginId, password };
-        loginRequest(requestBody).then()
+        loginRequest(requestBody).then((responseBody: LoginResponseDto | null) => {
+            const { accessToken } = responseBody as LoginResponseDto;
+            
+
+        }
+        )
     }
     return (
         <FormWrapper>

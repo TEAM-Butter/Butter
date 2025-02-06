@@ -20,6 +20,7 @@ export const loginRequest = async (requestBody: LoginRequestDto) => {
         })
         .catch(error => {
             console.log("Login api error:", error)
+            return null
         })
 
     return result
@@ -34,6 +35,7 @@ export const signupRequest = async (requestBody: SignUpRequestDto) => {
         })
         .catch(error => {
             console.log("Signup api error:", error)
+            return null
         })
 
     return result
