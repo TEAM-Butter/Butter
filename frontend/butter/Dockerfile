@@ -4,4 +4,5 @@ COPY package.json .
 RUN npm install
 COPY . .
 EXPOSE 5080
+CMD ["ls"]
 CMD ["npm", "run dev"]
