@@ -1,4 +1,29 @@
 package com.ssafy.butter.domain.schedule.service;
 
+import com.ssafy.butter.auth.dto.AuthInfoDTO;
+import com.ssafy.butter.domain.schedule.dto.request.ScheduleCalendarRequestDTO;
+import com.ssafy.butter.domain.schedule.dto.request.ScheduleLikeRequestDTO;
+import com.ssafy.butter.domain.schedule.dto.request.ScheduleSaveRequestDTO;
+import com.ssafy.butter.domain.schedule.dto.request.ScheduleSearchRequestDTO;
+import com.ssafy.butter.domain.schedule.dto.response.ScheduleResponseDTO;
+
+import java.util.List;
+
 public interface ScheduleService {
+
+    ScheduleResponseDTO createSchedule(AuthInfoDTO currentUser, ScheduleSaveRequestDTO scheduleSaveRequestDTO);
+
+    List<ScheduleResponseDTO> searchSchedule(ScheduleSearchRequestDTO scheduleSearchRequestDTO);
+
+    List<ScheduleResponseDTO> getScheduleCalendarList(ScheduleCalendarRequestDTO scheduleCalendarRequestDTO);
+
+    ScheduleResponseDTO getScheduleDetail(Long id);
+
+    ScheduleResponseDTO updateSchedule(AuthInfoDTO currentUser, Long id, ScheduleSaveRequestDTO scheduleSaveRequestDTO);
+
+    ScheduleResponseDTO deleteSchedule(AuthInfoDTO currentUser, Long id);
+
+    void likeSchedule(Long memberId, ScheduleLikeRequestDTO scheduleLikeRequestDTO);
+
+    void unlikeSchedule(Long memberId, Long scheduleId);
 }

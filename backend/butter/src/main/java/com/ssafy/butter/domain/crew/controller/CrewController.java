@@ -1,11 +1,13 @@
 package com.ssafy.butter.domain.crew.controller;
 
+import com.ssafy.butter.auth.dto.AuthInfoDTO;
 import com.ssafy.butter.domain.crew.dto.request.CrewFollowRequestDTO;
 import com.ssafy.butter.domain.crew.dto.request.CrewListRequestDTO;
 import com.ssafy.butter.domain.crew.dto.request.CrewMemberRequestDTO;
 import com.ssafy.butter.domain.crew.dto.request.CrewSaveRequestDTO;
 import com.ssafy.butter.domain.crew.dto.response.CrewResponseDTO;
 import com.ssafy.butter.domain.crew.service.CrewService;
+import com.ssafy.butter.global.token.CurrentUser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -22,20 +24,20 @@ public class CrewController {
     private final CrewService crewService;
 
     @PostMapping
-    public ResponseEntity<?> createCrew(@ModelAttribute CrewSaveRequestDTO crewSaveRequestDTO) {
-        CrewResponseDTO crewResponseDTO = crewService.createCrew(crewSaveRequestDTO);
+    public ResponseEntity<?> createCrew(@CurrentUser AuthInfoDTO currentUser, @ModelAttribute CrewSaveRequestDTO crewSaveRequestDTO) {
+        CrewResponseDTO crewResponseDTO = crewService.createCrew(currentUser, crewSaveRequestDTO);
         return ResponseEntity.created(URI.create("/api/v1/crew/detail/" + crewResponseDTO.id())).body(crewResponseDTO);
     }
 
     @PostMapping("/member")
-    public ResponseEntity<?> createCrewMember(@RequestBody CrewMemberRequestDTO crewMemberRequestDTO) {
-        crewService.createCrewMember(crewMemberRequestDTO);
+    public ResponseEntity<?> createCrewMember(@CurrentUser AuthInfoDTO currentUser, @RequestBody CrewMemberRequestDTO crewMemberRequestDTO) {
+        crewService.createCrewMember(currentUser, crewMemberRequestDTO);
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{crewId}/member/{memberId}")
-    public ResponseEntity<?> deleteCrewMember(@PathVariable Long crewId, @PathVariable Long memberId) {
-        crewService.deleteCrewMember(crewId, memberId);
+    public ResponseEntity<?> deleteCrewMember(@CurrentUser AuthInfoDTO currentUser, @PathVariable Long crewId, @PathVariable Long memberId) {
+        crewService.deleteCrewMember(currentUser, crewId, memberId);
         return ResponseEntity.noContent().build();
     }
 
@@ -50,24 +52,24 @@ public class CrewController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateCrew(@PathVariable Long id, @ModelAttribute CrewSaveRequestDTO crewSaveRequestDTO) {
-        return ResponseEntity.ok(crewService.updateCrew(id, crewSaveRequestDTO));
+    public ResponseEntity<?> updateCrew(@CurrentUser AuthInfoDTO currentUser, @PathVariable Long id, @ModelAttribute CrewSaveRequestDTO crewSaveRequestDTO) {
+        return ResponseEntity.ok(crewService.updateCrew(currentUser, id, crewSaveRequestDTO));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteCrew(@PathVariable Long id) {
-        return ResponseEntity.ok(crewService.deleteCrew(id));
+    public ResponseEntity<?> deleteCrew(@CurrentUser AuthInfoDTO currentUser, @PathVariable Long id) {
+        return ResponseEntity.ok(crewService.deleteCrew(currentUser, id));
     }
 
     @PostMapping("/follow")
-    public ResponseEntity<?> followCrew(@RequestBody CrewFollowRequestDTO crewFollowRequestDTO) {
-        crewService.followCrew(1L, crewFollowRequestDTO);
+    public ResponseEntity<?> followCrew(@CurrentUser AuthInfoDTO currentUser, @RequestBody CrewFollowRequestDTO crewFollowRequestDTO) {
+        crewService.followCrew(currentUser, crewFollowRequestDTO);
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{id}/follow")
-    public ResponseEntity<?> unfollowCrew(@PathVariable Long id) {
-        crewService.unfollowCrew(1L, id);
+    public ResponseEntity<?> unfollowCrew(@CurrentUser AuthInfoDTO currentUser, @PathVariable Long id) {
+        crewService.unfollowCrew(currentUser, id);
         return ResponseEntity.noContent().build();
     }
 

@@ -16,7 +16,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Password {
 
-    @NotNull
     @Column(name = "password", length = 200)
     private String value;
 
@@ -38,6 +37,10 @@ public class Password {
         return new Password(encrypted);
     }
 
+    public boolean match(EncryptUtils encryptUtils, String typedPassword){
+        return encryptUtils.isMatch(typedPassword, this.value);
+    }
+
     private static void validate(String value) {
         if (value == null || value.isEmpty()) {
             throw new IllegalArgumentException("ERR : 패스워드가 공백입니다");
@@ -51,7 +54,7 @@ public class Password {
         if (!value.matches(".*[0-9].*")) {
             throw new IllegalArgumentException("ERR : 패스워드는 최소 하나 이상의 숫자를 포함해야합니다");
         }
-        if (!value.matches(".*[!@#$%^&*()_+\\-=[\\]{};':\"\\\\|,.<>/?].*")) {
+        if (!value.matches(".*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>/?].*")) {
             throw new IllegalArgumentException("ERR : 패스워드는 최소 하나 이상의 특수문자를 포함해야합니다");
         }
     }

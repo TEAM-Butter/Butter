@@ -1,28 +1,37 @@
 package com.ssafy.butter.domain.member.dto.response;
 
+import com.ssafy.butter.domain.crew.entity.Genre;
 import com.ssafy.butter.domain.member.entity.Member;
 import com.ssafy.butter.domain.member.entity.MemberGenre;
 import java.time.LocalDate;
 import java.util.List;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
-@Getter
-@RequiredArgsConstructor
-public class MyPageResponseDTO {
-    private final String email;
-    private final String nickname;
-    private final LocalDate birthDate;
-    private final String imageUrl;
-    private final List<MemberGenre> memberGenres;
+public record MyPageResponseDTO(
+        String loginId,
+        String email,
+        LocalDate birthdate,
+        String gender,
+        String profileImageUrl,
+        String nickname,
+        List<String> genres,
+        String avatarType,
+        boolean isExtraInfoRegistered
+) {
+    public static MyPageResponseDTO from(Member member){
+        List<String> genres = member.getMemberGenres().stream()
+                .map(MemberGenre::getGenre)
+                .map(Genre::getName)
+                .toList();
 
-    @Builder
-    public MyPageResponseDTO(Member member) {
-        this.email = member.getEmail().getValue();
-        this.nickname = member.getNickname().getValue();
-        this.birthDate = member.getBirthDate().getDate();
-        this.imageUrl = member.getImageUrl();
-        this.memberGenres = member.getMemberGenres();
+        return new MyPageResponseDTO(
+                member.getLoginId(),
+                member.getEmail().getValue(),
+                member.getBirthDate().getDate(),
+                member.getGender().name(),
+                member.getProfileImage(),
+                member.getNickname().getValue(),
+                genres,
+                member.getAvatarType().getName(),
+                member.isExtraInfoRegistered());
     }
 }

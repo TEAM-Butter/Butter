@@ -1,6 +1,5 @@
 package com.ssafy.butter.domain.member.dto.request;
 
-import com.ssafy.butter.domain.member.vo.Password;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
@@ -10,15 +9,16 @@ public record SignUpDTO(
         @Size(min = 3, max = 50)
         String loginId,
 
-        String nickname,
+        @NotNull
         String email,
-        String phoneNumber,
-        LocalDate birthDate,
-        Password password,
 
         @NotNull
-        Integer gender,
+        LocalDate birthDate,
 
-        String imageUrl
+        @NotNull
+        String password,
+
+        @NotNull
+        String gender
 ) {
 }

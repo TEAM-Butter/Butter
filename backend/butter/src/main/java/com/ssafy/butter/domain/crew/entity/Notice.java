@@ -1,6 +1,8 @@
 package com.ssafy.butter.domain.crew.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ssafy.butter.domain.common.TimestampedEntity;
+import com.ssafy.butter.domain.crew.dto.request.NoticeSaveRequestDTO;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -27,6 +29,7 @@ public class Notice extends TimestampedEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "crew_id")
     @NotNull
+    @JsonIgnore
     private Crew crew;
 
     @Column(length = 50)
@@ -48,15 +51,9 @@ public class Notice extends TimestampedEntity {
         this.imageUrl = imageUrl;
     }
 
-    public void updateTitle(String title) {
-        this.title = title;
-    }
-
-    public void updateContent(String content) {
-        this.content = content;
-    }
-
-    public void updateImageUrl(String imageUrl) {
+    public void update(NoticeSaveRequestDTO noticeSaveRequestDTO, String imageUrl) {
+        this.title = noticeSaveRequestDTO.title();
+        this.content = noticeSaveRequestDTO.content();
         this.imageUrl = imageUrl;
     }
 }

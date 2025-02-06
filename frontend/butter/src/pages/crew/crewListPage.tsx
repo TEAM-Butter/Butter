@@ -25,17 +25,17 @@ const Write = styled.div`
 
 // 이미지 컨테이너
 const ImgContainer = styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-    height: 120px; /* 이미지가 올라갈 공간 확보 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  height: 120px; /* 이미지가 올라갈 공간 확보 */
 `;
 
 // 이미지 스타일
 interface ImgProps {
-    index: number;
-    size?: string;
+  index: number;
+  size?: string;
 }
 
 const Div1 = styled.div`
@@ -45,20 +45,20 @@ const Div1 = styled.div`
 
 // 이미지 스타일1
 const ImgStyle = styled.img<ImgProps>`
-    width: ${(props) => props.size || "80px"};
-    height: ${(props) => props.size || "80px"};
-    border-radius: 50%;
-    object-fit: cover;
-    transition: transform 0.3s ease-in-out, z-index 0.3s ease-in-out;
-    position: relative;
+  width: ${(props) => props.size || "80px"};
+  height: ${(props) => props.size || "80px"};
+  border-radius: 50%;
+  object-fit: cover;
+  transition: transform 0.3s ease-in-out, z-index 0.3s ease-in-out;
+  position: relative;
 
-    ${({ index }) => index === 0 && "left: 0; z-index: 1;"}
-    ${({ index }) => index === 1 && "right: 40px; z-index: 2;"}
+  ${({ index }) => index === 0 && "left: 0; z-index: 1;"}
+  ${({ index }) => index === 1 && "right: 40px; z-index: 2;"}
     ${({ index }) => index === 2 && "right: 80px; z-index: 3;"}
 
     &:hover {
-        transform: translateY(-20px); /* 위로 이동 */
-    }
+    transform: translateY(-20px); /* 위로 이동 */
+  }
 `;
 
 // CrewListContainer: 화면 가로 전체에 꽉 차게
@@ -100,18 +100,18 @@ const Box1 = styled.div`
 `
 
 const P1 = styled.div`
-font-weight : bold;
-white-space: pre; /* 띄어쓰기를 그대로 유지 */
-`
+  font-weight: bold;
+  white-space: pre; /* 띄어쓰기를 그대로 유지 */
+`;
 
 const Box2 = styled.div`
- display : flex;
- justify-content : right;
- margin-right : 30px;
- margin-top : 10px;
- margin-bottom : 50px;
- font-size : 15px;
-`
+  display: flex;
+  justify-content: right;
+  margin-right: 30px;
+  margin-top: 10px;
+  margin-bottom: 50px;
+  font-size: 15px;
+`;
 
 const ServerUrl = 'http://i12e204.p.ssafy.io:8081'
 
@@ -136,40 +136,57 @@ function CrewListPage() {
     //         }
     //     }
 
-    //     if (crewId) {
-    //         fetchCrewDetail();
-    //     }
-    // }, [crewId])
-    
-    // if (loading) return <div>Loading...</div>;
-    // if (error) return <div>Error: {error}</div>;
-    return (
-        <div>
-        <Box1>
-            <P1>Busking </P1> <p>Crew</p>
-        </Box1>
-        <Box2>
+  // useEffect (() => {
+  //     const fetchCrewDetail = async () => {
+  //         try {
+  //             setLoading(true);
+  //             const response = await axios.get(`/api/v1/crew/list`) // 크루 리스트 정보 받아옴
+  //             setCrewList(response.data);
+  //         } catch (err:any) {
+  //             setError(err.message); //요청 놓치면 에러 메세지 띄우기
+  //         } finally {
+  //             setLoading(false) // 요청 끝나면 로딩끄기
+  //         }
+  //     }
+
+  //     if (crewId) {
+  //         fetchCrewDetail();
+  //     }
+  // }, [crewId])
+
+  // if (loading) return <div>Loading...</div>;
+  // if (error) return <div>Error: {error}</div>;
+  return (
+    <div>
+      <Box1>
+        <P1>Busking </P1> <p>Crew</p>
+      </Box1>
+      <Box2>
         <p>당신의 마음에 맞는 크루를 지금 바로 찾아보세요!</p>
-        </Box2>
-       <Write>
-       <div>C</div>
-       <ImgContainer>
-        <ImgStyle src={sample4} alt="Crew Logo 1" index={0} size="230px" />
-        <ImgStyle src={sample2} alt="Crew Logo 2" index={1} size="230px" />
-        <ImgStyle src={sample3} alt="Crew Logo 3" index={2} size="230px" />
+      </Box2>
+      <Write>
+        <div>C</div>
+        <ImgContainer>
+          <ImgStyle src={sample4} alt="Crew Logo 1" index={0} size="230px" />
+          <ImgStyle src={sample2} alt="Crew Logo 2" index={1} size="230px" />
+          <ImgStyle src={sample3} alt="Crew Logo 3" index={2} size="230px" />
         </ImgContainer>
-       <Div1 > REW</Div1>
-       </Write>
-       <CrewListContainer>
-        {crewList.map((a, i)=>{return( 
+        <Div1> REW</Div1>
+      </Write>
+      <CrewListContainer>
+        {crewList.map((a, i) => {
+          return (
             <CrewBox key={i}>
-            <Link to={`/crew/detail/${i+1}`}><div>{a}</div><ImgStyle2 src={images[i]} alt="crewImage"></ImgStyle2></Link>
+              <Link to={`/crew/detail/${i + 1}`}>
+                <div>{a}</div>
+                <ImgStyle2 src={images[i]} alt="crewImage"></ImgStyle2>
+              </Link>
             </CrewBox>
-            )})} 
-        </CrewListContainer>
-       
-       </div>
-    )
+          );
+        })}
+      </CrewListContainer>
+    </div>
+  );
 }
 
-export default CrewListPage
+export default CrewListPage;
