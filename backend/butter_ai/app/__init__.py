@@ -1,5 +1,7 @@
 from flask import Flask
-from flask_socketio import SocketIO
+from flask_sock import Sock
+from .routes.api import api_bp
+from app.routes.ai import ai_bp
 
 socketio = SocketIO(cors_allowed_origins="*")  # CORS 허용
 
@@ -10,8 +12,8 @@ def create_app():
     app.config["SECRET_KEY"] = "your_secret_key"
 
     # 블루프린트 등록
-    from .routes.api import api_bp
     app.register_blueprint(api_bp, url_prefix="/api")
+    app.register_blueprint(ai_bp, url_prefix="/ai")
 
     # WebSocket 초기화
     socketio.init_app(app)
