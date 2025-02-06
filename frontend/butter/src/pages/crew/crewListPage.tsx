@@ -91,7 +91,6 @@ const ImgStyle2 = styled.img<any>`
 `;
 
 
-
 const Box1 = styled.div`
  display : flex;
  justify-content : right;

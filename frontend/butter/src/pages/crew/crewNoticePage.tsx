@@ -244,9 +244,9 @@ function CrewNoticePage() {
             }
             </div>
             </Box2>
-            <Box3>
+            <Box3 onClick={() => navigate(`/crew/detail/${crewId}`)}>
             <GoBackText><div>Back to the </div><CrewPageText>crew page</CrewPageText></GoBackText>
-            {noticeSwitch && <RightRightArrow src={rightRightArrowBlack} alt="rightRightArrowBlack" onClick={() => navigate(`/crew/detail/${crewId}`)}></RightRightArrow>}
+            {noticeSwitch && <RightRightArrow src={rightRightArrowBlack} alt="rightRightArrowBlack"></RightRightArrow>}
             </Box3>
             </LayOut1>
             <LayOut2>
