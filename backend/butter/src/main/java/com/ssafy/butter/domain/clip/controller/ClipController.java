@@ -77,7 +77,7 @@ public class ClipController {
     })
     @PostMapping("/like")
     public ResponseEntity<?> likeClip(@CurrentUser AuthInfoDTO currentUser, @RequestBody ClipLikeRequestDTO likeRequestDTO) {
-        clipService.likeClip(1L, likeRequestDTO);
+        clipService.likeClip(currentUser, likeRequestDTO);
         return ResponseEntity.noContent().build();
     }
 
@@ -87,7 +87,7 @@ public class ClipController {
     })
     @DeleteMapping("/like/{id}")
     public ResponseEntity<?> unlikeClip(@CurrentUser AuthInfoDTO currentUser, @PathVariable Long id) {
-        clipService.unlikeClip(1L, id);
+        clipService.unlikeClip(currentUser, id);
         return ResponseEntity.noContent().build();
     }
 }
