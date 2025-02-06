@@ -2,6 +2,8 @@ import "dotenv/config.js";
 import express from "express";
 import cors from "cors";
 import path from "path";
+import https from "https";
+import fs from "fs";
 import { fileURLToPath } from "url";
 import { SERVER_PORT } from "./config.js";
 import { roomController } from "./controllers/room.controller.js";
@@ -23,5 +25,13 @@ app.use("/recordings", recordingController);
 app.use("/livekit/webhook", webhookController);
 
 app.listen(SERVER_PORT, () => {
-    console.log("Server started on port:", SERVER_PORT);
+  console.log("Server started on port:", SERVER_PORT);
 });
+
+//const options = {
+// key: fs.readFileSync("./keys/key.pem"),
+//  cert: fs.readFileSync("./keys/cert.pem"),
+//};
+//https.createServer(options, app).listen(SERVER_PORT, function () {
+//  console.log("HTTPS server listening on port " + SERVER_PORT);
+//});

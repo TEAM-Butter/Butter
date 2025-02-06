@@ -128,17 +128,17 @@ export const RecordingControls: React.FC<Props> = ({ recordingService }) => {
     setRecordingStatus(initialStatus);
 
     // 녹화 상태 변경 리스너
-    const unsubscribe = recordingService.listenToRecordingStatus((status) => {
-      setRecordingStatus(status as RecordingStatus);
-      setError(null);
-    });
+    // const unsubscribe = recordingService.listenToRecordingStatus((status) => {
+    //   setRecordingStatus(status as RecordingStatus);
+    //   setError(null);
+    // });
 
     // cleanup 함수
-    return () => {
-      if (unsubscribe) {
-        unsubscribe();
-      }
-    };
+    // return () => {
+    //   if (unsubscribe) {
+    //     unsubscribe();
+    //   }
+    // };
   }, [recordingService]);
 
   // 버튼 상태 계산

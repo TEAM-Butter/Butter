@@ -17,7 +17,7 @@ const LtContainer = styled.div`
 `
 const RtContainer = styled.div``
 
-const LoginFormWrapper = styled.div`
+const SignupFormWrapper = styled.div`
     display:flex;
     flex-direction: column;
     align-items: center;
@@ -49,20 +49,20 @@ const SignupLink = styled.div`
 `
 
 const SignupPage = () => {
-  return <SignupPageWrapper>
-    <LtContainer>
-        <LoginFormWrapper>
-            <SignupForm />
-        </LoginFormWrapper>
-        <Link to="/auth/login">
-            <SignupLink>
-                <div>Log in</div>
-                <span>if you already have account?</span>
-            </SignupLink>
-        </Link>
-    </LtContainer>
-    <RtContainer></RtContainer>
-  </SignupPageWrapper>
+    return <SignupPageWrapper>
+        <LtContainer>
+            <SignupFormWrapper>
+                <SignupForm />
+            </SignupFormWrapper>
+            <Link to="/auth/login">
+                <SignupLink>
+                    <div>Log in</div>
+                    <span>if you already have account?</span>
+                </SignupLink>
+            </Link>
+        </LtContainer>
+        <RtContainer></RtContainer>
+    </SignupPageWrapper>
 };
 
 export default SignupPage;

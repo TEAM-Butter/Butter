@@ -15,11 +15,13 @@ const Header = styled.div`
   display: block;
   position: sticky;
   top: 0;
-`
+  z-index: 1;
+  `
 
 const Main = styled.div`
   overflow-y: auto;
   color: white;
+  z-index: 0;
 `
 
 export const CommonLayout = () => {
