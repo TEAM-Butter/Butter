@@ -48,8 +48,6 @@ dependencies {
     annotationProcessor "com.querydsl:querydsl-apt:5.0.0:jakarta"
     annotationProcessor "jakarta.annotation:jakarta.annotation-api"
     annotationProcessor "jakarta.persistence:jakarta.persistence-api"
-    implementation group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: '2.18.2'
-    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.18.2'
 }
 
 tasks.named('test') {
