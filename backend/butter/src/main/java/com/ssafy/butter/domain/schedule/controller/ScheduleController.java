@@ -81,14 +81,17 @@ public class ScheduleController {
 
     @Operation(summary = "버스킹 일정 좋아요 등록", description = "버스킹 일정 좋아요를 등록합니다.")
     @PostMapping("/like")
-    public ResponseEntity<?> likeSchedule(@CurrentUser AuthInfoDTO currentUser, @RequestBody ScheduleLikeRequestDTO scheduleLikeRequestDTO) {
+    public ResponseEntity<?> likeSchedule(
+            @Parameter(hidden = true) @CurrentUser AuthInfoDTO currentUser,
+            @RequestBody ScheduleLikeRequestDTO scheduleLikeRequestDTO) {
         scheduleService.likeSchedule(currentUser, scheduleLikeRequestDTO);
         return ResponseEntity.noContent().build();
     }
 
     @Operation(summary = "버스킹 일정 좋아요 해제", description = "버스킹 일정 좋아요를 해제합니다.")
     @DeleteMapping("/like/{id}")
-    public ResponseEntity<?> unlikeSchedule(@CurrentUser AuthInfoDTO currentUser, @PathVariable Long id) {
+    public ResponseEntity<?> unlikeSchedule(
+            @Parameter(hidden = true) @CurrentUser AuthInfoDTO currentUser, @PathVariable Long id) {
         scheduleService.unlikeSchedule(currentUser, id);
         return ResponseEntity.noContent().build();
     }
