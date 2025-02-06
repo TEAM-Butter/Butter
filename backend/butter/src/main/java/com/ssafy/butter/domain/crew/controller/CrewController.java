@@ -8,71 +8,124 @@ import com.ssafy.butter.domain.crew.dto.request.CrewSaveRequestDTO;
 import com.ssafy.butter.domain.crew.dto.response.CrewResponseDTO;
 import com.ssafy.butter.domain.crew.service.CrewService;
 import com.ssafy.butter.global.token.CurrentUser;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 
 @RequiredArgsConstructor
+@Slf4j
 @RestController
 @RequestMapping("/api/v1/crew")
-@Slf4j
+@Tag(name = "Crew API", description = "크루 관련 API")
 public class CrewController {
 
     private final CrewService crewService;
 
-    @PostMapping
-    public ResponseEntity<?> createCrew(@CurrentUser AuthInfoDTO currentUser, @ModelAttribute CrewSaveRequestDTO crewSaveRequestDTO) {
+    @Operation(summary = "크루 생성", description = "새로운 크루를 생성합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "크루 생성 성공")
+    })
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> createCrew(
+            @Parameter(hidden = true) @CurrentUser AuthInfoDTO currentUser,
+            @Parameter(content = @Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE))
+            @ModelAttribute CrewSaveRequestDTO crewSaveRequestDTO) {
         CrewResponseDTO crewResponseDTO = crewService.createCrew(currentUser, crewSaveRequestDTO);
         return ResponseEntity.created(URI.create("/api/v1/crew/detail/" + crewResponseDTO.id())).body(crewResponseDTO);
     }
 
+    @Operation(summary = "크루 멤버 추가", description = "크루에 새로운 멤버를 추가합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "크루 멤버 추가 성공")
+    })
     @PostMapping("/member")
-    public ResponseEntity<?> createCrewMember(@CurrentUser AuthInfoDTO currentUser, @RequestBody CrewMemberRequestDTO crewMemberRequestDTO) {
+    public ResponseEntity<?> createCrewMember(
+            @Parameter(hidden = true) @CurrentUser AuthInfoDTO currentUser,
+            @RequestBody CrewMemberRequestDTO crewMemberRequestDTO) {
         crewService.createCrewMember(currentUser, crewMemberRequestDTO);
         return ResponseEntity.noContent().build();
     }
 
+    @Operation(summary = "크루 멤버 삭제", description = "크루에서 특정 멤버를 삭제합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "크루 멤버 삭제 성공")
+    })
     @DeleteMapping("/{crewId}/member/{memberId}")
-    public ResponseEntity<?> deleteCrewMember(@CurrentUser AuthInfoDTO currentUser, @PathVariable Long crewId, @PathVariable Long memberId) {
+    public ResponseEntity<?> deleteCrewMember(
+            @Parameter(hidden = true) @CurrentUser AuthInfoDTO currentUser,
+            @PathVariable Long crewId,
+            @PathVariable Long memberId) {
         crewService.deleteCrewMember(currentUser, crewId, memberId);
         return ResponseEntity.noContent().build();
     }
 
+    @Operation(summary = "크루 목록 조회", description = "크루 목록을 조회합니다.")
     @GetMapping("/list")
-    public ResponseEntity<?> getCrewList(@ModelAttribute CrewListRequestDTO crewListRequestDTO) {
+    public ResponseEntity<?> getCrewList(
+            @ParameterObject @ModelAttribute CrewListRequestDTO crewListRequestDTO) {
         return ResponseEntity.ok(crewService.getCrewList(crewListRequestDTO));
     }
 
+    @Operation(summary = "크루 상세 조회", description = "특정 크루의 상세 정보를 조회합니다.")
     @GetMapping("/detail/{id}")
     public ResponseEntity<?> getCrewDetail(@PathVariable Long id) {
         return ResponseEntity.ok(crewService.getCrewDetail(id));
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<?> updateCrew(@CurrentUser AuthInfoDTO currentUser, @PathVariable Long id, @ModelAttribute CrewSaveRequestDTO crewSaveRequestDTO) {
+    @Operation(summary = "크루 수정", description = "기존 크루의 정보를 수정합니다.")
+    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> updateCrew(
+            @Parameter(hidden = true) @CurrentUser AuthInfoDTO currentUser,
+            @PathVariable Long id,
+            @Parameter(content = @Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE))
+            @ModelAttribute CrewSaveRequestDTO crewSaveRequestDTO) {
         return ResponseEntity.ok(crewService.updateCrew(currentUser, id, crewSaveRequestDTO));
     }
 
+    @Operation(summary = "크루 삭제", description = "특정 크루를 삭제합니다.")
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteCrew(@CurrentUser AuthInfoDTO currentUser, @PathVariable Long id) {
+    public ResponseEntity<?> deleteCrew(
+            @Parameter(hidden = true) @CurrentUser AuthInfoDTO currentUser,
+            @PathVariable Long id) {
         return ResponseEntity.ok(crewService.deleteCrew(currentUser, id));
     }
 
+    @Operation(summary = "크루 팔로우", description = "크루를 팔로우합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "팔로우 성공")
+    })
     @PostMapping("/follow")
-    public ResponseEntity<?> followCrew(@CurrentUser AuthInfoDTO currentUser, @RequestBody CrewFollowRequestDTO crewFollowRequestDTO) {
+    public ResponseEntity<?> followCrew(
+            @Parameter(hidden = true) @CurrentUser AuthInfoDTO currentUser,
+            @RequestBody CrewFollowRequestDTO crewFollowRequestDTO) {
         crewService.followCrew(currentUser, crewFollowRequestDTO);
         return ResponseEntity.noContent().build();
     }
 
+    @Operation(summary = "크루 언팔로우", description = "크루 팔로우를 취소합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "언팔로우 성공")
+    })
     @DeleteMapping("/{id}/follow")
-    public ResponseEntity<?> unfollowCrew(@CurrentUser AuthInfoDTO currentUser, @PathVariable Long id) {
+    public ResponseEntity<?> unfollowCrew(
+            @Parameter(hidden = true) @CurrentUser AuthInfoDTO currentUser,
+            @PathVariable Long id) {
         crewService.unfollowCrew(currentUser, id);
         return ResponseEntity.noContent().build();
     }
 
+    @Operation(summary = "추천 크루 목록 조회", description = "추천 크루 목록을 조회합니다.")
     @GetMapping("/recommend")
     public ResponseEntity<?> getRecommendedCrewList() {
         log.info("getRecommendedCrewList");
