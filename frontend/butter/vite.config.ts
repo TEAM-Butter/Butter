@@ -6,7 +6,7 @@ import react from "@vitejs/plugin-react";
 export default defineConfig({
   plugins: [react()],
   server: {
-    allowedHosts: ["192-168-123-102.openvidu-local.dev"],
+    allowedHosts: ["192-168-123-102.openvidu-local.dev", "i12e204.p.ssafy.io"],
     //https: {
     //  key: fs.readFileSync("./key.pem"),
     //  cert: fs.readFileSync("./cert.pem"),
