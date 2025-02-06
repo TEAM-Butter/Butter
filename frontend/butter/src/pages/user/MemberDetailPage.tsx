@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { UserExtraInfoModal } from "../../components/common/modals/modal";
+import { UserExtraInfoModal } from "../../components/common/modals/UserExtraInfoModal";
 
 const MemberDetailPageWrapper = styled.div`
   height: 100%;

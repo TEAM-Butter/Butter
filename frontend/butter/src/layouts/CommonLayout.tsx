@@ -17,7 +17,7 @@ const Header = styled.div`
   top: 0;
   z-index: 1;
   `
-  
+
 const Main = styled.div`
   overflow-y: auto;
   color: white;
