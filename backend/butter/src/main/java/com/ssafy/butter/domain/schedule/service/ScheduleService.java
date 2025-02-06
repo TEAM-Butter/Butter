@@ -23,7 +23,7 @@ public interface ScheduleService {
 
     ScheduleResponseDTO deleteSchedule(AuthInfoDTO currentUser, Long id);
 
-    void likeSchedule(AuthInfoDTO currentUser, ScheduleLikeRequestDTO scheduleLikeRequestDTO);
+    void likeSchedule(Long memberId, ScheduleLikeRequestDTO scheduleLikeRequestDTO);
 
-    void unlikeSchedule(AuthInfoDTO currentUser, Long scheduleId);
+    void unlikeSchedule(Long memberId, Long scheduleId);
 }

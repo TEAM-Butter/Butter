@@ -39,10 +39,6 @@ public class LoginServiceImpl implements LoginService{
         Member member = memberService.findByLoginId(loginRequestDTO.loginId())
                 .orElseThrow(NoClassDefFoundError::new);
 
-        if(!member.getPassword().match(encryptUtils, loginRequestDTO.password())){
-            throw new IllegalStateException("ERR : 현재 비밀 번호가 일치하지 않습니다");
-        }
-
         boolean isMatch = member.getPassword().match(encryptUtils, loginRequestDTO.password());
         if(!isMatch)throw new IllegalStateException("ERR : 패스워드 틀림");
 

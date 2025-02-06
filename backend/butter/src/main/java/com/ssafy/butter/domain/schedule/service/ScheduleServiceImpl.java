@@ -100,8 +100,8 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
-    public void likeSchedule(AuthInfoDTO currentUser, ScheduleLikeRequestDTO scheduleLikeRequestDTO) {
-        Member member = memberService.findById(currentUser.id());
+    public void likeSchedule(Long memberId, ScheduleLikeRequestDTO scheduleLikeRequestDTO) {
+        Member member = memberService.findById(memberId);
         Schedule schedule = scheduleRepository.findById(scheduleLikeRequestDTO.scheduleId()).orElseThrow();
         likedScheduleRepository.findByMemberAndSchedule(member, schedule).ifPresentOrElse(likedSchedule -> {
             if (likedSchedule.getIsLiked()) {
@@ -119,8 +119,8 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
-    public void unlikeSchedule(AuthInfoDTO currentUser, Long scheduleId) {
-        Member member = memberService.findById(currentUser.id());
+    public void unlikeSchedule(Long memberId, Long scheduleId) {
+        Member member = memberService.findById(memberId);
         Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow();
         LikedSchedule likedSchedule = likedScheduleRepository.findByMemberAndSchedule(member, schedule).orElseThrow();
         likedSchedule.updateIsLiked(false);
