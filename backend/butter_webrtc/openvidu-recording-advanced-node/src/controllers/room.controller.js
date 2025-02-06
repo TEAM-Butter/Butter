@@ -4,7 +4,6 @@ import { LIVEKIT_API_KEY, LIVEKIT_API_SECRET } from "../config.js";
 import { RoomService } from "../services/room.service.js";
 
 const roomService = new RoomService();
-const activePublishers = new Map();
 
 export const roomController = Router();
 
@@ -12,6 +11,7 @@ roomController.post("/", async (req, res) => {
     const roomName = req.body.roomName;
     const participantName = req.body.participantName;
     const role = req.body.role;
+
 
     if (!roomName || !participantName || !role) {
         res.status(400).json({ errorMessage: "roomName and participantName are required" });
@@ -28,10 +28,7 @@ roomController.post("/", async (req, res) => {
 
         if (!exists) {
             await roomService.createRoom(roomName);
-            activePublishers.set(roomName, participantName);
         }
-
-        let publisherId = activePublishers.get(roomName);
 
         const at = new AccessToken(LIVEKIT_API_KEY, LIVEKIT_API_SECRET, {
             identity: participantName
@@ -39,7 +36,7 @@ roomController.post("/", async (req, res) => {
         at.addGrant({ room: roomName, roomJoin: true, roomRecord: true });
         const token = await at.toJwt();
 
-        res.json({ token, publisherId });
+        res.json({ token });
     } catch (error) {
         console.error("Error creating room.", error);
         res.status(500).json({ errorMessage: "Error creating room" });
@@ -53,17 +50,16 @@ roomController.post("/leave", async (req, res) => {
     if (!roomName || !participantName || !role) {
         return res.status(400).json({ errorMessage: "roomName, participantName, and role are required" });
     }
-    console.log(`${participantName} one left`);
 
     try {
-        if (role === "publisher" && activePublishers.get(roomName) === participantName) {
-            console.log(`publisher left ${roomName}. Scheduling room closure in 1 minutes.`);
+        if (role === "publisher") {
+            console.log(`Last publisher left ${roomName}. Scheduling room closure in 1 minutes.`);
                 
             // Schedule room deletion
             const timer = setTimeout(async () => {
                 console.log(`Closing room ${roomName}...`);
                 await roomService.deleteRoom(roomName);
-            }, 1 * 10 * 1000); // 1 minutes
+            }, 1 * 60 * 1000); // 1 minutes
         }
 
         res.json({ message: "Leave event processed." });

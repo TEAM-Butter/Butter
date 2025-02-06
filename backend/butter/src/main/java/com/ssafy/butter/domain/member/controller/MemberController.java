@@ -50,7 +50,7 @@ public class MemberController {
             @Parameter(description = "크루 수정 요청 정보", content = @Content(mediaType = "multipart/form-data"))
             @ModelAttribute ProfileUpdateRequestDTO profileUpdateRequestDTO) {
 
-        ProfileUpdateResponseDTO response = memberService.updateProfile(profileUpdateRequestDTO, authInfoDTO.id());
+        ProfileUpdateResponseDTO response = memberService.updateProfile(extraInfoUpdateRequestDTO, authInfoDTO.id());
         return ResponseEntity.ok(response);
     }
 
