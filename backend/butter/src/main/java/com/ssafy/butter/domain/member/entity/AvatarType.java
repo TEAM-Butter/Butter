@@ -11,7 +11,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class AvatarType {
 
@@ -22,4 +21,12 @@ public class AvatarType {
 
     @NotNull
     private String name;
+
+    public AvatarType(String name) {
+        this.name = name;
+    }
+
+    public AvatarType() {
+
+    }
 }
