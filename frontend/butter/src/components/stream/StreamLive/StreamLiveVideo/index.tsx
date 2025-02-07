@@ -1,8 +1,6 @@
 import { LocalVideoTrack, RemoteVideoTrack } from "livekit-client";
 import { useEffect, useRef } from "react";
 import "./index.css";
-import axios from "axios";
-
 interface StreamLiveVideoProps {
   track: LocalVideoTrack | RemoteVideoTrack;
   participantIdentity: string;
@@ -13,14 +11,14 @@ interface StreamLiveVideoProps {
 function StreamLiveVideo({
   track,
   participantIdentity,
-  local = false,
   roomName,
+  local = false, // local 속성 추가
 }: StreamLiveVideoProps) {
   const videoElement = useRef<HTMLVideoElement | null>(null);
   const streamInterval = 200; // 200ms 간격으로 프레임 전송
 
   const sendFrameToServer = async () => {
-    if (!videoElement.current) return;
+    if (!videoElement.current || !local) return;
 
     try {
       const canvas = document.createElement("canvas");
@@ -39,21 +37,40 @@ function StreamLiveVideo({
             // 참가자 정보와 룸 정보도 함께 전송
             formData.append("participant", participantIdentity);
             formData.append("room", roomName);
-            formData.append("isLocal", String(local));
 
-            const serverUrl = "http://your-flask-server:5000/ai/upload_frame";
+            const serverUrl = "http://192.168.30.201:5000/ai/upload_frame";
+
+            // const agent = new https.Agent({
+            //   rejectUnauthorized: false,
+            // });
+
             try {
-              const res = await axios.post(serverUrl, formData, {
+              // fetch API 사용
+              const response = await fetch(serverUrl, {
+                method: "POST",
+                body: formData,
+                mode: "cors",
                 headers: {
-                  "Content-Type": "multipart/form-data",
+                  Accept: "application/json",
                 },
               });
-              console.log("서버 응답:", res.data);
+
+              if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+              }
+
+              const data = await response.json();
+              console.log("서버 응답:", data);
             } catch (error) {
-              if (axios.isAxiosError(error)) {
-                console.error("전송 오류:", error.message);
+              if (
+                error instanceof TypeError &&
+                error.message === "Failed to fetch"
+              ) {
+                console.error(
+                  "서버 연결 실패. 서버가 실행 중인지 확인해주세요."
+                );
               } else {
-                console.error("알 수 없는 오류:", error);
+                console.error("전송 오류:", error);
               }
             }
           }
@@ -69,9 +86,11 @@ function StreamLiveVideo({
   useEffect(() => {
     if (videoElement.current) {
       track.attach(videoElement.current);
-      const intervalId = setInterval(sendFrameToServer, streamInterval);
+      const intervalId = local
+        ? setInterval(sendFrameToServer, streamInterval)
+        : null;
       return () => {
-        clearInterval(intervalId);
+        if (intervalId) clearInterval(intervalId);
         track.detach();
       };
     }
@@ -79,7 +98,7 @@ function StreamLiveVideo({
     return () => {
       track.detach();
     };
-  }, [track, streamInterval]);
+  }, [track, streamInterval, local]);
 
   return (
     <div id={"camera-" + participantIdentity} className="video-container">
