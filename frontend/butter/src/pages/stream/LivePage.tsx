@@ -103,10 +103,9 @@ const CharacterBox = styled.div`
 
 const RightTop = styled.div`
   aspect-ratio: 16 / 9;
-  height: 200px;
   border-radius: 20px;
   overflow: hidden;
-  background-color: rebeccapurple;
+  background-color: #2a2c41;
 
   @media (max-width: 780px) {
     width: calc(50% - 4px); /* 여백을 고려한 너비 */
@@ -497,7 +496,9 @@ const LivePage = () => {
                 token={TOKEN}
               />
             </LeftTop>
-            <CharacterBox></CharacterBox>
+            <CharacterBox>
+              <CharacterContainer />
+            </CharacterBox>
           </Left>
 
           <Right>
