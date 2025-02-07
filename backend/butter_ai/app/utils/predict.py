@@ -8,7 +8,7 @@ def main():
     print(f'Using device: {device}')
     
     # Load YOLOv10x model (update path if necessary)
-    model = YOLO('./last.pt')  # Ensure the correct model file is used
+    model = YOLO('./models/YOLOv10x_gestures.pt')  # Ensure the correct model file is used
     model.to(device)
     
     # Open webcam

@@ -1,9 +1,15 @@
-import cv2
+import os
 import torch
+from ultralytics import YOLO  # Ensure ultralytics package is installed
 
 # YOLO v10 모델 로드
-MODEL_PATH = "models/yolov10.pt"  # YOLO v10 가중치 경로
-model = torch.hub.load("ultralytics/yolov10", "yolov10", pretrained=True)
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # flask-server/app/
+MODEL_PATH = os.path.join(BASE_DIR, "models", "last.pt")  # flask-server/models/last.pt
+
+device = "cuda" if torch.cuda.is_available() else "cpu"  # GPU 사용 여부 확인
+print(f"🔹 Using device: {device}")
+model = YOLO(MODEL_PATH)  # Ensure the correct model file is used
+model.to(device)
 
 def process_frame(frame):
     """
@@ -18,14 +24,18 @@ def process_frame(frame):
     results = model(frame)
     detection = None
 
-    for result in results.xyxy[0]:  # (x1, y1, x2, y2, conf, cls)
-        x1, y1, x2, y2, conf, cls = result.tolist()
-        if conf >= 0.8:
-            if detection is None or conf > detection["confidence"]:
-                detection = {
-                    "label": model.names[int(cls)],
-                    "confidence": conf,
-                    "bbox": [x1, y1, x2, y2]
-                    }
+    for result in results:  # (x1, y1, x2, y2, conf, cls)
+        boxes = result.boxes  # 🔹 YOLO v10에서는 .boxes 사용
+        for box in boxes:
+            x1, y1, x2, y2 = box.xyxy[0].cpu().numpy()  # 경계 상자 좌표
+            conf = float(box.conf[0].cpu().item())  # 신뢰도 점수
+            cls = int(box.cls[0].cpu().item())  # 클래스 ID
+            if conf >= 0.7:
+                if detection is None or conf > detection["confidence"]:
+                    detection = {
+                        "label": model.names[int(cls)],
+                        "confidence": conf,
+                        "bbox": [float(x1), float(y1), float(x2), float(y2)]
+                        }
 
     return detection

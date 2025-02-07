@@ -20,14 +20,16 @@ def upload_frame():
         img_data = base64.b64decode(data["frame"])
         np_arr = np.frombuffer(img_data, np.uint8)
         frame = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
-
+        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        
         # YOLO v10 객체 탐지
         detection = process_frame(frame)
 
         # TODO: 소켓쪽으로 연결 필요
 
 
-        return jsonify({"status": "received"}), 200
+        return jsonify(detection) if detection else jsonify({"status": "no_object"}), 200
+
 
     except Exception as e:
         print(f"Error processing frame: {e}")
