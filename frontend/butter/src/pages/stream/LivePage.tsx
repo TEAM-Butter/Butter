@@ -93,7 +93,6 @@ const CharacterBox = styled.div`
   position: relative;
   border-radius: 20px;
   width: 100%;
-  padding: 30px;
   background-image: url(${background});
   background-size: cover;
   background-position: center;
