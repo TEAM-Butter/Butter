@@ -18,6 +18,10 @@ import { RecordingService } from "../../components/recording/RecordingService";
 import { LiveOffModal } from "../../components/recording/LiveOffModal";
 import { RecordingModal } from "../../components/recording/RecordingModal";
 import { Recording } from "../../types/recording";
+import UserBox from "../../components/stream/UserBox";
+
+import background from "../../assets/background.png";
+import CharacterContainer from "../../components/stream/CharacterContainer";
 
 const LivePageWrapper = styled.div`
   display: flex;
@@ -28,7 +32,6 @@ const LivePageWrapper = styled.div`
   max-height: 1000px;
   margin: 0 auto;
   padding-top: 15px;
-  height: 90vh;
   width: 90vw;
 `;
 
@@ -36,23 +39,22 @@ const Left = styled.div`
   display: flex;
   flex-direction: column;
   gap: 8px;
-  max-height: 800px;
   flex: 1;
   min-width: 200px;
 `;
 
 const Right = styled.div`
-  width: 320px;
+  width: 350px;
   min-width: 200px;
   display: flex;
+  justify-content: space-between;
   flex-direction: column;
   row-gap: 8px;
-  height: calc(100% - 8px);
 
   @media (max-width: 780px) {
     width: 100%;
     min-width: 100%;
-    height: auto;
+    height: 100%;
     /* 컨테이너 내부 요소들의 배치 변경 */
     flex-direction: row; /* 가로 배치로 변경 */
     flex-wrap: wrap; /* 필요시 줄바꿈 */
@@ -74,14 +76,22 @@ const LeftTop = styled.div`
 `;
 const CharacterBox = styled.div`
   /* flex: 1.6; */
-  background-color: #2a2c41;
   border-radius: 20px;
+  height: 200px;
+  position: relative;
+  border-radius: 20px;
+  width: 100%;
+  padding: 30px;
+  background-image: url(${background});
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   overflow: hidden;
-  height: 180px;
 `;
 
 const RightTop = styled.div`
   aspect-ratio: 16 / 9;
+  height: 200px;
   border-radius: 20px;
   overflow: hidden;
   background-color: rebeccapurple;
@@ -111,6 +121,7 @@ const RightMiddle = styled.div`
 const LiveOffBtn = styled.div`
   background-color: #ea2323;
   min-height: 100px;
+  height: 100px;
   flex-shrink: 0;
   border-radius: 20px;
   padding: 15px;
@@ -194,6 +205,7 @@ const LivePage = () => {
   const roomName = state.roomName;
   let participantName = "user";
   let role = "";
+
   if (!role) {
     if (window.location.hostname === "localhost") {
       role = "publisher";
@@ -413,7 +425,9 @@ const LivePage = () => {
               <LeftTop>
                 <StreamChat />
               </LeftTop>
-              <CharacterBox>b</CharacterBox>
+              <CharacterBox>
+                <CharacterContainer />
+              </CharacterBox>
             </Left>
 
             <Right>
@@ -471,11 +485,13 @@ const LivePage = () => {
                 token={TOKEN}
               />
             </LeftTop>
-            <CharacterBox>b</CharacterBox>
+            <CharacterBox></CharacterBox>
           </Left>
 
           <Right>
-            <RightTop>c</RightTop>
+            <RightTop>
+              <UserBox />
+            </RightTop>
             <RightMiddle>
               <StreamChat />
             </RightMiddle>
