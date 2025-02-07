@@ -1,5 +1,6 @@
 package com.ssafy.butter.domain.clip.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ssafy.butter.domain.live.entity.Live;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -25,6 +26,7 @@ public class Clip {
     @Column(name = "clip_id")
     private Long id;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "live_id")
     @NotNull
