@@ -43,6 +43,7 @@ public class Member {
     @JoinColumn(name = "member_type_id")
     private MemberType memberType;
 
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "avatar_type_id")
     private AvatarType avatarType;
@@ -52,12 +53,14 @@ public class Member {
 
     private String loginId;
 
+    @NotNull
     @Embedded
     private Nickname nickname;
 
     @Embedded
     private Email email;
 
+    @NotNull
     @Embedded
     private BirthDate birthDate;
 
