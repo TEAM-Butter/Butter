@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -33,7 +34,7 @@ public class LiveController {
             @ApiResponse(responseCode = "201", description = "라이브 생성 성공")
     })
     @PostMapping
-    public ResponseEntity<?> createLive(
+    public ResponseEntity<LiveResponseDTO> createLive(
             @Parameter(hidden = true) @CurrentUser AuthInfoDTO currentUser,
             @RequestBody LiveSaveRequestDTO liveSaveRequestDTO) {
         LiveResponseDTO liveResponseDTO = liveService.createLive(currentUser, liveSaveRequestDTO);
@@ -42,13 +43,13 @@ public class LiveController {
 
     @Operation(summary = "라이브 상세 조회", description = "특정 라이브의 상세 정보를 조회합니다.")
     @GetMapping("/watch/{id}")
-    public ResponseEntity<?> getLiveDetail(@PathVariable Long id) {
+    public ResponseEntity<LiveResponseDTO> getLiveDetail(@PathVariable Long id) {
         return ResponseEntity.ok(liveService.getLiveDetail(id));
     }
 
     @Operation(summary = "라이브 목록 조회", description = "라이브 목록을 조회합니다.")
     @GetMapping("/list")
-    public ResponseEntity<?> getLiveList(
+    public ResponseEntity<List<LiveResponseDTO>> getLiveList(
             @ParameterObject @ModelAttribute LiveListRequestDTO liveListRequestDTO) {
         return ResponseEntity.ok(liveService.getLiveList(liveListRequestDTO));
     }
