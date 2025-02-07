@@ -91,6 +91,7 @@ public class CrewServiceImpl implements CrewService {
         CrewMember crewMember = CrewMember.builder()
                 .crew(crew)
                 .member(member)
+                .isCrewAdmin(true)
                 .build();
         crewMemberRepository.save(crewMember);
     }
