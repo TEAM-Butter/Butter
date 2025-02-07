@@ -5,6 +5,7 @@ import { useState } from "react";
 import { Link, useMatch } from "react-router-dom";
 import { StreamingModal } from "../modals/StreamingModal";
 import { useUserStore } from "../../../stores/UserStore";
+import { removeAccessToken } from "../../../apis/auth";
 
 const Nav = styled.nav`
   display: flex;
@@ -130,6 +131,7 @@ function Navbar() {
   //useUserStore
   const memberType = useUserStore(state => state.memberType)
   const isLogin = useUserStore(state => state.isLogin)
+  const logout = useUserStore(state => state.logout)
   console.log(memberType == "")
 
   const homeMatch = useMatch("");
@@ -141,6 +143,10 @@ function Navbar() {
   const [isHovered, setIsHovered] = useState(false);
   const [modalType, setModalType] = useState<string>("");
 
+  const memberLogout = () => {
+    logout()
+    removeAccessToken()
+  }
 
   return (
     <>
@@ -219,7 +225,7 @@ function Navbar() {
                     <SubItem>회원정보 수정</SubItem>
                   </Link>
                   <Link to="/">
-                    <SubItem>로그아웃</SubItem>
+                    <SubItem onClick={memberLogout}>로그아웃</SubItem>
                   </Link>
                 </SubProfile>
               </Profile>
