@@ -1,4 +1,4 @@
-package com.ssafy.butter.domain.crew.repository;
+package com.ssafy.butter.domain.crew.repository.crewmember;
 
 import com.ssafy.butter.domain.crew.entity.Crew;
 import com.ssafy.butter.domain.crew.entity.CrewMember;
@@ -27,5 +27,10 @@ public class CrewMemberRepositoryImpl implements CrewMemberRepository {
     @Override
     public Optional<CrewMember> findByCrewAndMember(Crew crew, Member member) {
         return crewMemberJpaRepository.findByCrewAndMember(crew, member);
+    }
+
+    @Override
+    public CrewMember findByMember(Member member) {
+        return crewMemberJpaRepository.findByMember(member);
     }
 }

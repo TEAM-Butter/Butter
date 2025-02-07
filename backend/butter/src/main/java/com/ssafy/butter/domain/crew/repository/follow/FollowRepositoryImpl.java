@@ -1,4 +1,4 @@
-package com.ssafy.butter.domain.crew.repository;
+package com.ssafy.butter.domain.crew.repository.follow;
 
 import com.ssafy.butter.domain.crew.entity.Crew;
 import com.ssafy.butter.domain.crew.entity.Follow;
