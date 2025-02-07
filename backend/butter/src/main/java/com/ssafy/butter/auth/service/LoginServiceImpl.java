@@ -5,6 +5,7 @@ import com.ssafy.butter.auth.dto.request.LoginRequestDTO;
 import com.ssafy.butter.auth.dto.request.SocialLoginRequestDTO;
 import com.ssafy.butter.auth.dto.response.LoginResponseDTO;
 import com.ssafy.butter.auth.dto.response.ReissueResponseDTO;
+import com.ssafy.butter.domain.member.dto.response.RegisterExtraInfoResponseDTO;
 import com.ssafy.butter.domain.member.entity.Member;
 import com.ssafy.butter.domain.member.service.member.MemberService;
 import com.ssafy.butter.global.token.CurrentUser;
@@ -43,12 +44,13 @@ public class LoginServiceImpl implements LoginService{
         if(!isMatch)throw new IllegalStateException("ERR : 패스워드 틀림");
 
         AuthInfoDTO authInfo = new AuthInfoDTO(member.getId(),member.getEmail().getValue(), member.getGender().name(), member.getBirthDate().getDate());
+        RegisterExtraInfoResponseDTO extraInfo = RegisterExtraInfoResponseDTO.from(member);
         String accessToken = jwtManager.createAccessToken(authInfo);
         String refreshToken = jwtManager.createRefreshToken();
 
         refreshTokenService.saveToken(refreshToken, authInfo.id());
 
-        return new LoginResponseDTO(accessToken, refreshToken, authInfo);
+        return new LoginResponseDTO(accessToken, refreshToken, extraInfo);
     }
 
     @Override
@@ -60,16 +62,17 @@ public class LoginServiceImpl implements LoginService{
                 .map(service -> service.convertUserDetailsToMemberEntity(socialLoginRequestDTO.code()))
                 .orElseThrow(() -> new IllegalArgumentException("ERR : 사용할 수 없는 OAuth 플랫폼입니다"));
 
-        Member findMember = memberService.findByEmail(loginMember.getEmail())
+        Member member = memberService.findByEmail(loginMember.getEmail())
                 .orElse(memberService.save(loginMember));
 
-        AuthInfoDTO authInfo = new AuthInfoDTO(findMember.getId(),findMember.getEmail().getValue(), findMember.getGender().name(), findMember.getBirthDate().getDate());
+        AuthInfoDTO authInfo = new AuthInfoDTO(member.getId(),member.getEmail().getValue(), member.getGender().name(), member.getBirthDate().getDate());
+        RegisterExtraInfoResponseDTO extraInfo = RegisterExtraInfoResponseDTO.from(member);
         String accessToken = jwtManager.createAccessToken(authInfo);
         String refreshToken = jwtManager.createRefreshToken();
 
         refreshTokenService.saveToken(refreshToken, authInfo.id());
 
-        return new LoginResponseDTO(accessToken, refreshToken, authInfo);
+        return new LoginResponseDTO(accessToken, refreshToken, extraInfo);
     }
 
     @Override
