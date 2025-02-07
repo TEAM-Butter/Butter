@@ -3,23 +3,24 @@ package com.ssafy.butter.auth.service;
 import com.ssafy.butter.auth.dto.AuthInfoDTO;
 import com.ssafy.butter.auth.dto.request.LoginRequestDTO;
 import com.ssafy.butter.auth.dto.request.SocialLoginRequestDTO;
+import com.ssafy.butter.auth.dto.response.AuthenticatedMemberInfoDTO;
 import com.ssafy.butter.auth.dto.response.LoginResponseDTO;
 import com.ssafy.butter.auth.dto.response.ReissueResponseDTO;
+import com.ssafy.butter.auth.enums.MemberTypes;
+import com.ssafy.butter.domain.crew.entity.CrewMember;
+import com.ssafy.butter.domain.crew.service.CrewMemberService;
 import com.ssafy.butter.domain.member.dto.response.RegisterExtraInfoResponseDTO;
 import com.ssafy.butter.domain.member.entity.Member;
 import com.ssafy.butter.domain.member.service.member.MemberService;
-import com.ssafy.butter.global.token.CurrentUser;
-import com.ssafy.butter.global.token.JwtExtractor;
 import com.ssafy.butter.global.token.JwtManager;
 import com.ssafy.butter.global.util.encrypt.EncryptUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
-import java.util.Enumeration;
+
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -29,9 +30,9 @@ public class LoginServiceImpl implements LoginService{
     private final MemberService memberService;
     private final List<OAuth2LoginService> oAuth2LoginServices;
     private final JwtManager jwtManager;
-    private final JwtExtractor jwtExtractor;
     private final RefreshTokenService refreshTokenService;
     private final EncryptUtils encryptUtils;
+    private final CrewMemberService crewMemberService;
 
     //TODO : 예외 처리
     @Override
@@ -43,14 +44,35 @@ public class LoginServiceImpl implements LoginService{
         boolean isMatch = member.getPassword().match(encryptUtils, loginRequestDTO.password());
         if(!isMatch)throw new IllegalStateException("ERR : 패스워드 틀림");
 
+        String memberType = getMemberTypeInLogic(member);
+        List<String> genres = member.getMemberGenres().stream()
+                .map(memberGenre -> memberGenre.getGenre().getName())
+                .toList();
+        AuthenticatedMemberInfoDTO authenticatedMemberInfo = new AuthenticatedMemberInfoDTO(
+                member.getNickname().getValue(),
+                member.getProfileImage(),
+                member.getAvatarType().getName(),
+                memberType,
+                genres,
+                false
+        );
+
         AuthInfoDTO authInfo = new AuthInfoDTO(member.getId(),member.getEmail().getValue(), member.getGender().name(), member.getBirthDate().getDate());
-        RegisterExtraInfoResponseDTO extraInfo = RegisterExtraInfoResponseDTO.from(member);
         String accessToken = jwtManager.createAccessToken(authInfo);
         String refreshToken = jwtManager.createRefreshToken();
 
         refreshTokenService.saveToken(refreshToken, authInfo.id());
 
-        return new LoginResponseDTO(accessToken, refreshToken, extraInfo);
+        return new LoginResponseDTO(accessToken, refreshToken, authenticatedMemberInfo);
+    }
+
+    private String getMemberTypeInLogic(Member member){
+        CrewMember findCrewMember =  crewMemberService.findByMember(member);
+        if(findCrewMember==null)return MemberTypes.MEMBER.name().toLowerCase();
+
+        boolean isCrewAdmin = findCrewMember.getIsCrewAdmin();
+
+        return isCrewAdmin?MemberTypes.CREW.name().toLowerCase():MemberTypes.MEMBER.name().toLowerCase();
     }
 
     @Override
@@ -65,14 +87,26 @@ public class LoginServiceImpl implements LoginService{
         Member member = memberService.findByEmail(loginMember.getEmail())
                 .orElse(memberService.save(loginMember));
 
+        String memberType = getMemberTypeInLogic(member);
+        List<String> genres = member.getMemberGenres().stream()
+                .map(memberGenre -> memberGenre.getGenre().getName())
+                .toList();
+        AuthenticatedMemberInfoDTO authenticatedMemberInfo = new AuthenticatedMemberInfoDTO(
+                member.getNickname().getValue(),
+                member.getProfileImage(),
+                member.getAvatarType().getName(),
+                memberType,
+                genres,
+                false
+        );
+
         AuthInfoDTO authInfo = new AuthInfoDTO(member.getId(),member.getEmail().getValue(), member.getGender().name(), member.getBirthDate().getDate());
-        RegisterExtraInfoResponseDTO extraInfo = RegisterExtraInfoResponseDTO.from(member);
         String accessToken = jwtManager.createAccessToken(authInfo);
         String refreshToken = jwtManager.createRefreshToken();
 
         refreshTokenService.saveToken(refreshToken, authInfo.id());
 
-        return new LoginResponseDTO(accessToken, refreshToken, extraInfo);
+        return new LoginResponseDTO(accessToken, refreshToken, authenticatedMemberInfo);
     }
 
     @Override
