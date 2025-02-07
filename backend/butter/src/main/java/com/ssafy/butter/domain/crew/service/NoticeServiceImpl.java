@@ -55,7 +55,7 @@ public class NoticeServiceImpl implements NoticeService {
                 .content(noticeSaveRequestDTO.content())
                 .imageUrl(imageUrl)
                 .build();
-        return NoticeResponseDTO.fromEntity(notice);
+        return NoticeResponseDTO.fromEntity(noticeRepository.save(notice));
     }
 
     /**
