@@ -49,9 +49,9 @@ public class LoginServiceImpl implements LoginService{
                 .map(memberGenre -> memberGenre.getGenre().getName())
                 .toList();
         AuthenticatedMemberInfoDTO authenticatedMemberInfo = new AuthenticatedMemberInfoDTO(
-                member.getNickname().getValue(),
+                null,
                 member.getProfileImage(),
-                member.getAvatarType().getName(),
+                null,
                 memberType,
                 genres,
                 false

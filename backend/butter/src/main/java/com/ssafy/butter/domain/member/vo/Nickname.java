@@ -2,14 +2,10 @@ package com.ssafy.butter.domain.member.vo;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
-import jakarta.validation.constraints.NotNull;
 import lombok.EqualsAndHashCode;
-
-import java.util.Objects;
 @Embeddable
 @EqualsAndHashCode
 public class Nickname {
-    @NotNull
     @Column(name = "nickname", length = 50)
     private String value;
 
