@@ -63,9 +63,15 @@ public class Crew {
     private int donationAmount;
 
     @Builder
-    public Crew(List<Schedule> schedules, String name, String description, String imageUrl, String promotionUrl,
-                String portfolioVideoUrl, int donationAmount) {
+    public Crew(List<Schedule> schedules, List<Notice> notices, List<Live> lives, List<CrewGenre> crewGenres,
+                List<CrewMember> crewMembers, List<Follow> follows, String name, String description, String imageUrl,
+                String promotionUrl, String portfolioVideoUrl, int donationAmount) {
         this.schedules = schedules;
+        this.notices = notices;
+        this.lives = lives;
+        this.crewGenres = crewGenres;
+        this.crewMembers = crewMembers;
+        this.follows = follows;
         this.name = name;
         this.description = description;
         this.imageUrl = imageUrl;

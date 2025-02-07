@@ -39,15 +39,17 @@ public class Clip {
     @NotNull
     private Long hitCount;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "clip", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<LikedClip> likedClips = new ArrayList<>();
 
     @Builder
-    public Clip(Live live, String title, String videoUrl, Long hitCount) {
+    public Clip(Live live, String title, String videoUrl, Long hitCount, List<LikedClip> likedClips) {
         this.live = live;
         this.title = title;
         this.videoUrl = videoUrl;
         this.hitCount = hitCount;
+        this.likedClips = likedClips;
     }
 
     public void updateVideoUrl(String videoUrl) {

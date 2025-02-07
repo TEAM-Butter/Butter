@@ -41,8 +41,9 @@ public class Live {
     private LocalDateTime endDate;
 
     @Builder
-    public Live(Crew crew, String title, LocalDateTime startDate, LocalDateTime endDate) {
+    public Live(Crew crew, List<Clip> clips, String title, LocalDateTime startDate, LocalDateTime endDate) {
         this.crew = crew;
+        this.clips = clips;
         this.title = title;
         this.startDate = startDate;
         this.endDate = endDate;

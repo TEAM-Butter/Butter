@@ -53,12 +53,14 @@ public class Schedule extends TimestampedEntity {
     @NotNull
     private double longitude;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<LikedSchedule> likedSchedules = new ArrayList<>();
 
     @Builder
     public Schedule(Crew crew, String title, String content,
-                    String place, LocalDateTime buskingDate, double latitude, double longitude) {
+                    String place, LocalDateTime buskingDate, double latitude, double longitude,
+                    List<LikedSchedule> likedSchedules) {
         this.crew = crew;
         this.title = title;
         this.content = content;
@@ -66,6 +68,7 @@ public class Schedule extends TimestampedEntity {
         this.buskingDate = buskingDate;
         this.latitude = latitude;
         this.longitude = longitude;
+        this.likedSchedules = likedSchedules;
     }
 
     public void update(ScheduleSaveRequestDTO scheduleSaveRequestDTO) {
