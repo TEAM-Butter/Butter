@@ -11,7 +11,7 @@ import {
 } from "livekit-client";
 import StreamLive from "../../components/stream/StreamLive";
 import { RecordingControls } from "../../components/stream/RecordingControls";
-import { Navigate, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 // import { RecordingManager } from "../../components/recording/RecordingManger";
 
 import { RecordingService } from "../../components/recording/RecordingService";
@@ -103,10 +103,9 @@ const CharacterBox = styled.div`
 
 const RightTop = styled.div`
   aspect-ratio: 16 / 9;
-  height: 200px;
   border-radius: 20px;
   overflow: hidden;
-  background-color: rebeccapurple;
+  background-color: #2a2c41;
 
   @media (max-width: 780px) {
     width: calc(50% - 4px); /* 여백을 고려한 너비 */
@@ -422,7 +421,7 @@ const LivePage = () => {
   useEffect(() => {
     return () => {
       leaveRoom();
-      console.log("방을 떠나겠습니다");
+      console.log("방을 떠났습니다");
     };
   }, [leaveRoom]);
 
@@ -491,13 +490,14 @@ const LivePage = () => {
                 room={room}
                 participantName={participantName}
                 roomName={roomName}
-                localTrack={localTrack}
-                remoteTracks={remoteTracks}
+                remoteTracks={remoteTracks} // localTrack 제거
                 serverUrl={APPLICATION_SERVER_URL}
                 token={TOKEN}
               />
             </LeftTop>
-            <CharacterBox></CharacterBox>
+            <CharacterBox>
+              <CharacterContainer />
+            </CharacterBox>
           </Left>
 
           <Right>

@@ -1,12 +1,6 @@
-import {
-  LocalTrack,
-  LocalVideoTrack,
-  RemoteTrackPublication,
-  Room,
-} from "livekit-client";
+import { LocalVideoTrack, RemoteTrackPublication, Room } from "livekit-client";
 import StreamLiveAudio from "./StreamLiveAudio";
 import StreamLiveVideo from "./StreamLiveVideo";
-import { ChangeEventHandler, FormEventHandler, useState } from "react";
 import { LiveKitRoom } from "@livekit/components-react";
 
 type TrackInfo = {
