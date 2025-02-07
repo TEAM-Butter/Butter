@@ -14,7 +14,7 @@ import com.ssafy.butter.domain.crew.service.CrewMemberService;
 import com.ssafy.butter.domain.live.entity.Live;
 import com.ssafy.butter.domain.live.service.LiveService;
 import com.ssafy.butter.domain.member.entity.Member;
-import com.ssafy.butter.domain.member.service.MemberService;
+import com.ssafy.butter.domain.member.service.member.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -85,8 +85,8 @@ public class ClipServiceImpl implements ClipService {
     }
 
     @Override
-    public void likeClip(Long memberId, ClipLikeRequestDTO clipLikeRequestDTO) {
-        Member member = memberService.findById(memberId);
+    public void likeClip(AuthInfoDTO currentUser, ClipLikeRequestDTO clipLikeRequestDTO) {
+        Member member = memberService.findById(currentUser.id());
         Clip clip = clipRepository.findById(clipLikeRequestDTO.clipId()).orElseThrow();
         likedClipRepository.findByMemberAndClip(member, clip).ifPresentOrElse(likedClip -> {
             if (likedClip.getIsLiked()) {
@@ -104,8 +104,8 @@ public class ClipServiceImpl implements ClipService {
     }
 
     @Override
-    public void unlikeClip(Long memberId, Long clipId) {
-        Member member = memberService.findById(memberId);
+    public void unlikeClip(AuthInfoDTO currentUser, Long clipId) {
+        Member member = memberService.findById(currentUser.id());
         Clip clip = clipRepository.findById(clipId).orElseThrow();
         LikedClip likedClip = likedClipRepository.findByMemberAndClip(member, clip).orElseThrow();
         likedClip.updateIsLiked(false);

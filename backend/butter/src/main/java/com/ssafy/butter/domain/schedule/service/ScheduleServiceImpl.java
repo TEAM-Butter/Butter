@@ -5,7 +5,7 @@ import com.ssafy.butter.domain.crew.entity.Crew;
 import com.ssafy.butter.domain.crew.service.CrewMemberService;
 import com.ssafy.butter.domain.crew.service.CrewService;
 import com.ssafy.butter.domain.member.entity.Member;
-import com.ssafy.butter.domain.member.service.MemberService;
+import com.ssafy.butter.domain.member.service.member.MemberService;
 import com.ssafy.butter.domain.schedule.dto.request.ScheduleCalendarRequestDTO;
 import com.ssafy.butter.domain.schedule.dto.request.ScheduleLikeRequestDTO;
 import com.ssafy.butter.domain.schedule.dto.request.ScheduleSaveRequestDTO;
@@ -100,8 +100,8 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
-    public void likeSchedule(Long memberId, ScheduleLikeRequestDTO scheduleLikeRequestDTO) {
-        Member member = memberService.findById(memberId);
+    public void likeSchedule(AuthInfoDTO currentUser, ScheduleLikeRequestDTO scheduleLikeRequestDTO) {
+        Member member = memberService.findById(currentUser.id());
         Schedule schedule = scheduleRepository.findById(scheduleLikeRequestDTO.scheduleId()).orElseThrow();
         likedScheduleRepository.findByMemberAndSchedule(member, schedule).ifPresentOrElse(likedSchedule -> {
             if (likedSchedule.getIsLiked()) {
@@ -119,8 +119,8 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
-    public void unlikeSchedule(Long memberId, Long scheduleId) {
-        Member member = memberService.findById(memberId);
+    public void unlikeSchedule(AuthInfoDTO currentUser, Long scheduleId) {
+        Member member = memberService.findById(currentUser.id());
         Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow();
         LikedSchedule likedSchedule = likedScheduleRepository.findByMemberAndSchedule(member, schedule).orElseThrow();
         likedSchedule.updateIsLiked(false);

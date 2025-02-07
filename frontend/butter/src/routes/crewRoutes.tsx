@@ -2,7 +2,7 @@ import { Route } from "react-router-dom";
 import CrewListPage from "../pages/crew/crewListPage";
 import CrewDetailPage from "../pages/crew/crewDetailPage";
 import CrewNoticePage from "../pages/crew/crewNoticePage";
-
+import SamplePage from "../pages/crew/samplePage";
 
 export const crewRoutes = (
 
@@ -14,5 +14,6 @@ export const crewRoutes = (
     <Route path="notice/detail/:id/:noticeId" element={ <CrewNoticePage/>}/>
     <Route path="follow" />
     <Route path="recommend" />
+    <Route path="samplePage" element={<SamplePage/>}/>
   </Route>
 );

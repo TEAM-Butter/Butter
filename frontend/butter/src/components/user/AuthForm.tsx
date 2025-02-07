@@ -1,17 +1,30 @@
 import styled from "@emotion/styled";
 import { useState } from "react";
+import { LoginRequestDto } from "../../apis/request/auth";
+import { loginRequest, signupRequest } from "../../apis/request";
+import { LoginResponseDto } from "../../apis/response/auth";
+import { SignUpRequestDto } from "../../apis/request/member";
+import { setAccessToken } from "../../apis/auth";
+import { useNavigate } from "react-router-dom";
 
-const FormWrapper = styled.form``
+
+const FormWrapper = styled.form`
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+`
 
 const LgText = styled.div<ColorProps>`
-    width: 100%;
+    min-height: 100px;
+    display: flex;
+    flex-direction: column-reverse;
     font-size: 35px;
     color: ${(props) => props.textColor};
     font-weight: 200;
 `
 
 const TextInput = styled.input`
-    width: 100%;
     background-color: transparent;
     border: none;
     border-bottom: 1px solid black;
@@ -41,28 +54,48 @@ interface ColorProps {
     textColor?: string;
 }
 
+const WrongComment = styled.div`
+    flex: 1;
+    min-height: 30px;
+`
+
 // Login Css
 const ForgetComment = styled.div`
-    width: 100%;
     color: #6D6D6D;
     font-size: 14px;
     padding: 10px 0 15px 0;
 `
 
-interface ModalProps{
+interface ModalProps {
     setModalType: React.Dispatch<React.SetStateAction<string>>,
 }
 
-export const LoginForm = ({setModalType}: ModalProps) => {
+export const LoginForm = ({ setModalType }: ModalProps) => {
+    const navigator = useNavigate();
+
+    const [loginId, setLoginId] = useState<string>('')
+    const [password, setPassword] = useState<string>('')
+
+    const LoginBtnHandler = () => {
+        console.log(loginId, password)
+        const requestBody: LoginRequestDto = { loginId, password };
+        loginRequest(requestBody).then((responseBody: LoginResponseDto | null) => {
+            const { accessToken } = responseBody as LoginResponseDto;
+            setAccessToken(accessToken)
+            navigator(`/`)
+        }
+        )
+    }
     return (
-            <FormWrapper>
-                <LgText textColor="black">Log into<br/>your account</LgText>
-                <TextInput placeholder="type your id." />
-                <TextInput placeholder="type your password." />
-                <ForgetComment className="openModalBtn" onClick={() => { setModalType("forgotAuth") }}>아이디/ 비밀번호를 잊어버리셨나요?</ForgetComment>
-                <FormBtn bgColor="rgba(0,0,0,0.4)" type="submit">Log in</FormBtn>
-                <FormBtn bgColor="black">Log in with <span>kakao</span></FormBtn>
-            </FormWrapper>
+        <FormWrapper>
+            <LgText textColor="black">Log into<br />your account</LgText>
+            <TextInput type="text" value={loginId} onChange={(e) => setLoginId(e.target.value)} placeholder="type your id." />
+            <TextInput type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="type your password." />
+            <ForgetComment className="openModalBtn" onClick={() => { setModalType("forgotAuth") }}>아이디/ 비밀번호를 잊어버리셨나요?</ForgetComment>
+            <WrongComment></WrongComment>
+            <FormBtn bgColor="rgba(0,0,0,0.4)" type="button" onClick={LoginBtnHandler}>Log in</FormBtn>
+            <FormBtn bgColor="black">Log in with <span>kakao</span></FormBtn>
+        </FormWrapper>
     )
 };
 
@@ -84,29 +117,40 @@ const BirthInput = styled.input`
 `
 
 export const SignupForm = () => {
+    const [loginId, setLoginId] = useState<string>('')
+    const [email, setEmail] = useState<string>('')
+    const [password, setPassword] = useState<string>('')
+    const [gender, setGender] = useState<string>('')
+    const [birthDate, setBirthDate] = useState<string>('')
+
+    const SignUpBtnHandler = () => {
+        const requestBody: SignUpRequestDto = { loginId, password, email, gender, birthDate };
+        signupRequest(requestBody).then()
+    }
+
     return (
         <FormWrapper>
-            <LgText textColor="black">Sign up<br/>your account</LgText>
-            <TextInput placeholder="type your id." />
-            <TextInput placeholder="type your email." />
-            <TextInput placeholder="type your password." />
+            <LgText textColor="black">Sign up<br />your account</LgText>
+            <TextInput type="text" value={loginId} onChange={(e) => setLoginId(e.target.value)} placeholder="type your id." />
+            <TextInput type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="type your email." />
+            <TextInput type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="type your password." />
             <RadioWrapper>
                 <InputLabel>
-                    <RadioInput type="radio" id="gender" name="gender" />
+                    <RadioInput type="radio" id="female" name="gender" value="FEMALE" onChange={(e) => setGender(e.target.value)} />
                     woman
                 </InputLabel>
                 <InputLabel>
-                    <RadioInput type="radio" id="gender" name="gender" />
+                    <RadioInput type="radio" id="male" name="gender" value="MALE" onChange={(e) => setGender(e.target.value)} />
                     man
                 </InputLabel>
             </RadioWrapper>
             <InputLabel>
                 Birth Date
-                <BirthInput type="date" required aria-required="true"/>
+                <BirthInput type="date" value={birthDate} onChange={(e) => setBirthDate(e.target.value)} required aria-required="true" />
             </InputLabel>
-            <FormBtn bgColor="rgba(0,0,0,0.4)" type="submit">Sign up</FormBtn>
-            <FormBtn bgColor="black">Sign up with <span>kakao</span></FormBtn>
+            <WrongComment></WrongComment>
+            <FormBtn bgColor="rgba(0,0,0,0.4)" type="button" onClick={SignUpBtnHandler}>Sign up</FormBtn>
         </FormWrapper>
     )
-  };
+};
 

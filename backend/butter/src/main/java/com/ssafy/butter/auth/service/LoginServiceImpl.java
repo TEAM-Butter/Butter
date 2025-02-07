@@ -6,37 +6,41 @@ import com.ssafy.butter.auth.dto.request.SocialLoginRequestDTO;
 import com.ssafy.butter.auth.dto.response.LoginResponseDTO;
 import com.ssafy.butter.auth.dto.response.ReissueResponseDTO;
 import com.ssafy.butter.domain.member.entity.Member;
-import com.ssafy.butter.domain.member.repository.member.MemberRepository;
+import com.ssafy.butter.domain.member.service.member.MemberService;
 import com.ssafy.butter.global.token.CurrentUser;
 import com.ssafy.butter.global.token.JwtExtractor;
 import com.ssafy.butter.global.token.JwtManager;
+import com.ssafy.butter.global.util.encrypt.EncryptUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
-import org.springframework.stereotype.Service;
-
 import java.util.Enumeration;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class LoginServiceImpl implements LoginService{
 
-    private final MemberRepository memberRepository;
+    private final MemberService memberService;
     private final List<OAuth2LoginService> oAuth2LoginServices;
     private final JwtManager jwtManager;
     private final JwtExtractor jwtExtractor;
     private final RefreshTokenService refreshTokenService;
+    private final EncryptUtils encryptUtils;
 
     //TODO : 예외 처리
     @Override
     @Transactional
     public LoginResponseDTO login(LoginRequestDTO loginRequestDTO){
-        Member member = memberRepository.findByEmail(loginRequestDTO.email())
+        Member member = memberService.findByLoginId(loginRequestDTO.loginId())
                 .orElseThrow(NoClassDefFoundError::new);
+
+        boolean isMatch = member.getPassword().match(encryptUtils, loginRequestDTO.password());
+        if(!isMatch)throw new IllegalStateException("ERR : 패스워드 틀림");
 
         AuthInfoDTO authInfo = new AuthInfoDTO(member.getId(),member.getEmail().getValue(), member.getGender().name(), member.getBirthDate().getDate());
         String accessToken = jwtManager.createAccessToken(authInfo);
@@ -56,8 +60,8 @@ public class LoginServiceImpl implements LoginService{
                 .map(service -> service.convertUserDetailsToMemberEntity(socialLoginRequestDTO.code()))
                 .orElseThrow(() -> new IllegalArgumentException("ERR : 사용할 수 없는 OAuth 플랫폼입니다"));
 
-        Member findMember = memberRepository.findByEmail(loginMember.getEmail().getValue())
-                .orElse(memberRepository.save(loginMember));
+        Member findMember = memberService.findByEmail(loginMember.getEmail())
+                .orElse(memberService.save(loginMember));
 
         AuthInfoDTO authInfo = new AuthInfoDTO(findMember.getId(),findMember.getEmail().getValue(), findMember.getGender().name(), findMember.getBirthDate().getDate());
         String accessToken = jwtManager.createAccessToken(authInfo);

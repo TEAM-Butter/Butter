@@ -7,6 +7,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -18,15 +19,26 @@ public class WebMvcConfig implements WebMvcConfigurer {
     private final AuthenticatedUserArgumentResolver argumentResolver;
 
     @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+                .allowedOrigins("*")
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
+                .allowedHeaders("*")
+                .allowCredentials(false)
+                .maxAge(3600);
+    }
+
+    @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(authInterceptor)
                 .addPathPatterns("/**")
                 .excludePathPatterns("/error")
                 .excludePathPatterns("/api/v1/auth/**")
                 .excludePathPatterns("/api/v1/auth/login/**")
-                .excludePathPatterns("/api/v1/member/signup")
+                .excludePathPatterns("/api/v1/members/signup")
                 .excludePathPatterns("/api/v1/email/**")
-                .excludePathPatterns("https://openapi.naver.com/v1/nid/me");
+                .excludePathPatterns("https://openapi.naver.com/v1/nid/me")
+                .excludePathPatterns("/swagger-ui/**", "/v3/api-docs/**");
         //TODO : 테스트할 때 엔드포인트 확인하기
     }
 
