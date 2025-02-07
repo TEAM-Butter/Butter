@@ -73,12 +73,10 @@ public class LoginServiceImpl implements LoginService{
     }
 
     @Override
-    public ReissueResponseDTO reissueAccessToken(HttpServletRequest request, @CurrentUser AuthInfoDTO authInfoDTO){
-        validateHeaderExists(request);
+    public ReissueResponseDTO reissueAccessToken(HttpServletRequest request, AuthInfoDTO authInfoDTO, String refreshToken){
+        validateHeaderExists(refreshToken);
 
         Long memberId = authInfoDTO.id();
-        Enumeration<String> headers = request.getHeaders("refresh-token");
-        String refreshToken = jwtExtractor.extract(headers);
 
         refreshTokenService.matches(refreshToken, memberId);
 
@@ -87,10 +85,8 @@ public class LoginServiceImpl implements LoginService{
         return new ReissueResponseDTO(accessToken, authInfoDTO);
     }
 
-    private void validateHeaderExists(HttpServletRequest request){
-        String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
-        String refreshTokenHeader = request.getHeader("refresh-Token");
-        if (Objects.isNull(authorizationHeader) || Objects.isNull(refreshTokenHeader)) {
+    private void validateHeaderExists(String refreshToken){
+        if (Objects.isNull(refreshToken)) {
             throw new NoSuchElementException();
         }
     }
