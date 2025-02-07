@@ -43,6 +43,9 @@ public class CrewServiceImpl implements CrewService {
      */
     @Override
     public CrewResponseDTO createCrew(AuthInfoDTO currentUser, CrewSaveRequestDTO crewSaveRequestDTO) {
+        if (crewSaveRequestDTO.portfolioVideo() == null || crewSaveRequestDTO.portfolioVideo().isEmpty()) {
+            throw new IllegalArgumentException("Portfolio video required");
+        }
         String imageUrl = null;
         if (crewSaveRequestDTO.image() != null) {
             imageUrl = s3ImageUploader.uploadImage(crewSaveRequestDTO.image());
