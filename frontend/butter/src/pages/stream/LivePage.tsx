@@ -32,6 +32,7 @@ const LivePageWrapper = styled.div`
   max-height: 1000px;
   margin: 0 auto;
   padding-top: 15px;
+  height: 90vh;
   width: 90vw;
 `;
 
@@ -40,6 +41,7 @@ const Left = styled.div`
   flex-direction: column;
   gap: 8px;
   flex: 1;
+  /* max-height: 800px; */
   min-width: 200px;
 `;
 
@@ -47,14 +49,15 @@ const Right = styled.div`
   width: 350px;
   min-width: 200px;
   display: flex;
-  justify-content: space-between;
   flex-direction: column;
+  justify-content: space-between;
   row-gap: 8px;
+  height: calc(100% - 8px);
 
   @media (max-width: 780px) {
     width: 100%;
     min-width: 100%;
-    height: 100%;
+    height: auto;
     /* 컨테이너 내부 요소들의 배치 변경 */
     flex-direction: row; /* 가로 배치로 변경 */
     flex-wrap: wrap; /* 필요시 줄바꿈 */
@@ -74,6 +77,15 @@ const LeftTop = styled.div`
     aspect-ratio: 16 / 9; // 모바일에서도 같은 비율 유지
   }
 `;
+
+// const CharacterBox = styled.div`
+//   /* flex: 1.6; */
+//   background-color: #2a2c41;
+//   border-radius: 20px;
+//   overflow: hidden;
+//   height: 180px;
+// `;
+
 const CharacterBox = styled.div`
   /* flex: 1.6; */
   border-radius: 20px;
