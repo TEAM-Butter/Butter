@@ -123,6 +123,9 @@ public class ScheduleServiceImpl implements ScheduleService {
         Member member = memberService.findById(currentUser.id());
         Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow();
         LikedSchedule likedSchedule = likedScheduleRepository.findByMemberAndSchedule(member, schedule).orElseThrow();
+        if (!likedSchedule.getIsLiked()) {
+            throw new IllegalArgumentException("Already unliked schedule");
+        }
         likedSchedule.updateIsLiked(false);
         likedScheduleRepository.save(likedSchedule);
     }

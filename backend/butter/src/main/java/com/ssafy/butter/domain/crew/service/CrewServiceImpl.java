@@ -221,6 +221,9 @@ public class CrewServiceImpl implements CrewService {
         Crew crew = crewRepository.findById(crewId).orElseThrow();
         Member member = memberService.findById(currentUser.id());
         Follow follow = followRepository.findByCrewAndMember(crew, member).orElseThrow();
+        if (!follow.getIsFollowed()) {
+            throw new IllegalArgumentException("Crew follower does not exist");
+        }
         follow.updateIsFollowed(false);
         followRepository.save(follow);
     }
