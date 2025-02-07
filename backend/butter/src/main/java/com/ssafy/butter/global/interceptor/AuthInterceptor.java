@@ -32,6 +32,10 @@ public class AuthInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
             throws IOException {
 
+        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+            return true;
+        }
+
         Enumeration<String> headers = request.getHeaders(HttpHeaders.AUTHORIZATION);
         String token = jwtTokenExtractor.extract(headers);
 
