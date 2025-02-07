@@ -60,6 +60,7 @@ public class CrewServiceImpl implements CrewService {
         crewMemberRepository.save(CrewMember.builder()
                 .crew(savedCrew)
                 .member(memberService.findById(currentUser.id()))
+                .isCrewAdmin(true)
                 .build());
 
         return CrewResponseDTO.fromEntity(savedCrew);
