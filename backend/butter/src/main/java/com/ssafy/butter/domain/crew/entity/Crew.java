@@ -3,12 +3,7 @@ package com.ssafy.butter.domain.crew.entity;
 import com.ssafy.butter.domain.crew.dto.request.CrewSaveRequestDTO;
 import com.ssafy.butter.domain.live.entity.Live;
 import com.ssafy.butter.domain.schedule.entity.Schedule;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,14 +23,23 @@ public class Crew {
     @Column(name = "crew_id")
     private Long id;
 
-    @OneToMany(mappedBy = "crew")
+    @OneToMany(mappedBy = "crew", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Schedule> schedules = new ArrayList<>();
 
-    @OneToMany(mappedBy = "crew")
+    @OneToMany(mappedBy = "crew", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Notice> notices = new ArrayList<>();
 
-    @OneToMany(mappedBy = "crew")
+    @OneToMany(mappedBy = "crew", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Live> lives = new ArrayList<>();
+
+    @OneToMany(mappedBy = "crew", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CrewGenre> crewGenres = new ArrayList<>();
+
+    @OneToMany(mappedBy = "crew", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CrewMember> crewMembers = new ArrayList<>();
+
+    @OneToMany(mappedBy = "crew", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Follow> follows = new ArrayList<>();
 
     @Column(length = 50)
     @NotNull
