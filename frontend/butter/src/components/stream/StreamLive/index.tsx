@@ -1,7 +1,12 @@
-import { LocalVideoTrack, RemoteTrackPublication, Room } from "livekit-client";
+import {
+  LocalTrack,
+  LocalVideoTrack,
+  RemoteTrackPublication,
+  Room,
+} from "livekit-client";
 import StreamLiveAudio from "./StreamLiveAudio";
 import StreamLiveVideo from "./StreamLiveVideo";
-import { ChangeEventHandler, FormEventHandler } from "react";
+import { ChangeEventHandler, FormEventHandler, useState } from "react";
 import { LiveKitRoom } from "@livekit/components-react";
 
 type TrackInfo = {
@@ -28,6 +33,7 @@ const StreamLive = ({
   serverUrl,
   token,
 }: StreamLiveProps) => {
+  console.log("remoeteTracks 정보입니다", remoteTracks);
   return (
     <div className="w-full h-full">
       {!room ? (
@@ -66,8 +72,6 @@ const StreamLive = ({
 
                   {/* Remote videos */}
                   {remoteTracks.map((remoteTrack) => {
-                    console.log("remoteTrack", remoteTrack); // 로그를 여기로 이동
-
                     return remoteTrack.trackPublication.kind === "video" ? (
                       <div
                         key={remoteTrack.trackPublication.trackSid}

@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react";
 import styled from "@emotion/styled";
-import { RecordingService } from "../../../services/RecordingService";
+import { RecordingService } from "../../recording/RecordingService";
 
 // 상태 타입을 명확히 정의
 type RecordingStatus = "STOPPED" | "STARTED" | "STARTING" | "STOPPING";
