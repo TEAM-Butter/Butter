@@ -7,7 +7,7 @@ import com.ssafy.butter.domain.schedule.entity.Schedule;
 
 import java.util.List;
 
-public record CrewResponseDTO(Long id, List<Schedule> schedules, List<Notice> notices, List<Live> lives, String name, String description, String imageUrl, String promotionUrl, String portfolioVideoUrl) {
+public record CrewResponseDTO(Long id, List<Schedule> schedules, List<Notice> notices, List<Live> lives, String name, String description, String imageUrl, String promotionUrl) {
 
     public static CrewResponseDTO fromEntity(Crew crew) {
         return new CrewResponseDTO(
@@ -18,8 +18,7 @@ public record CrewResponseDTO(Long id, List<Schedule> schedules, List<Notice> no
                 crew.getName(),
                 crew.getDescription(),
                 crew.getImageUrl(),
-                crew.getPromotionUrl(),
-                crew.getPortfolioVideoUrl()
+                crew.getPromotionUrl()
         );
     }
 }
