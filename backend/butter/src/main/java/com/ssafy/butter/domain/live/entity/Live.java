@@ -3,6 +3,7 @@ package com.ssafy.butter.domain.live.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ssafy.butter.domain.clip.entity.Clip;
 import com.ssafy.butter.domain.crew.entity.Crew;
+import com.ssafy.butter.domain.schedule.entity.Schedule;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
@@ -40,12 +41,18 @@ public class Live {
     private LocalDateTime startDate;
     private LocalDateTime endDate;
 
+    @JsonIgnore
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "schedule_id")
+    private Schedule schedule;
+
     @Builder
-    public Live(Crew crew, List<Clip> clips, String title, LocalDateTime startDate, LocalDateTime endDate) {
+    public Live(Crew crew, List<Clip> clips, String title, LocalDateTime startDate, LocalDateTime endDate, Schedule schedule) {
         this.crew = crew;
         this.clips = clips;
         this.title = title;
         this.startDate = startDate;
         this.endDate = endDate;
+        this.schedule = schedule;
     }
 }
