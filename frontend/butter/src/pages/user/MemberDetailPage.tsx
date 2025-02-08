@@ -3,6 +3,9 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { UserExtraInfoModal } from "../../components/common/modals/UserExtraInfoModal";
+import { memberDetailRequest } from "../../apis/request/member/memberRequest";
+import { MemberDetailResponseDto } from "../../apis/response/member";
+
 
 const MemberDetailPageWrapper = styled.div`
   height: 100%;
@@ -155,55 +158,50 @@ const MemberDetailPage = () => {
   const [userInfo, setUserInfo] = useState({})
   const [userId, setUserId] = useState<number | null>(null)
   useEffect(() => {
-    const getUserInfo = async () => {
-      try{  
-        const response = await axios.get(`/api/v1/member/detail/${userId}`);
-        setUserInfo(response.data)
-      } catch (error) {
-        console.error('회원정보 페이지_getUserInfo_api_error :', error)
-      }
-    }
+    memberDetailRequest().then((responseBody: MemberDetailResponseDto | null) => {
+      // console.log(responseBody)
+    })
   })
 
   const [modalType, setModalType] = useState<string>("");
   return (
-  <>
-  <MemberDetailPageWrapper>
-    <MDContainer>
-      <MDHeader>회원 정보</MDHeader>
-      <MDBody>
-        <MDUpper>
-          <ProfileLt>
-            <ProfileImg />
-          </ProfileLt>
-          <ProfileRt>
-            <Username>{sampleUserInfo.nickname}</Username>
-            <UserEmail>{sampleUserInfo.email}</UserEmail>
-          </ProfileRt>
-        </MDUpper>
-        <MDLower>
-          <MDLowerInfo><span>id</span>{sampleUserInfo.id}</MDLowerInfo>
-          <MDLowerInfo><span>gender</span>{sampleUserInfo.gender}</MDLowerInfo>
-          <MDLowerInfo><span>birth</span>{sampleUserInfo.birth}</MDLowerInfo>
-          <ChangePasswordLink><Link to="/"><div>비밀번호 변경</div></Link></ChangePasswordLink>
-        </MDLower>
-        <GenreContainer>
-          <GenreComment>회원님이 선호하는 장르 입니다!</GenreComment>
-          <GenreWrapper>
-            { sampleUserInfo.genres.map( genre => 
-              <Genre>{genre}</Genre>
-            )}
-          </GenreWrapper>
-        </GenreContainer>
-      </MDBody>
-    </MDContainer>
-    <ExtraEditBtn onClick={()=> { setModalType("extraInfo")}}>
-      EDIT EXTRA INFO
-      <span>#profile #nickname #genre #pet</span>
-    </ExtraEditBtn>
-  </MemberDetailPageWrapper>
-  {modalType === "extraInfo" && <UserExtraInfoModal width="800px" height="400px" setModalType={setModalType}></UserExtraInfoModal>}
-  </>
+    <>
+      <MemberDetailPageWrapper>
+        <MDContainer>
+          <MDHeader>회원 정보</MDHeader>
+          <MDBody>
+            <MDUpper>
+              <ProfileLt>
+                <ProfileImg />
+              </ProfileLt>
+              <ProfileRt>
+                <Username>{sampleUserInfo.nickname}</Username>
+                <UserEmail>{sampleUserInfo.email}</UserEmail>
+              </ProfileRt>
+            </MDUpper>
+            <MDLower>
+              <MDLowerInfo><span>id</span>{sampleUserInfo.id}</MDLowerInfo>
+              <MDLowerInfo><span>gender</span>{sampleUserInfo.gender}</MDLowerInfo>
+              <MDLowerInfo><span>birth</span>{sampleUserInfo.birth}</MDLowerInfo>
+              <ChangePasswordLink><Link to="/"><div>비밀번호 변경</div></Link></ChangePasswordLink>
+            </MDLower>
+            <GenreContainer>
+              <GenreComment>회원님이 선호하는 장르 입니다!</GenreComment>
+              <GenreWrapper>
+                {sampleUserInfo.genres.map(genre =>
+                  <Genre>{genre}</Genre>
+                )}
+              </GenreWrapper>
+            </GenreContainer>
+          </MDBody>
+        </MDContainer>
+        <ExtraEditBtn onClick={() => { setModalType("extraInfo") }}>
+          EDIT EXTRA INFO
+          <span>#profile #nickname #genre #pet</span>
+        </ExtraEditBtn>
+      </MemberDetailPageWrapper>
+      {modalType === "extraInfo" && <UserExtraInfoModal width="800px" height="400px" setModalType={setModalType}></UserExtraInfoModal>}
+    </>
   );
 };
 

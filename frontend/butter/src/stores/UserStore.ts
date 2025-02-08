@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { getAccessToken } from "../apis/auth";
 
 interface UserState {
     isLogin: boolean,
@@ -11,12 +12,12 @@ interface UserState {
 }
 
 export const useUserStore = create<UserState>((set) => ({
-    isLogin: false,
+    isLogin: !!getAccessToken(),
     nickname: null,
     profileImage: null,
     avatarType: null,
     memberType: null,
-    
+
     setUser: (isLogin, nickname, profileImage, avatarType, memberType) => set({ isLogin, nickname, profileImage, avatarType, memberType }),
     logout: () => set({
         isLogin: false,
