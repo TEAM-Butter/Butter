@@ -13,7 +13,6 @@ public record CrewSaveRequestDTO(
         MultipartFile image,
         String promotionUrl,
 
-        @NotNull
         MultipartFile portfolioVideo
 ) {
 }

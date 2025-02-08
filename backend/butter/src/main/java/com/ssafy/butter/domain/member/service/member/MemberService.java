@@ -34,4 +34,5 @@ public interface MemberService {
     RegisterExtraInfoResponseDTO saveExtraUserInfo(ExtraInfoDTO extraInfoDTO, Long memberId);
     boolean checkIfEmailExists(SendEmailDTO emailDTO);
     CheckLoginIdResponseDTO checkIfLoginIdExists(CheckLoginIdDTO loginIdDTO);
+
 }

@@ -85,10 +85,10 @@ public class Member {
                   Nickname nickname, Email email, BirthDate birthDate, BreadAmount breadAmount, Password password,
                   String profileImage, Gender gender, LocalDate createDate, boolean isExtraInfoRegistered) {
         this.memberType = memberType;
-        this.avatarType = avatarType;
+        this.avatarType = (avatarType == null) ? new AvatarType("DEFAULT_AVATARTYPE"):avatarType;
         this.memberGenres = memberGenres;
         this.loginId = loginId;
-        this.nickname = nickname;
+        this.nickname = (nickname == null) ? new Nickname("DEFAULT_NICKNAME") : nickname;
         this.email = email;
         this.birthDate = birthDate;
         this.breadAmount = breadAmount;
@@ -130,4 +130,5 @@ public class Member {
         newGenres.forEach(genre -> this.memberGenres.add(new MemberGenre(this, genre)));
     }
 }
+
 

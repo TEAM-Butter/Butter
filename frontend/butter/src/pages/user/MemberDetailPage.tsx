@@ -149,7 +149,20 @@ const MemberDetailPage = () => {
     id: "guest-id",
     email: "guest@naver.com",
     nickname: "guest",
-    genres: ["R&B", "Indie", "Pop"],
+    genres: [
+      {
+        id: "R&B",
+        value: "R&B",
+      },
+      {
+        id: "Indie",
+        value: "Indie",
+      },
+      {
+        id: "Pop",
+        value: "Pop",
+      },
+    ],
     birth: "20001028",
     gender: "woman",
     pet: "pet1",
@@ -189,7 +202,7 @@ const MemberDetailPage = () => {
               <GenreComment>회원님이 선호하는 장르 입니다!</GenreComment>
               <GenreWrapper>
                 {sampleUserInfo.genres.map(genre =>
-                  <Genre>{genre}</Genre>
+                  <Genre key={genre.id}>{genre.value}</Genre>
                 )}
               </GenreWrapper>
             </GenreContainer>

@@ -8,7 +8,7 @@ type RecordingStatus = "STOPPED" | "STARTED" | "STARTING" | "STOPPING";
 const ControlsWrapper = styled.div`
   display: flex;
   gap: 10px;
-  padding: 10px;
+  margin-bottom: 10px;
   flex-direction: column;
 `;
 

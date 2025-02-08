@@ -11,7 +11,7 @@ import {
 } from "livekit-client";
 import StreamLive from "../../components/stream/StreamLive";
 import { RecordingControls } from "../../components/stream/RecordingControls";
-import { Navigate, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 // import { RecordingManager } from "../../components/recording/RecordingManger";
 
 import { RecordingService } from "../../components/recording/RecordingService";
@@ -22,6 +22,7 @@ import UserBox from "../../components/stream/UserBox";
 
 import background from "../../assets/background.png";
 import CharacterContainer from "../../components/stream/CharacterContainer";
+import { RecordingList } from "../../components/recording/RecordingList";
 
 const LivePageWrapper = styled.div`
   display: flex;
@@ -93,7 +94,6 @@ const CharacterBox = styled.div`
   position: relative;
   border-radius: 20px;
   width: 100%;
-  padding: 30px;
   background-image: url(${background});
   background-size: cover;
   background-position: center;
@@ -103,10 +103,9 @@ const CharacterBox = styled.div`
 
 const RightTop = styled.div`
   aspect-ratio: 16 / 9;
-  height: 200px;
   border-radius: 20px;
   overflow: hidden;
-  background-color: rebeccapurple;
+  background-color: #2a2c41;
 
   @media (max-width: 780px) {
     width: calc(50% - 4px); /* 여백을 고려한 너비 */
@@ -118,10 +117,10 @@ const RightTop = styled.div`
 const RightMiddle = styled.div`
   border-radius: 20px;
   overflow: hidden;
-  background-color: bisque;
+  /* background-color: bisque; */
   flex: 1;
   max-height: 500px;
-
+  padding: 10px;
   @media (max-width: 780px) {
     width: calc(50% - 4px); /* 여백을 고려한 너비 */
     aspect-ratio: 16 / 9; /* RightTop과 동일한 비율 */
@@ -158,6 +157,26 @@ const BackBtn = styled.div`
   @media (max-width: 780px) {
     width: 100%; /* 전체 너비 사용 */
   }
+`;
+
+const RecordingListContainer = styled.div`
+  margin-top: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+`;
+const RecordingItem = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  background: white;
+  color: black;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+`;
+const RecordingInfo = styled.div`
+  flex-grow: 1;
 `;
 
 type TrackInfo = {
@@ -211,7 +230,6 @@ const LivePage = () => {
   const [recordings, setRecordings] = useState<Recording[]>([]);
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
   const [currentVideoUrl, setCurrentVideoUrl] = useState("");
-
   const navigate = useNavigate();
 
   const roomName = state.roomName;
@@ -247,6 +265,10 @@ const LivePage = () => {
     } catch (error) {
       console.error("Failed to load recordings:", error);
     }
+  };
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleString();
   };
 
   // 실제 종료 처리 함수
@@ -422,12 +444,29 @@ const LivePage = () => {
   useEffect(() => {
     return () => {
       leaveRoom();
-      console.log("방을 떠나겠습니다");
+      console.log("방을 떠났습니다");
     };
   }, [leaveRoom]);
 
-  console.log("room", room);
+  useEffect(() => {
+    const fetchRecordings = async () => {
+      try {
+        if (recordingService && room) {
+          const recordingList = await recordingService.listRecordings(
+            roomName,
+            room.sid
+          );
+          setRecordings(recordingList);
+        }
+      } catch (error) {
+        console.error("Failed to load recordings:", error);
+      }
+    };
 
+    fetchRecordings();
+  }, [recordingService]);
+  console.log("room", room);
+  console.log("recordings", recordings);
   return (
     <>
       {role === "publisher" ? (
@@ -454,10 +493,21 @@ const LivePage = () => {
                   token={TOKEN}
                 />
               </RightTop>
-              <RightMiddle>v</RightMiddle>
-              {recordingService && (
-                <RecordingControls recordingService={recordingService} />
-              )}
+              <RightMiddle>
+                {recordingService && (
+                  <RecordingControls recordingService={recordingService} />
+                )}
+                <div>{recordings.length}개의 녹화된 영상</div>
+                <RecordingListContainer>
+                  {recordings.map((recording) => (
+                    <RecordingItem key={recording.name}>
+                      <RecordingInfo>
+                        <p>녹화 시간 : {formatDate(recording.startedAt)}</p>
+                      </RecordingInfo>
+                    </RecordingItem>
+                  ))}
+                </RecordingListContainer>
+              </RightMiddle>
 
               <LiveOffBtn onClick={handleLiveOffBtnClick}>
                 <span style={{ fontWeight: 700 }}>Off </span>the Live
@@ -491,13 +541,14 @@ const LivePage = () => {
                 room={room}
                 participantName={participantName}
                 roomName={roomName}
-                localTrack={localTrack}
-                remoteTracks={remoteTracks}
+                remoteTracks={remoteTracks} // localTrack 제거
                 serverUrl={APPLICATION_SERVER_URL}
                 token={TOKEN}
               />
             </LeftTop>
-            <CharacterBox></CharacterBox>
+            <CharacterBox>
+              <CharacterContainer />
+            </CharacterBox>
           </Left>
 
           <Right>

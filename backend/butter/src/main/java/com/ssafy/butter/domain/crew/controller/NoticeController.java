@@ -20,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -35,7 +36,7 @@ public class NoticeController {
             @ApiResponse(responseCode = "201", description = "크루 공지사항 생성 성공")
     })
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> createCrewNotice(
+    public ResponseEntity<NoticeResponseDTO> createCrewNotice(
             @Parameter(hidden = true) @CurrentUser AuthInfoDTO currentUser,
             @Parameter(content = @Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE))
             @ModelAttribute NoticeSaveRequestDTO noticeSaveRequestDTO) {
@@ -45,20 +46,20 @@ public class NoticeController {
 
     @Operation(summary = "크루 공지사항 목록 조회", description = "크루 공지사항 목록을 조회합니다.")
     @GetMapping("/list")
-    public ResponseEntity<?> getCrewNoticeList(
+    public ResponseEntity<List<NoticeResponseDTO>> getCrewNoticeList(
             @ParameterObject @ModelAttribute NoticeListRequestDTO noticeListRequestDTO) {
         return ResponseEntity.ok(noticeService.getCrewNoticeList(noticeListRequestDTO));
     }
 
     @Operation(summary = "크루 공지사항 상세 조회", description = "특정 크루 공지사항의 상세 정보를 조회합니다.")
     @GetMapping("/detail/{id}")
-    public ResponseEntity<?> getCrewNotice(@PathVariable Long id) {
+    public ResponseEntity<NoticeResponseDTO> getCrewNotice(@PathVariable Long id) {
         return ResponseEntity.ok(noticeService.getCrewNotice(id));
     }
 
     @Operation(summary = "크루 공지사항 수정", description = "기존 크루 공지사항의 정보를 수정합니다.")
     @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> updateCrewNotice(
+    public ResponseEntity<NoticeResponseDTO> updateCrewNotice(
             @Parameter(hidden = true) @CurrentUser AuthInfoDTO currentUser,
             @PathVariable Long id,
             @Parameter(content = @Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE))
@@ -68,7 +69,7 @@ public class NoticeController {
 
     @Operation(summary = "크루 공지사항 삭제", description = "특정 크루 공지사항을 삭제합니다.")
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteCrewNotice(
+    public ResponseEntity<NoticeResponseDTO> deleteCrewNotice(
             @Parameter(hidden = true) @CurrentUser AuthInfoDTO currentUser,
             @PathVariable Long id) {
         return ResponseEntity.ok(noticeService.deleteCrewNotice(currentUser, id));
