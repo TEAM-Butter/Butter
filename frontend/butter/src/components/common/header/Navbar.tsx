@@ -129,10 +129,10 @@ const subProfileVariants = {
 
 function Navbar() {
   //useUserStore
-  const memberType = useUserStore(state => state.memberType)
-  const isLogin = useUserStore(state => state.isLogin)
-  const logout = useUserStore(state => state.logout)
-  console.log(memberType == "")
+  const memberType = useUserStore((state) => state.memberType);
+  const isLogin = useUserStore((state) => state.isLogin);
+  const logout = useUserStore((state) => state.logout);
+  console.log(memberType == "");
 
   const homeMatch = useMatch("");
   const buskingMatch = useMatch("busking");
@@ -144,9 +144,9 @@ function Navbar() {
   const [modalType, setModalType] = useState<string>("");
 
   const memberLogout = () => {
-    logout()
-    removeAccessToken()
-  }
+    logout();
+    removeAccessToken();
+  };
 
   return (
     <>
@@ -175,7 +175,7 @@ function Navbar() {
             </Link>
           </Items>
           <Items>
-            { isLogin ? (
+            {isLogin ? (
               <Profile
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
@@ -199,7 +199,7 @@ function Navbar() {
                   <Link to="/">
                     <SubItem>브레드 충전</SubItem>
                   </Link>
-                  { memberType == "crew" ? (
+                  {memberType == "crew" ? (
                     <>
                       <SubItem
                         className="openModalBtn"
