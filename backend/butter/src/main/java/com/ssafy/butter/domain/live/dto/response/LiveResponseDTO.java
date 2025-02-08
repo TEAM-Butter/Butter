@@ -4,6 +4,8 @@ import com.ssafy.butter.domain.crew.entity.Crew;
 import com.ssafy.butter.domain.live.entity.Live;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public record LiveResponseDTO(Long id, CrewDTO crew, String title, LocalDateTime startDate, LocalDateTime endDate) {
 
@@ -17,7 +19,7 @@ public record LiveResponseDTO(Long id, CrewDTO crew, String title, LocalDateTime
         );
     }
 
-    public record CrewDTO(Long id, String name, String description, String imageUrl, String promotionUrl) {
+    public record CrewDTO(Long id, String name, String description, String imageUrl, String promotionUrl, List<String> genres) {
 
         public static CrewDTO fromEntity(Crew crew) {
             return new CrewDTO(
@@ -25,7 +27,8 @@ public record LiveResponseDTO(Long id, CrewDTO crew, String title, LocalDateTime
                     crew.getName(),
                     crew.getDescription(),
                     crew.getImageUrl(),
-                    crew.getPromotionUrl()
+                    crew.getPromotionUrl(),
+                    crew.getCrewGenres().stream().map(crewGenre -> crewGenre.getGenre().getName()).toList()
             );
         }
     }
