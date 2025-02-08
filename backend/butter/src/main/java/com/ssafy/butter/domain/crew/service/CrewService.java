@@ -35,5 +35,5 @@ public interface CrewService {
 
     Crew findById(Long id);
 
-    void createCrewGenre(AuthInfoDTO currentUser, CrewGenreRequestDTO crewGenreRequestDTO);
+    void createCrewGenre(AuthInfoDTO currentUser, Long id, CrewGenreRequestDTO crewGenreRequestDTO);
 }

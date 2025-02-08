@@ -2,13 +2,10 @@ package com.ssafy.butter.domain.crew.dto.request;
 
 import jakarta.validation.constraints.NotNull;
 
-import java.util.List;
+import java.util.Set;
 
 public record CrewGenreRequestDTO(
 
         @NotNull
-        Long crewId,
-
-        @NotNull
-        List<String> genreNames) {
+        Set<String> genreNames) {
 }

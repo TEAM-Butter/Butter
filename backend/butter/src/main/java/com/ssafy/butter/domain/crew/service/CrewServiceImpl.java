@@ -256,9 +256,9 @@ public class CrewServiceImpl implements CrewService {
     }
 
     @Override
-    public void createCrewGenre(AuthInfoDTO currentUser, CrewGenreRequestDTO crewGenreRequestDTO) {
+    public void createCrewGenre(AuthInfoDTO currentUser, Long id, CrewGenreRequestDTO crewGenreRequestDTO) {
         Member currentMember = memberService.findById(currentUser.id());
-        Crew crew = crewRepository.findById(crewGenreRequestDTO.crewId()).orElseThrow();
+        Crew crew = crewRepository.findById(id).orElseThrow();
         CrewMember currentCrewMember = crewMemberRepository.findByCrewAndMember(crew, currentMember).orElseThrow();
         if (!currentCrewMember.getIsCrewAdmin()) {
             throw new IllegalArgumentException("Current user is not crew admin");
@@ -266,12 +266,11 @@ public class CrewServiceImpl implements CrewService {
 
         List<Genre> genres = crewGenreRequestDTO.genreNames().stream()
                 .map(genreName -> genreRepository.findByName(genreName).orElseThrow()).toList();
-        List<CrewGenre> crewGenres = genres.stream().map(genre -> {
-            return CrewGenre.builder()
-                    .crew(crew)
-                    .genre(genre)
-                    .build();
-        }).toList();
+        List<CrewGenre> crewGenres = genres.stream().map(genre -> CrewGenre.builder()
+                .crew(crew)
+                .genre(genre)
+                .build()).toList();
+        crewGenreRepository.deleteAllByCrew(crew);
         crewGenreRepository.saveAll(crewGenres);
     }
 }

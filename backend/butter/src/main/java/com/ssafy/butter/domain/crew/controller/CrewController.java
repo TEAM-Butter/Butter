@@ -127,15 +127,15 @@ public class CrewController {
         return ResponseEntity.noContent().build();
     }
 
-    @Operation(summary = "크루 장르 추가", description = "크루의 장르를 추가합니다.")
+    @Operation(summary = "크루 장르 수정", description = "크루의 장르를 수정합니다.")
     @ApiResponses({
-            @ApiResponse(responseCode = "204", description = "장르 추가 성공")
+            @ApiResponse(responseCode = "204", description = "장르 수정 성공")
     })
-    @PostMapping("/genre")
-    public ResponseEntity<Void> createCrewGenre(
-            @Parameter(hidden = true) @CurrentUser AuthInfoDTO currentUser,
+    @PutMapping("/{id}/genre")
+    public ResponseEntity<Void> updateCrewGenre(
+            @Parameter(hidden = true) @CurrentUser AuthInfoDTO currentUser, @PathVariable Long id,
             @RequestBody CrewGenreRequestDTO crewGenreRequestDTO) {
-        crewService.createCrewGenre(currentUser, crewGenreRequestDTO);
+        crewService.createCrewGenre(currentUser, id, crewGenreRequestDTO);
         return ResponseEntity.noContent().build();
     }
 
