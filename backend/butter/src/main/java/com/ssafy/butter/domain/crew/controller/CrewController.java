@@ -2,6 +2,7 @@ package com.ssafy.butter.domain.crew.controller;
 
 import com.ssafy.butter.auth.dto.AuthInfoDTO;
 import com.ssafy.butter.domain.crew.dto.request.CrewFollowRequestDTO;
+import com.ssafy.butter.domain.crew.dto.request.CrewGenreRequestDTO;
 import com.ssafy.butter.domain.crew.dto.request.CrewListRequestDTO;
 import com.ssafy.butter.domain.crew.dto.request.CrewMemberRequestDTO;
 import com.ssafy.butter.domain.crew.dto.request.CrewSaveRequestDTO;
@@ -123,6 +124,18 @@ public class CrewController {
             @Parameter(hidden = true) @CurrentUser AuthInfoDTO currentUser,
             @PathVariable Long id) {
         crewService.unfollowCrew(currentUser, id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "크루 장르 추가", description = "크루의 장르를 추가합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "장르 추가 성공")
+    })
+    @PostMapping("/genre")
+    public ResponseEntity<Void> createCrewGenre(
+            @Parameter(hidden = true) @CurrentUser AuthInfoDTO currentUser,
+            @RequestBody CrewGenreRequestDTO crewGenreRequestDTO) {
+        crewService.createCrewGenre(currentUser, crewGenreRequestDTO);
         return ResponseEntity.noContent().build();
     }
 

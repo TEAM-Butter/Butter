@@ -2,6 +2,7 @@ package com.ssafy.butter.domain.crew.service;
 
 import com.ssafy.butter.auth.dto.AuthInfoDTO;
 import com.ssafy.butter.domain.crew.dto.request.CrewFollowRequestDTO;
+import com.ssafy.butter.domain.crew.dto.request.CrewGenreRequestDTO;
 import com.ssafy.butter.domain.crew.dto.request.CrewListRequestDTO;
 import com.ssafy.butter.domain.crew.dto.request.CrewMemberRequestDTO;
 import com.ssafy.butter.domain.crew.dto.request.CrewSaveRequestDTO;
@@ -33,4 +34,6 @@ public interface CrewService {
     List<CrewResponseDTO> getRecommendedCrewList();
 
     Crew findById(Long id);
+
+    void createCrewGenre(AuthInfoDTO currentUser, CrewGenreRequestDTO crewGenreRequestDTO);
 }

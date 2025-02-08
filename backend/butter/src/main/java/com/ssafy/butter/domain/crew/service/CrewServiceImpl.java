@@ -2,16 +2,21 @@ package com.ssafy.butter.domain.crew.service;
 
 import com.ssafy.butter.auth.dto.AuthInfoDTO;
 import com.ssafy.butter.domain.crew.dto.request.CrewFollowRequestDTO;
+import com.ssafy.butter.domain.crew.dto.request.CrewGenreRequestDTO;
 import com.ssafy.butter.domain.crew.dto.request.CrewListRequestDTO;
 import com.ssafy.butter.domain.crew.dto.request.CrewMemberRequestDTO;
 import com.ssafy.butter.domain.crew.dto.request.CrewSaveRequestDTO;
 import com.ssafy.butter.domain.crew.dto.response.CrewResponseDTO;
 import com.ssafy.butter.domain.crew.entity.Crew;
+import com.ssafy.butter.domain.crew.entity.CrewGenre;
 import com.ssafy.butter.domain.crew.entity.CrewMember;
 import com.ssafy.butter.domain.crew.entity.Follow;
+import com.ssafy.butter.domain.crew.entity.Genre;
+import com.ssafy.butter.domain.crew.repository.CrewGenreRepository;
 import com.ssafy.butter.domain.crew.repository.CrewMemberRepository;
 import com.ssafy.butter.domain.crew.repository.CrewRepository;
 import com.ssafy.butter.domain.crew.repository.FollowRepository;
+import com.ssafy.butter.domain.crew.repository.genre.GenreRepository;
 import com.ssafy.butter.domain.member.entity.Member;
 import com.ssafy.butter.domain.member.service.member.MemberService;
 import com.ssafy.butter.infrastructure.awsS3.S3ImageUploader;
@@ -34,6 +39,8 @@ public class CrewServiceImpl implements CrewService {
     private final CrewRepository crewRepository;
     private final CrewMemberRepository crewMemberRepository;
     private final FollowRepository followRepository;
+    private final GenreRepository genreRepository;
+    private final CrewGenreRepository crewGenreRepository;
 
     /**
      * 크루 생성 요청 DTO를 받아 크루를 생성 및 DB에 저장 후 크루 응답 DTO를 반환한다.
@@ -246,5 +253,25 @@ public class CrewServiceImpl implements CrewService {
     @Override
     public Crew findById(Long id) {
         return crewRepository.findById(id).orElseThrow();
+    }
+
+    @Override
+    public void createCrewGenre(AuthInfoDTO currentUser, CrewGenreRequestDTO crewGenreRequestDTO) {
+        Member currentMember = memberService.findById(currentUser.id());
+        Crew crew = crewRepository.findById(crewGenreRequestDTO.crewId()).orElseThrow();
+        CrewMember currentCrewMember = crewMemberRepository.findByCrewAndMember(crew, currentMember).orElseThrow();
+        if (!currentCrewMember.getIsCrewAdmin()) {
+            throw new IllegalArgumentException("Current user is not crew admin");
+        }
+
+        List<Genre> genres = crewGenreRequestDTO.genreNames().stream()
+                .map(genreName -> genreRepository.findByName(genreName).orElseThrow()).toList();
+        List<CrewGenre> crewGenres = genres.stream().map(genre -> {
+            return CrewGenre.builder()
+                    .crew(crew)
+                    .genre(genre)
+                    .build();
+        }).toList();
+        crewGenreRepository.saveAll(crewGenres);
     }
 }
