@@ -1,6 +1,10 @@
 import { Outlet } from "react-router-dom";
 import styled from "@emotion/styled";
 import Navbar from "../components/common/header/Navbar";
+import { UserExtraInfoModal } from ".././components/common/modals/UserExtraInfoModal";
+import { useEffect, useState } from "react";
+import { useUserStore } from ".././stores/UserStore";
+
 
 const Wrapper = styled.div`
   display: grid;
@@ -25,6 +29,14 @@ const Main = styled.div`
 `
 
 export const CommonLayout = () => {
+  const [modalType, setModalType] = useState<string>("");
+  const isExtraInfoRegistered = useUserStore(state => state.isExtraInfoRegistered)
+
+  useEffect(() => {
+    if (!isExtraInfoRegistered) {
+      setModalType("extraInfo")
+    }
+  }, [isExtraInfoRegistered])
   return (
     <Wrapper>
       <Header >
@@ -33,6 +45,7 @@ export const CommonLayout = () => {
       <Main>
         <Outlet /> {/* 여기에 자식 라우트의 컴포넌트가 렌더링됨 */}
       </Main>
+      {modalType === "extraInfo" && <UserExtraInfoModal width="800px" height="400px" setModalType={setModalType}></UserExtraInfoModal>}
     </Wrapper>
   );
 };

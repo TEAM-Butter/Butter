@@ -9,6 +9,7 @@ import pet3 from "/src/assets/pets/pet3.png";
 import pet4 from "/src/assets/pets/pet4.png";
 import pet5 from "/src/assets/pets/pet5.png";
 import pet6 from "/src/assets/pets/pet6.png";
+import { useUserStore } from "../../../stores/UserStore";
 
 const ExtraInfoForm = styled.form`
   display: flex;
@@ -87,6 +88,7 @@ export const UserExtraInfoModal = ({
   width,
   height,
 }: ModalProps) => {
+
   const options = [
     { value: "Ballad", label: "Ballad" },
     { value: "Dance", label: "Dance" },
@@ -136,17 +138,13 @@ export const UserExtraInfoModal = ({
   return (
     <>
       <MC.ModalOverlay />
-      <MC.ModalWrapper width={width} height={height}>
+      <MC.ModalWrapper width={width} height={height} onSubmit={(e) => {
+        e.preventDefault()
+        setModalType("");
+        useUserStore.setState({ isExtraInfoRegistered: true });
+      }}>
         <MC.ModalHeader>
           <div>TYPE YOUR EXTRA INFO</div>
-          <MC.ModalCloseBtn
-            textColor="white"
-            onClick={() => {
-              setModalType("");
-            }}
-          >
-            X
-          </MC.ModalCloseBtn>
         </MC.ModalHeader>
         <MC.ModalBody>
           <MC.Comment_v2 textColor="white">
