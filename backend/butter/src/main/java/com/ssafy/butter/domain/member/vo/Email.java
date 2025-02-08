@@ -15,7 +15,6 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Email {
-    @NotNull
     @Column(name = "email", length = 50)
     private String value;
 

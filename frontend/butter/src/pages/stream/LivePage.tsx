@@ -10,9 +10,18 @@ import {
   RoomEvent,
 } from "livekit-client";
 import StreamLive from "../../components/stream/StreamLive";
-import { RecordingService } from "../../services/RecordingService";
 import { RecordingControls } from "../../components/stream/RecordingControls";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+// import { RecordingManager } from "../../components/recording/RecordingManger";
+
+import { RecordingService } from "../../components/recording/RecordingService";
+import { LiveOffModal } from "../../components/recording/LiveOffModal";
+import { RecordingModal } from "../../components/recording/RecordingModal";
+import { Recording } from "../../types/recording";
+import UserBox from "../../components/stream/UserBox";
+
+import background from "../../assets/background.png";
+import CharacterContainer from "../../components/stream/CharacterContainer";
 
 const LivePageWrapper = styled.div`
   display: flex;
@@ -20,6 +29,7 @@ const LivePageWrapper = styled.div`
   column-gap: 10px;
   row-gap: 10px;
   max-width: 1300px;
+  max-height: 1000px;
   margin: 0 auto;
   padding-top: 15px;
   height: 90vh;
@@ -30,16 +40,17 @@ const Left = styled.div`
   display: flex;
   flex-direction: column;
   gap: 8px;
-  max-height: 800px;
   flex: 1;
+  /* max-height: 800px; */
   min-width: 200px;
 `;
 
 const Right = styled.div`
-  width: 320px;
+  width: 350px;
   min-width: 200px;
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   row-gap: 8px;
   height: calc(100% - 8px);
 
@@ -66,19 +77,35 @@ const LeftTop = styled.div`
     aspect-ratio: 16 / 9; // 모바일에서도 같은 비율 유지
   }
 `;
+
+// const CharacterBox = styled.div`
+//   /* flex: 1.6; */
+//   background-color: #2a2c41;
+//   border-radius: 20px;
+//   overflow: hidden;
+//   height: 180px;
+// `;
+
 const CharacterBox = styled.div`
   /* flex: 1.6; */
-  background-color: #2a2c41;
   border-radius: 20px;
+  height: 200px;
+  position: relative;
+  border-radius: 20px;
+  width: 100%;
+  padding: 30px;
+  background-image: url(${background});
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   overflow: hidden;
-  height: 180px;
 `;
 
 const RightTop = styled.div`
   aspect-ratio: 16 / 9;
   border-radius: 20px;
   overflow: hidden;
-  background-color: rebeccapurple;
+  background-color: #2a2c41;
 
   @media (max-width: 780px) {
     width: calc(50% - 4px); /* 여백을 고려한 너비 */
@@ -92,11 +119,12 @@ const RightMiddle = styled.div`
   overflow: hidden;
   background-color: bisque;
   flex: 1;
+  max-height: 500px;
 
   @media (max-width: 780px) {
     width: calc(50% - 4px); /* 여백을 고려한 너비 */
     aspect-ratio: 16 / 9; /* RightTop과 동일한 비율 */
-    height: auto;
+    max-height: 300px;
     flex: none;
   }
 `;
@@ -104,6 +132,7 @@ const RightMiddle = styled.div`
 const LiveOffBtn = styled.div`
   background-color: #ea2323;
   min-height: 100px;
+  height: 100px;
   flex-shrink: 0;
   border-radius: 20px;
   padding: 15px;
@@ -177,17 +206,85 @@ const LivePage = () => {
 
   const [recordingService, setRecordingService] =
     useState<RecordingService | null>(null);
+  const [isLiveOffModalOpen, setIsLiveOffModalOpen] = useState(false);
+  const [recordings, setRecordings] = useState<Recording[]>([]);
+  const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
+  const [currentVideoUrl, setCurrentVideoUrl] = useState("");
+
+  const navigate = useNavigate();
 
   const roomName = state.roomName;
-  const participantName = state.participantName;
+  let participantName = "user";
   let role = "";
+
   if (!role) {
     if (window.location.hostname === "localhost") {
       role = "publisher";
+      participantName = state.participantName;
     } else {
       role = "subscriber";
     }
   }
+
+  const handleBackBtnClick = () => {
+    leaveRoom();
+    navigate("/");
+  };
+  // LiveOffBtn 클릭 핸들러
+  const handleLiveOffBtnClick = async () => {
+    try {
+      // 녹화 목록 불러오기
+      if (recordingService && room) {
+        const recordingList = await recordingService.listRecordings(
+          roomName,
+          room.sid
+        );
+        setRecordings(recordingList);
+      }
+      // 모달 열기
+      setIsLiveOffModalOpen(true);
+    } catch (error) {
+      console.error("Failed to load recordings:", error);
+    }
+  };
+
+  // 실제 종료 처리 함수
+  const handleRealLiveOffBtnClick = async () => {
+    try {
+      await leaveRoom();
+      setIsLiveOffModalOpen(false);
+      navigate("/");
+
+      // 필요한 경우 추가 정리 작업 수행
+    } catch (error) {
+      console.error("Failed to leave room:", error);
+    }
+  };
+
+  // 녹화 재생 핸들러
+  const handlePlayRecording = async (recordingName: string) => {
+    try {
+      if (recordingService) {
+        const url = await recordingService.getRecordingUrl(recordingName);
+        setCurrentVideoUrl(url);
+        setIsVideoModalOpen(true);
+      }
+    } catch (error) {
+      console.error("Failed to get recording URL:", error);
+    }
+  };
+
+  // 녹화 삭제 핸들러
+  const handleDeleteRecording = async (recordingName: string) => {
+    try {
+      if (recordingService) {
+        await recordingService.deleteRecording(recordingName);
+        setRecordings(recordings.filter((r) => r.name !== recordingName));
+      }
+    } catch (error) {
+      console.error("Failed to delete recording:", error);
+    }
+  };
 
   const leaveRoom = useCallback(async () => {
     // Leave the room by calling 'disconnect' method over the Room object
@@ -316,12 +413,15 @@ const LivePage = () => {
 
   useEffect(() => {
     joinRoom();
+    console.log("방에 입장하겠습니다");
+    console.log("room정보", room);
   }, [joinRoom]);
   //조건부 렌더링
 
   useEffect(() => {
     return () => {
       leaveRoom();
+      console.log("방을 떠났습니다");
     };
   }, [leaveRoom]);
 
@@ -336,10 +436,9 @@ const LivePage = () => {
               <LeftTop>
                 <StreamChat />
               </LeftTop>
-              <CharacterBox>b</CharacterBox>
-              {recordingService && (
-                <RecordingControls recordingService={recordingService} />
-              )}
+              <CharacterBox>
+                <CharacterContainer />
+              </CharacterBox>
             </Left>
 
             <Right>
@@ -355,11 +454,33 @@ const LivePage = () => {
                 />
               </RightTop>
               <RightMiddle>v</RightMiddle>
-              <LiveOffBtn onClick={leaveRoom}>
+              {recordingService && (
+                <RecordingControls recordingService={recordingService} />
+              )}
+
+              <LiveOffBtn onClick={handleLiveOffBtnClick}>
                 <span style={{ fontWeight: 700 }}>Off </span>the Live
               </LiveOffBtn>
             </Right>
           </LivePageWrapper>
+          <LiveOffModal
+            isOpen={isLiveOffModalOpen}
+            recordings={recordings}
+            onClose={() => setIsLiveOffModalOpen(false)}
+            onConfirm={handleRealLiveOffBtnClick}
+            onPlay={handlePlayRecording}
+            onDelete={handleDeleteRecording}
+          />
+
+          {/* 비디오 재생 모달 */}
+          <RecordingModal
+            isOpen={isVideoModalOpen}
+            onClose={() => {
+              setIsVideoModalOpen(false);
+              setCurrentVideoUrl("");
+            }}
+            videoUrl={currentVideoUrl}
+          />
         </>
       ) : (
         <LivePageWrapper>
@@ -369,22 +490,25 @@ const LivePage = () => {
                 room={room}
                 participantName={participantName}
                 roomName={roomName}
-                localTrack={localTrack}
-                remoteTracks={remoteTracks}
+                remoteTracks={remoteTracks} // localTrack 제거
                 serverUrl={APPLICATION_SERVER_URL}
                 token={TOKEN}
               />
             </LeftTop>
-            <CharacterBox>b</CharacterBox>
+            <CharacterBox>
+              <CharacterContainer />
+            </CharacterBox>
           </Left>
 
           <Right>
-            <RightTop>c</RightTop>
+            <RightTop>
+              <UserBox />
+            </RightTop>
             <RightMiddle>
               <StreamChat />
             </RightMiddle>
-            <BackBtn onClick={leaveRoom}>
-              <div>
+            <BackBtn onClick={handleBackBtnClick}>
+              <div style={{ color: "black" }}>
                 <span style={{ fontWeight: 700 }}>Back </span>to the live
               </div>
               <div> &gt;</div>
@@ -393,34 +517,6 @@ const LivePage = () => {
         </LivePageWrapper>
       )}
     </>
-    // <LivePageWrapper>
-    //   <Left>
-    //     <LiveBox>
-    //       <StreamLive
-    //         room={room}
-    //         onSubmit={(e) => {
-    //           joinRoom();
-    //           e.preventDefault();
-    //         }}
-    //         participantName={participantName}
-    //         onParticipantNameChange={(e) => setParticipantName(e.target.value)}
-    //         roomName={roomName}
-    //         onRoomNameChange={(e) => setRoomName(e.target.value)}
-    //         onLeaveButtonClick={leaveRoom}
-    //         localTrack={localTrack}
-    //         remoteTracks={remoteTracks}
-    //       />
-    //     </LiveBox>
-    //     <CharacterBox>b</CharacterBox>
-    //   </Left>
-
-    //   <Right>
-    //     <MyBox>c</MyBox>
-    //     <ChatBox>
-    //       <StreamChat />
-    //     </ChatBox>
-    //   </Right>
-    // </LivePageWrapper>
   );
 };
 

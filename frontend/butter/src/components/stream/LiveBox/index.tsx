@@ -10,6 +10,8 @@ const LiveBoxWrapper = styled.div`
 `;
 
 const LiveGenres = styled.div`
+  display: flex;
+  flex-wrap: wrap;
   width: 100%;
   height: 50px;
   border-top-left-radius: 20px;
@@ -18,10 +20,12 @@ const LiveGenres = styled.div`
 `;
 
 const LiveGenre = styled.div`
-  margin: 10px 6px;
+  /* margin: 10px 6px; */
+  margin-left: 10px;
+  margin-top: 6px;
   padding: 6px 15px;
-  font-size: 20px;
-  height: 32px;
+  font-size: 15px;
+  height: 28px;
   border-radius: 20px;
   background-color: rgba(0, 0, 0, 0.85);
   color: white;
@@ -32,7 +36,7 @@ const LiveInfoContainer = styled.div`
   justify-content: space-between;
   padding: 20px;
   width: 100%;
-  height: 100px;
+  height: 90px;
   background-color: #c7c7c7;
   border-bottom-left-radius: 20px;
   border-bottom-right-radius: 20px;
@@ -47,25 +51,25 @@ const LiveInfo = styled.div`
 `;
 
 const LiveTitle = styled.div`
-  font-size: 30px;
+  font-size: 25px;
   font-weight: 500;
   color: black;
 `;
 
 const LiveLocation = styled.div`
   color: #317fde;
-  font-size: 18px;
+  font-size: 16px;
 `;
 
 const LiveBtn = styled.div`
   background-color: #ea2323;
   display: flex;
   align-items: center;
-  padding: 20px;
+  padding: 16px;
   border-radius: 30px;
   font-size: 30px;
   font-weight: 300;
-  height: 60px;
+  height: 50px;
   cursor: pointer;
 `;
 

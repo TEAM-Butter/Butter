@@ -11,12 +11,9 @@ import com.ssafy.butter.domain.crew.entity.Crew;
 import com.ssafy.butter.domain.crew.entity.CrewGenre;
 import com.ssafy.butter.domain.crew.entity.CrewMember;
 import com.ssafy.butter.domain.crew.entity.Follow;
-import com.ssafy.butter.domain.crew.entity.Genre;
-import com.ssafy.butter.domain.crew.repository.CrewGenreRepository;
-import com.ssafy.butter.domain.crew.repository.CrewMemberRepository;
-import com.ssafy.butter.domain.crew.repository.CrewRepository;
-import com.ssafy.butter.domain.crew.repository.FollowRepository;
-import com.ssafy.butter.domain.crew.repository.genre.GenreRepository;
+import com.ssafy.butter.domain.crew.repository.crewmember.CrewMemberRepository;
+import com.ssafy.butter.domain.crew.repository.crew.CrewRepository;
+import com.ssafy.butter.domain.crew.repository.follow.FollowRepository;
 import com.ssafy.butter.domain.member.entity.Member;
 import com.ssafy.butter.domain.member.service.member.MemberService;
 import com.ssafy.butter.infrastructure.awsS3.S3ImageUploader;
@@ -31,7 +28,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Service
 @Transactional
-public class CrewServiceImpl implements CrewService {
+public class  CrewServiceImpl implements CrewService {
 
     private final MemberService memberService;
     private final S3ImageUploader s3ImageUploader;
