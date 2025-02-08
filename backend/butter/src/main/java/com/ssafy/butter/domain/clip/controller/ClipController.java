@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -43,7 +44,7 @@ public class ClipController {
             @ApiResponse(responseCode = "201", description = "클립 생성 성공")
     })
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> createClip(
+    public ResponseEntity<ClipResponseDTO> createClip(
             @Parameter(hidden = true) @CurrentUser AuthInfoDTO currentUser,
             @Parameter(content = @Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE))
             @ModelAttribute ClipSaveRequestDTO clipSaveRequestDTO) {
@@ -53,20 +54,20 @@ public class ClipController {
 
     @Operation(summary = "클립 목록 조회", description = "클립 목록을 조회합니다.")
     @GetMapping("/list")
-    public ResponseEntity<?> getClipList(
+    public ResponseEntity<List<ClipResponseDTO>> getClipList(
             @ParameterObject @ModelAttribute ClipListRequestDTO clipListRequestDTO) {
         return ResponseEntity.ok(clipService.getClipList(clipListRequestDTO));
     }
 
     @Operation(summary = "클립 상세 조회", description = "특정 클립의 상세 정보를 조회합니다.")
     @GetMapping("/detail/{id}")
-    public ResponseEntity<?> getClipDetail(@PathVariable Long id) {
+    public ResponseEntity<ClipResponseDTO> getClipDetail(@PathVariable Long id) {
         return ResponseEntity.ok(clipService.getClipDetail(id));
     }
 
     @Operation(summary = "클립 삭제", description = "특정 클립을 삭제합니다.")
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteClip(
+    public ResponseEntity<ClipResponseDTO> deleteClip(
             @Parameter(hidden = true) @CurrentUser AuthInfoDTO currentUser, @PathVariable Long id) {
         return ResponseEntity.ok(clipService.deleteClip(currentUser, id));
     }
@@ -76,7 +77,7 @@ public class ClipController {
             @ApiResponse(responseCode = "204", description = "좋아요 등록 성공")
     })
     @PostMapping("/like")
-    public ResponseEntity<?> likeClip(
+    public ResponseEntity<Void> likeClip(
             @Parameter(hidden = true) @CurrentUser AuthInfoDTO currentUser,
             @RequestBody ClipLikeRequestDTO likeRequestDTO) {
         clipService.likeClip(currentUser, likeRequestDTO);
@@ -88,7 +89,7 @@ public class ClipController {
             @ApiResponse(responseCode = "204", description = "좋아요 해제 성공")
     })
     @DeleteMapping("/like/{id}")
-    public ResponseEntity<?> unlikeClip(
+    public ResponseEntity<Void> unlikeClip(
             @Parameter(hidden = true) @CurrentUser AuthInfoDTO currentUser,
             @PathVariable Long id) {
         clipService.unlikeClip(currentUser, id);

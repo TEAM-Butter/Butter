@@ -11,6 +11,7 @@ import com.ssafy.butter.domain.live.entity.Live;
 import com.ssafy.butter.domain.live.repository.LiveRepository;
 import com.ssafy.butter.domain.member.entity.Member;
 import com.ssafy.butter.domain.member.service.member.MemberService;
+import com.ssafy.butter.domain.schedule.service.ScheduleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -27,6 +28,7 @@ public class LiveServiceImpl implements LiveService {
     private final MemberService memberService;
     private final CrewService crewService;
     private final CrewMemberService crewMemberService;
+    private final ScheduleService scheduleService;
 
     private final LiveRepository liveRepository;
 
@@ -41,6 +43,7 @@ public class LiveServiceImpl implements LiveService {
                 .crew(crew)
                 .title(liveSaveRequestDTO.title())
                 .startDate(liveSaveRequestDTO.startDate())
+                .schedule(liveSaveRequestDTO.scheduleId() == null ? null : scheduleService.findById(liveSaveRequestDTO.scheduleId()))
                 .build();
         return LiveResponseDTO.fromEntity(liveRepository.save(live));
     }

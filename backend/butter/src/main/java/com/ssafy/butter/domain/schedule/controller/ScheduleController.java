@@ -20,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -35,7 +36,7 @@ public class ScheduleController {
             @ApiResponse(responseCode = "201", description = "버스킹 일정 생성 성공")
     })
     @PostMapping
-    public ResponseEntity<?> createSchedule(
+    public ResponseEntity<ScheduleResponseDTO> createSchedule(
             @Parameter(hidden = true) @CurrentUser AuthInfoDTO currentUser,
             @RequestBody ScheduleSaveRequestDTO scheduleSaveRequestDTO) {
         ScheduleResponseDTO scheduleResponseDTO = scheduleService.createSchedule(currentUser, scheduleSaveRequestDTO);
@@ -44,27 +45,27 @@ public class ScheduleController {
 
     @Operation(summary = "버스킹 일정 검색", description = "버스킹 일정을 검색합니다.")
     @GetMapping
-    public ResponseEntity<?> searchSchedule(
+    public ResponseEntity<List<ScheduleResponseDTO>> searchSchedule(
             @ParameterObject @ModelAttribute ScheduleSearchRequestDTO scheduleSearchRequestDTO) {
         return ResponseEntity.ok(scheduleService.searchSchedule(scheduleSearchRequestDTO));
     }
 
     @Operation(summary = "달력 버스킹 일정 조회", description = "달력의 버스킹 일정을 조회합니다.")
     @GetMapping("/calendar-list")
-    public ResponseEntity<?> getScheduleCalendarList(
+    public ResponseEntity<List<ScheduleResponseDTO>> getScheduleCalendarList(
             @ParameterObject @ModelAttribute ScheduleCalendarRequestDTO scheduleCalendarRequestDTO) {
         return ResponseEntity.ok(scheduleService.getScheduleCalendarList(scheduleCalendarRequestDTO));
     }
 
     @Operation(summary = "버스킹 일정 상세 조회", description = "특정 버스킹 일정의 상세 정보를 조회합니다.")
     @GetMapping("/detail/{id}")
-    public ResponseEntity<?> getScheduleDetail(@PathVariable Long id) {
+    public ResponseEntity<ScheduleResponseDTO> getScheduleDetail(@PathVariable Long id) {
         return ResponseEntity.ok(scheduleService.getScheduleDetail(id));
     }
 
     @Operation(summary = "버스킹 일정 수정", description = "기존 버스킹 일정의 정보를 수정합니다.")
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateSchedule(
+    public ResponseEntity<ScheduleResponseDTO> updateSchedule(
             @Parameter(hidden = true) @CurrentUser AuthInfoDTO currentUser,
             @PathVariable Long id, @RequestBody ScheduleSaveRequestDTO scheduleSaveRequestDTO) {
         return ResponseEntity.ok(scheduleService.updateSchedule(currentUser, id, scheduleSaveRequestDTO));
@@ -72,14 +73,17 @@ public class ScheduleController {
 
     @Operation(summary = "버스킹 일정 삭제", description = "특정 버스킹 일정을 삭제합니다.")
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteSchedule(
+    public ResponseEntity<ScheduleResponseDTO> deleteSchedule(
             @Parameter(hidden = true) @CurrentUser AuthInfoDTO currentUser, @PathVariable Long id) {
         return ResponseEntity.ok(scheduleService.deleteSchedule(currentUser, id));
     }
 
     @Operation(summary = "버스킹 일정 좋아요 등록", description = "버스킹 일정 좋아요를 등록합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "좋아요 등록 성공")
+    })
     @PostMapping("/like")
-    public ResponseEntity<?> likeSchedule(
+    public ResponseEntity<Void> likeSchedule(
             @Parameter(hidden = true) @CurrentUser AuthInfoDTO currentUser,
             @RequestBody ScheduleLikeRequestDTO scheduleLikeRequestDTO) {
         scheduleService.likeSchedule(currentUser, scheduleLikeRequestDTO);
@@ -87,8 +91,11 @@ public class ScheduleController {
     }
 
     @Operation(summary = "버스킹 일정 좋아요 해제", description = "버스킹 일정 좋아요를 해제합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "좋아요 해제 성공")
+    })
     @DeleteMapping("/like/{id}")
-    public ResponseEntity<?> unlikeSchedule(
+    public ResponseEntity<Void> unlikeSchedule(
             @Parameter(hidden = true) @CurrentUser AuthInfoDTO currentUser, @PathVariable Long id) {
         scheduleService.unlikeSchedule(currentUser, id);
         return ResponseEntity.noContent().build();

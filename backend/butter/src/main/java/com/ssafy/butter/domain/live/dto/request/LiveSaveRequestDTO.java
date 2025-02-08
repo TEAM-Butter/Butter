@@ -13,6 +13,7 @@ public record LiveSaveRequestDTO(
         String title,
 
         @NotNull
-        LocalDateTime startDate
+        LocalDateTime startDate,
+        Long scheduleId
 ) {
 }
