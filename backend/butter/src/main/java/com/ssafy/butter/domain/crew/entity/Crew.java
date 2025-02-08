@@ -1,10 +1,13 @@
 package com.ssafy.butter.domain.crew.entity;
 
+import com.ssafy.butter.domain.common.TimestampedEntity;
 import com.ssafy.butter.domain.crew.dto.request.CrewSaveRequestDTO;
 import com.ssafy.butter.domain.live.entity.Live;
 import com.ssafy.butter.domain.schedule.entity.Schedule;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
@@ -12,11 +15,12 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Crew {
+public class Crew extends TimestampedEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
