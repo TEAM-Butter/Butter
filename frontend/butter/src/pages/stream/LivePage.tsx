@@ -464,7 +464,7 @@ const LivePage = () => {
     };
 
     fetchRecordings();
-  }, [recordingService, room, roomName]);
+  }, [recordingService]);
   console.log("room", room);
   console.log("recordings", recordings);
   return (
