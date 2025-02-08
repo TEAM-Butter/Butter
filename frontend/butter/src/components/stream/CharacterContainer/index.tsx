@@ -10,7 +10,7 @@ import heart from "../../../assets/heart.png";
 import styled from "@emotion/styled";
 import { useState } from "react";
 
-const images = [pet1, pet2, pet3, pet4, pet5];
+const images = [pet1, pet2, pet3, pet4, pet5, pet6];
 
 const CharacterContainerWrapper = styled.div`
   position: relative;
