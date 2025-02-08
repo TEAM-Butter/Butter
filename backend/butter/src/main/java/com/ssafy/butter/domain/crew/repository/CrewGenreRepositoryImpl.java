@@ -1,5 +1,6 @@
 package com.ssafy.butter.domain.crew.repository;
 
+import com.ssafy.butter.domain.crew.entity.Crew;
 import com.ssafy.butter.domain.crew.entity.CrewGenre;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -15,5 +16,10 @@ public class CrewGenreRepositoryImpl implements CrewGenreRepository {
     @Override
     public List<CrewGenre> saveAll(Iterable<CrewGenre> crewGenres) {
         return crewGenreJpaRepository.saveAll(crewGenres);
+    }
+
+    @Override
+    public void deleteAllByCrew(Crew crew) {
+        crewGenreJpaRepository.deleteAllByCrew(crew);
     }
 }
