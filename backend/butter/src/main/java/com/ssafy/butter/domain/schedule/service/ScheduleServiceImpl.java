@@ -129,4 +129,9 @@ public class ScheduleServiceImpl implements ScheduleService {
         likedSchedule.updateIsLiked(false);
         likedScheduleRepository.save(likedSchedule);
     }
+
+    @Override
+    public Schedule findById(Long id) {
+        return scheduleRepository.findById(id).orElseThrow();
+    }
 }

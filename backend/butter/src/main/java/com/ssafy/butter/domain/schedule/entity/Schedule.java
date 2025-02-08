@@ -3,6 +3,7 @@ package com.ssafy.butter.domain.schedule.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ssafy.butter.domain.common.TimestampedEntity;
 import com.ssafy.butter.domain.crew.entity.Crew;
+import com.ssafy.butter.domain.live.entity.Live;
 import com.ssafy.butter.domain.schedule.dto.request.ScheduleSaveRequestDTO;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -57,10 +58,14 @@ public class Schedule extends TimestampedEntity {
     @OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<LikedSchedule> likedSchedules = new ArrayList<>();
 
+    @JsonIgnore
+    @OneToOne(mappedBy = "schedule", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Live live;
+
     @Builder
     public Schedule(Crew crew, String title, String content,
                     String place, LocalDateTime buskingDate, double latitude, double longitude,
-                    List<LikedSchedule> likedSchedules) {
+                    List<LikedSchedule> likedSchedules, Live live) {
         this.crew = crew;
         this.title = title;
         this.content = content;
@@ -69,6 +74,7 @@ public class Schedule extends TimestampedEntity {
         this.latitude = latitude;
         this.longitude = longitude;
         this.likedSchedules = likedSchedules;
+        this.live = live;
     }
 
     public void update(ScheduleSaveRequestDTO scheduleSaveRequestDTO) {
