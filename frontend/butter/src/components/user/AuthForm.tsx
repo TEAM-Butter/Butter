@@ -6,6 +6,7 @@ import { LoginResponseDto } from "../../apis/response/auth";
 import { SignUpRequestDto } from "../../apis/request/member";
 import { setAccessToken } from "../../apis/auth";
 import { useNavigate } from "react-router-dom";
+import { useUserStore } from "../../stores/UserStore";
 
 
 const FormWrapper = styled.form`
@@ -71,31 +72,35 @@ interface ModalProps {
 }
 
 export const LoginForm = ({ setModalType }: ModalProps) => {
+    const setUser = useUserStore(state => state.setUser)
     const navigator = useNavigate();
-
+    
     const [loginId, setLoginId] = useState<string>('')
     const [password, setPassword] = useState<string>('')
-
+    
     const LoginBtnHandler = () => {
-        console.log(loginId, password)
         const requestBody: LoginRequestDto = { loginId, password };
         loginRequest(requestBody).then((responseBody: LoginResponseDto | null) => {
             const { accessToken } = responseBody as LoginResponseDto;
             setAccessToken(accessToken)
             navigator(`/`)
+            setUser(true, "guest", "profile.jpg", "pet1", "crew");
         }
-        )
-    }
-    return (
-        <FormWrapper>
-            <LgText textColor="black">Log into<br />your account</LgText>
-            <TextInput type="text" value={loginId} onChange={(e) => setLoginId(e.target.value)} placeholder="type your id." />
-            <TextInput type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="type your password." />
-            <ForgetComment className="openModalBtn" onClick={() => { setModalType("forgotAuth") }}>아이디/ 비밀번호를 잊어버리셨나요?</ForgetComment>
-            <WrongComment></WrongComment>
-            <FormBtn bgColor="rgba(0,0,0,0.4)" type="button" onClick={LoginBtnHandler}>Log in</FormBtn>
-            <FormBtn bgColor="black">Log in with <span>kakao</span></FormBtn>
-        </FormWrapper>
+    )
+}
+return (
+    <FormWrapper onSubmit={(e) => {
+        e.preventDefault()
+        LoginBtnHandler()
+    }} >
+        <LgText textColor="black">Log into<br />your account</LgText>
+        <TextInput type="text" value={loginId} onChange={(e) => setLoginId(e.target.value)} placeholder="type your id." />
+        <TextInput type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="type your password." />
+        <ForgetComment className="openModalBtn" onClick={() => { setModalType("forgotAuth") }}>아이디/ 비밀번호를 잊어버리셨나요?</ForgetComment>
+        <WrongComment></WrongComment>
+        <FormBtn bgColor="rgba(0,0,0,0.4)" type="button" onClick={LoginBtnHandler}>Log in</FormBtn>
+        <FormBtn bgColor="black">Log in with <span>kakao</span></FormBtn>
+    </FormWrapper>
     )
 };
 
@@ -109,25 +114,40 @@ const InputLabel = styled.label`
     display: flex;
     align-items: center;
     gap: 3px;
-`
+    `
 const RadioInput = styled.input`
 `
 const BirthInput = styled.input`
     margin-left: 5px;
-`
+    `
 
 export const SignupForm = () => {
+    const navigator = useNavigate();
+    const setUser = useUserStore(state => state.setUser)
     const [loginId, setLoginId] = useState<string>('')
     const [email, setEmail] = useState<string>('')
     const [password, setPassword] = useState<string>('')
     const [gender, setGender] = useState<string>('')
     const [birthDate, setBirthDate] = useState<string>('')
 
-    const SignUpBtnHandler = () => {
-        const requestBody: SignUpRequestDto = { loginId, password, email, gender, birthDate };
-        signupRequest(requestBody).then()
+
+    const LoginHandler = () => {
+        const requestBody: LoginRequestDto = { loginId, password };
+        loginRequest(requestBody).then((responseBody: LoginResponseDto | null) => {
+            const { accessToken } = responseBody as LoginResponseDto;
+            setAccessToken(accessToken)
+            navigator(`/`)
+            setUser(true, "guest", "profile.jpg", "pet1", "crew");
+        }) 
     }
 
+    const SignUpBtnHandler = () => {
+        const requestBody: SignUpRequestDto = { loginId, password, email, gender, birthDate };
+        signupRequest(requestBody).then(()=>{
+            LoginHandler()
+        })
+    }
+    
     return (
         <FormWrapper>
             <LgText textColor="black">Sign up<br />your account</LgText>

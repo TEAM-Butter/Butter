@@ -1,4 +1,4 @@
-package com.ssafy.butter.domain.crew.repository;
+package com.ssafy.butter.domain.crew.repository.notice;
 
 import com.ssafy.butter.domain.crew.entity.Notice;
 import lombok.RequiredArgsConstructor;

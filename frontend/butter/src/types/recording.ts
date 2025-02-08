@@ -14,3 +14,10 @@ export type RecordingStatus =
   | "STOPPING"
   | "STOPPED"
   | "FAILED";
+
+export interface Recording {
+  name: string;
+  duration?: number;
+  size?: number;
+  startedAt: string;
+}
