@@ -1,4 +1,5 @@
 import styled from "@emotion/styled";
+import NaverLogin from "../../components/user/Naver/NaverLogin";
 
 const HomePageWrapper = styled.div`
   // styles here
@@ -6,6 +7,7 @@ const HomePageWrapper = styled.div`
 
 const HomePage = () => {
   return (<>
+    <NaverLogin />
     <HomePageWrapper>Homepage</HomePageWrapper>
   </>);
 };
