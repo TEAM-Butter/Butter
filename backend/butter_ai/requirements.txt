@@ -1,6 +1,5 @@
 Flask
 Flask-SocketIO
-flask-cors
 requests
 numpy
 opencv-python
