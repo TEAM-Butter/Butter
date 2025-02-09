@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Controller;
 
@@ -28,7 +29,7 @@ public class ChatController {
 
     @MessageMapping("/chat.sendMessage/{streamId}")
     public void sendMessage(@DestinationVariable String streamId,
-                            ChatMessage message,
+                            @Payload ChatMessage message,
                             StompHeaderAccessor headerAccessor) {
 
         message.setStreamId(streamId);
