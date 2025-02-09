@@ -13,6 +13,12 @@ interface LoginResponseDto {
     authenticatedMemberInfo: AuthenticatedMemberInfo;
 }
 
+interface EmailExistResponseDto {
+    email: string,
+    type: string,
+}
+
 export type {
     LoginResponseDto,
+    EmailExistResponseDto,
 }

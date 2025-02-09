@@ -30,7 +30,7 @@ const SelectedFile = styled.div`
     height: 50px;
 `
 interface ModalProps {
-    setProfileImage: (image: string) => void; // 프로필 이미지만 변경하는 함수
+    setProfileImage: (image: File) => void; // 프로필 이미지만 변경하는 함수
 }
 
 export const ExtraFileInput = ({ setProfileImage }: ModalProps) => {
@@ -45,9 +45,9 @@ export const ExtraFileInput = ({ setProfileImage }: ModalProps) => {
 
     const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files && event.target.files.length > 0) {
-            setSelectedFile(event.target.files[0])
-            const imageUrl = URL.createObjectURL(event.target.files[0]);
-            setProfileImage(imageUrl)
+            const file = event.target.files[0]
+            setSelectedFile(file)
+            setProfileImage(file)
         }
     }
 

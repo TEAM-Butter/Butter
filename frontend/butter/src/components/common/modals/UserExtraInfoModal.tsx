@@ -85,6 +85,13 @@ interface ModalProps extends ModalSizeProps {
   setModalType: React.Dispatch<React.SetStateAction<string>>;
 }
 
+interface FormDataState {
+  nickname: string;
+  profileImage: File | null; // ✅ 파일 업로드를 위해 File | null 타입 사용
+  avatarType: string;
+  genres: string[];
+}
+
 
 //회원가입 추가정보 기입 모달 창
 export const UserExtraInfoModal = ({
@@ -93,11 +100,11 @@ export const UserExtraInfoModal = ({
   height,
 }: ModalProps) => {
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormDataState>({
     nickname: "",
-    profileImage: "",
+    profileImage: null, // ✅ 초기값을 null로 설정
     avatarType: "",
-    genres: [] as string[],
+    genres: [],
   });
 
   const options = [
@@ -148,11 +155,22 @@ export const UserExtraInfoModal = ({
     // setModalType("");
     useUserStore.setState({ isExtraInfoRegistered: true });
 
+
+    const formDataToSend = new FormData();
+    formDataToSend.append("nickname", formData.nickname);
+    formDataToSend.append("avatarType", formData.avatarType);
+    formData.genres.forEach((genre) => formDataToSend.append("genres[]", genre));
+
+    if (formData.profileImage instanceof File) {
+      formDataToSend.append("profileImage", formData.profileImage);
+    } else {
+      console.error("Invalid profile image");
+      return;
+    }
     // API 호출 부분에서 formData를 사용\
-    const requestBody: MemberExtraInfoDto = formData;
-    MemberExtraInfoRequest(requestBody).then((responseBody: MemberExtraInfoDto | null) => {
-      console.log(responseBody)
-    })
+    MemberExtraInfoRequest(formDataToSend).then((responseBody: MemberExtraInfoDto | null) => {
+      console.log("Response:", responseBody);
+    });
     console.log("Final Data:", formData);
   };
   return (
@@ -342,7 +360,7 @@ export const UserExtraInfoModal_v2 = ({
                   <ExtraInfoLabel>
                     <StepNumber>1</StepNumber>프로필 사진을 선택해 주세요!
                   </ExtraInfoLabel>
-                  <ExtraFileInput setProfileImage={(image) => setFormData((prev) => ({ ...prev, profileImage: image }))} />
+                  {/* <ExtraFileInput setProfileImage={(image) => setFormData((prev) => ({ ...prev, profileImage: image }))} /> */}
                 </div>
                 <div>
                   <ExtraInfoLabel>

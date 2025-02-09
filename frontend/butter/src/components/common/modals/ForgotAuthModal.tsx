@@ -1,5 +1,9 @@
 import * as MC from "./modalComponents/modalComponents"
 import styled from "@emotion/styled"
+import { useState } from "react";
+import { EmailExistRequestDto } from "../../../apis/request/auth/authDto";
+import { emailExistRequest } from "../../../apis/request/auth/authRequest";
+import { EmailExistResponseDto } from "../../../apis/response/auth";
 
 const ForgotFormWrapper = styled.div``;
 const ForgotForm = styled.form``;
@@ -33,6 +37,17 @@ interface ModalProps extends ModalSizeProps {
 }
 
 export const ForgotAuthModal = ({ setModalType, width, height }: ModalProps) => {
+  const [forgetIdEmail, setForgetIdEmail] = useState<string>('')
+  const [forgetIdCode, setForgetIdCode] = useState<string>('')
+  const [isExistEmail, setisExistEmail] = useState(false)
+
+  const handleFICodeSend = () => {
+    const requestBody: EmailExistRequestDto = { email: forgetIdEmail, type: "SIGNUP" }
+    emailExistRequest(requestBody).then((responseBody: EmailExistResponseDto | null) => {
+      console.log(responseBody)
+    })
+  }
+
   return (
     <>
       <MC.ModalOverlay />
@@ -56,16 +71,22 @@ export const ForgotAuthModal = ({ setModalType, width, height }: ModalProps) => 
             <ForgotForm>
               <ForgotInputWrapper>
                 <ForgotLabel>이메일</ForgotLabel>
-                <ForgotInput />
+                <ForgotInput type="email" value={forgetIdEmail} onChange={(e) => { setForgetIdEmail(e.target.value) }} />
                 <MC.FilledBtn
                   textColor="white"
                   width="140px"
                   height="100%"
                   color="black"
+                  onClick={(e) => {
+                    e.preventDefault()
+                    handleFICodeSend()
+                  }}
                 >
                   인증번호 발송
                 </MC.FilledBtn>
               </ForgotInputWrapper>
+            </ForgotForm>
+            <ForgotForm>
               <ForgotInputWrapper>
                 <ForgotLabel>인증번호</ForgotLabel>
                 <ForgotInput />
@@ -80,6 +101,7 @@ export const ForgotAuthModal = ({ setModalType, width, height }: ModalProps) => 
               </ForgotInputWrapper>
             </ForgotForm>
           </ForgotFormWrapper>
+
           {/* 비밀번호 찾기 폼 */}
           <ForgotFormWrapper>
             <MC.Comment_v2 textColor="black">비밀번호 찾기</MC.Comment_v2>

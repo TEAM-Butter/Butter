@@ -7,7 +7,7 @@ const API_DOMAIN = `http://localhost:8080/api/v1`;
 const SIGNUP_URL = () => `${API_DOMAIN}/members/signup`;
 
 export const signupRequest = async (requestBody: SignUpRequestDto) => {
-    const result = await axios.post(SIGNUP_URL(), requestBody)
+    const result = await axios.post(SIGNUP_URL(), requestBody,)
         .then(response => {
             const responseBody: SignUpResponseDto = response.data;
             return responseBody
@@ -34,7 +34,7 @@ export const memberDetailRequest = async () => {
     return result
 }
 
-export const MemberExtraInfoRequest = async (requestBody: MemberExtraInfoDto) => {
+export const MemberExtraInfoRequest = async (requestBody: FormData) => {
     const result = await axiosInstance.post('/members/extra-info', requestBody)
         .then(response => {
             const responseBody: MemberExtraInfoDto = response.data;

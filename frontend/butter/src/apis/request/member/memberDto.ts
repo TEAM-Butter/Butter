@@ -8,7 +8,7 @@ interface SignUpRequestDto {
 
 interface MemberExtraInfoDto {
     nickname: string;
-    profileImage: string;
+    profileImage: File | null;
     avatarType: string;
     genres: string[];
 }

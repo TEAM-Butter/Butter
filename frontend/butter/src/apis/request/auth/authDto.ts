@@ -3,6 +3,12 @@ interface LoginRequestDto {
     password: string,
 }
 
+interface EmailExistRequestDto {
+    email: string,
+    type: string,
+}
+
 export type {
-    LoginRequestDto
+    LoginRequestDto,
+    EmailExistRequestDto
 }
