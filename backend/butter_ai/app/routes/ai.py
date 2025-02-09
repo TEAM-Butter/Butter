@@ -4,7 +4,10 @@ import cv2
 from flask import Blueprint, request, jsonify
 from app.services.ai_service import process_frame
 
+from app import sock
+
 ai_bp = Blueprint("ai", __name__)
+
 
 @ai_bp.route("/upload_frame", methods=["POST"])
 def upload_frame():
@@ -20,5 +23,10 @@ def upload_frame():
 
     # TODO: 소켓쪽으로 연결 필요
 
-
     return jsonify(detection) if detection else jsonify({"status": "no_object"}), 200
+
+
+@sock.on("uploadFrame")
+def on_upload_frame(data):
+    detection = f"Flask detected: {data}"
+    sock.emit("detection", detection)
