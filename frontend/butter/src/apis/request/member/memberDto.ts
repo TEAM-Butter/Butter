@@ -6,6 +6,14 @@ interface SignUpRequestDto {
     gender: string,
 }
 
+interface MemberExtraInfoDto {
+    nickname: string;
+    profileImage: string;
+    avatarType: string;
+    genres: string[];
+}
+
 export type {
-    SignUpRequestDto
+    SignUpRequestDto,
+    MemberExtraInfoDto
 }

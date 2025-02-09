@@ -1,10 +1,9 @@
 import axios from "axios";
-import { SignUpRequestDto } from "./memberDto";
+import { MemberExtraInfoDto, SignUpRequestDto } from "./memberDto";
 import { MemberDetailResponseDto, SignUpResponseDto } from "../../response/member";
 import { axiosInstance } from "../../axiosInstance";
 
-const DOMAIN = `http://localhost:8080`;
-const API_DOMAIN = `${DOMAIN}/api/v1`;
+const API_DOMAIN = `http://localhost:8080/api/v1`;
 const SIGNUP_URL = () => `${API_DOMAIN}/members/signup`;
 
 export const signupRequest = async (requestBody: SignUpRequestDto) => {
@@ -17,10 +16,10 @@ export const signupRequest = async (requestBody: SignUpRequestDto) => {
             console.log("Signup api error:", error)
             return null
         })
-        
-        return result
-    }
-    
+
+    return result
+}
+
 export const memberDetailRequest = async () => {
     const result = await axiosInstance.get('/members/profile')
         .then(response => {
@@ -31,6 +30,20 @@ export const memberDetailRequest = async () => {
             console.log("memberDetailRequest api error:", error)
             return null
         })
-    
+
     return result
-    }
+}
+
+export const MemberExtraInfoRequest = async (requestBody: MemberExtraInfoDto) => {
+    const result = await axiosInstance.post('/members/extra-info', requestBody)
+        .then(response => {
+            const responseBody: MemberExtraInfoDto = response.data;
+            return responseBody
+        })
+        .catch(error => {
+            console.log("MemberExtraInfo api error:", error)
+            return null
+        })
+
+    return result
+}
