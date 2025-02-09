@@ -153,7 +153,7 @@ function Navbar() {
               <Item>HOME {homeMatch && <Bar layoutId="bar" />}</Item>
             </Link>
             <Link to="/busking">
-              <Item>BUSKING {buskingMatch && <Bar layoutId="bar" />}</Item>
+              <Item>MAP {buskingMatch && <Bar layoutId="bar" />}</Item>
             </Link>
             <Link to="/stream-list">
               <Item>STREAMING {streamMatch && <Bar layoutId="bar" />}</Item>
