@@ -2,7 +2,8 @@ from flask import Flask
 from flask_socketio import SocketIO
 
 app = Flask(__name__)
-sock = SocketIO()
+sock = SocketIO(cors_allowed_origins="*")
+
 
 def create_app():
     # 환경 변수 또는 설정 파일 로드
