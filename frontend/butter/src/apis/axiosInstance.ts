@@ -4,25 +4,26 @@ import axios from "axios";
 import { InternalAxiosRequestConfig, AxiosInstance, AxiosResponse } from "axios";
 import { getAccessToken, setAccessToken, removeAccessToken } from "./auth";
 
-export const api: AxiosInstance = axios.create({
+export const axiosInstance: AxiosInstance = axios.create({
     baseURL: `http://localhost:8080/api/v1`,
     withCredentials: true,
 })
 
-api.interceptors.request.use((config: InternalAxiosRequestConfig<any>)  => {
+axiosInstance.interceptors.request.use((config: InternalAxiosRequestConfig<any>) => {
     const accessToken = getAccessToken();
-    if(accessToken) {
+    if (accessToken) {
         config.headers = config.headers || {};
         config.headers.Authorization = `Bearer ${accessToken}`
     }
 
-    return config; },
+    return config;
+},
     (error) => Promise.reject(error)
 );
 
-api.interceptors.response.use((response: AxiosResponse) => response,
+axiosInstance.interceptors.response.use((response: AxiosResponse) => response,
     async (error) => {
-        if (error.response?.status === 401){
+        if (error.response?.status === 401) {
             console.log(`Access Token 만료됨, Refresh Token으로 갱신 중`)
             try {
                 const refreshResponse = await axios.post<{ accessToken: string }>(

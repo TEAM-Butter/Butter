@@ -1,9 +1,10 @@
 import styled from "@emotion/styled";
 import { useState } from "react";
-import { LoginRequestDto } from "../../apis/request/auth";
-import { loginRequest, signupRequest } from "../../apis/request";
+import { LoginRequestDto } from "../../apis/request/auth/authDto";
+import { signupRequest } from "../../apis/request/member/memberRequest";
+import { loginRequest } from "../../apis/request/auth/authRequest";
 import { LoginResponseDto } from "../../apis/response/auth";
-import { SignUpRequestDto } from "../../apis/request/member";
+import { SignUpRequestDto } from "../../apis/request/member/memberDto";
 import { setAccessToken } from "../../apis/auth";
 import { useNavigate } from "react-router-dom";
 import { useUserStore } from "../../stores/UserStore";
@@ -74,33 +75,33 @@ interface ModalProps {
 export const LoginForm = ({ setModalType }: ModalProps) => {
     const setUser = useUserStore(state => state.setUser)
     const navigator = useNavigate();
-    
+
     const [loginId, setLoginId] = useState<string>('')
     const [password, setPassword] = useState<string>('')
-    
+
     const LoginBtnHandler = () => {
         const requestBody: LoginRequestDto = { loginId, password };
         loginRequest(requestBody).then((responseBody: LoginResponseDto | null) => {
             const { accessToken } = responseBody as LoginResponseDto;
             setAccessToken(accessToken)
             navigator(`/`)
-            setUser(true, "guest", "profile.jpg", "pet1", "crew");
+            setUser(true, "guest", "profile.jpg", "pet1", String(responseBody?.authenticatedMemberInfo.memberType), Boolean(responseBody?.authenticatedMemberInfo.isExtraInfoRegistered));
         }
-    )
-}
-return (
-    <FormWrapper onSubmit={(e) => {
-        e.preventDefault()
-        LoginBtnHandler()
-    }} >
-        <LgText textColor="black">Log into<br />your account</LgText>
-        <TextInput type="text" value={loginId} onChange={(e) => setLoginId(e.target.value)} placeholder="type your id." />
-        <TextInput type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="type your password." />
-        <ForgetComment className="openModalBtn" onClick={() => { setModalType("forgotAuth") }}>아이디/ 비밀번호를 잊어버리셨나요?</ForgetComment>
-        <WrongComment></WrongComment>
-        <FormBtn bgColor="rgba(0,0,0,0.4)" type="button" onClick={LoginBtnHandler}>Log in</FormBtn>
-        <FormBtn bgColor="black">Log in with <span>kakao</span></FormBtn>
-    </FormWrapper>
+        )
+    }
+    return (
+        <FormWrapper onSubmit={(e) => {
+            e.preventDefault()
+            LoginBtnHandler()
+        }} >
+            <LgText textColor="black">Log into<br />your account</LgText>
+            <TextInput type="text" value={loginId} onChange={(e) => setLoginId(e.target.value)} placeholder="type your id." />
+            <TextInput type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="type your password." />
+            <ForgetComment className="openModalBtn" onClick={() => { setModalType("forgotAuth") }}>아이디/ 비밀번호를 잊어버리셨나요?</ForgetComment>
+            <WrongComment></WrongComment>
+            <FormBtn bgColor="rgba(0,0,0,0.4)" type="button" onClick={LoginBtnHandler}>Log in</FormBtn>
+            <FormBtn bgColor="black">Log in with <span>kakao</span></FormBtn>
+        </FormWrapper>
     )
 };
 
@@ -137,17 +138,17 @@ export const SignupForm = () => {
             const { accessToken } = responseBody as LoginResponseDto;
             setAccessToken(accessToken)
             navigator(`/`)
-            setUser(true, "guest", "profile.jpg", "pet1", "crew");
-        }) 
+            setUser(true, "guest", "profile.jpg", "pet1", String(responseBody?.authenticatedMemberInfo.memberType), Boolean(responseBody?.authenticatedMemberInfo.isExtraInfoRegistered));
+        })
     }
 
     const SignUpBtnHandler = () => {
         const requestBody: SignUpRequestDto = { loginId, password, email, gender, birthDate };
-        signupRequest(requestBody).then(()=>{
+        signupRequest(requestBody).then(() => {
             LoginHandler()
         })
     }
-    
+
     return (
         <FormWrapper>
             <LgText textColor="black">Sign up<br />your account</LgText>

@@ -132,7 +132,6 @@ function Navbar() {
   const memberType = useUserStore((state) => state.memberType);
   const isLogin = useUserStore((state) => state.isLogin);
   const logout = useUserStore((state) => state.logout);
-  console.log(memberType == "");
 
   const homeMatch = useMatch("");
   const buskingMatch = useMatch("busking");
