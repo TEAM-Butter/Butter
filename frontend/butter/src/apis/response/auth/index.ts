@@ -13,6 +13,19 @@ interface LoginResponseDto {
     authenticatedMemberInfo: AuthenticatedMemberInfo;
 }
 
+interface EmailSendCodeResponseDto {
+    message: string;
+    code: string;
+}
+
+interface EmailVerifyCodeResponseDto {
+    message: string;
+    type: string;
+    typeadditionalInfo: string;
+}
+
 export type {
     LoginResponseDto,
+    EmailSendCodeResponseDto,
+    EmailVerifyCodeResponseDto,
 }
