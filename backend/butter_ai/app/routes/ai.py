@@ -2,6 +2,7 @@ import base64
 import numpy as np
 import cv2
 from flask import Blueprint, request, jsonify
+from flask_socketio import join_room, leave_room
 from app.services.ai_service import process_frame
 
 from app import sock
@@ -26,7 +27,22 @@ def upload_frame():
     return jsonify(detection) if detection else jsonify({"status": "no_object"}), 200
 
 
+@sock.on("join")
+def on_join(data):
+    room_id = data["roomId"]
+    join_room(room_id)
+    sock.emit("message", f"User {request.sid} joined room {room_id}", room=room_id)
+
+
+@sock.on("leave")
+def on_leave(data):
+    room_id = data["roomId"]
+    leave_room(room_id)
+    sock.emit("message", f"User {request.sid} left room {room_id}", room=room_id)
+
+
 @sock.on("uploadFrame")
 def on_upload_frame(data):
+    room_id = data["roomId"]
     detection = f"Flask detected: {data}"
-    sock.emit("detection", detection)
+    sock.emit("message", detection, room=room_id)
