@@ -12,10 +12,16 @@ ai_bp = Blueprint("ai", __name__)
 
 @ai_bp.route("/upload_frame", methods=["POST"])
 def upload_frame():
-    if 'file' not in request.files:
-        return jsonify({"error": "No file provided"}), 400
+    room_id = request.form.get("room-id")
+    if room_id is None or room_id == '':
+        error = {"error": "No room ID provided"}
+        return error, 400
 
-    file = request.files['file']
+    if "file" not in request.files:
+        error = {"error": "No file provided"}
+        return error, 400
+
+    file = request.files["file"]
     img_np = np.frombuffer(file.read(), np.uint8)  # 바이트 데이터를 numpy 배열로 변환
     frame = cv2.imdecode(img_np, cv2.IMREAD_COLOR)  # OpenCV로 이미지 디코딩
 
@@ -23,15 +29,18 @@ def upload_frame():
     detection = process_frame(frame)
 
     # 웹소켓으로 탐지 결과 송신
-    room_id = request.form.get("roomId")
-    sock.emit("message", jsonify(detection), roomId=room_id)
+    sock.emit("message", detection, room=room_id)
 
-    return jsonify(detection) if detection else jsonify({"status": "no_object"}), 200
+    return detection if detection else {"status": "no_object"}, 200
 
 
 @sock.on("join")
 def on_join(data):
     room_id = data["roomId"]
+    if room_id is None or room_id == '':
+        sock.emit("message", "No room ID provided", room=room_id)
+        return
+
     join_room(room_id)
     sock.emit("message", f"User {request.sid} joined room {room_id}", room=room_id)
 
@@ -41,10 +50,3 @@ def on_leave(data):
     room_id = data["roomId"]
     leave_room(room_id)
     sock.emit("message", f"User {request.sid} left room {room_id}", room=room_id)
-
-
-@sock.on("uploadFrame")
-def on_upload_frame(data):
-    room_id = data["roomId"]
-    detection = f"Flask detected: {data}"
-    sock.emit("message", detection, room=room_id)
