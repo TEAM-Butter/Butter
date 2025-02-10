@@ -1,206 +1,161 @@
 import { useState, useRef, useEffect } from "react";
-import { motion } from "framer-motion";
 import styled from "@emotion/styled";
+import ReactPlayer from "react-player";
+import Control from "./Control";
 
 const VideoTrimmerWrapper = styled.div`
   width: 100%;
 `;
 
-const Video = styled.video`
+const VideoContainer = styled.div`
   width: 100%;
 `;
 
-const ScrollBox = styled.div`
-  display: flex;
-  flex-direction: column;
-  row-gap: 12px;
+const Title = styled.h2`
+  text-align: center;
+  color: #333;
+  margin-bottom: 24px;
 `;
-const ScrollWrapper = styled.div`
+
+const PlayerWrapper = styled.div`
   position: relative;
-  height: 50px;
-  width: 100%;
-  background-color: aliceblue;
+  padding-top: 56.25%; //16:9 Aspect Ratio
+  /* padding-top: 20px; */
+  border-radius: 12px;
+  overflow: hidden;
+  background: #000;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+  .player {
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+  &:hover .controls-overlay {
+    opacity: 1;
+  }
 `;
 
-const ScrollStartBar = styled.div<{ $startPoint: number }>`
+const ControlOverlay = styled.div`
   position: absolute;
-  left: ${({ $startPoint }) => `${$startPoint}px`};
-  width: 4px;
-  height: 100%;
-  background-color: red;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+  z-index: 1;
+  opacity: 0;
+  transition: opacity 0.3s;
 `;
 
-const ScrollEndBar = styled.div<{ $startPoint: number }>`
-  position: absolute;
-  left: ${({ $startPoint }) => `${$startPoint}px`};
-  width: 4px;
-  height: 100%;
-  background-color: blue;
-`;
-
-const ScrollDetailWrapper = styled.div`
-  position: relative;
-  height: 50px;
+const StyledContainer = styled.div`
+  max-width: 1200px;
+  margin: 0 auto;
   width: 100%;
-  background-color: beige;
 `;
 
 interface VideoTrimmerProps {
   videoUrl: string;
 }
+interface VideoState {
+  playing: boolean;
+  muted: boolean;
+  volume: number;
+  played: number;
+  seeking: boolean;
+  buffer: boolean; // Buffer -> buffer로 수정
+}
 
 const VideoTrimmer = ({ videoUrl }: VideoTrimmerProps) => {
-  const [duration, setDuration] = useState<number>(0);
-  const [currentTime, setCurrentTime] = useState<number>(0);
-  const [startPos, setStartPos] = useState<number>(0);
-  const [endPos, setEndPos] = useState<number>(1);
-  const [isPlaying, setIsPlaying] = useState<boolean>(false);
-  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const playerRef = useRef<ReactPlayer | null>(null);
+  const [videoState, setVideoState] = useState<VideoState>({
+    playing: true,
+    muted: false,
+    volume: 0.5,
+    played: 0,
+    seeking: false,
+    buffer: true,
+  });
 
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
+  const [duration, setDuration] = useState(0);
+  const [currentTime, setCurrentTime] = useState(0);
 
-    video.onloadedmetadata = () => {
-      setDuration(video.duration);
-    };
-
-    video.ontimeupdate = () => {
-      const time = video.currentTime;
-      setCurrentTime(time);
-
-      if (time >= duration * endPos) {
-        video.currentTime = duration * startPos;
-        setIsPlaying(false);
-        video.pause();
+  const handlePlayPause = () => {
+    if (playerRef.current) {
+      const newPlayingState = !videoState.playing;
+      setVideoState((prev) => ({
+        ...prev,
+        playing: newPlayingState,
+      }));
+      // playerRef.current.playing 속성을 직접 설정
+      if (newPlayingState) {
+        playerRef.current.getInternalPlayer()?.play();
+      } else {
+        playerRef.current.getInternalPlayer()?.pause();
       }
-    };
-  }, [duration, startPos, endPos]);
-
-  const handlePlayPause = (): void => {
-    const video = videoRef.current;
-    if (!video) return;
-
-    if (isPlaying) {
-      video.pause();
-    } else {
-      video.play();
     }
-    setIsPlaying(!isPlaying);
   };
 
-  const formatTime = (time: number): string => {
-    const minutes = Math.floor(time / 60);
-    const seconds = Math.floor(time % 60);
-    return `${minutes}:${seconds.toString().padStart(2, "0")}`;
+  const handleSeek = (time: number) => {
+    if (playerRef.current) {
+      playerRef.current.seekTo(time);
+    }
+    setVideoState((prev) => ({ ...prev, played: time }));
   };
 
-  // 1000px -> 8px  120분 * 8 / 1000 -> 0.96분 -> 57.6초
+  const handleVolumeChange = (newVolume: number) => {
+    setVideoState((prev) => ({ ...prev, volume: newVolume }));
+  };
 
-  //  120분 1.2분 * 10 12분인가?
-
-  const [isScrollingStart, setIsScrollingStart] = useState(false);
-  const [scrollStartX, setScrollStartX] = useState(0);
-  const [scrollEndX, setScrollEndX] = useState(0);
-
-  console.log("gap", scrollEndX - scrollStartX);
+  const handleProgress = (state: { played: number }) => {
+    if (!videoState.seeking) {
+      setVideoState((prev) => ({ ...prev, played: state.played }));
+    }
+  };
 
   return (
     <VideoTrimmerWrapper>
-      <Video ref={videoRef} src={videoUrl} />
-
-      {/* Controls */}
-      <div className="bg-white p-4 rounded-lg shadow">
-        <div className="flex items-center justify-between mb-4">
-          <motion.button
-            className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            onClick={handlePlayPause}
-          >
-            {isPlaying ? "일시정지" : "재생"}
-          </motion.button>
-          <span className="text-sm text-gray-600">
-            {formatTime(currentTime)} / {formatTime(duration)}
-          </span>
-        </div>
-        {/* Timeline */}
-        <div className="mt-4">
-          <div className="flex justify-between mt-2 text-sm text-gray-500">
-            <span>{formatTime(duration * startPos)}</span>
-
-            <span>{formatTime(duration * endPos)}</span>
-          </div>
-        </div>
-
-        <ScrollBox>
-          <ScrollWrapper
-            onMouseDown={(event) => {
-              setIsScrollingStart(true);
-              const point = event.nativeEvent.offsetX;
-
-              setScrollStartX(point);
-              setScrollEndX(0);
-            }}
-            onMouseMove={(event) => {
-              if (isScrollingStart) {
-                console.log("event", event.nativeEvent.offsetX);
-              }
-            }}
-            onMouseUp={(event) => {
-              setIsScrollingStart(false);
-              setScrollEndX(event.nativeEvent.offsetX);
-            }}
-            onMouseLeave={() => {
-              if (isScrollingStart) setIsScrollingStart(false);
-            }}
-          >
-            {scrollStartX && (
-              <ScrollStartBar
-                // onMouseDown={(event) => {
-                //   setIsScrollingStart(true);
-                //   setScrollStartX(event.nativeEvent.offsetX);
-                // }}
-                // onMouseMove={(event) => {
-                //   setScrollStartX(event.nativeEvent.offsetX);
-                // }}
-                // onMouseUp={(event) => {
-                //   setScrollStartX(event.nativeEvent.offsetX);
-                // }}
-                $startPoint={scrollStartX}
+      <VideoContainer>
+        {/* <Title>React Player</Title> */}
+        <StyledContainer maxWidth="md">
+          <PlayerWrapper>
+            <ReactPlayer
+              ref={playerRef}
+              className="player"
+              url={videoUrl}
+              width="100%"
+              height="100%"
+              playing={videoState.playing}
+              muted={videoState.muted}
+              volume={videoState.volume}
+              onDuration={(d) => setDuration(d)}
+              onProgress={(state) => {
+                if (!videoState.seeking) {
+                  setVideoState((prev) => ({ ...prev, played: state.played }));
+                  setCurrentTime(state.playedSeconds);
+                }
+              }}
+              progressInterval={1000}
+              controls={false}
+              onReady={() => {
+                // 플레이어가 준비되면 초기 상태 설정
+                setVideoState((prev) => ({ ...prev, playing: true }));
+              }}
+            />
+            <ControlOverlay className="controls-overlay">
+              <Control
+                onPlayPause={handlePlayPause}
+                playing={videoState.playing}
+                onSeek={handleSeek}
+                onVolumeChange={handleVolumeChange}
+                volume={videoState.volume}
+                played={videoState.played}
+                duration={duration}
+                currentTime={currentTime}
               />
-            )}
-            {/* {scrollEndX && <ScrollEndBar $startPoint={scrollEndX} />} */}
-          </ScrollWrapper>
-          <ScrollDetailWrapper />
-        </ScrollBox>
-        <motion.div
-          className="flex gap-2 mt-6"
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-        >
-          <motion.button
-            className="flex-1 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors"
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            onClick={() => {
-              const video = videoRef.current;
-              if (video) {
-                video.currentTime = duration * startPos;
-              }
-            }}
-          >
-            시작점으로 이동
-          </motion.button>
-          <motion.button
-            className="flex-1 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-          >
-            닫기
-          </motion.button>
-        </motion.div>
-      </div>
+            </ControlOverlay>
+          </PlayerWrapper>
+        </StyledContainer>
+      </VideoContainer>
     </VideoTrimmerWrapper>
   );
 };
