@@ -21,9 +21,9 @@ public record UserProfileResponseDTO(
                 .toList();
 
         return new UserProfileResponseDTO(
-                member.getEmail().getValue(),
                 member.getLoginId(),
                 member.getGender().name(),
+                member.getEmail().getValue(),
                 member.getNickname().getValue(),
                 member.getBirthDate().getDate(),
                 member.getProfileImage(),
