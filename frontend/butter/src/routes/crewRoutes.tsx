@@ -5,8 +5,7 @@ import CrewNoticePage from "../pages/crew/crewNoticePage";
 import SamplePage from "../pages/crew/samplePage";
 
 export const crewRoutes = (
-
-  <Route path="/crew" >
+  <Route path="/crew">
     <Route path="list" element={ <CrewListPage/> }/>
     <Route path="member" />
     <Route path="detail/:id" element={ <CrewDetailPage/> }/>

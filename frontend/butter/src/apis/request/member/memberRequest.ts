@@ -1,15 +1,13 @@
 import axios from "axios";
-import { CheckLoginIdRequestDto, SignUpRequestDto } from "./memberDto";
+import { CheckLoginIdRequestDto, SignUpRequestDto, MemberExtraInfoDto } from "./memberDto";
 import { CheckLoginIdResponseDto, MemberDetailResponseDto, SignUpResponseDto } from "../../response/member";
 import { axiosInstance } from "../../axiosInstance";
-import exp from "constants";
 
-const DOMAIN = `http://localhost:8080`;
-const API_DOMAIN = `${DOMAIN}/api/v1`;
+const API_DOMAIN = `http://localhost:8080/api/v1`;
 const SIGNUP_URL = () => `${API_DOMAIN}/members/signup`;
 
 export const signupRequest = async (requestBody: SignUpRequestDto) => {
-    const result = await axios.post(SIGNUP_URL(), requestBody)
+    const result = await axios.post(SIGNUP_URL(), requestBody,)
         .then(response => {
             const responseBody: SignUpResponseDto = response.data;
             return responseBody
@@ -18,10 +16,10 @@ export const signupRequest = async (requestBody: SignUpRequestDto) => {
             console.log("Signup api error:", error)
             return null
         })
-        
-        return result
-    }
-    
+
+    return result
+}
+
 export const memberDetailRequest = async () => {
     const result = await axiosInstance.get('/members/profile')
         .then(response => {
@@ -32,7 +30,24 @@ export const memberDetailRequest = async () => {
             console.log("memberDetailRequest api error:", error)
             return null
         })
-        
+
+    return result
+}
+
+export const MemberExtraInfoRequest = async (requestBody: FormData) => {
+    const result = await axiosInstance.post('/members/extra-info', requestBody,{
+        headers: {
+            "Content-Type" : "multipart/form-data",
+        }
+    })
+        .then(response => {
+            const responseBody: MemberExtraInfoDto = response.data;
+            return responseBody
+        })
+        .catch(error => {
+            console.log("MemberExtraInfo api error:", error)
+            return null
+        })
         return result
     }
     

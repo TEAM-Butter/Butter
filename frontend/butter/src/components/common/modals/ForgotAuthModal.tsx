@@ -170,6 +170,10 @@ export const ForgotAuthModal = ({ setModalType, width, height }: ModalProps) => 
                   width="140px"
                   height="100%"
                   color="black"
+                  onClick={(e) => {
+                    e.preventDefault()
+                    handleFICodeSend()
+                  }}
                 >
                   인증번호 발송
                 </MC.FilledBtn>
