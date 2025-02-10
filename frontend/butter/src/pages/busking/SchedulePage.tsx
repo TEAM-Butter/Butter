@@ -11,7 +11,7 @@ import sample4 from "../../assets/sample4.jpg";
 import sample5 from "../../assets/sample5.png";
 import myLocationIcon from "../../assets/myLocationIcon.png";
 import zoomIcon from "../../assets/zoomIcon.png";
-import zoomoutIcon from "../../assets/zoomoutIcon.png";
+import zoomoutIcon from "../../assets/zoomOutIcon.png";
 import guitarIcon from "../../assets/guitarIcon.png";
 import { useEffect, useRef, useState } from "react";
 import useKakaoLoader from "../crew/samplePage";
@@ -98,8 +98,19 @@ const Box4 = styled.div`
   border-radius: 5px;
   padding-top: 20px;
   padding-left: 20px;
-
+  position: relative;
 `
+
+const CalenderBox = styled.div`
+  z-index: 999;
+  background-color: gray;
+  border-radius: 30px;
+  padding: 20px;
+  top: 200px;
+  position: absolute;
+  border: 2px solid white;
+`
+
 const SearchWrapper = styled.div`
   display: flex;
   gap: 20px;
@@ -242,7 +253,7 @@ function SchedulePage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [myLocation, setMyLocation] = useState<{ lat: number; lng: number } |null>(null);
-const [myAddress, setMyAddress] = useState<string>(""); // 내 위치 주소 저장
+  const [myAddress, setMyAddress] = useState<string>(""); // 내 위치 주소 저장
 
 
 
@@ -720,7 +731,19 @@ useEffect(() => {
         </Box2>
         <Box3>
           <CalenderIcon src={calenderIcon} alt="calenderIcon" onClick={()=>{calenderHandler()}}></CalenderIcon>
-       
+          
+          {calenderOpen && <CalenderBox> <FullCalendar
+                
+                height={"400px"}
+                plugins={[ dayGridPlugin ]}
+                initialView="dayGridMonth"
+               
+                events={[
+                  { title: 'event 1', date: '2025-02-05' },
+                  { title: 'event 2', date: '2025-02-02' }
+                ]}
+              /> </CalenderBox>}
+            
         </Box3>
       </SearchWrapper>
       <Box4>
