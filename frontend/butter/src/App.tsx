@@ -12,7 +12,7 @@ import "./styles/reset.css";
 import "./styles/index.css";
 import "./styles/stream.css";
 import LiveListPage from "./pages/stream/LiveListPage";
-import VideoEditPage from "./pages/video/videoEditPage";
+import VideoEditPage from "./pages/video/VideoEditPage";
 
 function App() {
   return (

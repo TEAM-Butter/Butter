@@ -1,6 +1,7 @@
 import styled from "@emotion/styled";
 import VideoTrimmer from "../../components/video/VideoTrimmer";
 import { MouseEventHandler, useState } from "react";
+import { Link } from "react-router-dom";
 
 const VideoEditPageWrapper = styled.div`
   display: flex;
@@ -20,8 +21,7 @@ const Left = styled.div`
   flex-direction: column;
   gap: 8px;
   flex: 1;
-
-  min-width: 200px;
+  min-width: 580px;
 `;
 const Right = styled.div`
   width: 400px;
@@ -135,16 +135,15 @@ const video: Video = {
 
 const VideoEditPage = () => {
   const [selectedVideo, setSelectedVideo] = useState<string>("");
-
   const selectVideo = (url: string) => {
     console.log(url);
     setSelectedVideo(url);
   };
+
   return (
     <VideoEditPageWrapper>
       <Left>
-        <T1>Edit Video</T1>
-
+        <T1>My Video</T1>
         <VideoTrimmer videoUrl={selectedVideo} />
       </Left>
       <Right>

@@ -48,7 +48,7 @@ const IconButton = styled.button`
   transition: all 0.2s;
 
   &:hover {
-    color: #9556cc;
+    color: #0d99ff;
     background: rgba(149, 86, 204, 0.1);
   }
 `;
@@ -74,13 +74,13 @@ const InnerControls = styled.div`
 `;
 
 const CustomSlider = styled(Slider)`
-  color: #9556cc;
+  color: #0d99ff;
   height: 4px;
 
   .MuiSlider-thumb {
     width: 16px;
     height: 16px;
-    background-color: #9556cc;
+    background-color: #0d99ff;
 
     &:hover,
     &.Mui-focusVisible {
