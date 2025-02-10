@@ -22,7 +22,9 @@ def upload_frame():
     # YOLO v10 객체 탐지
     detection = process_frame(frame)
 
-    # TODO: 소켓쪽으로 연결 필요
+    # 웹소켓으로 탐지 결과 송신
+    room_id = request.form.get("roomId")
+    sock.emit("message", jsonify(detection), roomId=room_id)
 
     return jsonify(detection) if detection else jsonify({"status": "no_object"}), 200
 
