@@ -186,10 +186,10 @@ type TrackInfo = {
 
 // When running OpenVidu locally, leave these variables empty
 // For other deployment type, configure them with correct URLs depending on your deployment
-let APPLICATION_SERVER_URL = "";
+let APPLICATION_SERVER_URL = "https://i12e204.p.ssafy.io/test/api";
 //let APPLICATION_SERVER_URL = "https://192.168.30.199:6080/";
 
-let LIVEKIT_URL = "";
+let LIVEKIT_URL = "https://i12e204.p.ssafy.io:5443/twirp";
 //let LIVEKIT_URL = "wss://192.168.30.199:7880/";
 
 let TOKEN = "";
