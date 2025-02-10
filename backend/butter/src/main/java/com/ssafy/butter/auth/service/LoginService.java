@@ -11,5 +11,5 @@ import jakarta.servlet.http.HttpServletRequest;
 public interface LoginService {
     LoginResponseDTO login(LoginRequestDTO loginRequestDTO);
     LoginResponseDTO loginByOAuth(SocialLoginRequestDTO socialLoginRequestDTO);
-    public ReissueResponseDTO reissueAccessToken(HttpServletRequest request, @CurrentUser AuthInfoDTO authInfoDTO);
+    public ReissueResponseDTO reissueAccessToken(HttpServletRequest request, AuthInfoDTO authInfoDTO, String refreshToken);
 }

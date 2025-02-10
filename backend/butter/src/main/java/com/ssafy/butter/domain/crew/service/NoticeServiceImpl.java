@@ -6,9 +6,9 @@ import com.ssafy.butter.domain.crew.dto.request.NoticeSaveRequestDTO;
 import com.ssafy.butter.domain.crew.dto.response.NoticeResponseDTO;
 import com.ssafy.butter.domain.crew.entity.Crew;
 import com.ssafy.butter.domain.crew.entity.Notice;
-import com.ssafy.butter.domain.crew.repository.CrewMemberRepository;
-import com.ssafy.butter.domain.crew.repository.CrewRepository;
-import com.ssafy.butter.domain.crew.repository.NoticeRepository;
+import com.ssafy.butter.domain.crew.repository.crewmember.CrewMemberRepository;
+import com.ssafy.butter.domain.crew.repository.crew.CrewRepository;
+import com.ssafy.butter.domain.crew.repository.notice.NoticeRepository;
 import com.ssafy.butter.domain.member.entity.Member;
 import com.ssafy.butter.domain.member.service.member.MemberService;
 import com.ssafy.butter.infrastructure.awsS3.S3ImageUploader;
@@ -55,7 +55,7 @@ public class NoticeServiceImpl implements NoticeService {
                 .content(noticeSaveRequestDTO.content())
                 .imageUrl(imageUrl)
                 .build();
-        return NoticeResponseDTO.fromEntity(notice);
+        return NoticeResponseDTO.fromEntity(noticeRepository.save(notice));
     }
 
     /**

@@ -94,8 +94,8 @@ const LiveContainer = styled.div`
 `;
 
 const LiveCard = styled.div`
-  width: 400px;
-  height: 350px;
+  width: 300px;
+  height: 300px;
   border-radius: 20px;
 `;
 

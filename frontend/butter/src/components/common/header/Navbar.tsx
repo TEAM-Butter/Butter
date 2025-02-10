@@ -3,7 +3,9 @@ import styled from "@emotion/styled";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { Link, useMatch } from "react-router-dom";
-import { StreamingModal } from "../modals/modal";
+import { StreamingModal } from "../modals/StreamingModal";
+import { useUserStore } from "../../../stores/UserStore";
+import { removeAccessToken } from "../../../apis/auth";
 
 const Nav = styled.nav`
   display: flex;
@@ -126,16 +128,25 @@ const subProfileVariants = {
 };
 
 function Navbar() {
+  //useUserStore
+  const memberType = useUserStore((state) => state.memberType);
+  const isLogin = useUserStore((state) => state.isLogin);
+  const logout = useUserStore((state) => state.logout);
+
   const homeMatch = useMatch("");
   const buskingMatch = useMatch("busking");
-  const streamMatch = useMatch("stream");
-  const crewMatch = useMatch("crew");
+  const streamMatch = useMatch("stream-list");
+  const crewMatch = useMatch("crew/list");
   const loginMatch = useMatch("auth/login");
   // isLogin이 true일 경우 profile dropdown 적용, false일 경우 login link만 렌더링링
-  const [isLogin, setIsLogin] = useState(true);
-  const [isCrewUser, setIsCrewUser] = useState(true);
   const [isHovered, setIsHovered] = useState(false);
   const [modalType, setModalType] = useState<string>("");
+
+  const memberLogout = () => {
+    logout();
+    removeAccessToken();
+  };
+
   return (
     <>
       <Nav>
@@ -187,7 +198,7 @@ function Navbar() {
                   <Link to="/">
                     <SubItem>브레드 충전</SubItem>
                   </Link>
-                  {isCrewUser ? (
+                  {memberType == "crew" ? (
                     <>
                       <SubItem
                         className="openModalBtn"
@@ -209,11 +220,11 @@ function Navbar() {
                       <SubItem>크루 등록</SubItem>
                     </Link>
                   )}
-                  <Link to="/">
+                  <Link to="/member/detail/guest">
                     <SubItem>회원정보 수정</SubItem>
                   </Link>
                   <Link to="/">
-                    <SubItem>로그아웃</SubItem>
+                    <SubItem onClick={memberLogout}>로그아웃</SubItem>
                   </Link>
                 </SubProfile>
               </Profile>

@@ -1,23 +1,35 @@
 package com.ssafy.butter.domain.member.controller;
 
 import com.ssafy.butter.auth.dto.AuthInfoDTO;
-import com.ssafy.butter.domain.member.dto.request.*;
-import com.ssafy.butter.domain.member.dto.response.*;
+import com.ssafy.butter.domain.member.dto.request.CheckLoginIdDTO;
+import com.ssafy.butter.domain.member.dto.request.ExtraInfoDTO;
+import com.ssafy.butter.domain.member.dto.request.PasswordUpdateRequestDTO;
+import com.ssafy.butter.domain.member.dto.request.ProfileUpdateRequestDTO;
+import com.ssafy.butter.domain.member.dto.request.SignUpDTO;
+import com.ssafy.butter.domain.member.dto.response.CheckLoginIdResponseDTO;
+import com.ssafy.butter.domain.member.dto.response.PasswordUpdateResponseDTO;
+import com.ssafy.butter.domain.member.dto.response.ProfileUpdateResponseDTO;
+import com.ssafy.butter.domain.member.dto.response.RegisterExtraInfoResponseDTO;
+import com.ssafy.butter.domain.member.dto.response.SignUpResponseDTO;
+import com.ssafy.butter.domain.member.dto.response.UserProfileResponseDTO;
 import com.ssafy.butter.domain.member.service.member.MemberService;
 import com.ssafy.butter.global.token.CurrentUser;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/v1/members")

@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import { LoginForm } from "../../components/user/AuthForm";
 import { Link } from "react-router-dom";
-import { ForgotAuthModal } from "../../components/common/modals/modal";
+import { ForgotAuthModal } from "../../components/common/modals/ForgotAuthModal";
 import { useState } from "react";
 
 const LoginPageWrapper = styled.div`
@@ -21,9 +21,7 @@ const RtContainer = styled.div``;
 
 const LoginFormWrapper = styled.div`
   display: flex;
-  flex-direction: column;
   align-items: center;
-  justify-content: center;
   padding: 50px 40px;
   min-width: 400px;
   border-radius: 30px;
@@ -32,7 +30,7 @@ const LoginFormWrapper = styled.div`
 
 const SignupLink = styled.div`
   min-width: 370px;
-  min-height: 150px;
+  min-height: 130px;
   background-color: black;
   border-radius: 30px;
   padding: 20px 40px;

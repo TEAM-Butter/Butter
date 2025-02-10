@@ -85,8 +85,8 @@ public class ClipServiceImpl implements ClipService {
     }
 
     @Override
-    public void likeClip(Long memberId, ClipLikeRequestDTO clipLikeRequestDTO) {
-        Member member = memberService.findById(memberId);
+    public void likeClip(AuthInfoDTO currentUser, ClipLikeRequestDTO clipLikeRequestDTO) {
+        Member member = memberService.findById(currentUser.id());
         Clip clip = clipRepository.findById(clipLikeRequestDTO.clipId()).orElseThrow();
         likedClipRepository.findByMemberAndClip(member, clip).ifPresentOrElse(likedClip -> {
             if (likedClip.getIsLiked()) {
@@ -104,14 +104,14 @@ public class ClipServiceImpl implements ClipService {
     }
 
     @Override
-    public void unlikeClip(Long memberId, Long clipId) {
-        Member member = memberService.findById(memberId);
+    public void unlikeClip(AuthInfoDTO currentUser, Long clipId) {
+        Member member = memberService.findById(currentUser.id());
         Clip clip = clipRepository.findById(clipId).orElseThrow();
         LikedClip likedClip = likedClipRepository.findByMemberAndClip(member, clip).orElseThrow();
-        likedClip.updateIsLiked(false);
-        if (likedClip.getIsLiked()) {
+        if (!likedClip.getIsLiked()) {
             throw new IllegalArgumentException("Already unliked clip");
         }
+        likedClip.updateIsLiked(false);
         likedClipRepository.save(likedClip);
     }
 }

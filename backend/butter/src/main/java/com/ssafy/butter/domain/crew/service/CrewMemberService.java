@@ -7,4 +7,6 @@ import com.ssafy.butter.domain.member.entity.Member;
 public interface CrewMemberService {
 
     CrewMember findByCrewAndMember(Crew crew, Member member);
+
+    CrewMember findByMember(Member member);
 }

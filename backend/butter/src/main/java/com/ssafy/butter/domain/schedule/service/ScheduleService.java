@@ -6,6 +6,7 @@ import com.ssafy.butter.domain.schedule.dto.request.ScheduleLikeRequestDTO;
 import com.ssafy.butter.domain.schedule.dto.request.ScheduleSaveRequestDTO;
 import com.ssafy.butter.domain.schedule.dto.request.ScheduleSearchRequestDTO;
 import com.ssafy.butter.domain.schedule.dto.response.ScheduleResponseDTO;
+import com.ssafy.butter.domain.schedule.entity.Schedule;
 
 import java.util.List;
 
@@ -23,7 +24,9 @@ public interface ScheduleService {
 
     ScheduleResponseDTO deleteSchedule(AuthInfoDTO currentUser, Long id);
 
-    void likeSchedule(Long memberId, ScheduleLikeRequestDTO scheduleLikeRequestDTO);
+    void likeSchedule(AuthInfoDTO currentUser, ScheduleLikeRequestDTO scheduleLikeRequestDTO);
 
-    void unlikeSchedule(Long memberId, Long scheduleId);
+    void unlikeSchedule(AuthInfoDTO currentUser, Long scheduleId);
+
+    Schedule findById(Long id);
 }
