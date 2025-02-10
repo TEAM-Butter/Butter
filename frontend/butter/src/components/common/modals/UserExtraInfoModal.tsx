@@ -152,14 +152,14 @@ export const UserExtraInfoModal = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // setModalType("");
+    setModalType("");
     useUserStore.setState({ isExtraInfoRegistered: true });
 
 
     const formDataToSend = new FormData();
     formDataToSend.append("nickname", formData.nickname);
     formDataToSend.append("avatarType", formData.avatarType);
-    formData.genres.forEach((genre) => formDataToSend.append("genres[]", genre));
+    formData.genres.forEach((genre) => formDataToSend.append("genres", genre));
 
     if (formData.profileImage instanceof File) {
       formDataToSend.append("profileImage", formData.profileImage);
@@ -241,8 +241,8 @@ export const UserExtraInfoModal = ({
                       <ExtraRadioInput
                         type="radio"
                         name="avatarType"
-                        value={`pet${index + 1}`}
-                        checked={formData.avatarType === `pet${index + 1}`}
+                        value={`AVATAR${index + 1}`}
+                        checked={formData.avatarType === `AVATAR${index + 1}`}
                         onChange={handleChange}
                         required
                       />

@@ -35,7 +35,11 @@ export const memberDetailRequest = async () => {
 }
 
 export const MemberExtraInfoRequest = async (requestBody: FormData) => {
-    const result = await axiosInstance.post('/members/extra-info', requestBody)
+    const result = await axiosInstance.post('/members/extra-info', requestBody,{
+        headers: {
+            "Content-Type" : "multipart/form-data",
+        }
+    })
         .then(response => {
             const responseBody: MemberExtraInfoDto = response.data;
             return responseBody
