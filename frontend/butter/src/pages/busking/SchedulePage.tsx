@@ -16,6 +16,8 @@ import guitarIcon from "../../assets/guitarIcon.png";
 import { useEffect, useRef, useState } from "react";
 import useKakaoLoader from "../crew/samplePage";
 import { div, image } from "framer-motion/client";
+import FullCalendar from '@fullcalendar/react'
+import dayGridPlugin from '@fullcalendar/daygrid' // a plugin!
 
 
 
@@ -347,6 +349,16 @@ const [myAddress, setMyAddress] = useState<string>(""); // 내 위치 주소 저
 
   const [myLocationOpen, setmyLocationOpen] = useState(false)
   
+  const [calenderOpen, setCalenderOpen] = useState(false) 
+
+  const calenderHandler = function() {
+    setCalenderOpen(!calenderOpen)
+  }
+
+
+
+
+
   useEffect(() => {
     // 분리 주석
     if (!map) return
@@ -707,7 +719,8 @@ useEffect(() => {
           <FindIcon src={findIcon} alt="findIcon" onClick={handleSearch}></FindIcon>
         </Box2>
         <Box3>
-          <CalenderIcon src={calenderIcon} alt="calenderIcon"></CalenderIcon>
+          <CalenderIcon src={calenderIcon} alt="calenderIcon" onClick={()=>{calenderHandler()}}></CalenderIcon>
+       
         </Box3>
       </SearchWrapper>
       <Box4>
