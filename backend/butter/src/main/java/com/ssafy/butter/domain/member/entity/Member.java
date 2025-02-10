@@ -99,15 +99,15 @@ public class Member {
         this.isExtraInfoRegistered = isExtraInfoRegistered;
     }
 
-    public void updateProfile(String nickname, String gender, String profileImage, List<Genre> genres){
+    public void updateProfile(String nickname, String profileImage, String avatarType, List<Genre> genres){
         if(nickname != null){
             this.nickname = new Nickname(nickname);
         }
-        if(gender != null){
-            this.gender = Gender.from(gender);
-        }
         if(profileImage != null){
             this.profileImage = profileImage;
+        }
+        if(avatarType != null){
+            this.avatarType = new AvatarType(avatarType);
         }
         if(genres != null){
             updateMemberGenres(genres);
