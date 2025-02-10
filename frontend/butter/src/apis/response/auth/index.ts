@@ -21,7 +21,7 @@ interface EmailSendCodeResponseDto {
 interface EmailVerifyCodeResponseDto {
     message: string;
     type: string;
-    typeadditionalInfo: string;
+    additionalInfo: string;
 }
 
 export type {
