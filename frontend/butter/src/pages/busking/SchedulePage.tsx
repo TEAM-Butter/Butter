@@ -18,11 +18,11 @@ import useKakaoLoader from "../crew/samplePage";
 import { div, image } from "framer-motion/client";
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid' // a plugin!
-
+import { Calendar } from '@fullcalendar/core';
+import interactionPlugin from '@fullcalendar/interaction'; // for selectable
 
 
 const images = [sample1,sample2,sample3,sample4,sample5]
-
 
 
 const PageContainer=styled.div`
@@ -106,7 +106,9 @@ const CalenderBox = styled.div`
   background-color: gray;
   border-radius: 30px;
   padding: 20px;
-  top: 200px;
+  top: 180px;
+  right: 100px;
+  width: 430px;
   position: absolute;
   border: 2px solid white;
 `
@@ -137,6 +139,7 @@ const DateBox = styled.div`
 `
 const LocationBox = styled.div`
   font-weight: bold;
+  white-space: pre;
 `
 
 const CountBox = styled.div`
@@ -234,8 +237,24 @@ const InputBox = styled.input`
 `
 
 
+const DateTextBox = styled.p`
+  padding-top: 5px;
+`
 
-
+const DateTextBox2 = styled.p`
+  z-index: 999;
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  color: black;
+  background-color: gray;
+  border-radius: 30px;
+  height: 30px;
+  width: 150px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`
 
 
 
@@ -251,11 +270,45 @@ function SchedulePage() {
   const [map, setMap] = useState<kakao.maps.Map | null>(null);
   const [positions2, setPositions] = useState<any>([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState("전국");
   const [myLocation, setMyLocation] = useState<{ lat: number; lng: number } |null>(null);
   const [myAddress, setMyAddress] = useState<string>(""); // 내 위치 주소 저장
 
 
+
+  const calendarRef = useRef<FullCalendar | null>(null); // 🔥 useRef 타입 명시
+  const [selectedDate, setSelectedDate] = useState<any>(null);
+
+  // 🔥 오늘 날짜를 YYYY-MM-DD 형식으로 가져오는 함수
+  const getToday = () => {
+    const today = new Date();
+    return today.toISOString().split("T")[0]; // YYYY-MM-DD 형식
+  };
+
+
+
+
+
+  const handleDateSelect = (selectInfo: any) => {
+    const selectedDate = selectInfo.startStr; // 선택한 날짜
+    console.log("🗓 선택한 날짜:", selectedDate);
+
+    setSelectedDate(selectedDate);
+
+    // ✅ 백엔드 API 요청
+    fetch("https://your-backend-api.com/busking-schedule", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ selectedDate }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("🎸 버스킹 일정:", data);
+      })
+      .catch((error) => console.error("🚨 오류 발생:", error));
+  };
 
 
 
@@ -329,11 +382,6 @@ function SchedulePage() {
     }
   }
 
-
-  const markerPosition = {
-    lat: 36.350701,
-    lng: 127.870667,
-  }
 
   interface StateType {
     center: {
@@ -467,6 +515,23 @@ useEffect(() => {
   console.log("✅내 위치 업데이트 됨", state);
 
 }, [state.center]);
+
+
+useEffect(() => {
+  const todayStr = getToday(); // 🔥 오늘 날짜 가져오기
+  setSelectedDate(todayStr); // ✅ 초기값을 오늘 날짜로 설정
+  
+  if (calendarRef.current) {
+    const calendarApi = calendarRef.current.getApi();
+    const today = new Date();
+    calendarApi.select({
+      start: todayStr,
+      end: todayStr,
+      allDay: true,
+    });
+  }
+}, []);
+
 
 
   const FindMyLocation = function() {
@@ -714,7 +779,7 @@ useEffect(() => {
       
 
 
-
+   <DateTextBox2>날짜 : {selectedDate}</DateTextBox2>
     </Map>
     </>
     </Box1>
@@ -733,22 +798,25 @@ useEffect(() => {
           <CalenderIcon src={calenderIcon} alt="calenderIcon" onClick={()=>{calenderHandler()}}></CalenderIcon>
           
           {calenderOpen && <CalenderBox> <FullCalendar
-                
-                height={"400px"}
-                plugins={[ dayGridPlugin ]}
+                height={"450px"}
+                plugins={[ dayGridPlugin, interactionPlugin ]}
                 initialView="dayGridMonth"
-               
-                events={[
-                  { title: 'event 1', date: '2025-02-05' },
-                  { title: 'event 2', date: '2025-02-02' }
-                ]}
-              /> </CalenderBox>}
+                selectable= {true}
+                select={handleDateSelect}
+                selectAllow={(selectInfo : any) => {
+                  return selectInfo.end - selectInfo.start === 86400000; // 하루(밀리초 단위)만 허용
+                }}
+                dateClick={(info) => setSelectedDate(info.dateStr)} // ✅ 날짜 클릭 시 업데이트
+              />
+                {/* 선택한 날짜를 화면에 표시 */}
+                {selectedDate && <DateTextBox>선택한 날짜: {selectedDate}</DateTextBox>}
+              </CalenderBox>}
             
         </Box3>
       </SearchWrapper>
       <Box4>
-        <TextBox1><DateBox>25년 02월 06일 </DateBox> <div>날짜로, </div></TextBox1>
-        <TextBox2><div>현재</div> <LocationBox>녹산 전기</LocationBox> <div>근처에</div>  <CountBox >{positions2.length}개</CountBox> <div>의 버스킹 일정이 있어요!</div></TextBox2>
+        <TextBox1><DateBox>{selectedDate} </DateBox> <div>날짜로, </div></TextBox1>
+        <TextBox2><div>현재</div> <LocationBox> {searchTerm} </LocationBox> <div>근처에</div>  <CountBox >{positions2.length}개</CountBox> <div>의 버스킹 일정이 있어요!</div></TextBox2>
        
           { updatedPositions.map((pos :any, i : any)=> {return(
         <ScheduleBox>
