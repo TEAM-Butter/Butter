@@ -119,6 +119,7 @@ public class Member {
         this.profileImage = profileImage;
         this.avatarType = avatarType;
         updateMemberGenres(genres);
+        this.isExtraInfoRegistered = true;
     }
 
     public void changePassword(Password password){
