@@ -11,6 +11,10 @@ export class RoomService {
             return RoomService.instance;
         }
 
+//        console.log(LIVEKIT_URL);
+//        console.log(LIVEKIT_API_KEY);
+//        console.log(LIVEKIT_API_SECRET);
+
         this.roomClient = new RoomServiceClient(LIVEKIT_URL, LIVEKIT_API_KEY, LIVEKIT_API_SECRET);
         RoomService.instance = this;
         return this;
