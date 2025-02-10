@@ -6,6 +6,11 @@ interface SignUpRequestDto {
     gender: string,
 }
 
+interface CheckLoginIdRequestDto {
+    loginId: string
+}
+
 export type {
-    SignUpRequestDto
+    SignUpRequestDto,
+    CheckLoginIdRequestDto,
 }
