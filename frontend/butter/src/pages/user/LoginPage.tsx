@@ -3,6 +3,7 @@ import { LoginForm } from "../../components/user/AuthForm";
 import { Link } from "react-router-dom";
 import { ForgotAuthModal } from "../../components/common/modals/ForgotAuthModal";
 import { useState } from "react";
+import { ForgotAuthInfoModal } from "../../components/common/modals/ForgotAuthInfoModal";
 
 const LoginPageWrapper = styled.div`
   width: 100%;
@@ -49,7 +50,7 @@ const SignupLink = styled.div`
 `;
 
 const LoginPage = () => {
-  const [modalType, setModalType] = useState<string>("forgotAuth");
+  const [modalType, setModalType] = useState<string>("forgotAuthInfo");
   return (
     <>
       <LoginPageWrapper>
@@ -72,6 +73,15 @@ const LoginPage = () => {
           height="300px"
           setModalType={setModalType}
         ></ForgotAuthModal>
+      )}
+      {modalType === "forgotAuthInfo" && (
+        <ForgotAuthInfoModal
+          width="500px"
+          height="300px"
+          setModalType={setModalType}
+          >
+          
+        </ForgotAuthInfoModal>
       )}
     </>
   );

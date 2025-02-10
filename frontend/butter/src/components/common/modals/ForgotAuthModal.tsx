@@ -120,7 +120,7 @@ export const ForgotAuthModal = ({ setModalType, width, height }: ModalProps) => 
       if (type === "id") {
         setForgotIdComment("인증코드를 확인 중 입니다.")
         const requestBody: EmailVerifyCodeRequestDto = { email: email_id, verifyCode: code_id, type: "FIND_ID" }
-
+        
         EmailVerifyCodeRequest(requestBody).then((responseBody : EmailVerifyCodeResponseDto | null) => {
           if (responseBody) {
             setFindId(responseBody.additionalInfo)
@@ -129,11 +129,17 @@ export const ForgotAuthModal = ({ setModalType, width, height }: ModalProps) => 
             setForgotIdComment("인증코드가 일치하지 않습니다.")
           }
         })
-    } else {
-      const requestBody: EmailVerifyCodeRequestDto = { email: email_ps, verifyCode: code_ps, type: "RESET_PASSWORD" }
+      } else {
+        const requestBody: EmailVerifyCodeRequestDto = { email: email_ps, verifyCode: code_ps, type: "RESET_PASSWORD" }
+        setForgotPsComment("인증코드를 확인 중 입니다.")
 
-      EmailVerifyCodeRequest(requestBody).then((responseBody) => {
-        console.log('responseBody:', responseBody)
+        EmailVerifyCodeRequest(requestBody).then((responseBody) => {
+        if (responseBody) {
+            setFindPs(responseBody.additionalInfo)
+            setForgotPsComment("인증이 완료되었습니다.")
+          } else {
+            setForgotPsComment("인증코드가 일치하지 않습니다.")
+          }
       })
     }
   }
@@ -170,10 +176,6 @@ export const ForgotAuthModal = ({ setModalType, width, height }: ModalProps) => 
                   width="140px"
                   height="100%"
                   color="black"
-                  onClick={(e) => {
-                    e.preventDefault()
-                    handleFICodeSend()
-                  }}
                 >
                   인증번호 발송
                 </MC.FilledBtn>
