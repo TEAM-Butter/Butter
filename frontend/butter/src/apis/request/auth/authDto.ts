@@ -14,6 +14,11 @@ interface EmailVerifyCodeRequestDto {
     type: string;
 }
 
+interface EmailExistRequestDto {
+    email: string,
+    type: string,
+}
+
 export type {
     LoginRequestDto,
     EmailExistSendDto,

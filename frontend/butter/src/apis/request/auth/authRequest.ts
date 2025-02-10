@@ -8,6 +8,7 @@ const DOMAIN = `http://localhost:8080`;
 const API_DOMAIN = `${DOMAIN}/api/v1`;
 
 const LOGIN_URL = () => `${API_DOMAIN}/auth/login`;
+const EmailExist_URL = () => `${API_DOMAIN}/auth/email/send-code`;
 
 export const loginRequest = async (requestBody: LoginRequestDto) => {
     const result = await axios.post(LOGIN_URL(), requestBody)
