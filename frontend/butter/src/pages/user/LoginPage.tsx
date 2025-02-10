@@ -49,7 +49,7 @@ const SignupLink = styled.div`
 `;
 
 const LoginPage = () => {
-  const [modalType, setModalType] = useState<string>("forgotAuth");
+  const [modalType, setModalType] = useState<string>("");
   return (
     <>
       <LoginPageWrapper>
