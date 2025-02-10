@@ -13,7 +13,12 @@ interface MemberExtraInfoDto {
     genres: string[];
 }
 
+interface CheckLoginIdRequestDto {
+    loginId: string
+}
+
 export type {
     SignUpRequestDto,
-    MemberExtraInfoDto
+    MemberExtraInfoDto,
+    CheckLoginIdRequestDto,
 }

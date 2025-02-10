@@ -45,7 +45,6 @@ public class LoginController {
         CookieUtil.addCookie(httpServletResponse, "refresh-token", response.refreshToken(), refreshTokenValidityInMilliseconds, true);
         return ResponseEntity.ok()
                 .header(HttpHeaders.AUTHORIZATION, "Bearer "+response.accessToken())
-                .header("refresh-token", "Bearer "+response.refreshToken())
                 .body(response);
     }
 

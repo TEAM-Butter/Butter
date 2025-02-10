@@ -21,7 +21,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("http://localhost:5080")
+                .allowedOrigins("http://localhost:5080", "http://localhost:5173")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true)
@@ -36,6 +36,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 .excludePathPatterns("/api/v1/auth/**")
                 .excludePathPatterns("/api/v1/auth/login/**")
                 .excludePathPatterns("/api/v1/members/signup")
+                .excludePathPatterns("/api/v1/members/check-loginId")
                 .excludePathPatterns("/api/v1/email/**")
                 .excludePathPatterns("https://openapi.naver.com/v1/nid/me")
                 .excludePathPatterns("/swagger-ui/**", "/v3/api-docs/**");

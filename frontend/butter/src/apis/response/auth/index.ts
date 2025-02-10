@@ -13,12 +13,19 @@ interface LoginResponseDto {
     authenticatedMemberInfo: AuthenticatedMemberInfo;
 }
 
-interface EmailExistResponseDto {
-    email: string,
-    type: string,
+interface EmailSendCodeResponseDto {
+    message: string;
+    code: string;
+}
+
+interface EmailVerifyCodeResponseDto {
+    message: string;
+    type: string;
+    additionalInfo: string;
 }
 
 export type {
     LoginResponseDto,
-    EmailExistResponseDto,
+    EmailSendCodeResponseDto,
+    EmailVerifyCodeResponseDto,
 }

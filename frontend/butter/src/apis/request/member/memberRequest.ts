@@ -1,6 +1,6 @@
 import axios from "axios";
-import { MemberExtraInfoDto, SignUpRequestDto } from "./memberDto";
-import { MemberDetailResponseDto, SignUpResponseDto } from "../../response/member";
+import { CheckLoginIdRequestDto, SignUpRequestDto, MemberExtraInfoDto } from "./memberDto";
+import { CheckLoginIdResponseDto, MemberDetailResponseDto, SignUpResponseDto } from "../../response/member";
 import { axiosInstance } from "../../axiosInstance";
 
 const API_DOMAIN = `http://localhost:8080/api/v1`;
@@ -48,6 +48,19 @@ export const MemberExtraInfoRequest = async (requestBody: FormData) => {
             console.log("MemberExtraInfo api error:", error)
             return null
         })
+        return result
+    }
+    
+export const CheckLoginIdRequest = async (requestBody: CheckLoginIdRequestDto) => {
+    const result = await axiosInstance.post('/members/check-loginId', requestBody)
+        .then(response => {
+            const responseBody: CheckLoginIdResponseDto = response.data;
+            return responseBody
+        })
+        .catch(error => {
+            console.log("CheckLoginIdRequest api error:", error)
+            return null
+        })
 
-    return result
+        return result
 }
