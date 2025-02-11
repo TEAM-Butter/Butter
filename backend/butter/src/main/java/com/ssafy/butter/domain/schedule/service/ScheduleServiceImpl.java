@@ -6,6 +6,8 @@ import com.ssafy.butter.domain.crew.service.CrewMemberService;
 import com.ssafy.butter.domain.crew.service.CrewService;
 import com.ssafy.butter.domain.member.entity.Member;
 import com.ssafy.butter.domain.member.service.member.MemberService;
+import com.ssafy.butter.domain.notification.enums.NotificationType;
+import com.ssafy.butter.domain.notification.service.NotificationService;
 import com.ssafy.butter.domain.schedule.dto.request.ScheduleCalendarRequestDTO;
 import com.ssafy.butter.domain.schedule.dto.request.ScheduleLikeRequestDTO;
 import com.ssafy.butter.domain.schedule.dto.request.ScheduleSaveRequestDTO;
@@ -32,6 +34,7 @@ public class ScheduleServiceImpl implements ScheduleService {
     private final MemberService memberService;
     private final CrewService crewService;
     private final CrewMemberService crewMemberService;
+    private final NotificationService notificationService;
 
     @Override
     public ScheduleResponseDTO createSchedule(AuthInfoDTO currentUser, ScheduleSaveRequestDTO scheduleSaveRequestDTO) {
@@ -49,6 +52,12 @@ public class ScheduleServiceImpl implements ScheduleService {
                 .latitude(scheduleSaveRequestDTO.latitude())
                 .longitude(scheduleSaveRequestDTO.longitude())
                 .build();
+
+        String content = "새로운 일정: " + schedule.getTitle();
+        String notificationType = NotificationType.SCHEDULE.getAlias();
+        String url = NotificationType.SCHEDULE.getPath() + schedule.getId();
+        notificationService.sendNotificationToFollowers(schedule.getCrew(), content, notificationType, url);
+
         return ScheduleResponseDTO.fromEntity(scheduleRepository.save(schedule));
     }
 
