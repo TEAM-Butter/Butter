@@ -102,13 +102,13 @@ const CharacterContainer = () => {
         >
           <EmotionBox>
             <Emotion
-              src={heart}
+              src={like}
               animate={
                 visibleEmotions[index]
-                  ? { opacity: 1, y: -1 }
+                  ? { opacity: 1, y: -30 }
                   : { opacity: 0, y: 10 }
               }
-              transition={{ duration: 0.2 }}
+              transition={{ duration: 0.4 }}
             />
           </EmotionBox>
           <Character src={pet1} onClick={() => handleButtonClick(index)} />
