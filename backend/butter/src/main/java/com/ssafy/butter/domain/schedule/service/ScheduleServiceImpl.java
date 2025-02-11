@@ -16,8 +16,6 @@ import com.ssafy.butter.domain.schedule.entity.Schedule;
 import com.ssafy.butter.domain.schedule.repository.LikedScheduleRepository;
 import com.ssafy.butter.domain.schedule.repository.ScheduleRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -56,13 +54,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @Override
     public List<ScheduleResponseDTO> searchSchedule(ScheduleSearchRequestDTO scheduleSearchRequestDTO) {
-        Pageable pageable = PageRequest.of(0, scheduleSearchRequestDTO.pageSize());
-        if (scheduleSearchRequestDTO.scheduleId() == null) {
-            return scheduleRepository.findAllByOrderByIdDesc(pageable).stream().map(ScheduleResponseDTO::fromEntity).toList();
-        } else {
-            return scheduleRepository.findAllByIdLessThanOrderByIdDesc(scheduleSearchRequestDTO.scheduleId(), pageable).stream().map(ScheduleResponseDTO::fromEntity).toList();
-        }
-        // TODO 날짜와 위치가 주어진 경우 로직 작성
+        return scheduleRepository.getScheduleList(scheduleSearchRequestDTO).stream().map(ScheduleResponseDTO::fromEntity).toList();
     }
 
     @Override
