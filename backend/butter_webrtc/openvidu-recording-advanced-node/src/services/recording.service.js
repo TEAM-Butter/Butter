@@ -213,7 +213,7 @@ export class RecordingService {
   getClipThumbnailKey(trimmedRecordingName) {
     return CLIPS_PATH + trimmedRecordingName.replace(".mp4", ".jpg")
   }
-  
+
   async saveThumbnail(recordingName, imageBuffer) {
     const thumbnailKey = this.getThumbnailKey(recordingName);
   
@@ -235,6 +235,19 @@ export class RecordingService {
     }
   }
 
+  // 썸네일 URL 가져오기
+  async getThumbnailUrl(recordingName) {
+    const key = this.getThumbnailKey(recordingName);
+    
+    // 썸네일 존재 여부 확인
+    const exists = await s3Service.exists(key);
+    if (!exists) {
+      return null;
+    }
+
+    return s3Service.getObjectUrl(key);
+  }
+  
   async trimRecording(recordingName, startTime, endTime, crewId, title) {
     const inputKey = this.getRecordingKey(recordingName);
     const trimmedRecordingName = `trimmed-${startTime}-${endTime}-${recordingName}.mp4`;

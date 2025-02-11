@@ -179,6 +179,25 @@ recordingController.post("/thumnail", upload.single("image"), async (req, res) =
    }
 });
 
+recordingController.get("/thumbnail/:recordingName", async (req, res) => {
+    const { recordingName } = req.params;
+  
+    if (!recordingName) {
+      return res.status(400).json({ errorMessage: "recordingName is required" });
+    }
+  
+    try {
+      const thumbnailUrl = await recordingService.getThumbnailUrl(recordingName);
+      if (!thumbnailUrl) {
+        return res.status(404).json({ errorMessage: "Thumbnail not found" });
+      }
+      res.json({ thumbnailUrl });
+    } catch (error) {
+      console.error("Error fetching thumbnail:", error);
+      res.status(500).json({ errorMessage: "Error fetching thumbnail" });
+    }
+  });
+
 recordingController.delete("/:recordingName", async (req, res) => {
     const { recordingName } = req.params;
     const exists = await recordingService.existsRecording(recordingName);
