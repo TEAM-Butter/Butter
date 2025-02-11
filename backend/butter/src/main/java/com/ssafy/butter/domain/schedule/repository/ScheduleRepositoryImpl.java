@@ -61,7 +61,6 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
     public List<Schedule> getScheduleList(ScheduleSearchRequestDTO scheduleSearchRequestDTO) {
         return jpaQueryFactory.selectFrom(qSchedule)
                 .where(createScheduleCondition(scheduleSearchRequestDTO))
-                .limit(scheduleSearchRequestDTO.pageSize())
                 .orderBy(createScheduleOrder(scheduleSearchRequestDTO))
                 .fetch();
     }
