@@ -126,6 +126,29 @@ recordingController.get("/:recordingName/url", async (req, res) => {
     }
 });
 
+recordingController.post("/trim", async (req, res) => {
+    const { recordingName, startTime, endTime, crewId, title } = req.body;
+
+    if (!recordingName || !startTime || !endTime || !title || !crewId) {
+        res.status(400).json({ errorMessage: "recordingName, startTime, endTime, crewId and title are required" });
+        return;
+    }
+
+    try {
+        // trimRecording 서비스 호출
+        const result = await recordingService.trimRecording(recordingName, startTime, endTime, crewId, title);
+
+        if (result.success) {
+            res.json({ message: "Recording trimmed successfully", trimmedRecordingName: result.trimmedRecordingName});
+        } else {
+            res.status(500).json({ errorMessage: "Error trimming recording", details: result.error });
+        }
+    } catch (error) {
+        console.error("Error trimming recording.", error);
+        res.status(500).json({ errorMessage: "Error trimming recording" });
+    }
+});
+
 recordingController.delete("/:recordingName", async (req, res) => {
     const { recordingName } = req.params;
     const exists = await recordingService.existsRecording(recordingName);
