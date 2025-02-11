@@ -16,6 +16,7 @@ import {
 import { S3Service } from "./s3.service.js";
 
 const s3Service = new S3Service();
+const mysqlService = require('./mysql.service');
 
 export class RecordingService {
   static instance;
@@ -238,6 +239,8 @@ export class RecordingService {
       fs.unlinkSync(tempInputPath);
       fs.unlinkSync(tempOutputPath);
       fs.unlinkSync(thumbnailPath);
+
+      await mysqlService.insertClip(crewId, title, trimmedRecordingName);
 
       return { success: true, trimmedRecordingName };
     } catch (error) {
