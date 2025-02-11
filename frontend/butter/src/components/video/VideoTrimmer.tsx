@@ -177,6 +177,20 @@ const Destinatedtime = styled.div`
   display: flex;
   flex-direction: column;
 `;
+const TrimButton = styled(Button)`
+  justify-content: end;
+  background-color: #0d99ff;
+  color: white;
+  padding: 12px;
+  width: 120px;
+  font-size: 16px;
+  border-radius: 8px;
+
+  &:hover {
+    background-color: #0d99ff;
+  }
+`;
+
 interface FormInputs {
   startTime: string; // HH:mm:ss 형식
   endTime: string;
@@ -207,6 +221,7 @@ const VideoTrimmer = ({ videoUrl }: VideoTrimmerProps) => {
   const [duration, setDuration] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
   const [isEditing, setIsEditing] = useState(false);
+
   const {
     register,
     handleSubmit,
@@ -237,6 +252,23 @@ const VideoTrimmer = ({ videoUrl }: VideoTrimmerProps) => {
     });
     return () => subscription.unsubscribe();
   }, [watch, duration]);
+
+  const cuttingVideo = () => {
+    const formValues = watch(); // 현재 폼 데이터 가져오기
+    const startSeconds = timeToSeconds(formValues.startTime);
+    const endSeconds = timeToSeconds(formValues.endTime);
+
+    console.log("🎬 영상 자르기 시작!");
+
+    if (startSeconds >= endSeconds) {
+      console.log("❌ 시작 시간이 종료 시간보다 같거나 클 수 없습니다.");
+      return;
+    }
+
+    console.log(
+      `✅ ${formValues.startTime} ~ ${formValues.endTime} 구간을 자릅니다.`
+    );
+  };
 
   const onSubmit = (data: FormInputs) => {
     const startSeconds = timeToSeconds(data.startTime);
@@ -326,133 +358,138 @@ const VideoTrimmer = ({ videoUrl }: VideoTrimmerProps) => {
       </VideoContainer>
       {videoUrl &&
         (isEditing ? (
-          <Form
-            onSubmit={handleSubmit(onSubmit)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                e.preventDefault();
-                handleSubmit(onSubmit)();
-              }
-            }}
-          >
-            <TimeInfoWrapper>
-              <TimeInfo>
-                <TimeDisplay>현재: {secondsToTime(currentTime)}</TimeDisplay>
-                <TimeDisplay>총 길이: {secondsToTime(duration)}</TimeDisplay>
-              </TimeInfo>
-              <Destinatedtime>
-                <TimeInputContainer>
-                  <TimeDisplay>시작 시간</TimeDisplay>
-                  <TimeInput
-                    type="text"
-                    placeholder="00:00:00"
-                    maxLength={8}
-                    {...register("startTime", {
-                      required: "시작 시간을 입력하세요",
-                      pattern: {
-                        value: /^[0-9]{2}:[0-9]{2}:[0-9]{2}$/,
-                        message: "HH:mm:ss 형식으로 입력하세요",
-                      },
-                      validate: {
-                        validFormat: (value) => {
-                          const [hours, minutes, seconds] = value
-                            .split(":")
-                            .map(Number);
-                          if (minutes > 59 || seconds > 59)
-                            return "올바른 시간을 입력하세요";
-                          const totalSeconds =
-                            hours * 3600 + minutes * 60 + seconds;
-                          return (
-                            totalSeconds <= duration ||
-                            "비디오 길이를 초과할 수 없습니다"
-                          );
+          <div>
+            <Form
+              onSubmit={handleSubmit(onSubmit)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  handleSubmit(onSubmit)();
+                }
+              }}
+            >
+              <TimeInfoWrapper>
+                <TimeInfo>
+                  <TimeDisplay>현재: {secondsToTime(currentTime)}</TimeDisplay>
+                  <TimeDisplay>총 길이: {secondsToTime(duration)}</TimeDisplay>
+                </TimeInfo>
+                <Destinatedtime>
+                  <TimeInputContainer>
+                    <TimeDisplay>시작 시간</TimeDisplay>
+                    <TimeInput
+                      type="text"
+                      placeholder="00:00:00"
+                      maxLength={8}
+                      {...register("startTime", {
+                        required: "시작 시간을 입력하세요",
+                        pattern: {
+                          value: /^[0-9]{2}:[0-9]{2}:[0-9]{2}$/,
+                          message: "HH:mm:ss 형식으로 입력하세요",
                         },
-                      },
-                    })}
-                    onChange={(e) => {
-                      let value = e.target.value.replace(/[^0-9]/g, "");
-                      if (value.length > 4) {
-                        value =
-                          value.slice(0, 2) +
-                          ":" +
-                          value.slice(2, 4) +
-                          ":" +
-                          value.slice(4);
-                      } else if (value.length > 2) {
-                        value = value.slice(0, 2) + ":" + value.slice(2);
-                      }
-                      e.target.value = value;
-                    }}
-                  />
-                </TimeInputContainer>
-                {errors.startTime && (
-                  <ErrorMessage>{errors.startTime.message}</ErrorMessage>
-                )}
-              </Destinatedtime>
-              <Destinatedtime>
-                <TimeInputContainer>
-                  <TimeDisplay>종료 시간</TimeDisplay>
-                  <TimeInput
-                    type="text"
-                    placeholder="00:00:00"
-                    maxLength={8}
-                    {...register("endTime", {
-                      required: "종료 시간을 입력하세요",
-                      pattern: {
-                        value: /^[0-9]{2}:[0-9]{2}:[0-9]{2}$/,
-                        message: "HH:mm:ss 형식으로 입력하세요",
-                      },
-                      validate: {
-                        validFormat: (value) => {
-                          const [hours, minutes, seconds] = value
-                            .split(":")
-                            .map(Number);
-                          if (minutes > 59 || seconds > 59)
-                            return "올바른 시간을 입력하세요";
-                          const totalSeconds =
-                            hours * 3600 + minutes * 60 + seconds;
-                          return (
-                            totalSeconds <= duration ||
-                            "비디오 길이를 초과할 수 없습니다"
-                          );
+                        validate: {
+                          validFormat: (value) => {
+                            const [hours, minutes, seconds] = value
+                              .split(":")
+                              .map(Number);
+                            if (minutes > 59 || seconds > 59)
+                              return "올바른 시간을 입력하세요";
+                            const totalSeconds =
+                              hours * 3600 + minutes * 60 + seconds;
+                            return (
+                              totalSeconds <= duration ||
+                              "비디오 길이를 초과할 수 없습니다"
+                            );
+                          },
                         },
-                        afterStart: (value) => {
-                          const startSeconds = timeToSeconds(
-                            watch("startTime")
-                          );
-                          const endSeconds = timeToSeconds(value);
-                          return (
-                            endSeconds > startSeconds ||
-                            "종료 시간은 시작 시간보다 커야 합니다"
-                          );
+                      })}
+                      onChange={(e) => {
+                        let value = e.target.value.replace(/[^0-9]/g, "");
+                        if (value.length > 4) {
+                          value =
+                            value.slice(0, 2) +
+                            ":" +
+                            value.slice(2, 4) +
+                            ":" +
+                            value.slice(4);
+                        } else if (value.length > 2) {
+                          value = value.slice(0, 2) + ":" + value.slice(2);
+                        }
+                        e.target.value = value;
+                      }}
+                    />
+                  </TimeInputContainer>
+                  {errors.startTime && (
+                    <ErrorMessage>{errors.startTime.message}</ErrorMessage>
+                  )}
+                </Destinatedtime>
+                <Destinatedtime>
+                  <TimeInputContainer>
+                    <TimeDisplay>종료 시간</TimeDisplay>
+                    <TimeInput
+                      type="text"
+                      placeholder="00:00:00"
+                      maxLength={8}
+                      {...register("endTime", {
+                        required: "종료 시간을 입력하세요",
+                        pattern: {
+                          value: /^[0-9]{2}:[0-9]{2}:[0-9]{2}$/,
+                          message: "HH:mm:ss 형식으로 입력하세요",
                         },
-                      },
-                    })}
-                    onChange={(e) => {
-                      let value = e.target.value.replace(/[^0-9]/g, "");
-                      if (value.length > 4) {
-                        value =
-                          value.slice(0, 2) +
-                          ":" +
-                          value.slice(2, 4) +
-                          ":" +
-                          value.slice(4);
-                      } else if (value.length > 2) {
-                        value = value.slice(0, 2) + ":" + value.slice(2);
-                      }
-                      e.target.value = value;
-                    }}
-                  />
-                </TimeInputContainer>
-                {errors.endTime && (
-                  <ErrorMessage>{errors.endTime.message}</ErrorMessage>
-                )}
-              </Destinatedtime>
-            </TimeInfoWrapper>
+                        validate: {
+                          validFormat: (value) => {
+                            const [hours, minutes, seconds] = value
+                              .split(":")
+                              .map(Number);
+                            if (minutes > 59 || seconds > 59)
+                              return "올바른 시간을 입력하세요";
+                            const totalSeconds =
+                              hours * 3600 + minutes * 60 + seconds;
+                            return (
+                              totalSeconds <= duration ||
+                              "비디오 길이를 초과할 수 없습니다"
+                            );
+                          },
+                          afterStart: (value) => {
+                            const startSeconds = timeToSeconds(
+                              watch("startTime")
+                            );
+                            const endSeconds = timeToSeconds(value);
+                            return (
+                              endSeconds > startSeconds ||
+                              "종료 시간은 시작 시간보다 커야 합니다"
+                            );
+                          },
+                        },
+                      })}
+                      onChange={(e) => {
+                        let value = e.target.value.replace(/[^0-9]/g, "");
+                        if (value.length > 4) {
+                          value =
+                            value.slice(0, 2) +
+                            ":" +
+                            value.slice(2, 4) +
+                            ":" +
+                            value.slice(4);
+                        } else if (value.length > 2) {
+                          value = value.slice(0, 2) + ":" + value.slice(2);
+                        }
+                        e.target.value = value;
+                      }}
+                    />
+                  </TimeInputContainer>
+                  {errors.endTime && (
+                    <ErrorMessage>{errors.endTime.message}</ErrorMessage>
+                  )}
+                </Destinatedtime>
+              </TimeInfoWrapper>
+              <div style={{ display: "flex", justifyContent: "end" }}>
+                <SubmitButton type="submit">시간 설정</SubmitButton>
+              </div>
+            </Form>
             <div style={{ display: "flex", justifyContent: "end" }}>
-              <SubmitButton type="submit">시간 설정</SubmitButton>
+              <TrimButton onClick={cuttingVideo}>영상 자르기</TrimButton>
             </div>
-          </Form>
+          </div>
         ) : (
           <GoEditButton onClick={handleGoEdit}>Go Edit</GoEditButton>
         ))}
