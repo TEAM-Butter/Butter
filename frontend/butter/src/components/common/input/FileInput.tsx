@@ -3,7 +3,7 @@ import { useState, useRef } from "react";
 
 const ExtraInputWrapper = styled.div`
     display: flex;
-    width: 90%;
+    width: 100%;
     gap: 10px;
 `
 const ExtraInput = styled.input``

@@ -76,6 +76,10 @@ const ExtraRadioWrapper = styled.div`
   grid-template-columns: repeat(2, 1fr);
 `;
 
+const EFWrapper = styled.div`
+  width: 90%;
+`
+
 interface ModalSizeProps {
   width: string;
   height: string;
@@ -194,7 +198,7 @@ export const UserExtraInfoModal = ({
                   <ExtraInfoLabel>
                     <StepNumber>1</StepNumber>프로필 사진을 등록해 주세요!
                   </ExtraInfoLabel>
-                  <ExtraFileInput setProfileImage={(image) => setFormData((prev) => ({ ...prev, profileImage: image }))} />
+                  <EFWrapper><ExtraFileInput setProfileImage={(image) => setFormData((prev) => ({ ...prev, profileImage: image }))} /></EFWrapper>
                 </div>
                 <div>
                   <ExtraInfoLabel>
@@ -281,11 +285,11 @@ export const UserExtraInfoModal_v2 = ({
   height,
 }: ModalProps) => {
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormDataState>({
     nickname: "",
-    profileImage: "",
+    profileImage: null, // ✅ 초기값을 null로 설정
     avatarType: "",
-    genres: [] as string[],
+    genres: [],
   });
 
   const options = [
@@ -302,6 +306,8 @@ export const UserExtraInfoModal_v2 = ({
     { value: "Indie", label: "Indie" },
     { value: "Trot", label: "Trot" },
   ];
+
+
   const selectStyles = {
     control: (styles: any) => ({
       ...styles,
@@ -324,49 +330,68 @@ export const UserExtraInfoModal_v2 = ({
 
   const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
 
-  const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const value = event.target.value;
-
-    if (selectedOptions.length < 3 && !selectedOptions.includes(value)) {
-      const NewSelectedOptions = [...selectedOptions];
-      NewSelectedOptions.push(value);
-      setSelectedOptions(NewSelectedOptions);
-    }
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setModalType("");
+    useUserStore.setState({ isExtraInfoRegistered: true });
+
+
+    const formDataToSend = new FormData();
+    formDataToSend.append("nickname", formData.nickname);
+    formDataToSend.append("avatarType", formData.avatarType);
+    formData.genres.forEach((genre) => formDataToSend.append("genres", genre));
+
+    if (formData.profileImage instanceof File) {
+      formDataToSend.append("profileImage", formData.profileImage);
+    } else {
+      console.error("Invalid profile image");
+      return;
+    }
+    // API 호출 부분에서 formData를 사용\
+    MemberExtraInfoRequest(formDataToSend).then((responseBody: MemberExtraInfoDto | null) => {
+      console.log("Response:", responseBody);
+    });
+    console.log("Final Data:", formData);
+  };
   return (
     <>
       <MC.ModalOverlay />
-      <MC.ModalWrapper width={width} height={height}>
+      <MC.ModalWrapper width={width} height={height} >
         <MC.ModalHeader>
           <div>TYPE YOUR EXTRA INFO</div>
-          <MC.ModalCloseBtn
-            textColor="white"
-            onClick={() => {
-              setModalType("");
-            }}
-          >
-            X
-          </MC.ModalCloseBtn>
         </MC.ModalHeader>
         <MC.ModalBody>
+          <MC.Comment_v2 textColor="white">
+            버터에 가입하신 것을 축하합니다!
+          </MC.Comment_v2>
           <MC.Comment>
             더 많은 기능을 즐기기 위해 몇 가지 정보를 추가로 입력해 주세요!
           </MC.Comment>
-          <ExtraInfoForm>
+          <ExtraInfoForm onSubmit={handleSubmit}>
             <ExtraInfoInputWrapper>
               <LtExtraWrapper>
                 <div>
                   <ExtraInfoLabel>
-                    <StepNumber>1</StepNumber>프로필 사진을 선택해 주세요!
+                    <StepNumber>1</StepNumber>프로필 사진을 등록해 주세요!
                   </ExtraInfoLabel>
-                  {/* <ExtraFileInput setProfileImage={(image) => setFormData((prev) => ({ ...prev, profileImage: image }))} /> */}
+                  <EFWrapper><ExtraFileInput setProfileImage={(image) => setFormData((prev) => ({ ...prev, profileImage: image }))} /></EFWrapper>
                 </div>
                 <div>
                   <ExtraInfoLabel>
                     <StepNumber>2</StepNumber>뭐라고 불러드릴까요?
                   </ExtraInfoLabel>
-                  <ExtraInfoInput placeholder="사용할 닉네임을 입력해주세요." />
+                  <ExtraInfoInput
+                    name="nickname"
+                    placeholder="사용할 닉네임을 입력해주세요."
+                    value={formData.nickname}
+                    onChange={handleChange}
+                    required
+                  />
                 </div>
                 <div>
                   <ExtraInfoLabel>
@@ -376,7 +401,16 @@ export const UserExtraInfoModal_v2 = ({
                     <Select
                       options={options}
                       styles={selectStyles}
+                      value={options.filter(option => selectedOptions.includes(option.value))}
+                      onChange={(selectedOptions) => {
+                        const values = selectedOptions ? selectedOptions.map(option => option.value) : [];
+                        if (values.length <= 3) {
+                          setSelectedOptions(values);
+                          setFormData((prev) => ({ ...prev, genres: values }));
+                        }
+                      }}
                       isMulti
+                      required
                     ></Select>
                   </SelectWrapper>
                 </div>
@@ -387,30 +421,19 @@ export const UserExtraInfoModal_v2 = ({
                   주세요!
                 </ExtraInfoLabel>
                 <ExtraRadioWrapper>
-                  <ExtraRadioLabel>
-                    <ExtraRadioInput type="radio" id="pet" name="pet" />
-                    <img src={pet1} alt="petImg" width={100} />
-                  </ExtraRadioLabel>
-                  <ExtraRadioLabel>
-                    <ExtraRadioInput type="radio" id="pet2" name="pet" />
-                    <img src={pet2} alt="petImg" width={100} />
-                  </ExtraRadioLabel>
-                  <ExtraRadioLabel>
-                    <ExtraRadioInput type="radio" id="pet3" name="pet" />
-                    <img src={pet3} alt="petImg" width={100} />
-                  </ExtraRadioLabel>
-                  <ExtraRadioLabel>
-                    <ExtraRadioInput type="radio" id="pet4" name="pet" />
-                    <img src={pet4} alt="petImg" width={100} />
-                  </ExtraRadioLabel>
-                  <ExtraRadioLabel>
-                    <ExtraRadioInput type="radio" id="pet5" name="pet" />
-                    <img src={pet5} alt="petImg" width={100} />
-                  </ExtraRadioLabel>
-                  <ExtraRadioLabel>
-                    <ExtraRadioInput type="radio" id="pet6" name="pet" />
-                    <img src={pet6} alt="petImg" width={100} />
-                  </ExtraRadioLabel>
+                  {[pet1, pet2, pet3, pet4, pet5, pet6].map((pet, index) => (
+                    <ExtraRadioLabel key={index}>
+                      <ExtraRadioInput
+                        type="radio"
+                        name="avatarType"
+                        value={`AVATAR${index + 1}`}
+                        checked={formData.avatarType === `AVATAR${index + 1}`}
+                        onChange={handleChange}
+                        required
+                      />
+                      <img src={pet} alt="petImg" width={100} />
+                    </ExtraRadioLabel>
+                  ))}
                 </ExtraRadioWrapper>
               </RtExtraWrapper>
             </ExtraInfoInputWrapper>
@@ -421,6 +444,7 @@ export const UserExtraInfoModal_v2 = ({
                 width="90px"
                 height="35px"
                 color="var(--yellow)"
+                onClick={handleSubmit}
               >
                 SUBMIT
               </MC.FilledBtn>
