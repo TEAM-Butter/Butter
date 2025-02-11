@@ -40,6 +40,13 @@ VALUES (2, 2, 'user456', 'User Two', 'user2@example.com', '1995-05-15', 200, '$2
 INSERT INTO member (member_type_id, avatar_type_id, login_id, nickname, email, birth_date, bread_amount, password, profile_image, gender, create_date, is_extra_info_registered)
 VALUES (1, 2, 'butter123', '빠다', 'user3@example.com', '1990-01-01', 100, '$2a$12$EGlsV9zlJcfjr2Iplvxq9uY1to7FUnsUG9wUFj4mJpD3kPRl7Wsz6', NULL, 'MALE', NOW(), FALSE);
 
+INSERT INTO member (member_type_id, avatar_type_id, login_id, nickname, email, birth_date, bread_amount, password, profile_image, gender, create_date, is_extra_info_registered)
+VALUES (2, 3, 'choco789', '초코', 'user4@example.com', '1998-08-20', 150, '$2a$12$Qj1l2Rv68mGBtW/PyG7qEueUslfh2WZs.Jwo9t8kOi4B9uU7J7D9C', NULL, 'FEMALE', NOW(), TRUE);
+
+INSERT INTO member (member_type_id, avatar_type_id, login_id, nickname, email, birth_date, bread_amount, password, profile_image, gender, create_date, is_extra_info_registered)
+VALUES (1, 1, 'straw999', '딸기', 'user5@example.com', '1992-12-10', 180, '$2a$12$Y7LSF6/NwYpMc74uOTn6ZeUOujMPJHMT/FzghyATC08oM8Ykx.JhO', NULL, 'MALE', NOW(), FALSE);
+
+
 -- 더미 데이터 삽입
 
 -- crew 테이블
