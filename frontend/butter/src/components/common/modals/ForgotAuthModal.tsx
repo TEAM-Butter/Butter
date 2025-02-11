@@ -43,10 +43,12 @@ interface ModalSizeProps {
 }
 
 interface ModalProps extends ModalSizeProps {
+  setForgotInfo: React.Dispatch<React.SetStateAction<string>>; 
   setModalType: React.Dispatch<React.SetStateAction<string>>;
+  setType: React.Dispatch<React.SetStateAction<string>>;
 }
 
-export const ForgotAuthModal = ({ setModalType, width, height }: ModalProps) => {
+export const ForgotAuthModal = ({ setModalType, setForgotInfo, setType,  width, height }: ModalProps) => {
   const [email_id, setEmail_id] = useState("")
   const [code_id, setCode_id] = useState("")
   const [id_ps, setId_ps] = useState("")
@@ -55,8 +57,6 @@ export const ForgotAuthModal = ({ setModalType, width, height }: ModalProps) => 
   const [code_ps, setCode_ps] = useState("")
   const [forgotIdComment, setForgotIdComment] = useState("")
   const [forgotPsComment, setForgotPsComment] = useState("")
-  const [findId, setFindId] = useState("") 
-  const [findPs, setFindPs] = useState("") 
 
 
   const handleCheckLoginId = () => {
@@ -123,7 +123,9 @@ export const ForgotAuthModal = ({ setModalType, width, height }: ModalProps) => 
         
         EmailVerifyCodeRequest(requestBody).then((responseBody : EmailVerifyCodeResponseDto | null) => {
           if (responseBody) {
-            setFindId(responseBody.additionalInfo)
+            setForgotInfo(responseBody.additionalInfo)
+            setType("id")
+            setModalType("forgotAuthInfo")
             setForgotIdComment("인증이 완료되었습니다.")
           } else {
             setForgotIdComment("인증코드가 일치하지 않습니다.")
@@ -132,10 +134,12 @@ export const ForgotAuthModal = ({ setModalType, width, height }: ModalProps) => 
       } else {
         const requestBody: EmailVerifyCodeRequestDto = { email: email_ps, verifyCode: code_ps, type: "RESET_PASSWORD" }
         setForgotPsComment("인증코드를 확인 중 입니다.")
-
+        
         EmailVerifyCodeRequest(requestBody).then((responseBody) => {
-        if (responseBody) {
-            setFindPs(responseBody.additionalInfo)
+          if (responseBody) {
+            setForgotInfo(responseBody.additionalInfo)
+            setType("ps")
+            setModalType("forgotAuthInfo")
             setForgotPsComment("인증이 완료되었습니다.")
           } else {
             setForgotPsComment("인증코드가 일치하지 않습니다.")

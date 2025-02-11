@@ -50,7 +50,9 @@ const SignupLink = styled.div`
 `;
 
 const LoginPage = () => {
-  const [modalType, setModalType] = useState<string>("forgotAuthInfo");
+  const [modalType, setModalType] = useState<string>("");
+  const [type, setType] = useState<string>("");
+  const [forgotInfo, setForgotInfo] = useState<string>("");
   return (
     <>
       <LoginPageWrapper>
@@ -72,6 +74,8 @@ const LoginPage = () => {
           width="600px"
           height="300px"
           setModalType={setModalType}
+          setType={setType}
+          setForgotInfo={setForgotInfo}
         ></ForgotAuthModal>
       )}
       {modalType === "forgotAuthInfo" && (
@@ -79,6 +83,8 @@ const LoginPage = () => {
           width="500px"
           height="300px"
           setModalType={setModalType}
+          type={type}
+          forgotInfo={forgotInfo}
           >
           
         </ForgotAuthInfoModal>
