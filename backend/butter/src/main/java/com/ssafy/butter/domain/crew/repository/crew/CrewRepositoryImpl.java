@@ -63,15 +63,18 @@ public class CrewRepositoryImpl implements CrewRepository {
 
     private BooleanBuilder createCrewListCondition(CrewListRequestDTO crewListRequestDTO) {
         BooleanBuilder booleanBuilder = new BooleanBuilder();
+        // 커서 기반 페이징을 위한 조건
         if (crewListRequestDTO.crewId() != null) {
             booleanBuilder.and(qCrew.id.lt(crewListRequestDTO.crewId()));
         }
+        // 크루 이름 검색 조건
         if (crewListRequestDTO.keyword() != null) {
             String[] keywords = crewListRequestDTO.keyword().split(" ");
             for (String keyword : keywords) {
                 booleanBuilder.and(qCrew.name.contains(keyword));
             }
         }
+        // 크루 장르 검색 조건
         if (crewListRequestDTO.genre() != null) {
             booleanBuilder.and(qGenre.name.eq(crewListRequestDTO.genre()));
         }
