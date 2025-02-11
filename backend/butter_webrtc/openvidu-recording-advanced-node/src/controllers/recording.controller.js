@@ -2,11 +2,13 @@ import { Router } from "express";
 import { RecordingService } from "../services/recording.service.js";
 import { RoomService } from "../services/room.service.js";
 import { RECORDING_PLAYBACK_STRATEGY } from "../config.js";
+import multer from "multer";
 
 const recordingService = new RecordingService();
 const roomService = new RoomService();
 
 export const recordingController = Router();
+const upload = multer();
 
 recordingController.post("/start", async (req, res) => {
     const { roomName } = req.body;
@@ -147,6 +149,34 @@ recordingController.post("/trim", async (req, res) => {
         console.error("Error trimming recording.", error);
         res.status(500).json({ errorMessage: "Error trimming recording" });
     }
+});
+
+recordingController.post("/thumnail", upload.single("image"), async (req, res) => {
+    const { recordingName } = req.body;
+    const imageFile = req.file;
+
+    if (!recordingName) {
+        res.status(400).json({ errorMessage: "recordingName is required" });
+        return;
+    }
+
+    if (!imageFile) {
+        return res.status(400).json({ errorMessage: "Image file is required" });
+    }
+
+    try {
+       // 썸네일 저장
+       const result = await recordingService.saveThumbnail(recordingName, imageFile.buffer);
+
+       if (result.success) {
+           res.json({ message: "Thumbnail saved successfully", thumbnailKey: result.thumbnailKey });
+       } else {
+           res.status(500).json({ errorMessage: "Error saving thumbnail", details: result.error });
+       }
+   } catch (error) {
+       console.error("Error saving thumbnail:", error);
+       res.status(500).json({ errorMessage: "Error saving thumbnail" });
+   }
 });
 
 recordingController.delete("/:recordingName", async (req, res) => {

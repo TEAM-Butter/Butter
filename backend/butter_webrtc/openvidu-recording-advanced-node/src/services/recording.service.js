@@ -14,6 +14,7 @@ import {
   RECORDING_FILE_PORTION_SIZE,
 } from "../config.js";
 import { S3Service } from "./s3.service.js";
+import fs from "fs";
 
 const s3Service = new S3Service();
 const mysqlService = require('./mysql.service');
@@ -201,19 +202,44 @@ export class RecordingService {
     );
   }
 
+  getThumbnailKey(recordingName) {
+    return RECORDINGS_PATH + recordingName.replace(".mp4", ".jpg");
+  }
+
   getClipKey(trimmedRecordingName) {
     return CLIPS_PATH + trimmedRecordingName;
   }
 
-  getThumbnailKey(trimmedRecordingName) {
+  getClipThumbnailKey(trimmedRecordingName) {
     return CLIPS_PATH + trimmedRecordingName.replace(".mp4", ".jpg")
+  }
+  
+  async saveThumbnail(recordingName, imageBuffer) {
+    const thumbnailKey = this.getThumbnailKey(recordingName);
+  
+    try {
+      // 이미지 파일을 임시 파일로 저장
+      const tempThumbnailPath = `/tmp/${recordingName.replace(".mp4", ".jpg")}`;
+      fs.writeFileSync(tempThumbnailPath, imageBuffer);
+  
+      // S3에 업로드
+      await s3Service.uploadObject(thumbnailKey, fs.createReadStream(tempThumbnailPath));
+  
+      // 임시 파일 삭제
+      fs.unlinkSync(tempThumbnailPath);
+  
+      return { success: true, thumbnailKey };
+    } catch (error) {
+      console.error("Error saving thumbnail:", error);
+      return { success: false, error: error.message };
+    }
   }
 
   async trimRecording(recordingName, startTime, endTime, crewId, title) {
     const inputKey = this.getRecordingKey(recordingName);
     const trimmedRecordingName = `trimmed-${startTime}-${endTime}-${recordingName}.mp4`;
     const outputKey = this.getClipKey(trimmedRecordingName);
-    const thumbnailKey = this.getThumbnailKey(trimmedRecordingName);
+    const thumbnailKey = this.getClipThumbnailKey(trimmedRecordingName);
 
     const tempInputPath = `/tmp/${recordingName}`;
     const tempOutputPath = `/tmp/${trimmedRecordingName}.mp4`;
