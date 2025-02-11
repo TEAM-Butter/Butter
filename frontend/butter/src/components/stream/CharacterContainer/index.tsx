@@ -7,8 +7,10 @@ import pet1 from "../../../assets/pets/pet1.png"; // 캐릭터 이미지
 // import pet6 from "../../../assets/pets/pet6.png"; // 캐릭터 이미지
 import like from "../../../assets/like.png";
 import heart from "../../../assets/heart.png";
+import clap from "../../../assets/clap.png";
+import mic from "../../../assets/mic.png";
 import styled from "@emotion/styled";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Socket } from "socket.io-client";
 import { SocketContent } from "../../../types/socket";
 
@@ -69,40 +71,133 @@ const CharacterContainer = ({ socket }: CharacterContainer) => {
     Array(13).fill(false)
   );
 
-  //캐릭터를 동작시키는 함수를 적어라
-  socket.on("message", (content: SocketContent) => {
-    console.log("응답입니다");
-    if (content.role == "publisher") {
-      if (content.label == "little_heart") {
-        console.log("하트입니다");
-        handleButtonClick(1);
-      }
-      if (content.label == "clap") {
-        console.log("박수입니다");
-      }
-      if (content.label == "like") {
-        console.log("엄지척입니다");
-      }
-      if (content.label == "thumb_index") {
-        console.log("앵콜입니다");
-      }
-    }
-  });
+  const [currentEmotions, setCurrentEmotions] = useState<string[]>(
+    Array(13).fill("heart")
+  );
 
-  const handleButtonClick = (index: number) => {
+  //이벤트 처리 상태 관리
+  const isHandlingEmotion = useRef(false);
+
+  const handleEmotion = (index: number, emotionType: string) => {
+    if (isHandlingEmotion.current) return;
+
+    isHandlingEmotion.current = true;
+
+    setCurrentEmotions((prev) => {
+      const newEmotions = [...prev];
+      newEmotions[index] = emotionType;
+      return newEmotions;
+    });
+
     setVisibleEmotions((prev) => {
       const newEmotions = [...prev];
       newEmotions[index] = true;
       return newEmotions;
     });
+
     setTimeout(() => {
       setVisibleEmotions((prev) => {
         const newEmotions = [...prev];
         newEmotions[index] = false;
         return newEmotions;
       });
+      isHandlingEmotion.current = false;
     }, 1000);
   };
+  useEffect(() => {
+    const handleMessage = (content: SocketContent) => {
+      if (content.role === "publisher") {
+        switch (content.label) {
+          case "little_heart":
+            handleEmotion(1, heart);
+            break;
+          case "clap":
+            handleEmotion(1, clap);
+            break;
+          case "like":
+            handleEmotion(1, like);
+            break;
+          case "thumb_index":
+            handleEmotion(1, mic);
+            break;
+        }
+      }
+    };
+
+    socket.on("message", handleMessage);
+  }, [socket]);
+
+  // //캐릭터를 동작시키는 함수를 적어라
+  // socket.on("message", (content: SocketContent) => {
+  //   if (content.role === "publisher") {
+  //     switch (content.label) {
+  //       case "little_heart":
+  //         handleEmotion(1, heart);
+  //         break;
+  //       case "clap":
+  //         handleEmotion(1, clap);
+  //         break;
+  //       case "like":
+  //         handleEmotion(1, like);
+  //         break;
+  //       case "thumb_index":
+  //         handleEmotion(1, mic);
+  //         break;
+  //     }
+  //   }
+  // });
+
+  // const handleEmotion = (index: number, emotionType: string) => {
+  //   setCurrentEmotions((prev) => {
+  //     const newEmotions = [...prev];
+  //     newEmotions[index] = emotionType;
+  //     return newEmotions;
+  //   });
+
+  //   setVisibleEmotions((prev) => {
+  //     const newEmotions = [...prev];
+  //     newEmotions[index] = true;
+  //     return newEmotions;
+  //   });
+
+  //   setTimeout(() => {
+  //     setVisibleEmotions((prev) => {
+  //       const newEmotions = [...prev];
+  //       newEmotions[index] = false;
+  //       return newEmotions;
+  //     });
+  //   }, 1000);
+  // };
+
+  // const handleEmotion = useCallback(
+  //   (index: number, emotionType: string) => {
+  //     if (isAnimating) return; // 애니메이션 중이면 새로운 이벤트 무시
+
+  //     setIsAnimating(true); // 애니메이션 시작
+
+  //     setCurrentEmotions((prev) => {
+  //       const newEmotions = [...prev];
+  //       newEmotions[index] = emotionType;
+  //       return newEmotions;
+  //     });
+
+  //     setVisibleEmotions((prev) => {
+  //       const newEmotions = [...prev];
+  //       newEmotions[index] = true;
+  //       return newEmotions;
+  //     });
+
+  //     setTimeout(() => {
+  //       setVisibleEmotions((prev) => {
+  //         const newEmotions = [...prev];
+  //         newEmotions[index] = false;
+  //         return newEmotions;
+  //       });
+  //       setIsAnimating(false); // 애니메이션 종료
+  //     }, 3000);
+  //   },
+  //   [isAnimating]
+  // );
 
   const [characters] = useState(() =>
     Array.from({ length: 13 }, (_, index) => ({
@@ -128,7 +223,7 @@ const CharacterContainer = ({ socket }: CharacterContainer) => {
         >
           <EmotionBox>
             <Emotion
-              src={heart}
+              src={currentEmotions[index]}
               animate={
                 visibleEmotions[index]
                   ? { opacity: 1, y: -30 }
@@ -137,7 +232,7 @@ const CharacterContainer = ({ socket }: CharacterContainer) => {
               transition={{ duration: 0.4 }}
             />
           </EmotionBox>
-          <Character src={pet1} onClick={() => handleButtonClick(index)} />
+          <Character src={pet1} />
         </CharacterBox>
       ))}
     </CharacterContainerWrapper>
