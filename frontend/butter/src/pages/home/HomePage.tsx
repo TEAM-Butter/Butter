@@ -1,5 +1,4 @@
 import styled from "@emotion/styled";
-
 const HomePageWrapper = styled.div`
   // styles here
 `;
