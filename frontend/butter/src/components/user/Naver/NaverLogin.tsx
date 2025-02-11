@@ -1,4 +1,20 @@
-import React, { useEffect } from "react";
+import React from "react";
+import styled from "@emotion/styled";
+
+const Btn = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  
+  span{
+    font-weight: 800;
+    color: #03CF5D;
+    margin-bottom: 3px;
+  }
+`
 
 const NaverLogin: React.FC = () => {
   const handleLogin = () => {
@@ -19,9 +35,9 @@ const NaverLogin: React.FC = () => {
   };
 
   return (
-    <div>
-      <button onClick={handleLogin}>네이버로 로그인</button>
-    </div>
+    <Btn onClick={handleLogin}>
+      Log in with <span>NAVER</span>
+    </Btn>
   );
 };
 

@@ -21,11 +21,11 @@ interface UserState {
 }
 
 export const useUserStore = create<UserState>((set) => ({
-  isLogin: true,
+  isLogin: !!getAccessToken(),
   nickname: null,
   profileImage: null,
   avatarType: null,
-  memberType: "crew",
+  memberType: null,
   isExtraInfoRegistered: true,
 
   setUser: (

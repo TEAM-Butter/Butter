@@ -1,21 +1,22 @@
 import React, { useEffect } from "react";
 import axios from "axios";
 import { useNavigate, useLocation } from "react-router-dom";
+import { LoginResponseDto } from "../../../apis/response/auth";
+import { setAccessToken } from "../../../apis/auth";
+import { useUserStore } from "../../../stores/UserStore";
+import styled from "@emotion/styled";
 
 const NaverCallback: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const setUser = useUserStore(state => state.setUser)
 
   useEffect(() => {
     // URL 쿼리 파라미터에서 'code'와 'state'를 추출합니다.
     const searchParams = new URLSearchParams(location.search);
     const code = searchParams.get("code");
-    const state = searchParams.get("state");
-
-    console.log("콜백 URL 쿼리 파라미터:", { code, state });
 
     if (code) {
-      console.log("인증 코드가 감지되었습니다. 서버에 전달하여 로그인 요청을 보냅니다.");
       axios
         .post("http://localhost:8080/api/v1/auth/login/social", {
           code: code,
@@ -23,15 +24,11 @@ const NaverCallback: React.FC = () => {
         })
         .then((response) => {
           console.log("서버 응답 전체:", response);
-          const data = response.data;
-          if (data.success) {
-            console.log("로그인 성공:", data);
-            // 로그인 성공 후 홈으로 리다이렉트합니다.
-            navigate("/");
-          } else {
-            console.error("로그인 실패:", data.message);
-            // 필요에 따라 실패 시 사용자에게 안내 메시지를 표시할 수 있습니다.
-          }
+          const responseBody = response.data;
+          const { accessToken } = responseBody as LoginResponseDto;
+          setAccessToken(accessToken)
+          setUser(true, String(responseBody?.authenticatedMemberInfo.nickname), String(responseBody?.authenticatedMemberInfo.profileImage), String(responseBody?.authenticatedMemberInfo.avatarType), String(responseBody?.authenticatedMemberInfo.memberType), Boolean(responseBody?.authenticatedMemberInfo.isExtraInfoRegistered));
+          navigate("/");
         })
         .catch((error) => {
           console.error("서버 전송 중 오류 발생:", error);
@@ -43,9 +40,7 @@ const NaverCallback: React.FC = () => {
   }, [location.search, navigate]);
 
   return (
-    <div>
       <p>로그인 처리 중...</p>
-    </div>
   );
 };
 

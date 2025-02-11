@@ -2,7 +2,7 @@ import { Route } from "react-router-dom";
 import MemberDetailPage from "../pages/user/MemberDetailPage";
 import LoginPage from "../pages/user/LoginPage";
 import SignupPage from "../pages/user/SignupPage";
-import NaverCallback from "../pages/user/NaverCallback";
+import NaverCallback from "../components/user/Naver/NaverCallback";
 
 export const userRoutes = (
   <>
