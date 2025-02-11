@@ -73,7 +73,6 @@ public class EmailServiceImpl implements EmailService{
                                 new IllegalArgumentException("ERR : 해당 이메일로 가입된 계정을 찾을 수 없습니다."));
                 String tempPasswordStr = createRandomCode();
                 Password tempPassword = Password.raw(tempPasswordStr).encrypt(encryptUtils);
-                log.info("암호화된 임시 비밀번호 값 : "+tempPassword.getValue());
                 memberForReset.changePassword(tempPassword);
                 additionalInfo = tempPasswordStr;
                 break;
