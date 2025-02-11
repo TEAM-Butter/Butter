@@ -1,5 +1,6 @@
-package com.ssafy.butter.domain.member.entity;
+package com.ssafy.butter.domain.notification.entity;
 
+import com.ssafy.butter.domain.member.entity.Member;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
@@ -26,9 +27,22 @@ public class Notification {
     @NotNull
     private Member member;
 
+    @Column(length = 500)
+    private String url;
+
+    @Column(length = 50)
+    private String notificationType;
+
+    private char readYn;
+    private char deletedYn;
+
     @Builder
-    public Notification(String content, Member member) {
+    public Notification(String content, Member member, String url, String notificationType, char readYn, char deletedYn) {
         this.content = content;
         this.member = member;
+        this.url = url;
+        this.notificationType = notificationType;
+        this.readYn = readYn;
+        this.deletedYn = deletedYn;
     }
 }
