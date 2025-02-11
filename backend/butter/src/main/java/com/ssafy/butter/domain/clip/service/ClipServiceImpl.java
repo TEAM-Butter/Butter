@@ -11,8 +11,7 @@ import com.ssafy.butter.domain.clip.repository.ClipRepository;
 import com.ssafy.butter.domain.clip.repository.LikedClipRepository;
 import com.ssafy.butter.domain.crew.entity.Crew;
 import com.ssafy.butter.domain.crew.service.CrewMemberService;
-import com.ssafy.butter.domain.live.entity.Live;
-import com.ssafy.butter.domain.live.service.LiveService;
+import com.ssafy.butter.domain.crew.service.CrewService;
 import com.ssafy.butter.domain.member.entity.Member;
 import com.ssafy.butter.domain.member.service.member.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +26,7 @@ import java.util.List;
 public class ClipServiceImpl implements ClipService {
 
     private final MemberService memberService;
-    private final LiveService liveService;
+    private final CrewService crewService;
     private final CrewMemberService crewMemberService;
 
     private final ClipRepository clipRepository;
@@ -36,24 +35,18 @@ public class ClipServiceImpl implements ClipService {
     @Override
     public ClipResponseDTO createClip(AuthInfoDTO currentUser, ClipSaveRequestDTO clipSaveRequestDTO) {
         Member member = memberService.findById(currentUser.id());
-        Live live = liveService.findById(clipSaveRequestDTO.liveId());
-        Crew crew = live.getCrew();
+        Crew crew = crewService.findById(clipSaveRequestDTO.crewId());
         if (!crewMemberService.findByCrewAndMember(crew, member).getIsCrewAdmin()) {
             throw new IllegalArgumentException("Current user is not crew admin");
         }
 
         Clip clip = Clip.builder()
-                .live(live)
+                .crew(crew)
                 .title(clipSaveRequestDTO.title())
-                .videoUrl("")
+                .videoName(clipSaveRequestDTO.videoName())
                 .hitCount(0L)
                 .build();
-        Clip savedClip = clipRepository.save(clip);
-
-        String filenamePrefix = savedClip.getId() + "_" + System.currentTimeMillis() + "_";
-        String videoUrl = filenamePrefix + clipSaveRequestDTO.video().getOriginalFilename();
-        savedClip.updateVideoUrl(videoUrl);
-        return ClipResponseDTO.fromEntity(clipRepository.save(savedClip));
+        return ClipResponseDTO.fromEntity(clipRepository.save(clip));
     }
 
     @Override
@@ -75,7 +68,7 @@ public class ClipServiceImpl implements ClipService {
     public ClipResponseDTO deleteClip(AuthInfoDTO currentUser, Long id) {
         Member member = memberService.findById(currentUser.id());
         Clip clip = clipRepository.findById(id).orElseThrow();
-        Crew crew = clip.getLive().getCrew();
+        Crew crew = clip.getCrew();
         if (!crewMemberService.findByCrewAndMember(crew, member).getIsCrewAdmin()) {
             throw new IllegalArgumentException("Current user is not crew admin");
         }
