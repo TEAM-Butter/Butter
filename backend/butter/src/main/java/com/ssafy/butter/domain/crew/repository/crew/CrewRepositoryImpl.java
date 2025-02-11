@@ -1,7 +1,8 @@
 package com.ssafy.butter.domain.crew.repository.crew;
 
 import com.querydsl.core.BooleanBuilder;
-import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.Order;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.ssafy.butter.domain.crew.dto.request.CrewListRequestDTO;
 import com.ssafy.butter.domain.crew.entity.*;
@@ -9,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -56,7 +56,7 @@ public class CrewRepositoryImpl implements CrewRepository {
                 .join(qCrew.crewGenres, qCrewGenre)
                 .join(qCrewGenre.genre, qGenre)
                 .where(createCrewListCondition(crewListRequestDTO))
-                .orderBy()
+                .orderBy(createCrewListOrderCondition(crewListRequestDTO))
                 .limit(crewListRequestDTO.pageSize())
                 .fetch();
     }
@@ -78,5 +78,14 @@ public class CrewRepositoryImpl implements CrewRepository {
         return booleanBuilder;
     }
 
-    // TODO 크루 목록 정렬 기준
+    private OrderSpecifier<?> createCrewListOrderCondition(CrewListRequestDTO crewListRequestDTO) {
+        switch (crewListRequestDTO.sortBy()) {
+            case "follow":
+                return new OrderSpecifier<>(Order.DESC, qCrew.follows.size());
+            case "createDate":
+                return new OrderSpecifier<>(Order.DESC, qCrew.createDate);
+            default:
+                return null;
+        }
+    }
 }
