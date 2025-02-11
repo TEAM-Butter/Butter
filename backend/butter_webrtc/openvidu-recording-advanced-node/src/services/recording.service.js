@@ -9,6 +9,7 @@ import {
   LIVEKIT_API_KEY,
   LIVEKIT_API_SECRET,
   RECORDINGS_PATH,
+  CLIPS_PATH,
   RECORDINGS_METADATA_PATH,
   RECORDING_FILE_PORTION_SIZE,
 } from "../config.js";
@@ -197,5 +198,51 @@ export class RecordingService {
       RECORDINGS_METADATA_PATH +
       recordingName.replace(".mp4", ".json")
     );
+  }
+
+  getClipKey(trimmedRecordingName) {
+    return CLIPS_PATH + trimmedRecordingName;
+  }
+
+  getThumbnailKey(trimmedRecordingName) {
+    return CLIPS_PATH + trimmedRecordingName.replace(".mp4", ".jpg")
+  }
+
+  async trimRecording(recordingName, startTime, endTime, crewId, title) {
+    const inputKey = this.getRecordingKey(recordingName);
+    const trimmedRecordingName = `trimmed-${startTime}-${endTime}-${recordingName}.mp4`;
+    const outputKey = this.getClipKey(trimmedRecordingName);
+    const thumbnailKey = this.getThumbnailKey(trimmedRecordingName);
+
+    const tempInputPath = `/tmp/${recordingName}`;
+    const tempOutputPath = `/tmp/${trimmedRecordingName}.mp4`;
+    const thumbnailPath = `/tmp/thumbnail-${trimmedRecordingName}.jpg`;
+
+    try {
+      // S3에서 원본 영상 다운로드
+      await s3Service.downloadObject(inputKey, tempInputPath);
+
+      // FFmpeg을 이용해 영상 자르기
+      const command = `ffmpeg -i "${tempInputPath}" -ss ${startTime} -to ${endTime} -c copy "${tempOutputPath}"`;
+      await execPromise(command);
+
+      // 썸네일 추출 (10번째 프레임)
+      const thumbnailCommand = `ffmpeg -i "${tempOutputPath}" -vf "select='eq(n\\,10)'" -vsync vfr "${thumbnailPath}"`;
+      await execPromise(thumbnailCommand);
+
+      // 잘린 영상 S3에 업로드
+      await s3Service.uploadObject(outputKey, fs.createReadStream(tempOutputPath));
+      await s3Service.uploadObject(thumbnailKey, fs.createReadStream(thumbnailPath));
+
+      // 임시 파일 삭제
+      fs.unlinkSync(tempInputPath);
+      fs.unlinkSync(tempOutputPath);
+      fs.unlinkSync(thumbnailPath);
+
+      return { success: true, trimmedRecordingName };
+    } catch (error) {
+      console.error("Error trimming recording:", error);
+      return { success: false, error: error.message };
+    }
   }
 }
