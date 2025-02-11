@@ -257,6 +257,13 @@ const LivePage = () => {
           roomName,
           room.sid
         );
+        console.log(
+          "test입니다!!!!!!",
+          "roomName : ",
+          roomName,
+          "/room.sid",
+          room.sid
+        );
         setRecordings(recordingList);
       }
       // 모달 열기
