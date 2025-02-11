@@ -1,5 +1,6 @@
 package com.ssafy.butter.domain.schedule.repository;
 
+import com.ssafy.butter.domain.schedule.dto.request.ScheduleSearchRequestDTO;
 import com.ssafy.butter.domain.schedule.entity.Schedule;
 import org.springframework.data.domain.Pageable;
 
@@ -20,4 +21,6 @@ public interface ScheduleRepository {
     List<Schedule> findAllByIdLessThanOrderByIdDesc(Long id, Pageable pageable);
 
     List<Schedule> findAllByBuskingDate(LocalDateTime buskingDate);
+
+    List<Schedule> getScheduleList(ScheduleSearchRequestDTO scheduleSearchRequestDTO);
 }
