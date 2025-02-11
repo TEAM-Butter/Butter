@@ -6,6 +6,10 @@ public record CrewListRequestDTO(
 
         Long crewId,
         String keyword,
+        String genre,
+
+        @NotNull
+        String sortBy,
 
         @NotNull
         Integer pageSize
