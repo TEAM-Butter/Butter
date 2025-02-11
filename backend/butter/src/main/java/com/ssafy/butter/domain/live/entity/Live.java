@@ -30,9 +30,6 @@ public class Live {
     @JsonIgnore
     private Crew crew;
 
-    @OneToMany(mappedBy = "live", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Clip> clips = new ArrayList<>();
-
     @Column(length = 50)
     @NotNull
     private String title;
@@ -47,9 +44,8 @@ public class Live {
     private Schedule schedule;
 
     @Builder
-    public Live(Crew crew, List<Clip> clips, String title, LocalDateTime startDate, LocalDateTime endDate, Schedule schedule) {
+    public Live(Crew crew, String title, LocalDateTime startDate, LocalDateTime endDate, Schedule schedule) {
         this.crew = crew;
-        this.clips = clips;
         this.title = title;
         this.startDate = startDate;
         this.endDate = endDate;
