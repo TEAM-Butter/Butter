@@ -1,5 +1,6 @@
 package com.ssafy.butter.domain.crew.repository.crew;
 
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.ssafy.butter.domain.crew.dto.request.CrewListRequestDTO;
@@ -60,16 +61,21 @@ public class CrewRepositoryImpl implements CrewRepository {
                 .fetch();
     }
 
-    private BooleanExpression[] createCrewListCondition(CrewListRequestDTO crewListRequestDTO) {
-        String[] keywords = crewListRequestDTO.keyword().split(" ");
-        return new BooleanExpression[] {
-                // 커서 기반 페이징을 위한 조건
-                crewListRequestDTO.crewId() == null ? null : qCrew.id.lt(crewListRequestDTO.crewId()),
-                // 크루 이름이 모든 키워드를 포함하는지
-                Arrays.stream(keywords).map(qCrew.name::contains).reduce(BooleanExpression::and).orElse(null),
-                // 크루가 장르를 갖고 있는지
-                qGenre.name.eq(crewListRequestDTO.genre()),
-        };
+    private BooleanBuilder createCrewListCondition(CrewListRequestDTO crewListRequestDTO) {
+        BooleanBuilder booleanBuilder = new BooleanBuilder();
+        if (crewListRequestDTO.crewId() != null) {
+            booleanBuilder.and(qCrew.id.lt(crewListRequestDTO.crewId()));
+        }
+        if (crewListRequestDTO.keyword() != null) {
+            String[] keywords = crewListRequestDTO.keyword().split(" ");
+            for (String keyword : keywords) {
+                booleanBuilder.and(qCrew.name.contains(keyword));
+            }
+        }
+        if (crewListRequestDTO.genre() != null) {
+            booleanBuilder.and(qGenre.name.eq(crewListRequestDTO.genre()));
+        }
+        return booleanBuilder;
     }
 
     // TODO 크루 목록 정렬 기준
