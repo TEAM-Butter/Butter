@@ -61,31 +61,21 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
     public List<Schedule> getScheduleList(ScheduleSearchRequestDTO scheduleSearchRequestDTO) {
         return jpaQueryFactory.selectFrom(qSchedule)
                 .where(createScheduleCondition(scheduleSearchRequestDTO))
-                .orderBy(createScheduleOrder(scheduleSearchRequestDTO))
                 .fetch();
     }
 
     private BooleanExpression[] createScheduleCondition(ScheduleSearchRequestDTO scheduleSearchRequestDTO) {
-        String[] keywords = scheduleSearchRequestDTO.keyword().split(" ");
+        String[] keywords = scheduleSearchRequestDTO.keyword() == null ? null :
+                scheduleSearchRequestDTO.keyword().split(" ");
         return new BooleanExpression[] {
                 // 일정의 장소가 키워드를 모두 포함하는지
-                Arrays.stream(keywords).map(qSchedule.place::contains).reduce(BooleanExpression::and).orElse(null),
+                keywords == null ? null :
+                        Arrays.stream(keywords).map(qSchedule.place::contains).reduce(BooleanExpression::and).orElse(null),
                 // 요청 date <= 버스킹 날짜 < 요청 date + 1 만족하는지
                 scheduleSearchRequestDTO.date() == null ? null :
                         qSchedule.buskingDate.goe(scheduleSearchRequestDTO.date().atStartOfDay()).and(
                                 qSchedule.buskingDate.lt(scheduleSearchRequestDTO.date().plusDays(1).atStartOfDay())
                         )
         };
-    }
-
-    private OrderSpecifier<?> createScheduleOrder(ScheduleSearchRequestDTO scheduleSearchRequestDTO) {
-        switch (scheduleSearchRequestDTO.sortBy()) {
-            case "like":
-                return new OrderSpecifier<>(Order.DESC, qSchedule.likedSchedules.size());
-            case "date":
-                return new OrderSpecifier<>(Order.DESC, qSchedule.buskingDate);
-            default:
-                return null;
-        }
     }
 }

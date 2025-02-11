@@ -7,9 +7,6 @@ import java.time.LocalDate;
 public record ScheduleSearchRequestDTO(
 
         String keyword,
-        LocalDate date,
-
-        @NotNull
-        String sortBy
+        LocalDate date
 ) {
 }
