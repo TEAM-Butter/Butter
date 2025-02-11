@@ -8,9 +8,22 @@ const UserBoxWrapper = styled.div`
 
 interface VideoStreamProps {
   streamInterval?: number; //스트리밍 간격(ms)
+  participantName: string;
+  roomName: string;
+  role: string;
 }
 
-const UserBox = ({ streamInterval = 200 }: VideoStreamProps) => {
+// interface UserBoxProps {
+//   participantName: string;
+//   roomName: string;
+// }
+
+const UserBox = ({
+  streamInterval = 500,
+  participantName,
+  roomName,
+  role,
+}: VideoStreamProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
 
   // const sendFrameToServer = useCallback(async () => {
@@ -92,14 +105,26 @@ const UserBox = ({ streamInterval = 200 }: VideoStreamProps) => {
           if (blob) {
             const formData = new FormData();
             formData.append("file", blob);
+            // 참가자 정보와 룸 정보도 함께 전송
+            formData.append("participant", participantName);
+            console.log("participant이름", participantName);
+            //수정
+            formData.append("room-id", roomName);
+            formData.append("role", role);
 
             // 디버깅을 위한 로그 추가
             console.log("Sending request to:", "/ai/upload_frame");
 
+            const serverUrl = "http://localhost:5000/ai/upload_frame";
+
             try {
-              const response = await fetch("/ai/upload_frame", {
+              const response = await fetch(serverUrl, {
                 method: "POST",
                 body: formData,
+                mode: "cors",
+                headers: {
+                  Accept: "application/json",
+                },
               });
 
               console.log("Response status:", response.status);

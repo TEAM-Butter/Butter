@@ -160,6 +160,7 @@ public class EmailServiceImpl implements EmailService{
 
             int idx = ThreadLocalRandom.current().nextInt(number.length());
             sb.append(number.charAt(idx));
+            sb.append("1!");
         }
 
         return sb.toString();

@@ -17,7 +17,15 @@ interface MemberDetailResponseDto {
     isExtraInfoRegistered: boolean
 }
 
+interface CheckLoginIdResponseDto {
+    exists: boolean,
+    message: string,
+}
+
+
+
 export type {
     SignUpResponseDto,
     MemberDetailResponseDto,
+    CheckLoginIdResponseDto,
 }

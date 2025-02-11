@@ -12,8 +12,13 @@
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
+    "@fullcalendar/core": "^6.1.15",
+    "@fullcalendar/daygrid": "^6.1.15",
+    "@fullcalendar/interaction": "^6.1.15",
+    "@fullcalendar/react": "^6.1.15",
     "@livekit/components-react": "^2.8.1",
     "@stomp/stompjs": "^7.0.0",
+    "@types/socket.io-client": "^1.4.36",
     "axios": "^1.7.9",
     "express": "^4.21.2",
     "framer-motion": "^12.0.6",
@@ -24,6 +29,7 @@
     "react-kakao-maps-sdk": "^1.1.27",
     "react-router-dom": "^6.28.2",
     "react-select": "^5.10.0",
+    "socket.io-client": "^4.8.1",
     "zustand": "^5.0.3"
   },
   "devDependencies": {

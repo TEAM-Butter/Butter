@@ -6,19 +6,28 @@ import java.time.LocalDate;
 import java.util.List;
 
 public record UserProfileResponseDTO(
+        String loginId,
+        String gender,
         String email,
         String nickname,
         LocalDate birthdate,
         String profileImage,
-        List<MemberGenre> memberGenres,
+        List<String> genres,
         boolean isExtraInfoRegistered
 ) {
     public static UserProfileResponseDTO from(Member member){
-        return new UserProfileResponseDTO(member.getEmail().getValue(),
+        List<String> genres = member.getMemberGenres().stream()
+                .map(memberGenre -> memberGenre.getGenre().getName())
+                .toList();
+
+        return new UserProfileResponseDTO(
+                member.getLoginId(),
+                member.getGender().name(),
+                member.getEmail().getValue(),
                 member.getNickname().getValue(),
                 member.getBirthDate().getDate(),
                 member.getProfileImage(),
-                member.getMemberGenres(),
+                genres,
                 member.isExtraInfoRegistered());
     }
 }

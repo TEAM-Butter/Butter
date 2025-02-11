@@ -27,7 +27,7 @@ public class EmailAuthController {
     )
     @PostMapping("/exists")
     public ResponseEntity<SendEmailDTO> existsEmail(@Valid @RequestBody SendEmailDTO email){
-        if(memberService.checkIfEmailExists(email)){
+        if(memberService.checkIfEmailExists(email.email())){
             return ResponseEntity.badRequest().body(email);
         }
         return ResponseEntity.ok(email);

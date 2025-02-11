@@ -36,6 +36,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 .excludePathPatterns("/api/v1/auth/**")
                 .excludePathPatterns("/api/v1/auth/login/**")
                 .excludePathPatterns("/api/v1/members/signup")
+                .excludePathPatterns("/api/v1/members/check-loginId")
                 .excludePathPatterns("/api/v1/email/**")
                 .excludePathPatterns("https://openapi.naver.com/v1/nid/me")
                 .excludePathPatterns("/swagger-ui/**", "/v3/api-docs/**");

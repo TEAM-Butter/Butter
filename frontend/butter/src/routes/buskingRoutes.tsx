@@ -1,15 +1,10 @@
 import { Route } from "react-router-dom";
 import SchedulePage from "../pages/busking/SchedulePage";
-
-function BuskingHome() {
-  return <div>Welcome to the Busking Home Page!</div>;
-}
-
-
-
+import SEE from "../pages/busking/sdf";
 
 export const buskingRoutes = (
-  <Route path="/busking" element={ <BuskingHome />}>
-    <Route path="schedule" element={<SchedulePage />} />
+  <Route path="/busking">
+    <Route path="" element={<SchedulePage/>}/>
+    <Route path="list"/>
   </Route>
 );
