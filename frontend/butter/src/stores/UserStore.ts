@@ -20,6 +20,7 @@ interface UserState {
   logout: () => void;
 }
 
+// 로그인상태유지 : stores=> UserStore.ts
 export const useUserStore = create<UserState>((set) => ({
   isLogin: true,
   nickname: null,

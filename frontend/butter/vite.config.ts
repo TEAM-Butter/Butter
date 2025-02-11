@@ -35,4 +35,14 @@ export default defineConfig({
       },
     },
   },
+
+  // 절대 경로 설정
+  resolve: {
+    alias: {
+      "@": "/src",
+      "@components": "/src/components",
+      "@utils": "/src/utils",
+      "@assets": "/src/assets",
+    },
+  },
 });

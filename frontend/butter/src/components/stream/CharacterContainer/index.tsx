@@ -1,16 +1,18 @@
 import { motion } from "framer-motion";
 import pet1 from "../../../assets/pets/pet1.png"; // 캐릭터 이미지
-import pet2 from "../../../assets/pets/pet2.png"; // 캐릭터 이미지
-import pet3 from "../../../assets/pets/pet3.png"; // 캐릭터 이미지
-import pet4 from "../../../assets/pets/pet4.png"; // 캐릭터 이미지
-import pet5 from "../../../assets/pets/pet5.png"; // 캐릭터 이미지
-import pet6 from "../../../assets/pets/pet6.png"; // 캐릭터 이미지
+// import pet2 from "../../../assets/pets/pet2.png"; // 캐릭터 이미지
+// import pet3 from "../../../assets/pets/pet3.png"; // 캐릭터 이미지
+// import pet4 from "../../../assets/pets/pet4.png"; // 캐릭터 이미지
+// import pet5 from "../../../assets/pets/pet5.png"; // 캐릭터 이미지
+// import pet6 from "../../../assets/pets/pet6.png"; // 캐릭터 이미지
 import like from "../../../assets/like.png";
 import heart from "../../../assets/heart.png";
 import styled from "@emotion/styled";
 import { useState } from "react";
+import { Socket } from "socket.io-client";
+import { SocketContent } from "../../../types/socket";
 
-const images = [pet1, pet2, pet3, pet4, pet5, pet6];
+// const images = [pet1, pet2, pet3, pet4, pet5, pet6];
 
 const CharacterContainerWrapper = styled.div`
   position: relative;
@@ -58,10 +60,34 @@ const Character = styled.img`
   height: auto;
 `;
 
-const CharacterContainer = () => {
+interface CharacterContainer {
+  socket: Socket;
+}
+
+const CharacterContainer = ({ socket }: CharacterContainer) => {
   const [visibleEmotions, setVisibleEmotions] = useState<boolean[]>(
     Array(13).fill(false)
   );
+
+  //캐릭터를 동작시키는 함수를 적어라
+  socket.on("message", (content: SocketContent) => {
+    console.log("응답입니다");
+    if (content.role == "publisher") {
+      if (content.label == "little_heart") {
+        console.log("하트입니다");
+        handleButtonClick(1);
+      }
+      if (content.label == "clap") {
+        console.log("박수입니다");
+      }
+      if (content.label == "like") {
+        console.log("엄지척입니다");
+      }
+      if (content.label == "thumb_index") {
+        console.log("앵콜입니다");
+      }
+    }
+  });
 
   const handleButtonClick = (index: number) => {
     setVisibleEmotions((prev) => {
@@ -102,7 +128,7 @@ const CharacterContainer = () => {
         >
           <EmotionBox>
             <Emotion
-              src={like}
+              src={heart}
               animate={
                 visibleEmotions[index]
                   ? { opacity: 1, y: -30 }

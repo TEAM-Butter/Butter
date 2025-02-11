@@ -2,6 +2,7 @@ import { LocalVideoTrack, RemoteTrackPublication, Room } from "livekit-client";
 import StreamLiveAudio from "./StreamLiveAudio";
 import StreamLiveVideo from "./StreamLiveVideo";
 import { LiveKitRoom } from "@livekit/components-react";
+import { Socket } from "socket.io-client";
 
 type TrackInfo = {
   trackPublication: RemoteTrackPublication;
@@ -30,6 +31,7 @@ const StreamLive = ({
   role,
 }: StreamLiveProps) => {
   console.log("remoeteTracks 정보입니다", remoteTracks);
+
   return (
     <div className="w-full h-full">
       {!room ? (
@@ -78,6 +80,7 @@ const StreamLive = ({
                           track={remoteTrack.trackPublication.videoTrack!}
                           participantIdentity={remoteTrack.participantIdentity}
                           roomName={roomName}
+                          role={role}
                         />
                         <div className="absolute bottom-2 left-2 bg-black bg-opacity-50 px-2 py-1 rounded text-white text-sm">
                           {remoteTrack.participantIdentity}

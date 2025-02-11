@@ -18,7 +18,6 @@
     "@fullcalendar/react": "^6.1.15",
     "@livekit/components-react": "^2.8.1",
     "@stomp/stompjs": "^7.0.0",
-    "@types/socket.io-client": "^1.4.36",
     "axios": "^1.7.9",
     "express": "^4.21.2",
     "framer-motion": "^12.0.6",
