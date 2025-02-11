@@ -20,6 +20,8 @@ import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid' // a plugin!
 import { Calendar } from '@fullcalendar/core';
 import interactionPlugin from '@fullcalendar/interaction'; // for selectable
+import { axiosInstance } from "../../apis/axiosInstance";
+import axios, { Axios } from "axios";
 
 
 const images = [sample1,sample2,sample3,sample4,sample5]
@@ -247,15 +249,18 @@ const DateTextBox2 = styled.p`
   bottom: 10px;
   right: 10px;
   color: black;
-  background-color: gray;
+  background: var(--liner);
   border-radius: 30px;
   height: 30px;
   width: 150px;
   display: flex;
   justify-content: center;
   align-items: center;
+  font-size: 15px;
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 `
 
+const ServerUrl = 'http://localhost:8080'
 
 
 function SchedulePage() {
@@ -273,9 +278,6 @@ function SchedulePage() {
   const [searchTerm, setSearchTerm] = useState("전국");
   const [myLocation, setMyLocation] = useState<{ lat: number; lng: number } |null>(null);
   const [myAddress, setMyAddress] = useState<string>(""); // 내 위치 주소 저장
-
-
-
   const calendarRef = useRef<FullCalendar | null>(null); // 🔥 useRef 타입 명시
   const [selectedDate, setSelectedDate] = useState<any>(null);
 
@@ -292,23 +294,23 @@ function SchedulePage() {
   const handleDateSelect = (selectInfo: any) => {
     const selectedDate = selectInfo.startStr; // 선택한 날짜
     console.log("🗓 선택한 날짜:", selectedDate);
-
+    
     setSelectedDate(selectedDate);
 
     // ✅ 백엔드 API 요청
-    fetch("https://your-backend-api.com/busking-schedule", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ selectedDate }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log("🎸 버스킹 일정:", data);
-      })
-      .catch((error) => console.error("🚨 오류 발생:", error));
-  };
+  //   fetch(`${ServerUrl}/api/v1/schedule`, {
+  //     method: "GET",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //     body: JSON.stringify({ selectedDate }),
+  //   })
+  //     .then((res) => res.json())
+  //     .then((data) => {
+  //       console.log("🎸 버스킹 일정:", data);
+  //     })
+  //     .catch((error) => console.error("🚨 오류 발생:", error));
+   };
 
 
 
@@ -417,7 +419,6 @@ function SchedulePage() {
 
 
 
-
   useEffect(() => {
     // 분리 주석
     if (!map) return
@@ -463,32 +464,32 @@ function SchedulePage() {
           address?: string; // 추가: 변환된 주소
         }
 
-        const useGeocodePositions = (positions: Position[]) => {
-          const [updatedPositions, setUpdatedPositions] = useState<Position[]>([]);
+  const useGeocodePositions = (positions: Position[]) => {
+  const [updatedPositions, setUpdatedPositions] = useState<Position[]>([]);
 
-          useEffect(() => {
-            if (!window.kakao || !window.kakao.maps) return;
+  useEffect(() => {
+    if (!window.kakao || !window.kakao.maps) return;
 
-            const geocoder = new kakao.maps.services.Geocoder();
-            let tempPositions: Position[] = [];
+    const geocoder = new kakao.maps.services.Geocoder();
+    let tempPositions: Position[] = [];
 
-            positions.forEach((pos, index) => {
-              geocoder.coord2Address(pos.position.lng, pos.position.lat, (result, status) => {
-                if (status === kakao.maps.services.Status.OK) {
-                  const address = result[0]?.address?.address_name || "알 수 없음";
-                  tempPositions.push({ ...pos, address });
+    positions.forEach((pos, index) => {
+      geocoder.coord2Address(pos.position.lng, pos.position.lat, (result, status) => {
+        if (status === kakao.maps.services.Status.OK) {
+          const address = result[0]?.address?.address_name || "알 수 없음";
+          tempPositions.push({ ...pos, address });
 
-                  // 모든 위치의 주소 변환이 완료되면 상태 업데이트
-                  if (tempPositions.length === positions.length) {
-                    setUpdatedPositions(tempPositions);
-                  }
-                }
-              });
-            });
-          }, [positions]);
+          // 모든 위치의 주소 변환이 완료되면 상태 업데이트
+          if (tempPositions.length === positions.length) {
+            setUpdatedPositions(tempPositions);
+          }
+        }
+      });
+    });
+  }, [positions]);
 
-          return updatedPositions;
-        };
+    return updatedPositions;
+  };
 
 const updatedPositions = useGeocodePositions(positions2);
 
@@ -529,6 +530,7 @@ useEffect(() => {
       end: todayStr,
       allDay: true,
     });
+
   }
 }, []);
 
@@ -581,6 +583,99 @@ useEffect(() => {
       }))
     }
   }
+
+
+//   const [changeProcess, setChangeProcess] = useState<any>([]);
+//   const divideSchedule = function (date: string, daySchedule: any) {
+//      // ✅ date 값을 연도, 월, 일로 분해
+//     const [year, month, day] = date.split("-").map(Number); // "2025-02-05" → [2025, 2, 5]
+
+//     daySchedule.forEach((a: any) => {
+//         // ✅ buskingDate에서 연도, 월, 일 추출
+//         const [bYear, bMonth, bDay] = a.buskingDate;
+
+//         // ✅ 연도, 월, 일이 동일한 경우만 추가
+//         if (bYear === year && bMonth === month && bDay === day) {
+//             setChangeProcess(daySchedule);
+//             console.log("changeProgress : ", changeProcess)
+//         }
+//     });
+//     // ✅ 상태 업데이트
+//     setChangeProcess([...changeProcess]);
+//     setPositions(changeProcess)
+// };
+
+
+
+
+
+
+
+  const [ loading, setLoading ] = useState(true) // 로딩 표시하는 변수
+  const [error, setError] = useState(null) // 에러 상태
+  const [daySchedule, setDaySchedule ] = useState<any>([])
+
+  useEffect(()=> {
+    const todayStr= getToday();// 🔥 오늘 날짜 가져오기
+    const fecthDaySchedule = async () => {
+      try {
+          setLoading(true) 
+          const response = await axiosInstance.get(`${ServerUrl}/api/v1/schedule?pageSize=60&date=${todayStr}`)
+          setDaySchedule(response.data);
+          console.log("daySchedule : ", response.data)
+
+      } catch (err :any) {
+        setError(err.message);
+      } finally {
+        setLoading(false)
+      }
+    }
+    
+    fecthDaySchedule()
+
+  }, [])
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
+
+
+  // const registerSchedule = function (date : string, daySchedule : any ) {
+  //   const [changeProcess, setChangeProcss] = useState([{position : {lan: "", lng: ""}, content : "", place:"", title:"", buskingDate : [], crew : {}}])
+  //   daySchedule.map((a : any, i : number)=> {changeProcess.push({position :{lan : a.latitude, lng: a.longitude}, content : a.content, place: a.place, title: a.title, buskingDate : a.buskingDate, crew : a.crew }) })
+
+  // }
+  
+  const ChooseDay = function(selectedDate : any) {
+    const fecthDaySchedule = async () => {
+      try {
+          setLoading(true) 
+          const response = await axiosInstance.get(`${ServerUrl}/api/v1/schedule?pageSize=60&date=${selectedDate}`)
+          setDaySchedule(response.data);
+          console.log("daySchedule : ", response.data)
+          const bounds = new kakao.maps.LatLngBounds()
+          let markers3 = []
+          for (var i = 0; i < daySchedule.length; i++) {
+            // @ts-ignore
+            markers3.push({
+              position: {
+                lat: parseFloat(daySchedule[i].latitude),
+                lng: parseFloat(daySchedule[i].longitude),
+              },
+              content: daySchedule[i].place,
+            })
+            // @ts-ignore
+            bounds.extend(new kakao.maps.LatLng(daySchedule[i].latitude, daySchedule[i].longitude))}
+            setMarkers(markers3)
+      } catch (err :any) {
+        setError(err.message);
+      } finally {
+        setLoading(false)
+      }
+    }
+    
+    fecthDaySchedule()
+   
+  }
+
 
 
 
@@ -806,7 +901,7 @@ useEffect(() => {
                 selectAllow={(selectInfo : any) => {
                   return selectInfo.end - selectInfo.start === 86400000; // 하루(밀리초 단위)만 허용
                 }}
-                dateClick={(info) => setSelectedDate(info.dateStr)} // ✅ 날짜 클릭 시 업데이트
+                dateClick={(info) => {setSelectedDate(info.dateStr); ChooseDay(selectedDate)} } // ✅ 날짜 클릭 시 업데이트
               />
                 {/* 선택한 날짜를 화면에 표시 */}
                 {selectedDate && <DateTextBox>선택한 날짜: {selectedDate}</DateTextBox>}
