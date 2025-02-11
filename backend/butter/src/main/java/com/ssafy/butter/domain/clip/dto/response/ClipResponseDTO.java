@@ -1,17 +1,33 @@
 package com.ssafy.butter.domain.clip.dto.response;
 
 import com.ssafy.butter.domain.clip.entity.Clip;
-import com.ssafy.butter.domain.live.dto.response.LiveResponseDTO;
+import com.ssafy.butter.domain.crew.entity.Crew;
 
-public record ClipResponseDTO(Long id, LiveResponseDTO live, String title, String videoUrl, Long hitCount) {
+import java.util.List;
+
+public record ClipResponseDTO(Long id, CrewDTO crew, String title, String videoName, Long hitCount) {
 
     public static ClipResponseDTO fromEntity(Clip clip) {
         return new ClipResponseDTO(
                 clip.getId(),
-                LiveResponseDTO.fromEntity(clip.getLive()),
+                CrewDTO.fromEntity(clip.getCrew()),
                 clip.getTitle(),
-                clip.getVideoUrl(),
+                clip.getVideoName(),
                 clip.getHitCount()
         );
+    }
+
+    private record CrewDTO(Long id, String name, String description, String imageUrl, String promotionUrl, List<String> genres) {
+
+        public static CrewDTO fromEntity(Crew crew) {
+            return new CrewDTO(
+                    crew.getId(),
+                    crew.getName(),
+                    crew.getDescription(),
+                    crew.getImageUrl(),
+                    crew.getPromotionUrl(),
+                    crew.getCrewGenres().stream().map(crewGenre -> crewGenre.getGenre().getName()).toList()
+            );
+        }
     }
 }

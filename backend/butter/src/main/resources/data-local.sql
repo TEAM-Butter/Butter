@@ -104,12 +104,12 @@ INSERT INTO schedule (latitude, longitude, busking_date, create_date, crew_id, u
                                                                                                                        (37.5172, 126.9109, '2025-03-10 18:00:00.654123', '2025-02-15 07:45:20.321789', 5, NOW(), 'Traditional Sounds', '전통 국악과 함께하는 특별한 밤.', '국립국악원 야외마당');
 
 -- clip 테이블
-INSERT INTO clip (hit_count, live_id, title, video_url) VALUES
+INSERT INTO clip (hit_count, crew_id, title, video_name) VALUES
                                                             (100, 1, 'Rock Performance', 'http://video.url/clip1'),
-                                                            (200, 2, 'Jazz Solo', 'http://video.url/clip2'),
-                                                            (150, 3, 'Pop Star Performance', 'http://video.url/clip3'),
-                                                            (180, 4, 'Hip-Hop Freestyle', 'http://video.url/clip4'),
-                                                            (220, 5, 'Classical Sonata', 'http://video.url/clip5');
+                                                            (200, 1, 'Jazz Solo', 'http://video.url/clip2'),
+                                                            (150, 2, 'Pop Star Performance', 'http://video.url/clip3'),
+                                                            (180, 2, 'Hip-Hop Freestyle', 'http://video.url/clip4'),
+                                                            (220, 2, 'Classical Sonata', 'http://video.url/clip5');
 
 -- liked_clip 테이블
 INSERT INTO liked_clip (is_liked, clip_id, member_id) VALUES
