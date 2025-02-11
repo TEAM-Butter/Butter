@@ -64,14 +64,6 @@ INSERT INTO bread_log_type (name) VALUES
                                       ('Bonus'),
                                       ('Penalty');
 
--- member 테이블
-INSERT INTO member (create_date, is_extra_info_registered, email, nickname, password, login_id, gender) VALUES
-                                                                                                            (NOW(), 1, 'user1@example.com', 'UserOne', 'password1', 'userone', 'MALE'),
-                                                                                                            (NOW(), 1, 'user2@example.com', 'UserTwo', 'password2', 'usertwo', 'FEMALE'),
-                                                                                                            (NOW(), 1, 'user3@example.com', 'UserThree', 'password3', 'userthree', 'MALE'),
-                                                                                                            (NOW(), 1, 'user4@example.com', 'UserFour', 'password4', 'userfour', 'FEMALE'),
-                                                                                                            (NOW(), 1, 'user5@example.com', 'UserFive', 'password5', 'userfive', 'MALE');
-
 -- live 테이블 (clip 테이블 참조를 위해 선행 삽입 필요)
 INSERT INTO live (crew_id, start_date, end_date, title) VALUES
                                                             (1, NOW(), DATE_ADD(NOW(), INTERVAL 2 HOUR), 'Live Rock Show'),
