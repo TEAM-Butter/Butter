@@ -1,5 +1,7 @@
 package com.ssafy.butter.domain.schedule.repository;
 
+import com.querydsl.core.types.Order;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.ssafy.butter.domain.schedule.dto.request.ScheduleSearchRequestDTO;
@@ -60,6 +62,7 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
         return jpaQueryFactory.selectFrom(qSchedule)
                 .where(createScheduleCondition(scheduleSearchRequestDTO))
                 .limit(scheduleSearchRequestDTO.pageSize())
+                .orderBy(createScheduleOrder(scheduleSearchRequestDTO))
                 .fetch();
     }
 
@@ -74,5 +77,16 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
                                 qSchedule.buskingDate.lt(scheduleSearchRequestDTO.date().plusDays(1).atStartOfDay())
                         )
         };
+    }
+
+    private OrderSpecifier<?> createScheduleOrder(ScheduleSearchRequestDTO scheduleSearchRequestDTO) {
+        switch (scheduleSearchRequestDTO.sortBy()) {
+            case "like":
+                return new OrderSpecifier<>(Order.DESC, qSchedule.likedSchedules.size());
+            case "date":
+                return new OrderSpecifier<>(Order.DESC, qSchedule.buskingDate);
+            default:
+                return null;
+        }
     }
 }
