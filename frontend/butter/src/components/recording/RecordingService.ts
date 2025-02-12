@@ -10,7 +10,8 @@ export class RecordingService {
     this.room = room;
     // this.baseUrl = baseUrl;
     this.baseUrl =
-      import.meta.env.VITE_APPLICATION_SERVER_URL || "http://localhost:6080";
+      import.meta.env.VITE_APPLICATION_SERVER_URL ||
+      "http://localhost:6080/api";
   }
 
   isRecordingInProgress(): boolean {
@@ -99,9 +100,12 @@ export class RecordingService {
         body: method !== "GET" ? JSON.stringify(body) : undefined,
       });
 
+      console.log("리스트 조회", response);
       const responseBody = await response.json();
 
       if (!response.ok) {
+        console.log("리스트 조회 실패");
+
         return {
           error: {
             status: response.status,

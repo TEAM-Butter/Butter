@@ -193,7 +193,7 @@ let APPLICATION_SERVER_URL = "";
 
 //let LIVEKIT_URL = "https://i12e204.p.ssafy.io:5443/twirp";
 //let LIVEKIT_URL = "wss://192.168.30.199:7880/";
-let LIVEKIT_URL = ""
+let LIVEKIT_URL = "";
 
 let TOKEN = "";
 configureUrls();
@@ -204,7 +204,8 @@ function configureUrls() {
     if (window.location.hostname === "localhost") {
       APPLICATION_SERVER_URL = "http://localhost:6080/api/";
     } else {
-      APPLICATION_SERVER_URL = "https://" + window.location.hostname + ":6443/api/";
+      APPLICATION_SERVER_URL =
+        "https://" + window.location.hostname + ":6443/api/";
     }
   }
 
@@ -543,7 +544,11 @@ const LivePage = () => {
           <LivePageWrapper>
             <Left>
               <LeftTop>
-                <StreamChat />
+                <StreamChat
+                  participantName={participantName}
+                  roomRole={role}
+                  streamId={roomName}
+                />
               </LeftTop>
               <CharacterBox>
                 <CharacterContainer />
@@ -634,7 +639,11 @@ const LivePage = () => {
               />
             </RightTop>
             <RightMiddle>
-              <StreamChat />
+              <StreamChat
+                participantName={participantName}
+                roomRole={role}
+                streamId={roomName}
+              />
             </RightMiddle>
             <BackBtn onClick={handleBackBtnClick}>
               <div style={{ color: "black" }}>
