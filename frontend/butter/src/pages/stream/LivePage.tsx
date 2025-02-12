@@ -188,11 +188,13 @@ type TrackInfo = {
 
 // When running OpenVidu locally, leave these variables empty
 // For other deployment type, configure them with correct URLs depending on your deployment
-let APPLICATION_SERVER_URL = "https://i12e204.p.ssafy.io/test/api";
+//let APPLICATION_SERVER_URL = "https://i12e204.p.ssafy.io/test/api";
 //let APPLICATION_SERVER_URL = "https://192.168.30.199:6080/";
+let APPLICATION_SERVER_URL = "";
 
-let LIVEKIT_URL = "https://i12e204.p.ssafy.io:5443/twirp";
+//let LIVEKIT_URL = "https://i12e204.p.ssafy.io:5443/twirp";
 //let LIVEKIT_URL = "wss://192.168.30.199:7880/";
+let LIVEKIT_URL = ""
 
 let TOKEN = "";
 configureUrls();
@@ -201,9 +203,9 @@ function configureUrls() {
   // If APPLICATION_SERVER_URL is not configured, use default value from OpenVidu Local deployment
   if (!APPLICATION_SERVER_URL) {
     if (window.location.hostname === "localhost") {
-      APPLICATION_SERVER_URL = "http://localhost:6080/";
+      APPLICATION_SERVER_URL = "http://localhost:6080/api/";
     } else {
-      APPLICATION_SERVER_URL = "https://" + window.location.hostname + ":6443/";
+      APPLICATION_SERVER_URL = "https://" + window.location.hostname + ":6443/api/";
     }
   }
 
