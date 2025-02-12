@@ -15,9 +15,9 @@ import {
 } from "../config.js";
 import { S3Service } from "./s3.service.js";
 import fs from "fs";
+import {insertClip} from "./mysql.service.js"
 
 const s3Service = new S3Service();
-const mysqlService = require('./mysql.service');
 
 export class RecordingService {
   static instance;
@@ -206,12 +206,12 @@ export class RecordingService {
     return RECORDINGS_PATH + recordingName.replace(".mp4", ".jpg");
   }
 
-  getClipKey(trimmedRecordingName) {
-    return CLIPS_PATH + trimmedRecordingName;
+  getClipKey(clippedRecordingName) {
+    return CLIPS_PATH + clippedRecordingName;
   }
 
-  getClipThumbnailKey(trimmedRecordingName) {
-    return CLIPS_PATH + trimmedRecordingName.replace(".mp4", ".jpg")
+  getClipThumbnailKey(clippedRecordingName) {
+    return CLIPS_PATH + clippedRecordingName.replace(".mp4", ".jpg")
   }
 
   async saveThumbnail(recordingName, imageBuffer) {
@@ -248,15 +248,15 @@ export class RecordingService {
     return s3Service.getObjectUrl(key);
   }
   
-  async trimRecording(recordingName, startTime, endTime, crewId, title) {
+  async clipRecording(recordingName, startTime, endTime, crewId, title) {
     const inputKey = this.getRecordingKey(recordingName);
-    const trimmedRecordingName = `trimmed-${startTime}-${endTime}-${recordingName}.mp4`;
-    const outputKey = this.getClipKey(trimmedRecordingName);
-    const thumbnailKey = this.getClipThumbnailKey(trimmedRecordingName);
+    const clippedRecordingName = `clipped-${startTime}-${endTime}-${recordingName}.mp4`;
+    const outputKey = this.getClipKey(clippedRecordingName);
+    const thumbnailKey = this.getClipThumbnailKey(clippedRecordingName);
 
     const tempInputPath = `/tmp/${recordingName}`;
-    const tempOutputPath = `/tmp/${trimmedRecordingName}.mp4`;
-    const thumbnailPath = `/tmp/thumbnail-${trimmedRecordingName}.jpg`;
+    const tempOutputPath = `/tmp/${clippedRecordingName}.mp4`;
+    const thumbnailPath = `/tmp/thumbnail-${clippedRecordingName}.jpg`;
 
     try {
       // S3에서 원본 영상 다운로드
@@ -279,11 +279,11 @@ export class RecordingService {
       fs.unlinkSync(tempOutputPath);
       fs.unlinkSync(thumbnailPath);
 
-      await mysqlService.insertClip(crewId, title, trimmedRecordingName);
+      await insertClip(crewId, title, clippedRecordingName);
 
-      return { success: true, trimmedRecordingName };
+      return { success: true, clippedRecordingName };
     } catch (error) {
-      console.error("Error trimming recording:", error);
+      console.error("Error clipping recording:", error);
       return { success: false, error: error.message };
     }
   }
