@@ -5,7 +5,7 @@ import { InternalAxiosRequestConfig, AxiosInstance, AxiosResponse } from "axios"
 import { getAccessToken, setAccessToken, removeAccessToken } from "./auth";
 
 export const axiosInstance: AxiosInstance = axios.create({
-    baseURL: `/api/v1`,
+    baseURL: `${import.meta.env.VITE_SPRING_BOOT_SERVER}/v1`,
     withCredentials: true,
     // headers: {
     //     "Content-Type": "multipart/form-data",
@@ -30,7 +30,7 @@ axiosInstance.interceptors.response.use((response: AxiosResponse) => response,
             console.log(`Access Token 만료됨, Refresh Token으로 갱신 중`)
             try {
                 const refreshResponse = await axios.post<{ accessToken: string }>(
-                    `/api/v1/auth/reissue`,
+                    `${import.meta.env.VITE_SPRING_BOOT_SERVER}/v1/auth/reissue`,
                     {},
                     { withCredentials: true }
                 );
