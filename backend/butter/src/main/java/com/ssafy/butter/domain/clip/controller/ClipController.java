@@ -32,7 +32,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("api/v1/clip")
+@RequestMapping("v1/clip")
 @Slf4j
 @Tag(name = "Clip API", description = "클립 관련 API")
 public class ClipController {
