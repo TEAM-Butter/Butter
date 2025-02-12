@@ -24,7 +24,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/v1/schedule")
+@RequestMapping("/v1/schedule")
 @Slf4j
 @Tag(name = "Schedule API", description = "버스킹 일정 관련 API")
 public class ScheduleController {
