@@ -2,6 +2,8 @@ import styled from "@emotion/styled";
 import { CrewRegisterFileInput } from "../../components/common/input/FileInput";
 import { useState } from "react";
 import MainPageImg from "../../assets/home/MainPageImg.png"
+import { CrewRegisterRequest } from "../../apis/request/crew/crewRequest";
+import { CrewRegisterResponseDto } from "../../apis/response/crew";
 
 
 const CRPageWrapper = styled.div`
@@ -52,6 +54,7 @@ const CRBody = styled.div`
 const CRComment = styled.div`
     color: var(--gray-bright);
     padding: 10px 20px;
+    margin-bottom: 20px;
 `
 
 const CRForm = styled.form`
@@ -110,6 +113,10 @@ const CRInput= styled.input`
     font-size: 20px;
     color: var(--gray-bright);
 
+    &:focus {
+    background-color: rgba(0, 0, 0, 0.3);
+  }
+
 `
 
 const CRBtnWrapper = styled.div`
@@ -137,7 +144,7 @@ interface FormDataState {
     description: string;
     image: File | null; // ✅ 파일 업로드를 위해 File | null 타입 사용
     promotionUrl: string;
-    potfolioVideo: File | null; // ✅ 파일 업로드를 위해 File | null 타입 사용
+    portfolioVideo: File | null; // ✅ 파일 업로드를 위해 File | null 타입 사용
   }
 
 const CrewRegisterPage = () => {
@@ -146,7 +153,7 @@ const CrewRegisterPage = () => {
         description: "",
         image: null,
         promotionUrl: "",
-        potfolioVideo: null,
+        portfolioVideo: null,
       });
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -158,7 +165,7 @@ const CrewRegisterPage = () => {
         if (fileType === "img"){
             setFormData((prev) => ({ ...prev, image: file }))
         } else {
-            setFormData((prev) => ({ ...prev, potfolioVideo: file }))
+            setFormData((prev) => ({ ...prev, portfolioVideo: file }))
         }
     }
 
@@ -176,16 +183,16 @@ const CrewRegisterPage = () => {
             return;
         }
 
-        if (formData.potfolioVideo instanceof File) {
-            formDataToSend.append("potfolioVideo", formData.potfolioVideo);
+        if (formData.portfolioVideo instanceof File) {
+            formDataToSend.append("portfolioVideo", formData.portfolioVideo);
         } else {
-            console.error("Invalid potfolioVideo");
+            console.error("Invalid portfolioVideo");
             return;
         }
 
-        // MemberExtraInfoRequest(formDataToSend).then((responseBody: MemberExtraInfoDto | null) => {
-        // console.log("Response:", responseBody);
-        // });
+        CrewRegisterRequest(formDataToSend).then((responseBody: CrewRegisterResponseDto | null) => {
+            console.log("CrewRegister Response:", responseBody);
+        })
         console.log("Final Data:", formData);
     }
 
