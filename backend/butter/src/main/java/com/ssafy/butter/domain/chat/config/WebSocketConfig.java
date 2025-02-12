@@ -19,7 +19,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     private final JwtManager jwtManager;
     private final JwtExtractor jwtExtractor;
 
-
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/ws").setAllowedOrigins("http://localhost:5080", "http://localhost:5173").withSockJS();
