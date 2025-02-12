@@ -37,10 +37,11 @@ const StyledLabel = styled.label`
   color: black;
 `;
 
+const ServerUrl = 'http://localhost:8080'
 
 const BreadRechargePage = () => {
   const [selectedAmount, setSelectedAmount] = useState(100);
-  const priceMap = { 100: 1100, 500: 5500, 1000: 11000 } as const;
+  const priceMap = { 100: 100, 500: 100, 1000: 100 } as const;
   
   const handlePayment = async () => {
     const price = priceMap[selectedAmount as keyof typeof priceMap];
@@ -69,10 +70,10 @@ const BreadRechargePage = () => {
       async (response: any) => {
         if (response.success) {
           try {
-            const verifyResponse = await fetch("/api/verify-payment", {
+            const verifyResponse = await fetch(`${ServerUrl}/api/v1/bread/verify-payment`, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ imp_uid: response.imp_uid }),
+              body: JSON.stringify({ impUid: response.imp_uid }),
             });
 
             const verifyData = await verifyResponse.json();
