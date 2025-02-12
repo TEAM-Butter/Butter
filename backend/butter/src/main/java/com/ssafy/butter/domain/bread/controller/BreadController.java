@@ -13,7 +13,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.client.HttpClientErrorException;
 
 @RestController
-@RequestMapping("api/v1/bread")
+@RequestMapping("v1/bread")
 public class BreadController {
     private static final Logger logger = LoggerFactory.getLogger(BreadController.class);
     private static final String IMP_KEY = "0177100740840012"; // 아임포트 API Key

@@ -28,7 +28,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 @RestController
-@RequestMapping("api/v1/crew")
+@RequestMapping("v1/crew")
 @Tag(name = "Crew API", description = "크루 관련 API")
 public class CrewController {
 
