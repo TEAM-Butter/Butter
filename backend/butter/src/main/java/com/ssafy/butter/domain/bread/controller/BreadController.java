@@ -79,10 +79,9 @@ public class BreadController {
 
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode responseJson = objectMapper.readTree(response.getBody());
-            return responseJson.path("response").path("access_token").asText();
 
             if (response.getStatusCode() == HttpStatus.OK) {
-                return response.getBody(); // 결제 정보 반환
+                return responseJson.path("response").path("access_token").asText();
             } else {
                 throw new RuntimeException("결제 정보 조회 실패: " + response.getStatusCode());
             }
