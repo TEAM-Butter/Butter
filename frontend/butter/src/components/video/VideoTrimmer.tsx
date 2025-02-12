@@ -3,6 +3,7 @@ import styled from "@emotion/styled";
 import ReactPlayer from "react-player";
 import Control from "./Control";
 import { useForm } from "react-hook-form";
+import { start } from "repl";
 
 const VideoTrimmerWrapper = styled.div`
   width: 100%;
@@ -197,6 +198,8 @@ interface FormInputs {
 }
 interface VideoTrimmerProps {
   videoUrl: string;
+  recordingName: string;
+  title: string;
 }
 interface VideoState {
   playing: boolean;
@@ -207,7 +210,11 @@ interface VideoState {
   buffer: boolean; // Buffer -> buffer로 수정
 }
 
-const VideoTrimmer = ({ videoUrl }: VideoTrimmerProps) => {
+const VideoTrimmer = ({
+  videoUrl,
+  recordingName,
+  title,
+}: VideoTrimmerProps) => {
   const playerRef = useRef<ReactPlayer | null>(null);
   const [videoState, setVideoState] = useState<VideoState>({
     playing: true,
@@ -221,6 +228,7 @@ const VideoTrimmer = ({ videoUrl }: VideoTrimmerProps) => {
   const [duration, setDuration] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
   const [isEditing, setIsEditing] = useState(false);
+  const SEVER_URL = "http://localhost:6080/api";
 
   const {
     register,
@@ -253,7 +261,7 @@ const VideoTrimmer = ({ videoUrl }: VideoTrimmerProps) => {
     return () => subscription.unsubscribe();
   }, [watch, duration]);
 
-  const cuttingVideo = () => {
+  const cuttingVideo = async () => {
     const formValues = watch(); // 현재 폼 데이터 가져오기
     const startSeconds = timeToSeconds(formValues.startTime);
     const endSeconds = timeToSeconds(formValues.endTime);
@@ -262,14 +270,47 @@ const VideoTrimmer = ({ videoUrl }: VideoTrimmerProps) => {
 
     if (startSeconds >= endSeconds) {
       console.log("❌ 시작 시간이 종료 시간보다 같거나 클 수 없습니다.");
+      alert("시작 시간이 종료 시간보다 같거나 클 수 없습니다.");
       return;
     }
 
     console.log(
       `✅ ${formValues.startTime} ~ ${formValues.endTime} 구간을 자릅니다.`
     );
-  };
 
+    try {
+      console.log("📡 서버 요청 중...");
+      console.log(recordingName, title, startSeconds, endSeconds);
+      const response = await fetch(
+        "http://localhost:6080/api/recordings/clip",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            recordingName,
+            title,
+            startTime: startSeconds,
+            endTime: endSeconds,
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (response.ok) {
+        console.log("✅ 서버 응답:", data);
+        alert(`녹화 클립 생성 완료: ${data.clippedRecordingName}`);
+      } else {
+        console.error("❌ 오류 발생:", data.errorMessage);
+        alert(`오류 발생: ${data.errorMessage}`);
+      }
+    } catch (error) {
+      console.error("🚨 서버 오류 발생:", error);
+      alert("서버 오류 발생");
+    }
+  };
   const onSubmit = (data: FormInputs) => {
     const startSeconds = timeToSeconds(data.startTime);
     const endSeconds = timeToSeconds(data.endTime);

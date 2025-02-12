@@ -2,7 +2,6 @@ import styled from "@emotion/styled";
 import VideoTrimmer from "../../components/video/VideoTrimmer";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { RecordingService } from "../../components/recording/RecordingService";
 import axios from "axios";
 
 const VideoEditPageWrapper = styled.div`
@@ -151,15 +150,20 @@ const VideoEditPage = () => {
   const [recordingUrls, setRecordingUrls] = useState<{ [key: string]: string }>(
     {}
   );
+  const [selectedVideoName, setSelectedVideoName] = useState<string>("");
 
-  const selectVideo = (url: { [key: string]: string }) => {
+  const selectVideo = (
+    url: { [key: string]: string },
+    recordingName: string
+  ) => {
     console.log("url성공", url);
     setSelectedVideo(url.recordingUrl);
+    setSelectedVideoName(recordingName);
   };
   const params = useParams();
   const id = params.id;
   const [recordings, setRecordings] = useState<Recording[] | null>(null);
-  const SEVER_URL = "http://localhost:6080";
+  const SEVER_URL = "http://localhost:6080/api";
   const getRecordings = async (id: string) => {
     try {
       const response = await axios.get(`${SEVER_URL}/recordings`, {
@@ -171,7 +175,6 @@ const VideoEditPage = () => {
       console.log("동영상 가져오기 실패", err);
     }
   };
-
   const getRecordingUrl = async (name: string) => {
     try {
       const response = await axios.get(`${SEVER_URL}/recordings/${name}/url`);
@@ -221,7 +224,11 @@ const VideoEditPage = () => {
     <VideoEditPageWrapper>
       <Left>
         <T1>My Video</T1>
-        <VideoTrimmer videoUrl={selectedVideo} />
+        <VideoTrimmer
+          videoUrl={selectedVideo}
+          recordingName={selectedVideoName}
+          title={selectedVideoName}
+        />
       </Left>
       <Right>
         <T2>Choose Video</T2>
@@ -238,7 +245,9 @@ const VideoEditPage = () => {
                   <p>Date : {formattedDate}</p>
                 </RecordingInfo>
                 <ButtonGroup>
-                  <SelectButton onClick={() => selectVideo(recordingUrl)}>
+                  <SelectButton
+                    onClick={() => selectVideo(recordingUrl, recording.name)}
+                  >
                     Select
                   </SelectButton>
                   <DeleteButton onClick={() => deleteRecording(recording.name)}>
