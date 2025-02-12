@@ -48,12 +48,12 @@ public class LoginServiceImpl implements LoginService{
                 .map(memberGenre -> memberGenre.getGenre().getName())
                 .toList();
         AuthenticatedMemberInfoDTO authenticatedMemberInfo = new AuthenticatedMemberInfoDTO(
-                null,
+                member.getNickname().getValue(),
                 member.getProfileImage(),
-                null,
+                member.getAvatarType().getName(),
                 memberType,
                 genres,
-                false
+                member.isExtraInfoRegistered()
         );
 
         AuthInfoDTO authInfo = new AuthInfoDTO(member.getId(),member.getEmail().getValue(), member.getGender().name(), member.getBirthDate().getDate());
@@ -83,8 +83,12 @@ public class LoginServiceImpl implements LoginService{
                 .map(service -> service.convertUserDetailsToMemberEntity(socialLoginRequestDTO.code()))
                 .orElseThrow(() -> new IllegalArgumentException("ERR : 사용할 수 없는 OAuth 플랫폼입니다"));
 
-        Member member = memberService.findByEmail(loginMember.getEmail())
-                .orElse(memberService.save(loginMember));
+        boolean exists = memberService.checkIfEmailExists(loginMember.getEmail().getValue());
+        if(exists){
+            throw new IllegalArgumentException("해당 이메일로 가입한 회원이 존재함");
+        }
+
+        Member member = memberService.save(loginMember);
 
         String memberType = getMemberTypeInLogic(member);
         List<String> genres = Optional.ofNullable(member.getMemberGenres())

@@ -14,9 +14,10 @@ import {
   RECORDING_FILE_PORTION_SIZE,
 } from "../config.js";
 import { S3Service } from "./s3.service.js";
+import fs from "fs";
+import {insertClip} from "./mysql.service.js"
 
 const s3Service = new S3Service();
-const mysqlService = require('./mysql.service');
 
 export class RecordingService {
   static instance;
@@ -201,23 +202,61 @@ export class RecordingService {
     );
   }
 
-  getClipKey(trimmedRecordingName) {
-    return CLIPS_PATH + trimmedRecordingName;
+  getThumbnailKey(recordingName) {
+    return RECORDINGS_PATH + recordingName.replace(".mp4", ".jpg");
   }
 
-  getThumbnailKey(trimmedRecordingName) {
-    return CLIPS_PATH + trimmedRecordingName.replace(".mp4", ".jpg")
+  getClipKey(clippedRecordingName) {
+    return CLIPS_PATH + clippedRecordingName;
   }
 
-  async trimRecording(recordingName, startTime, endTime, crewId, title) {
+  getClipThumbnailKey(clippedRecordingName) {
+    return CLIPS_PATH + clippedRecordingName.replace(".mp4", ".jpg")
+  }
+
+  async saveThumbnail(recordingName, imageBuffer) {
+    const thumbnailKey = this.getThumbnailKey(recordingName);
+  
+    try {
+      // 이미지 파일을 임시 파일로 저장
+      const tempThumbnailPath = `/tmp/${recordingName.replace(".mp4", ".jpg")}`;
+      fs.writeFileSync(tempThumbnailPath, imageBuffer);
+  
+      // S3에 업로드
+      await s3Service.uploadObject(thumbnailKey, fs.createReadStream(tempThumbnailPath));
+  
+      // 임시 파일 삭제
+      fs.unlinkSync(tempThumbnailPath);
+  
+      return { success: true, thumbnailKey };
+    } catch (error) {
+      console.error("Error saving thumbnail:", error);
+      return { success: false, error: error.message };
+    }
+  }
+
+  // 썸네일 URL 가져오기
+  async getThumbnailUrl(recordingName) {
+    const key = this.getThumbnailKey(recordingName);
+    
+    // 썸네일 존재 여부 확인
+    const exists = await s3Service.exists(key);
+    if (!exists) {
+      return null;
+    }
+
+    return s3Service.getObjectUrl(key);
+  }
+  
+  async clipRecording(recordingName, startTime, endTime, crewId, title) {
     const inputKey = this.getRecordingKey(recordingName);
-    const trimmedRecordingName = `trimmed-${startTime}-${endTime}-${recordingName}.mp4`;
-    const outputKey = this.getClipKey(trimmedRecordingName);
-    const thumbnailKey = this.getThumbnailKey(trimmedRecordingName);
+    const clippedRecordingName = `clipped-${startTime}-${endTime}-${recordingName}.mp4`;
+    const outputKey = this.getClipKey(clippedRecordingName);
+    const thumbnailKey = this.getClipThumbnailKey(clippedRecordingName);
 
     const tempInputPath = `/tmp/${recordingName}`;
-    const tempOutputPath = `/tmp/${trimmedRecordingName}.mp4`;
-    const thumbnailPath = `/tmp/thumbnail-${trimmedRecordingName}.jpg`;
+    const tempOutputPath = `/tmp/${clippedRecordingName}.mp4`;
+    const thumbnailPath = `/tmp/thumbnail-${clippedRecordingName}.jpg`;
 
     try {
       // S3에서 원본 영상 다운로드
@@ -240,11 +279,11 @@ export class RecordingService {
       fs.unlinkSync(tempOutputPath);
       fs.unlinkSync(thumbnailPath);
 
-      await mysqlService.insertClip(crewId, title, trimmedRecordingName);
+      await insertClip(crewId, title, clippedRecordingName);
 
-      return { success: true, trimmedRecordingName };
+      return { success: true, clippedRecordingName };
     } catch (error) {
-      console.error("Error trimming recording:", error);
+      console.error("Error clipping recording:", error);
       return { success: false, error: error.message };
     }
   }

@@ -195,7 +195,7 @@ function Navbar() {
                   <Link to="/">
                     <SubItem>마이 크루</SubItem>
                   </Link>
-                  <Link to="/">
+                  <Link to="/bread/recharge">
                     <SubItem>브레드 충전</SubItem>
                   </Link>
                   {memberType == "crew" ? (
