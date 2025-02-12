@@ -32,7 +32,6 @@ const CharacterBox = styled(motion.div)<CharacterProps>`
   position: absolute;
   width: 10vh;
 
-  /* justify-content: space-between; */
   align-items: center;
   left: ${(props) => props.left}%;
   bottom: 20%;
@@ -44,9 +43,6 @@ const EmotionBox = styled.div`
 `;
 
 const Emotion = styled(motion.img)`
-  /* width: 3vh;
-  height: auto;
-  top: -15%; */
   width: 3.5vh;
   height: auto;
   position: absolute;
@@ -58,67 +54,192 @@ const Emotion = styled(motion.img)`
 
 const Character = styled.img`
   width: 10vh;
-  /* bottom: 0; */
   height: auto;
+`;
+
+const TotalInfoBox = styled.div`
+  width: 200px;
+  height: 30px;
+  background-color: #b9c1c8bf;
+  display: flex;
+  justify-content: space-evenly;
+  position: absolute;
+  top: 80%;
+  left: 30px;
+  border-radius: 30px;
+  align-items: center;
+`;
+
+const TotalUserInfo = styled.div`
+  color: black;
+`;
+const TotalHeartsInfo = styled.div`
+  color: black;
+`;
+const TotalLikesInfo = styled.div`
+  color: black;
 `;
 
 interface CharacterContainer {
   socket: Socket;
 }
 
+interface CharacterData {
+  id: number;
+  left: number;
+  isEmoting: boolean;
+  currentEmotion: any;
+}
+
+const EMOTION_DURATION = 2600; //2초
+const COOLDOWN_DURATION = 3000; // 3초
+const MY_CHARACTER_INDEX = 1; //내 캐릭터의 인덱스
+
 const CharacterContainer = ({ socket }: CharacterContainer) => {
-  const [visibleEmotions, setVisibleEmotions] = useState<boolean[]>(
-    Array(13).fill(false)
+  const [characters, setCharacters] = useState<CharacterData[]>(() =>
+    Array.from({ length: 13 }, (_, index) => ({
+      id: index,
+      left: Math.random() * 80,
+      isEmoting: false,
+      currentEmotion: heart, // 기본값을 heart 이미지로 설정
+    }))
   );
 
-  const [currentEmotions, setCurrentEmotions] = useState<string[]>(
-    Array(13).fill("heart")
-  );
+  const [heartCount, setHeartCount] = useState(0);
+  const [likeCount, setLikeCount] = useState(0);
+  const [myEmotionState, setMyEmotionState] = useState({
+    isEmoting: false,
+    currentEmotion: heart, // 기본값을 heart 이미지로 설정
+  });
 
-  //이벤트 처리 상태 관리
-  const isHandlingEmotion = useRef(false);
+  // 사용자별 마지막 액션 시간 관리
+  const lastActionTimeMap = useRef(new Map<number, number>());
 
-  const handleEmotion = (index: number, emotionType: string) => {
-    if (isHandlingEmotion.current) return;
+  const canUserAct = (userId: number) => {
+    const currentTime = Date.now();
+    const lastTime = lastActionTimeMap.current.get(userId) || 0;
+    console.log("Cooldown Check:", {
+      currentTime,
+      lastTime,
+      diff: currentTime - lastTime,
+      cooldown: COOLDOWN_DURATION,
+      canAct: currentTime - lastTime >= COOLDOWN_DURATION,
+    });
+    return currentTime - lastTime >= COOLDOWN_DURATION;
+  };
 
-    isHandlingEmotion.current = true;
+  const updateActionTime = (userId: number) => {
+    console.log("Updating action time for user:", userId, Date.now());
+    lastActionTimeMap.current.set(userId, Date.now());
+  };
 
-    setCurrentEmotions((prev) => {
-      const newEmotions = [...prev];
-      newEmotions[index] = emotionType;
-      return newEmotions;
+  // 내 캐릭터의 emotion 처리
+  const getEmotionImage = (type: string) => {
+    console.log("type:", type);
+    switch (type) {
+      case heart:
+        return heart;
+      case clap:
+        return clap;
+      case like:
+        return like;
+      case mic:
+        return mic;
+      default:
+        return heart;
+    }
+  };
+
+  const handleMyEmotion = (emotionType: string, userId: number) => {
+    if (!canUserAct(userId)) {
+      console.log("쿨다운 중입니다");
+      return;
+    }
+
+    console.log("asdfnasdnfl");
+    setMyEmotionState({
+      isEmoting: true,
+      currentEmotion: getEmotionImage(emotionType),
     });
 
-    setVisibleEmotions((prev) => {
-      const newEmotions = [...prev];
-      newEmotions[index] = true;
-      return newEmotions;
-    });
+    updateActionTime(userId);
 
     setTimeout(() => {
-      setVisibleEmotions((prev) => {
-        const newEmotions = [...prev];
-        newEmotions[index] = false;
-        return newEmotions;
+      setMyEmotionState({
+        isEmoting: false,
+        currentEmotion: heart,
       });
-      isHandlingEmotion.current = false;
-    }, 1000);
+    }, EMOTION_DURATION);
   };
+
+  const handleOtherEmotion = (userId: number, emotionType: string) => {
+    if (userId === MY_CHARACTER_INDEX || !canUserAct(userId)) return;
+
+    setCharacters((prev) =>
+      prev.map((char, idx) =>
+        idx === userId
+          ? {
+              ...char,
+              isEmoting: true,
+              currentEmotion: getEmotionImage(emotionType),
+            }
+          : char
+      )
+    );
+
+    updateActionTime(userId);
+
+    setTimeout(() => {
+      setCharacters((prev) =>
+        prev.map((char, idx) =>
+          idx === userId
+            ? { ...char, isEmoting: false, currentEmotion: heart }
+            : char
+        )
+      );
+    }, EMOTION_DURATION);
+  };
+
   useEffect(() => {
+    console.log("asjdfkjsjd");
     const handleMessage = (content: SocketContent) => {
-      if (content.role === "publisher") {
+      // const id = content.idx || 1;
+      console.log("여기입니다 1");
+      const id = 1;
+      if (content.role === "publisher" && canUserAct(id)) {
         switch (content.label) {
           case "little_heart":
-            handleEmotion(1, heart);
+            console.log("여기입니다 2");
+            setHeartCount((prev) => prev + 1);
+            if (id === MY_CHARACTER_INDEX) {
+              console.log("여기입니다 3");
+              handleMyEmotion(heart, id);
+            } else {
+              console.log("여기입니다4");
+              handleOtherEmotion(id, "heart");
+            }
             break;
           case "clap":
-            handleEmotion(1, clap);
+            if (id === MY_CHARACTER_INDEX) {
+              handleMyEmotion(clap, id);
+            } else {
+              handleOtherEmotion(id, "clap");
+            }
             break;
           case "like":
-            handleEmotion(1, like);
+            setLikeCount((prev) => prev + 1);
+            if (id === MY_CHARACTER_INDEX) {
+              handleMyEmotion(like, id);
+            } else {
+              handleOtherEmotion(id, "like");
+            }
             break;
           case "thumb_index":
-            handleEmotion(1, mic);
+            if (id === MY_CHARACTER_INDEX) {
+              handleMyEmotion("mic", id);
+            } else {
+              handleOtherEmotion(id, "mic");
+            }
             break;
         }
       }
@@ -127,93 +248,18 @@ const CharacterContainer = ({ socket }: CharacterContainer) => {
     socket.on("message", handleMessage);
   }, [socket]);
 
-  // //캐릭터를 동작시키는 함수를 적어라
-  // socket.on("message", (content: SocketContent) => {
-  //   if (content.role === "publisher") {
-  //     switch (content.label) {
-  //       case "little_heart":
-  //         handleEmotion(1, heart);
-  //         break;
-  //       case "clap":
-  //         handleEmotion(1, clap);
-  //         break;
-  //       case "like":
-  //         handleEmotion(1, like);
-  //         break;
-  //       case "thumb_index":
-  //         handleEmotion(1, mic);
-  //         break;
-  //     }
-  //   }
-  // });
-
-  // const handleEmotion = (index: number, emotionType: string) => {
-  //   setCurrentEmotions((prev) => {
-  //     const newEmotions = [...prev];
-  //     newEmotions[index] = emotionType;
-  //     return newEmotions;
-  //   });
-
-  //   setVisibleEmotions((prev) => {
-  //     const newEmotions = [...prev];
-  //     newEmotions[index] = true;
-  //     return newEmotions;
-  //   });
-
-  //   setTimeout(() => {
-  //     setVisibleEmotions((prev) => {
-  //       const newEmotions = [...prev];
-  //       newEmotions[index] = false;
-  //       return newEmotions;
-  //     });
-  //   }, 1000);
-  // };
-
-  // const handleEmotion = useCallback(
-  //   (index: number, emotionType: string) => {
-  //     if (isAnimating) return; // 애니메이션 중이면 새로운 이벤트 무시
-
-  //     setIsAnimating(true); // 애니메이션 시작
-
-  //     setCurrentEmotions((prev) => {
-  //       const newEmotions = [...prev];
-  //       newEmotions[index] = emotionType;
-  //       return newEmotions;
-  //     });
-
-  //     setVisibleEmotions((prev) => {
-  //       const newEmotions = [...prev];
-  //       newEmotions[index] = true;
-  //       return newEmotions;
-  //     });
-
-  //     setTimeout(() => {
-  //       setVisibleEmotions((prev) => {
-  //         const newEmotions = [...prev];
-  //         newEmotions[index] = false;
-  //         return newEmotions;
-  //       });
-  //       setIsAnimating(false); // 애니메이션 종료
-  //     }, 3000);
-  //   },
-  //   [isAnimating]
-  // );
-
-  const [characters] = useState(() =>
-    Array.from({ length: 13 }, (_, index) => ({
-      id: index,
-      left: Math.random() * 80, // 0 ~ 80% 범위
-      // top: Math.random() * 80, // 0 ~ 80% 범위
-    }))
-  );
-
   return (
     <CharacterContainerWrapper>
-      {characters.map((char, index) => (
+      <TotalInfoBox>
+        <TotalUserInfo>16</TotalUserInfo>
+        <TotalHeartsInfo>{heartCount}</TotalHeartsInfo>
+        <TotalLikesInfo>{likeCount}</TotalLikesInfo>
+      </TotalInfoBox>
+      {characters.map((char) => (
         <CharacterBox
           key={char.id}
           left={char.left}
-          top={char.top}
+          top={0}
           initial={{ opacity: 0, scale: 0 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{
@@ -223,9 +269,17 @@ const CharacterContainer = ({ socket }: CharacterContainer) => {
         >
           <EmotionBox>
             <Emotion
-              src={currentEmotions[index]}
+              src={
+                char.id === MY_CHARACTER_INDEX
+                  ? myEmotionState.currentEmotion || "heart"
+                  : char.currentEmotion || "heart"
+              }
               animate={
-                visibleEmotions[index]
+                (
+                  char.id === MY_CHARACTER_INDEX
+                    ? myEmotionState.isEmoting
+                    : char.isEmoting
+                )
                   ? { opacity: 1, y: -30 }
                   : { opacity: 0, y: 10 }
               }
@@ -238,5 +292,4 @@ const CharacterContainer = ({ socket }: CharacterContainer) => {
     </CharacterContainerWrapper>
   );
 };
-
 export default CharacterContainer;
