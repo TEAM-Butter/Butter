@@ -4,7 +4,6 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { LoginResponseDto } from "../../../apis/response/auth";
 import { setAccessToken } from "../../../apis/auth";
 import { useUserStore } from "../../../stores/UserStore";
-import styled from "@emotion/styled";
 
 const NaverCallback: React.FC = () => {
   const navigate = useNavigate();

@@ -198,7 +198,7 @@ export const UserExtraInfoModal = ({
                   <ExtraInfoLabel>
                     <StepNumber>1</StepNumber>프로필 사진을 등록해 주세요!
                   </ExtraInfoLabel>
-                  <EFWrapper><ExtraFileInput setProfileImage={(image) => setFormData((prev) => ({ ...prev, profileImage: image }))} /></EFWrapper>
+                  <EFWrapper><ExtraFileInput setFile={(image) => setFormData((prev) => ({ ...prev, profileImage: image }))} /></EFWrapper>
                 </div>
                 <div>
                   <ExtraInfoLabel>
@@ -364,6 +364,13 @@ export const UserExtraInfoModal_v2 = ({
       <MC.ModalWrapper width={width} height={height} >
         <MC.ModalHeader>
           <div>TYPE YOUR EXTRA INFO</div>
+          <MC.ModalCloseBtn
+              textColor="white"
+              onClick={() => {
+              setModalType("");
+              }}>
+              X
+          </MC.ModalCloseBtn>
         </MC.ModalHeader>
         <MC.ModalBody>
           <MC.Comment_v2 textColor="white">
@@ -379,7 +386,7 @@ export const UserExtraInfoModal_v2 = ({
                   <ExtraInfoLabel>
                     <StepNumber>1</StepNumber>프로필 사진을 등록해 주세요!
                   </ExtraInfoLabel>
-                  <EFWrapper><ExtraFileInput setProfileImage={(image) => setFormData((prev) => ({ ...prev, profileImage: image }))} /></EFWrapper>
+                  <EFWrapper><ExtraFileInput setFile={(image) => setFormData((prev) => ({ ...prev, profileImage: image }))} /></EFWrapper>
                 </div>
                 <div>
                   <ExtraInfoLabel>

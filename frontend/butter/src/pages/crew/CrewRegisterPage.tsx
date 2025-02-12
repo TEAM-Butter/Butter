@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { ExtraFileInput } from "../../components/common/input/FileInput";
+import { CrewRegisterFileInput } from "../../components/common/input/FileInput";
 import { useState } from "react";
 import MainPageImg from "../../assets/home/MainPageImg.png"
 
@@ -12,6 +12,7 @@ const CRPageWrapper = styled.div`
     background-size: cover;
     background-position: center;
     display: flex;
+    padding: 20px;
     justify-content: center;
     align-items: center;
     
@@ -24,14 +25,15 @@ const CRPageWrapper = styled.div`
         height: 100%;
         background-color: rgba(0, 0, 0, 0.2);
     }
-`
+    `
 
 const CRContainer = styled.div`
+    padding: 20px 10px;
     filter: brightness(1.1);
     border-radius: 30px;
-    overflow: hidden;
+    overflow: auto;
     backdrop-filter: blur(10px);
-    width: 600px;
+    width: 900px;
     display: grid;
     grid-template-rows: 55px auto;
 `
@@ -40,7 +42,7 @@ const CRHeader = styled.header`
     display: flex;
     align-items: center;
     padding-left: 20px;
-    font-size: 30px;
+    font-size: 45px;
     font-weight: 300;
 `
 
@@ -55,7 +57,22 @@ const CRComment = styled.div`
 const CRForm = styled.form`
     padding: 15px 30px;
     display: grid;
-    gap: 15px;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+
+    @media (max-width: 920px) {
+    grid-template-columns: 1fr;
+    }
+`
+
+const CRRtWrapper = styled.div`
+    display: grid;
+    gap: 10px;
+    `
+const CRLtWrapper = styled.div`
+    display: grid;
+    grid-template-rows: auto auto 1fr;
+    gap: 10px;
 `
 
 const CRInputWrapper= styled.div`
@@ -76,9 +93,9 @@ const CRLabel= styled.label`
         display: flex;
         align-items: center;
         justify-content: center;
-        background-color: black;
+        background-color: rgba(0,0,0,0.2);
         border-radius: 50%;
-        color: white;
+        color: var(--gray-bright);
         font-weight: 500;
 }
 `
@@ -88,57 +105,125 @@ const CRInput= styled.input`
     height: 45px;
     border: none;
     border-radius: 30px;
+    background-color: rgba(0,0,0,0.3);
     padding: 0 15px;
     font-size: 20px;
+    color: var(--gray-bright);
 
 `
 
+const CRBtnWrapper = styled.div`
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: flex-end;
+`
+
+const CRBtn = styled.button`
+    border: none;
+    color: var(--gray-bright);
+    background-color: rgba(0,0,0,0.3);
+    font-weight: 300;
+    padding: 13px 20px;
+    border-radius: 30px; 
+    transition: all ease-in-out 0.2s;
+
+    &:hover {
+        background-color: rgba(0,0,0,0.4);
+    }
+`
+
 interface FormDataState {
-    nickname: string;
-    profileImage: File | null; // ✅ 파일 업로드를 위해 File | null 타입 사용
-    avatarType: string;
-    genres: string[];
+    name: string;
+    description: string;
+    image: File | null; // ✅ 파일 업로드를 위해 File | null 타입 사용
+    promotionUrl: string;
+    potfolioVideo: File | null; // ✅ 파일 업로드를 위해 File | null 타입 사용
   }
 
 const CrewRegisterPage = () => {
     const [formData, setFormData] = useState<FormDataState>({
-        nickname: "",
-        profileImage: null, // ✅ 초기값을 null로 설정
-        avatarType: "",
-        genres: [],
+        name: "",
+        description: "",
+        image: null,
+        promotionUrl: "",
+        potfolioVideo: null,
       });
 
-    const setProfileImage = (image : File | null) => {
-        setFormData((prev) => ({ ...prev, profileImage: image }))
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    };
+
+    const setFile = (file : File | null, fileType: "img" | "video") => {
+        if (fileType === "img"){
+            setFormData((prev) => ({ ...prev, image: file }))
+        } else {
+            setFormData((prev) => ({ ...prev, potfolioVideo: file }))
+        }
     }
 
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault()
+        const formDataToSend = new FormData();
+        formDataToSend.append("name", formData.name);
+        formDataToSend.append("description", formData.description);
+        formDataToSend.append("promotionUrl", formData.promotionUrl);
+
+        if (formData.image instanceof File) {
+            formDataToSend.append("image", formData.image);
+        } else {
+            console.error("Invalid profile image");
+            return;
+        }
+
+        if (formData.potfolioVideo instanceof File) {
+            formDataToSend.append("potfolioVideo", formData.potfolioVideo);
+        } else {
+            console.error("Invalid potfolioVideo");
+            return;
+        }
+
+        // MemberExtraInfoRequest(formDataToSend).then((responseBody: MemberExtraInfoDto | null) => {
+        // console.log("Response:", responseBody);
+        // });
+        console.log("Final Data:", formData);
+    }
+
+    
     return (
        <CRPageWrapper>
         <CRContainer>
             <CRHeader>REGISTER CREW</CRHeader>
             <CRBody>
                 <CRComment>크루가 되어 많은 관객과 함께 버스킹을 시작해보세요!</CRComment>            
-                <CRForm>
+                <CRForm onSubmit={handleSubmit}>
+                <CRRtWrapper>
                     <CRInputWrapper>
                         <CRLabel><span>1</span>크루의 사진을 등록해 주세요 !</CRLabel>
-                        <ExtraFileInput setProfileImage={setProfileImage} />
+                        <CrewRegisterFileInput fileType="img" setFile={setFile} />
                     </CRInputWrapper>
                     <CRInputWrapper>
                         <CRLabel><span>2</span>크루의 이름을 입력해 주세요 !</CRLabel>
-                        <CRInput></CRInput>
+                        <CRInput name="name" value={formData.name} onChange={handleChange} type="text" required></CRInput>
                     </CRInputWrapper>
                     <CRInputWrapper>
                         <CRLabel><span>3</span>크루를 소개할 문구를 작성해 주세요 !</CRLabel>
-                        <CRInput></CRInput>
+                        <CRInput name="description" value={formData.description} onChange={handleChange} type="text" required></CRInput>
                     </CRInputWrapper>
+                </CRRtWrapper>
+                <CRLtWrapper>
                     <CRInputWrapper>
-                        <CRLabel><span>4</span>크루를 홍보할 수 있는 SNS 주소를 입력해 주세요 !</CRLabel>
-                        <CRInput></CRInput>
+                        <CRLabel><span>4</span>크루를 홍보할 SNS 주소를 입력해 주세요 !</CRLabel>
+                        <CRInput name="promotionUrl" value={formData.promotionUrl} onChange={handleChange} type="text"></CRInput>
                     </CRInputWrapper>
                     <CRInputWrapper>
                         <CRLabel><span>5</span>크루의 포트폴리오를 업로드 하세요!</CRLabel>
-                        vidio
+                        <CrewRegisterFileInput fileType="video" setFile={setFile} />
                     </CRInputWrapper>
+                    <CRBtnWrapper>
+                        <CRBtn type="submit" >SUBMIT</CRBtn>
+                    </CRBtnWrapper>
+                </CRLtWrapper>
                 </CRForm>
             </CRBody>
         </CRContainer>
