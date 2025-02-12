@@ -13,6 +13,7 @@ import "./styles/reset.css";
 import "./styles/index.css";
 import "./styles/stream.css";
 import LiveListPage from "./pages/stream/LiveListPage";
+import VideoEditPage from "./pages/video/VideoEditPage";
 
 function App() {
   return (
@@ -21,7 +22,8 @@ function App() {
         <Route element={<CommonLayout />}>
           {userRoutes}
           {streamRoutes}
-          <Route path="/stream-list" element={<LiveListPage/>}/>
+          <Route path="/stream-list" element={<LiveListPage />} />
+          <Route path="/video-edit" element={<VideoEditPage />} />
           {buskingRoutes}
           {crewRoutes}
           {breadRoutes}

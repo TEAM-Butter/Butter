@@ -50,18 +50,18 @@ VALUES (1, 1, 'straw999', '딸기', 'user5@example.com', '1992-12-10', 180, '$2a
 -- 더미 데이터 삽입
 
 -- crew 테이블
-INSERT INTO crew (donation_amount, name, description, image_url, portfolio_video_url, promotion_url, create_date, update_date) VALUES
-                                                                                                                                   (1000, 'Rock Band', 'A rock music crew', 'http://image.url/crew1', 'http://video.url/crew1', 'http://promo.url/crew1', NOW(), NOW()),
-                                                                                                                                   (2000, 'Jazz Ensemble', 'A jazz music crew', 'http://image.url/crew2', 'http://video.url/crew2', 'http://promo.url/crew2', NOW(), NOW()),
-                                                                                                                                   (1500, 'Pop Group', 'A pop music group', 'http://image.url/crew3', 'http://video.url/crew3', 'http://promo.url/crew3', NOW(), NOW()),
-                                                                                                                                   (1800, 'Hip-Hop Squad', 'A hip-hop music crew', 'http://image.url/crew4', 'http://video.url/crew4', 'http://promo.url/crew4', NOW(), NOW()),
-                                                                                                                                   (2200, 'Classical Orchestra', 'A classical music crew', 'http://image.url/crew5', 'http://video.url/crew5', 'http://promo.url/crew5', NOW(), NOW()),
-                                                                                                                                   (5000, 'Alpha Team', 'Innovative space explorers.', 'http://image.url/crew6', 'http://video.url/crew6', 'http://promo.url/crew6', NOW(), NOW()),
-                                                                                                                                   (12000, 'Beta Crew', 'Specialized in AI development.', 'http://image.url/crew7', 'http://video.url/crew7', 'http://promo.url/crew7', NOW(), NOW()),
-                                                                                                                                   (7500, 'Gamma Pioneers', 'Leading robotics innovation.', 'http://image.url/crew8', 'http://video.url/crew8', 'http://promo.url/crew8', NOW(), NOW()),
-                                                                                                                                   (9800, 'Delta Force', 'Experts in cybersecurity.', 'http://image.url/crew9', 'http://video.url/crew9', 'http://promo.url/crew9', NOW(), NOW()),
-                                                                                                                                   (15000, 'Epsilon Group', 'Advancing biotech solutions.', 'http://image.url/crew10', 'http://video.url/crew10', 'http://promo.url/crew10', NOW(), NOW());
-
+INSERT INTO `crew` (`donation_amount`,`create_date`,`crew_id`,`update_date`,`name`,`description`,`image_url`,`portfolio_video_url`,`promotion_url`)
+VALUES
+    (15000,'2025-02-02 21:59:16.000000',10,'2025-02-12 09:42:34.000000','Epsilon Group','Advancing biotech solutions.','http://image.url/crew10','http://video.url/crew10','http://promo.url/crew10'),
+    (7500,'2024-12-28 14:01:04.000000',8,'2025-02-12 09:42:34.000000','Gamma Pioneers','Leading robotics innovation.','http://image.url/crew8','http://video.url/crew8','http://promo.url/crew8'),
+    (1500,'2024-11-29 19:46:27.000000',3,'2025-02-12 09:42:34.000000','Pop Group','A pop music group','http://image.url/crew3','http://video.url/crew3','http://promo.url/crew3'),
+    (1800,'2024-11-24 22:07:29.000000',4,'2025-02-12 09:42:34.000000','Hip-Hop Squad','A hip-hop music crew','http://image.url/crew4','http://video.url/crew4','http://promo.url/crew4'),
+    (12000,'2024-10-09 03:44:24.000000',7,'2025-02-12 09:42:34.000000','Beta Crew','Specialized in AI development.','http://image.url/crew7','http://video.url/crew7','http://promo.url/crew7'),
+    (1000,'2024-05-01 16:31:43.000000',1,'2025-02-12 09:42:34.000000','Rock Band','A rock music crew','http://image.url/crew1','http://video.url/crew1','http://promo.url/crew1'),
+    (5000,'2024-04-10 22:42:05.000000',6,'2025-02-12 09:42:34.000000','Alpha Team','Innovative space explorers.','http://image.url/crew6','http://video.url/crew6','http://promo.url/crew6'),
+    (9800,'2024-04-02 12:02:22.000000',9,'2025-02-12 09:42:34.000000','Delta Force','Experts in cybersecurity.','http://image.url/crew9','http://video.url/crew9','http://promo.url/crew9'),
+    (2000,'2024-03-28 17:51:27.000000',2,'2025-02-12 09:42:34.000000','Jazz Ensemble','A jazz music crew','http://image.url/crew2','http://video.url/crew2','http://promo.url/crew2'),
+    (2200,'2024-02-23 16:52:47.000000',5,'2025-02-12 09:42:34.000000','Classical Orchestra','A classical music crew','http://image.url/crew5','http://video.url/crew5','http://promo.url/crew5');
 
 -- bread_log_type 테이블
 INSERT INTO bread_log_type (name) VALUES
@@ -218,3 +218,71 @@ INSERT INTO schedule (latitude, longitude, busking_date, create_date, crew_id, u
                                                                                                                        (37.5615, 127.0366, '2025-02-13 17:45:00', '2025-02-04 18:30:00', 8, '2025-02-04 18:30:00', '밴드 공연', '얼터너티브 메탈', '건대 로데오거리'),
                                                                                                                        (37.5577, 126.9236, '2025-02-13 18:15:00', '2025-02-04 19:00:00', 9, '2025-02-04 19:00:00', '마술 퍼포먼스', '스트릿 매직쇼', '연남동 경의선숲길'),
                                                                                                                        (37.5512, 127.1047, '2025-02-13 12:45:00', '2025-02-04 20:15:00', 10, '2025-02-04 20:15:00', '현악 앙상블', '실내악 공연', '길동 생태공원');
+
+-- crew_genre 테이블
+INSERT INTO crew_genre (crew_genre_id, crew_id, genre_id)
+VALUES
+    (1, 1, 1),
+    (2, 1, 2),
+    (3, 1, 3),
+    (4, 1, 4),
+
+    (5, 2, 5),
+    (6, 2, 6),
+    (7, 2, 7),
+    (8, 2, 8),
+
+    (9, 3, 9),
+    (10, 3, 10),
+    (11, 3, 11),
+    (12, 3, 12),
+
+    (13, 4, 13),
+    (14, 4, 1),
+    (15, 4, 2),
+    (16, 4, 3),
+
+    (17, 5, 4),
+    (18, 5, 5),
+    (19, 5, 6),
+    (20, 5, 7),
+
+    (21, 6, 8),
+    (22, 6, 9),
+    (23, 6, 10),
+    (24, 6, 11),
+
+    (25, 7, 12),
+    (26, 7, 13),
+    (27, 7, 1),
+    (28, 7, 2),
+
+    (29, 8, 3),
+    (30, 8, 4),
+    (31, 8, 5),
+    (32, 8, 6),
+
+    (33, 9, 7),
+    (34, 9, 8),
+    (35, 9, 9),
+    (36, 9, 10),
+
+    (37, 10, 11),
+    (38, 10, 12),
+    (39, 10, 13),
+    (40, 10, 1);
+
+-- follow 테이블
+INSERT INTO `follow` (`is_followed`,`crew_id`,`follow_id`,`member_id`)
+VALUES
+    (1,1,2,2), (1,1,4,3), (1,1,1,4), (1,1,3,5),
+    (1,2,6,1), (1,2,5,3), (1,2,7,5),
+    (1,3,8,1), (1,3,11,3), (1,3,10,4), (1,3,9,5),
+    (1,4,12,1), (1,4,15,2), (1,4,14,4), (1,4,13,5),
+    (1,5,19,2), (1,5,17,3), (1,5,18,4), (1,5,16,5),
+    (1,6,22,2), (1,6,20,3), (1,6,21,5),
+    (1,7,25,1), (1,7,24,4), (1,7,23,5),
+    (1,8,27,1), (1,8,26,2), (1,8,28,3),
+    (1,9,31,1), (1,9,30,2), (1,9,29,5),
+    (1,10,32,2);
+

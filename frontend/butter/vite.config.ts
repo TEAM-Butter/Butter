@@ -22,7 +22,8 @@ import react from "@vitejs/plugin-react";
 export default defineConfig({
   plugins: [react()],
   server: {
-    allowedHosts: ["192-168-30-201.openvidu-local.dev", "i12e204.p.ssafy.io"],
+    cors: true,
+    allowedHosts: ["192-168-30-199.openvidu-local.dev"],
     host: "0.0.0.0",
     port: 5080,
     proxy: {
