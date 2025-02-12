@@ -4,6 +4,7 @@ import { useState } from "react";
 import MainPageImg from "../../assets/home/MainPageImg.png"
 import { CrewRegisterRequest } from "../../apis/request/crew/crewRequest";
 import { CrewRegisterResponseDto } from "../../apis/response/crew";
+import { div } from "framer-motion/client";
 
 
 const CRPageWrapper = styled.div`
@@ -55,6 +56,11 @@ const CRComment = styled.div`
     color: var(--gray-bright);
     padding: 10px 20px;
     margin-bottom: 20px;
+    `
+
+const CRComment_v2 = styled.div`
+    padding: 10px 20px;
+    font-size: 20px;    
 `
 
 const CRForm = styled.form`
@@ -148,6 +154,7 @@ interface FormDataState {
   }
 
 const CrewRegisterPage = () => {
+    const [ isSubmit, setIsSubmit ] = useState(false)
     const [formData, setFormData] = useState<FormDataState>({
         name: "",
         description: "",
@@ -189,7 +196,8 @@ const CrewRegisterPage = () => {
             console.error("Invalid portfolioVideo");
             return;
         }
-
+        
+        setIsSubmit(true)
         CrewRegisterRequest(formDataToSend).then((responseBody: CrewRegisterResponseDto | null) => {
             console.log("CrewRegister Response:", responseBody);
         })
@@ -201,6 +209,9 @@ const CrewRegisterPage = () => {
        <CRPageWrapper>
         <CRContainer>
             <CRHeader>REGISTER CREW</CRHeader>
+            { isSubmit ? 
+                <CRComment_v2>크루 등록이 정상적으로 요청되었습니다.</CRComment_v2>
+            :
             <CRBody>
                 <CRComment>크루가 되어 많은 관객과 함께 버스킹을 시작해보세요!</CRComment>            
                 <CRForm onSubmit={handleSubmit}>
@@ -233,6 +244,7 @@ const CrewRegisterPage = () => {
                 </CRLtWrapper>
                 </CRForm>
             </CRBody>
+            }
         </CRContainer>
        </CRPageWrapper>
     )
