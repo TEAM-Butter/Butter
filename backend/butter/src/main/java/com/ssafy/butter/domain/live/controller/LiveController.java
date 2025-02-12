@@ -22,7 +22,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/v1/live")
+@RequestMapping("api/v1/live")
 @Slf4j
 @Tag(name = "Live API", description = "라이브 관련 API")
 public class LiveController {
