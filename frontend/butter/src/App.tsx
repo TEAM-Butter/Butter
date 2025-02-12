@@ -5,6 +5,7 @@ import { userRoutes } from "./routes/userRoutes";
 import { streamRoutes } from "./routes/streamRoutes";
 import { buskingRoutes } from "./routes/buskingRoutes";
 import { crewRoutes } from "./routes/crewRoutes"
+import { breadRoutes } from "./routes/breadRoutes"
 import "./styles/index.css";
 import { CommonLayout } from "./layouts/CommonLayout";
 
@@ -23,6 +24,7 @@ function App() {
           <Route path="/stream-list" element={<LiveListPage/>}/>
           {buskingRoutes}
           {crewRoutes}
+          {breadRoutes}
           <Route path="/" element={<HomePage />} />
         </Route>
         <Route path="*" element={<NotFoundPage />} />
