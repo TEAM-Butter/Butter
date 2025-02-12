@@ -63,6 +63,11 @@ VALUES
     (2000,'2024-03-28 17:51:27.000000',2,'2025-02-12 09:42:34.000000','Jazz Ensemble','A jazz music crew','http://image.url/crew2','http://video.url/crew2','http://promo.url/crew2'),
     (2200,'2024-02-23 16:52:47.000000',5,'2025-02-12 09:42:34.000000','Classical Orchestra','A classical music crew','http://image.url/crew5','http://video.url/crew5','http://promo.url/crew5');
 
+-- CrewMember 더미 데이터 INSERT
+INSERT INTO crew_member (crew_id, member_id, is_crew_admin) VALUES
+                                                                (8, 3, TRUE),     -- butter123을 크루장(admin)으로 지정
+                                                                (8, 4, FALSE);   -- choco789를 일반 멤버로 지정
+
 -- bread_log_type 테이블
 INSERT INTO bread_log_type (name) VALUES
                                       ('Deposit'),
