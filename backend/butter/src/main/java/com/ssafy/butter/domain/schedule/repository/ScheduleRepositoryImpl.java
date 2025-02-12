@@ -1,8 +1,6 @@
 package com.ssafy.butter.domain.schedule.repository;
 
-import com.querydsl.core.types.Order;
-import com.querydsl.core.types.OrderSpecifier;
-import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.ssafy.butter.domain.schedule.dto.request.ScheduleSearchRequestDTO;
 import com.ssafy.butter.domain.schedule.entity.QSchedule;
@@ -12,9 +10,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,7 +17,7 @@ import java.util.Optional;
 @Repository
 public class ScheduleRepositoryImpl implements ScheduleRepository {
 
-    private static final QSchedule qSchedule = QSchedule.schedule;
+    private final QSchedule qSchedule = QSchedule.schedule;
 
     private final ScheduleJpaRepository scheduleJpaRepository;
     private final JPAQueryFactory jpaQueryFactory;
@@ -64,18 +59,18 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
                 .fetch();
     }
 
-    private BooleanExpression[] createScheduleCondition(ScheduleSearchRequestDTO scheduleSearchRequestDTO) {
-        String[] keywords = scheduleSearchRequestDTO.keyword() == null ? null :
-                scheduleSearchRequestDTO.keyword().split(" ");
-        return new BooleanExpression[] {
-                // 일정의 장소가 키워드를 모두 포함하는지
-                keywords == null ? null :
-                        Arrays.stream(keywords).map(qSchedule.place::contains).reduce(BooleanExpression::and).orElse(null),
-                // 요청 date <= 버스킹 날짜 < 요청 date + 1 만족하는지
-                scheduleSearchRequestDTO.date() == null ? null :
-                        qSchedule.buskingDate.goe(scheduleSearchRequestDTO.date().atStartOfDay()).and(
-                                qSchedule.buskingDate.lt(scheduleSearchRequestDTO.date().plusDays(1).atStartOfDay())
-                        )
-        };
+    private BooleanBuilder createScheduleCondition(ScheduleSearchRequestDTO scheduleSearchRequestDTO) {
+        BooleanBuilder builder = new BooleanBuilder();
+        if (scheduleSearchRequestDTO.keyword() != null) {
+            String[] keywords = scheduleSearchRequestDTO.keyword().split(" ");
+            for (String keyword : keywords) {
+                builder.and(qSchedule.place.contains(keyword));
+            }
+        }
+        if (scheduleSearchRequestDTO.date() != null) {
+            builder.and(qSchedule.buskingDate.goe(scheduleSearchRequestDTO.date().atStartOfDay()))
+                    .and(qSchedule.buskingDate.lt(scheduleSearchRequestDTO.date().plusDays(1).atStartOfDay()));
+        }
+        return builder;
     }
 }
