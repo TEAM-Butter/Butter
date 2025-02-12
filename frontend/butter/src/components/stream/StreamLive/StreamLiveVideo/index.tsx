@@ -1,21 +1,24 @@
 import { LocalVideoTrack, RemoteVideoTrack } from "livekit-client";
 import { useEffect, useRef } from "react";
 import "./index.css";
+
 interface StreamLiveVideoProps {
   track: LocalVideoTrack | RemoteVideoTrack;
   participantIdentity: string;
   local?: boolean;
   roomName: string;
+  role: string;
 }
 
 function StreamLiveVideo({
   track,
   participantIdentity,
   roomName,
+  role,
   local = false, // local 속성 추가
 }: StreamLiveVideoProps) {
   const videoElement = useRef<HTMLVideoElement | null>(null);
-  const streamInterval = 200; // 200ms 간격으로 프레임 전송
+  const streamInterval = 500; // 200ms 간격으로 프레임 전송
 
   const sendFrameToServer = async () => {
     if (!videoElement.current || !local) return;
@@ -28,17 +31,21 @@ function StreamLiveVideo({
       canvas.height = videoElement.current.videoHeight;
 
       context?.drawImage(videoElement.current, 0, 0);
+      //Websocket연결 형성할 때 본인이 시청자인지 크루인지 정보.
 
       canvas.toBlob(
         async (blob) => {
           if (blob) {
             const formData = new FormData();
             formData.append("file", blob);
+
             // 참가자 정보와 룸 정보도 함께 전송
             formData.append("participant", participantIdentity);
-            formData.append("room", roomName);
+            //수정
+            formData.append("role", role);
+            formData.append("room-id", roomName);
 
-            const serverUrl = "http://192.168.30.201:5000/ai/upload_frame";
+            const serverUrl = "http://localhost:5000/ai/upload_frame";
 
             // const agent = new https.Agent({
             //   rejectUnauthorized: false,

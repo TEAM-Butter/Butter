@@ -95,6 +95,9 @@ public class MemberServiceImpl implements MemberService{
     public SignUpResponseDTO signUp(SignUpDTO signUpDTO) {
         Password encryptedPassword = createEncryptedPassword(signUpDTO.password());
 
+        checkIfEmailExists(signUpDTO.email());
+        checkIfLoginIdExists(signUpDTO.loginId());
+
         Member sigunUpMember = Member.builder()
                 .loginId(signUpDTO.loginId())
                 .email(new Email(signUpDTO.email()))
@@ -158,6 +161,7 @@ public class MemberServiceImpl implements MemberService{
     }
 
     @Override
+    @Transactional
     public RegisterExtraInfoResponseDTO saveExtraUserInfo(ExtraInfoDTO extraInfoDTO, Long memberId) {
         Member findMember = getMember(memberId);
 
@@ -174,20 +178,15 @@ public class MemberServiceImpl implements MemberService{
         return RegisterExtraInfoResponseDTO.from(findMember);
     }
 
-    /**
-     * 파라미터 이메일과 동일한 이메일로 가입한 멤버의 존재 여부를 반환한다
-     * @param emailDTO 이메일 DTO
-     * @return 동일 이메일로 가입한 멤버의 존재 여부
-     */
     @Override
-    public boolean checkIfEmailExists(SendEmailDTO emailDTO) {
-        Optional<Member> findMember = memberRepository.findByEmail(emailDTO.email());
+    public boolean checkIfEmailExists(String email) {
+        Optional<Member> findMember = memberRepository.findByEmail(email);
         return findMember.isPresent();
     }
 
     @Override
-    public CheckLoginIdResponseDTO checkIfLoginIdExists(CheckLoginIdDTO loginIdDTO) {
-        Optional<Member> findMember = memberRepository.findByLoginId(loginIdDTO.loginId());
+    public CheckLoginIdResponseDTO checkIfLoginIdExists(String loginId) {
+        Optional<Member> findMember = memberRepository.findByLoginId(loginId);
         boolean exists = findMember.isPresent();
         String message = exists ? "요청 ID 회원이 확인 되었습니다" : "요청 ID 회원이 존재하지 않습니다";
         return new CheckLoginIdResponseDTO(exists, message);

@@ -9,6 +9,9 @@ import pet3 from "/src/assets/pets/pet3.png";
 import pet4 from "/src/assets/pets/pet4.png";
 import pet5 from "/src/assets/pets/pet5.png";
 import pet6 from "/src/assets/pets/pet6.png";
+import { useUserStore } from "../../../stores/UserStore";
+import { MemberExtraInfoRequest } from "../../../apis/request/member/memberRequest";
+import { MemberExtraInfoDto } from "../../../apis/request/member/memberDto";
 
 const ExtraInfoForm = styled.form`
   display: flex;
@@ -82,11 +85,209 @@ interface ModalProps extends ModalSizeProps {
   setModalType: React.Dispatch<React.SetStateAction<string>>;
 }
 
+interface FormDataState {
+  nickname: string;
+  profileImage: File | null; // ✅ 파일 업로드를 위해 File | null 타입 사용
+  avatarType: string;
+  genres: string[];
+}
+
+
+//회원가입 추가정보 기입 모달 창
 export const UserExtraInfoModal = ({
   setModalType,
   width,
   height,
 }: ModalProps) => {
+
+  const [formData, setFormData] = useState<FormDataState>({
+    nickname: "",
+    profileImage: null, // ✅ 초기값을 null로 설정
+    avatarType: "",
+    genres: [],
+  });
+
+  const options = [
+    { value: "Ballad", label: "Ballad" },
+    { value: "Dance", label: "Dance" },
+    { value: "Pop", label: "Pop" },
+    { value: "K-Pop", label: "K-Pop" },
+    { value: "Acoustic", label: "Acoustic" },
+    { value: "Hip-Hop", label: "Hip-Hop" },
+    { value: "R&B", label: "R&B" },
+    { value: "Electronic", label: "Electronic" },
+    { value: "Rock", label: "Rock" },
+    { value: "Jazz", label: "Jazz" },
+    { value: "Indie", label: "Indie" },
+    { value: "Trot", label: "Trot" },
+  ];
+
+
+  const selectStyles = {
+    control: (styles: any) => ({
+      ...styles,
+      backgroundColor: "black",
+      border: "1px solid var(--yellow)",
+      borderRadius: "10px",
+      width: "100%",
+      padding: "5px",
+      color: "black",
+    }),
+    menu: (styles: any) => ({ ...styles, backgroundColor: "black" }),
+    multiValue: (styles: any) => ({
+      ...styles,
+      backgroundImage: "var(--liner)",
+      borderRadius: "20px",
+      padding: "3px 5px",
+      marginRight: "5px",
+    }),
+  };
+
+  const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setModalType("");
+    useUserStore.setState({ isExtraInfoRegistered: true });
+
+
+    const formDataToSend = new FormData();
+    formDataToSend.append("nickname", formData.nickname);
+    formDataToSend.append("avatarType", formData.avatarType);
+    formData.genres.forEach((genre) => formDataToSend.append("genres", genre));
+
+    if (formData.profileImage instanceof File) {
+      formDataToSend.append("profileImage", formData.profileImage);
+    } else {
+      console.error("Invalid profile image");
+      return;
+    }
+    // API 호출 부분에서 formData를 사용\
+    MemberExtraInfoRequest(formDataToSend).then((responseBody: MemberExtraInfoDto | null) => {
+      console.log("Response:", responseBody);
+    });
+    console.log("Final Data:", formData);
+  };
+  return (
+    <>
+      <MC.ModalOverlay />
+      <MC.ModalWrapper width={width} height={height} >
+        <MC.ModalHeader>
+          <div>TYPE YOUR EXTRA INFO</div>
+        </MC.ModalHeader>
+        <MC.ModalBody>
+          <MC.Comment_v2 textColor="white">
+            버터에 가입하신 것을 축하합니다!
+          </MC.Comment_v2>
+          <MC.Comment>
+            더 많은 기능을 즐기기 위해 몇 가지 정보를 추가로 입력해 주세요!
+          </MC.Comment>
+          <ExtraInfoForm onSubmit={handleSubmit}>
+            <ExtraInfoInputWrapper>
+              <LtExtraWrapper>
+                <div>
+                  <ExtraInfoLabel>
+                    <StepNumber>1</StepNumber>프로필 사진을 등록해 주세요!
+                  </ExtraInfoLabel>
+                  <ExtraFileInput setProfileImage={(image) => setFormData((prev) => ({ ...prev, profileImage: image }))} />
+                </div>
+                <div>
+                  <ExtraInfoLabel>
+                    <StepNumber>2</StepNumber>뭐라고 불러드릴까요?
+                  </ExtraInfoLabel>
+                  <ExtraInfoInput
+                    name="nickname"
+                    placeholder="사용할 닉네임을 입력해주세요."
+                    value={formData.nickname}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+                <div>
+                  <ExtraInfoLabel>
+                    <StepNumber>3</StepNumber>선호하는 장르를 알려주세요!
+                  </ExtraInfoLabel>
+                  <SelectWrapper>
+                    <Select
+                      options={options}
+                      styles={selectStyles}
+                      value={options.filter(option => selectedOptions.includes(option.value))}
+                      onChange={(selectedOptions) => {
+                        const values = selectedOptions ? selectedOptions.map(option => option.value) : [];
+                        if (values.length <= 3) {
+                          setSelectedOptions(values);
+                          setFormData((prev) => ({ ...prev, genres: values }));
+                        }
+                      }}
+                      isMulti
+                      required
+                    ></Select>
+                  </SelectWrapper>
+                </div>
+              </LtExtraWrapper>
+              <RtExtraWrapper>
+                <ExtraInfoLabel>
+                  <StepNumber>4</StepNumber>라이브에 사용할 캐릭터를 선택해
+                  주세요!
+                </ExtraInfoLabel>
+                <ExtraRadioWrapper>
+                  {[pet1, pet2, pet3, pet4, pet5, pet6].map((pet, index) => (
+                    <ExtraRadioLabel key={index}>
+                      <ExtraRadioInput
+                        type="radio"
+                        name="avatarType"
+                        value={`AVATAR${index + 1}`}
+                        checked={formData.avatarType === `AVATAR${index + 1}`}
+                        onChange={handleChange}
+                        required
+                      />
+                      <img src={pet} alt="petImg" width={100} />
+                    </ExtraRadioLabel>
+                  ))}
+                </ExtraRadioWrapper>
+              </RtExtraWrapper>
+            </ExtraInfoInputWrapper>
+            <MC.LtBtnWrapper>
+              <MC.FilledBtn
+                textColor="black"
+                type="submit"
+                width="90px"
+                height="35px"
+                color="var(--yellow)"
+                onClick={handleSubmit}
+              >
+                SUBMIT
+              </MC.FilledBtn>
+            </MC.LtBtnWrapper>
+          </ExtraInfoForm>
+        </MC.ModalBody>
+      </MC.ModalWrapper>
+    </>
+  );
+};
+
+
+
+
+//마이페이지 추가정보 기입 모달 창
+export const UserExtraInfoModal_v2 = ({
+  setModalType,
+  width,
+  height,
+}: ModalProps) => {
+
+  const [formData, setFormData] = useState({
+    nickname: "",
+    profileImage: "",
+    avatarType: "",
+    genres: [] as string[],
+  });
+
   const options = [
     { value: "Ballad", label: "Ballad" },
     { value: "Dance", label: "Dance" },
@@ -149,9 +350,6 @@ export const UserExtraInfoModal = ({
           </MC.ModalCloseBtn>
         </MC.ModalHeader>
         <MC.ModalBody>
-          <MC.Comment_v2 textColor="white">
-            버터에 가입하신 것을 축하합니다!
-          </MC.Comment_v2>
           <MC.Comment>
             더 많은 기능을 즐기기 위해 몇 가지 정보를 추가로 입력해 주세요!
           </MC.Comment>
@@ -160,9 +358,9 @@ export const UserExtraInfoModal = ({
               <LtExtraWrapper>
                 <div>
                   <ExtraInfoLabel>
-                    <StepNumber>1</StepNumber>프로필 사진을 등록해 주세요!
+                    <StepNumber>1</StepNumber>프로필 사진을 선택해 주세요!
                   </ExtraInfoLabel>
-                  <ExtraFileInput />
+                  {/* <ExtraFileInput setProfileImage={(image) => setFormData((prev) => ({ ...prev, profileImage: image }))} /> */}
                 </div>
                 <div>
                   <ExtraInfoLabel>

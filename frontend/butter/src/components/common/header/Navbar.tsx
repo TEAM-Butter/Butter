@@ -132,7 +132,6 @@ function Navbar() {
   const memberType = useUserStore((state) => state.memberType);
   const isLogin = useUserStore((state) => state.isLogin);
   const logout = useUserStore((state) => state.logout);
-  console.log(memberType == "");
 
   const homeMatch = useMatch("");
   const buskingMatch = useMatch("busking");
@@ -165,7 +164,7 @@ function Navbar() {
               <Item>HOME {homeMatch && <Bar layoutId="bar" />}</Item>
             </Link>
             <Link to="/busking">
-              <Item>BUSKING {buskingMatch && <Bar layoutId="bar" />}</Item>
+              <Item>MAP {buskingMatch && <Bar layoutId="bar" />}</Item>
             </Link>
             <Link to="/stream-list">
               <Item>STREAMING {streamMatch && <Bar layoutId="bar" />}</Item>

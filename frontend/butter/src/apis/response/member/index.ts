@@ -5,19 +5,27 @@ interface SignUpResponseDto {
     gender: string,
 }
 
-interface MypageResponseDto {
-    loginId : String ,
-    email : String ,
-    birthdate : String ,
-    gender : String ,
-    profileImageUrl : String ,
-    nickname : String ,
-    genres : String[] ,
-    avatarType : String ,
-    isExtraInfoRegistered : boolean 
+interface MemberDetailResponseDto {
+    loginId: String,
+    email: String,
+    birthdate: String,
+    gender: String,
+    profileImageUrl: String,
+    nickname: String,
+    genres: String[],
+    avatarType: String,
+    isExtraInfoRegistered: boolean
 }
+
+interface CheckLoginIdResponseDto {
+    exists: boolean,
+    message: string,
+}
+
+
 
 export type {
     SignUpResponseDto,
-    MypageResponseDto
+    MemberDetailResponseDto,
+    CheckLoginIdResponseDto,
 }

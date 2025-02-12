@@ -1,5 +1,6 @@
 package com.ssafy.butter.domain.crew.repository.crew;
 
+import com.ssafy.butter.domain.crew.dto.request.CrewListRequestDTO;
 import com.ssafy.butter.domain.crew.entity.Crew;
 import org.springframework.data.domain.Pageable;
 
@@ -17,4 +18,6 @@ public interface CrewRepository {
     List<Crew> findAllByOrderByIdDesc(Pageable pageable);
 
     List<Crew> findAllByIdLessThanOrderByIdDesc(Long id, Pageable pageable);
+
+    List<Crew> getCrewList(CrewListRequestDTO crewListRequestDTO);
 }

@@ -35,10 +35,10 @@ public class TransactionalMemberService {
                         .orElseThrow(() -> new IllegalArgumentException("ERR : 존재하지 않는 장르입니다: " + genreName)))
                 .toList();
 
-        member.updateProfile(profileUpdateRequestDTO.nickname(), profileUpdateRequestDTO.gender(), imageUrl, newGenres);
+        member.updateProfile(profileUpdateRequestDTO.nickname(), imageUrl, profileUpdateRequestDTO.avatarType(), newGenres);
         memberRepository.save(member);
 
-        return new ProfileUpdateResponseDTO(member);
+        return ProfileUpdateResponseDTO.from(member);
     }
 
 }

@@ -137,8 +137,7 @@ const Arrow = styled.img`
 
 const EditButton = styled.img`
     height:  20px;
-    margin-top: 8px;
-    margin-right: 5px;
+    margin-top: 5px;
 `
 
 const Right = styled.div`
@@ -188,6 +187,8 @@ const Box1BottomWrapper = styled.div`
 
 const FollowButton = styled.img`
     height: 35px;
+    margin-top: 10px;
+    margin-right: 5px;
 `
 const CrewPicture = styled.img`
     height: 180px;

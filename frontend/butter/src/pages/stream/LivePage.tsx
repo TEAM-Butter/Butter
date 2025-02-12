@@ -23,6 +23,8 @@ import UserBox from "../../components/stream/UserBox";
 import background from "../../assets/background.png";
 import CharacterContainer from "../../components/stream/CharacterContainer";
 
+import socketIOClient from "socket.io-client";
+
 const LivePageWrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
@@ -185,11 +187,13 @@ type TrackInfo = {
 
 // When running OpenVidu locally, leave these variables empty
 // For other deployment type, configure them with correct URLs depending on your deployment
-let APPLICATION_SERVER_URL = "";
+//let APPLICATION_SERVER_URL = "https://i12e204.p.ssafy.io/test/api";
 //let APPLICATION_SERVER_URL = "https://192.168.30.199:6080/";
+let APPLICATION_SERVER_URL = "";
 
-let LIVEKIT_URL = "";
+//let LIVEKIT_URL = "https://i12e204.p.ssafy.io:5443/twirp";
 //let LIVEKIT_URL = "wss://192.168.30.199:7880/";
+let LIVEKIT_URL = ""
 
 let TOKEN = "";
 configureUrls();
@@ -198,9 +202,9 @@ function configureUrls() {
   // If APPLICATION_SERVER_URL is not configured, use default value from OpenVidu Local deployment
   if (!APPLICATION_SERVER_URL) {
     if (window.location.hostname === "localhost") {
-      APPLICATION_SERVER_URL = "http://localhost:6080/";
+      APPLICATION_SERVER_URL = "http://localhost:6080/api/";
     } else {
-      APPLICATION_SERVER_URL = "https://" + window.location.hostname + ":6443/";
+      APPLICATION_SERVER_URL = "https://" + window.location.hostname + ":6443/api/";
     }
   }
 
@@ -230,10 +234,18 @@ const LivePage = () => {
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
   const [currentVideoUrl, setCurrentVideoUrl] = useState("");
   const navigate = useNavigate();
+  const socket = socketIOClient("http://localhost:5000");
+
+  // 크루ID 로 roomName을 설정 //해쉬!!!
 
   const roomName = state.roomName;
   let participantName = "user";
   let role = "";
+
+  // socket.on("message", (content) => addToBulletin(content));
+
+  //캐릭터를 동작시키는 함수를 적어라
+  socket.on("message", (content) => console.log(content));
 
   if (!role) {
     if (window.location.hostname === "localhost") {
@@ -281,6 +293,7 @@ const LivePage = () => {
   const handleRealLiveOffBtnClick = async () => {
     try {
       await leaveRoom();
+      socket.emit("leave", { roomName });
       setIsLiveOffModalOpen(false);
       navigate("/");
 
@@ -394,6 +407,9 @@ const LivePage = () => {
       // Get a token from your application server with the room name and participant name
       const token = await getToken(roomName, participantName, role);
       // Connect to the room with the LiveKit URL and the token
+
+      //방에 참가 할 때 본인이 publisher인지 subscriber인지 정보
+      socket.emit("join", { roomName, role });
 
       console.log("token!!!!", token);
       console.log(role);
@@ -544,6 +560,7 @@ const LivePage = () => {
                   remoteTracks={remoteTracks}
                   serverUrl={APPLICATION_SERVER_URL}
                   token={TOKEN}
+                  role={role}
                 />
               </RightTop>
               <RightMiddle>
@@ -600,6 +617,7 @@ const LivePage = () => {
                 remoteTracks={remoteTracks} // localTrack 제거
                 serverUrl={APPLICATION_SERVER_URL}
                 token={TOKEN}
+                role={role}
               />
             </LeftTop>
             <CharacterBox>
@@ -609,7 +627,11 @@ const LivePage = () => {
 
           <Right>
             <RightTop>
-              <UserBox />
+              <UserBox
+                participantName={participantName}
+                roomName={roomName}
+                role={role}
+              />
             </RightTop>
             <RightMiddle>
               <StreamChat />

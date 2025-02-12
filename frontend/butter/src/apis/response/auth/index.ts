@@ -1,16 +1,31 @@
-interface AuthInfo {
-    id: number;
-    email: string;
-    gender: string;
-    birthDate: string;
+interface AuthenticatedMemberInfo {
+    nickname: string;
+    profileImage: string;
+    avatarType: string;
+    memberType: string;
+    genres: string[];
+    isExtraInfoRegistered: boolean;
 }
 
 interface LoginResponseDto {
     accessToken: string;
     refreshToken: string;
-    authInfoDTO: AuthInfo;
+    authenticatedMemberInfo: AuthenticatedMemberInfo;
+}
+
+interface EmailSendCodeResponseDto {
+    message: string;
+    code: string;
+}
+
+interface EmailVerifyCodeResponseDto {
+    message: string;
+    type: string;
+    additionalInfo: string;
 }
 
 export type {
     LoginResponseDto,
+    EmailSendCodeResponseDto,
+    EmailVerifyCodeResponseDto,
 }
