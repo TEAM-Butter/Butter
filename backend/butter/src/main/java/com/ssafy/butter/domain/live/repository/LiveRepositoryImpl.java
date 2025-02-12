@@ -49,13 +49,11 @@ public class LiveRepositoryImpl implements LiveRepository {
 
     @Override
     public List<Live> getActiveLiveList(LiveListRequestDTO liveListRequestDTO) {
-        return jpaQueryFactory.selectFrom(qLive)
-                .join(qCrew).fetchJoin()
-                .on(qLive.crew.id.eq(qCrew.id))
-                .join(qCrewGenre).fetchJoin()
-                .on(qCrew.id.eq(qCrewGenre.crew.id))
-                .join(qGenre).fetchJoin()
-                .on(qCrewGenre.genre.id.eq(qGenre.id))
+        return jpaQueryFactory.selectDistinct(qLive)
+                .from(qLive)
+                .join(qLive.crew, qCrew).fetchJoin()
+                .join(qCrew.crewGenres, qCrewGenre).fetchJoin()
+                .join(qCrewGenre.genre, qGenre).fetchJoin()
                 .where(createActiveLiveListCondition(liveListRequestDTO), qLive.endDate.isNull())
                 .fetch();
     }
@@ -63,12 +61,9 @@ public class LiveRepositoryImpl implements LiveRepository {
     @Override
     public List<Live> getActiveLiveListOrderByStartDate(LiveListRequestDTO liveListRequestDTO) {
         return jpaQueryFactory.selectFrom(qLive)
-                .join(qCrew).fetchJoin()
-                .on(qLive.crew.id.eq(qCrew.id))
-                .join(qCrewGenre).fetchJoin()
-                .on(qCrew.id.eq(qCrewGenre.crew.id))
-                .join(qGenre).fetchJoin()
-                .on(qCrewGenre.genre.id.eq(qGenre.id))
+                .join(qLive.crew, qCrew).fetchJoin()
+                .join(qCrew.crewGenres, qCrewGenre).fetchJoin()
+                .join(qCrewGenre.genre, qGenre).fetchJoin()
                 .where(createActiveLiveListCondition(liveListRequestDTO), qLive.endDate.isNull())
                 .orderBy(qLive.startDate.desc())
                 .limit(liveListRequestDTO.pageSize())
