@@ -10,7 +10,7 @@ export class RecordingService {
     this.room = room;
     // this.baseUrl = baseUrl;
     this.baseUrl =
-      import.meta.env.VITE_APPLICATION_SERVER_URL || "http://localhost:6080";
+      import.meta.env.VITE_APPLICATION_SERVER_URL || "http://localhost:6080/api";
   }
 
   isRecordingInProgress(): boolean {
