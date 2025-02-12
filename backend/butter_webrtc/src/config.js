@@ -20,7 +20,7 @@ export const RECORDING_PLAYBACK_STRATEGY = process.env.RECORDING_PLAYBACK_STRATE
 export const RECORDING_FILE_PORTION_SIZE = 5 * 1024 * 1024; // 5MB
 
 // MySql configuration
-export const MYSQL_ENDPOINT = process.env.MYSQL_ENDPOINT || "http://localhost:9000";
+export const MYSQL_ENDPOINT = process.env.MYSQL_ENDPOINT || "localhost";
 export const MYSQL_USER = process.env.MYSQL_USER || "root";
 export const MYSQL_PASSWORD = process.env.MYSQL_PASSWORD || "root";
 export const MYSQL_DATABASE = process.env.MYSQL_DATABASE || "butter";
