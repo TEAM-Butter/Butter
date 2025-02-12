@@ -5,7 +5,7 @@ import { InternalAxiosRequestConfig, AxiosInstance, AxiosResponse } from "axios"
 import { getAccessToken, setAccessToken, removeAccessToken } from "./auth";
 
 export const axiosInstance: AxiosInstance = axios.create({
-    baseURL: `http://localhost:8080/api/v1`,
+    baseURL: `/api/v1`,
     withCredentials: true,
     // headers: {
     //     "Content-Type": "multipart/form-data",
@@ -30,7 +30,7 @@ axiosInstance.interceptors.response.use((response: AxiosResponse) => response,
             console.log(`Access Token 만료됨, Refresh Token으로 갱신 중`)
             try {
                 const refreshResponse = await axios.post<{ accessToken: string }>(
-                    `http://localhost:8080/api/v1/auth/reissue`,
+                    `/api/v1/auth/reissue`,
                     {},
                     { withCredentials: true }
                 );
