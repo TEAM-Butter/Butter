@@ -5,7 +5,6 @@ import {
   FastRewind,
   Pause,
   PlayArrow,
-  SkipNext,
   VolumeUp,
 } from "@mui/icons-material";
 
