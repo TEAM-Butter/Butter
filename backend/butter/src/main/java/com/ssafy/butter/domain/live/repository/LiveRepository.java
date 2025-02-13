@@ -1,5 +1,6 @@
 package com.ssafy.butter.domain.live.repository;
 
+import com.ssafy.butter.domain.live.dto.request.LiveListRequestDTO;
 import com.ssafy.butter.domain.live.entity.Live;
 import org.springframework.data.domain.Pageable;
 
@@ -15,4 +16,8 @@ public interface LiveRepository {
     List<Live> findAllByOrderByIdDesc(Pageable pageable);
 
     List<Live> findAllByIdLessThanOrderByIdDesc(Long id, Pageable pageable);
+
+    List<Live> getActiveLiveList(LiveListRequestDTO liveListRequestDTO);
+
+    List<Live> getActiveLiveListOrderByStartDate(LiveListRequestDTO liveListRequestDTO);
 }

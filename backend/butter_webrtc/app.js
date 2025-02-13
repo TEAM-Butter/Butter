@@ -15,7 +15,6 @@ function configureLiveKitUrl() {
         } else {
             LIVEKIT_URL = "wss://" + window.location.hostname + ":7443/";
         }
-        //LIVEKIT_URL = "wss://i12e204.p.ssafy.io:5443";
     }
 }
 

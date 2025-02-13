@@ -16,6 +16,5 @@ export const crewRoutes = (
     <Route path="video-edit/:id" element={<VideoEditPage />} />
     <Route path="follow" />
     <Route path="recommend" />
-
   </Route>
 );

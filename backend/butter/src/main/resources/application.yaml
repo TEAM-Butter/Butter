@@ -73,3 +73,8 @@ cloud:
     credentials:
       accessKey: ${custom.aws.s3.access-key}
       secretKey: ${custom.aws.s3.secret-key}
+
+iamport:
+  api:
+    key: ${custom.iamport.api.key}
+    secret: ${custom.iamport.api.secret}

@@ -8,7 +8,6 @@ import LpImg2 from "../../assets/home/LpImg2.png"
 const HomePageWrapper = styled(motion.div)`
   overflow: hidden;
   display: flex;
-  position: absolute;
   justify-content: center;
   align-items: center;
   width: 100%;
