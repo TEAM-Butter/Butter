@@ -3,11 +3,12 @@ package com.ssafy.butter.domain.bread.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ssafy.butter.domain.bread.dto.request.BreadDonationRequestDTO;
 import com.ssafy.butter.domain.bread.dto.request.BreadRechargeRequestDTO;
 import com.ssafy.butter.domain.bread.dto.response.PaymentVerificationResponseDTO;
+import com.ssafy.butter.domain.bread.service.BreadService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,8 +18,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
+@RequiredArgsConstructor
 @RestController
-@RequestMapping("v1/bread")
+@RequestMapping("/v1/bread")
 @Slf4j
 public class BreadController {
      
@@ -27,6 +29,8 @@ public class BreadController {
 
     @Value("${iamport.api.secret}")
     private String IMP_SECRET;
+
+    private final BreadService breadService;
 
     // 결제 검증 API
     @PostMapping("/verify-payment")
@@ -98,5 +102,11 @@ public class BreadController {
         } catch (Exception e) {
             throw new RuntimeException("API 요청 오류: " + e.getMessage(), e);
         }
+    }
+
+    @PostMapping("/donate")
+    public ResponseEntity<Void> donateBread(@RequestBody BreadDonationRequestDTO breadDonationRequestDTO) {
+        breadService.donateBread(breadDonationRequestDTO);
+        return ResponseEntity.noContent().build();
     }
 }
