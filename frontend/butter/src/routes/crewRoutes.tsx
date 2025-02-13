@@ -2,12 +2,8 @@ import { Route } from "react-router-dom";
 import CrewListPage from "../pages/crew/crewListPage";
 import CrewDetailPage from "../pages/crew/crewDetailPage";
 import CrewNoticePage from "../pages/crew/crewNoticePage";
-<<<<<<< HEAD
-=======
-import SamplePage from "../pages/crew/samplePage";
 import VideoEditPage from "../pages/video/VideoEditPage";
 import CrewRegisterPage from "../pages/crew/CrewRegisterPage";
->>>>>>> 359ffe27dcaf762276fbd216799b3dbfa4d0f78c
 
 export const crewRoutes = (
   <Route path="/crew">
