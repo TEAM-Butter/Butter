@@ -63,10 +63,11 @@ def on_join(data):
 def on_leave(data):
     room_id = data["roomName"]
     leave_room(room_id)
-    if get_room_count(room_id) == 0:
+    if get_room_size(room_id) == 0:
+        print(f"Room {room_id} is empty")
         websocket_room_service.remove_room(room_id)
     sock.emit("message", f"User {request.sid} left room {room_id}", room=room_id)
 
 
-def get_room_count(room_id):
+def get_room_size(room_id):
     return len(sock.server.manager.rooms.get("/", {}).get(room_id, {}))
