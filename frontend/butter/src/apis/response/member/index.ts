@@ -10,7 +10,7 @@ interface MemberDetailResponseDto {
     email: string,
     birthdate: string,
     gender: string,
-    profileImageUrl: string,
+    profileImage: string,
     nickname: string,
     genres: string[],
     avatarType: string,

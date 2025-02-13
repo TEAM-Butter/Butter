@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { UserExtraInfoModal_v2 } from "../../components/common/modals/UserExtraInfoModal";
 import { memberDetailRequest } from "../../apis/request/member/memberRequest";
 import { MemberDetailResponseDto } from "../../apis/response/member";
+import { profile } from "console";
 
 
 const MemberDetailPageWrapper = styled.div`
@@ -79,11 +80,16 @@ const ChangePasswordLink = styled.div`
 `
 
 const ProfileLt = styled.div``
-const ProfileImg = styled.img`
+const NoneProfileImg = styled.img`
   width: 80px;
   height: 80px;
   border-radius: 50%;
   background-color: var(--gray-bright);
+  `
+const ProfileImg = styled.img`
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
   `
 const ProfileRt = styled.div`
   display: flex;
@@ -151,36 +157,11 @@ interface UserInfoDto {
   birth: string;
   gender: string;
   pet: string;
-}
-
-interface GenresDto {
   genres: string[];
+  profileImage: string;
 }
 
 const MemberDetailPage = () => {
-  const sampleUserInfo = {
-    id: "guest-id",
-    email: "guest@naver.com",
-    nickname: "guest",
-    genres: [
-      {
-        id: "R&B",
-        value: "R&B",
-      },
-      {
-        id: "Indie",
-        value: "Indie",
-      },
-      {
-        id: "Pop",
-        value: "Pop",
-      },
-    ],
-    birth: "20001028",
-    gender: "woman",
-    pet: "pet1",
-  }
-
   const [userInfo, setUserInfo] = useState<UserInfoDto>({
     id: "",
     email: "",
@@ -188,24 +169,31 @@ const MemberDetailPage = () => {
     birth: "",
     gender: "",
     pet: "",
+    genres: [],
+    profileImage: ""
   })
 
-  const [userGenres, setUserGenres] = useState<GenresDto>([])
   useEffect(() => {
     memberDetailRequest().then((responseBody: MemberDetailResponseDto | null) => {
       if (!responseBody) return;
-      console.log(responseBody)
+      // console.log(responseBody)
 
       setUserInfo({
-        id: String(responseBody?.loginId ?? ""),
-        email: String(responseBody?.email ?? ""),
-        nickname: String(responseBody?.nickname ?? ""),
-        birth: String(responseBody?.birthdate ?? ""),
-        gender: String(responseBody?.gender ?? ""),
-        pet: String(responseBody?.avatarType ?? ""),
+        id: String(responseBody.loginId ?? ""),
+        email: String(responseBody.email ?? ""),
+        nickname: String(responseBody.nickname ?? ""),
+        birth: String(responseBody.birthdate ?? ""),
+        gender: String(responseBody.gender ?? ""),
+        pet: String(responseBody.avatarType ?? ""),
+        genres: responseBody.genres,
+        profileImage: String(responseBody.profileImage ?? ""),
       });
 
-      setUserGenres(responseBody?.genres ?? [])
+      console.log("userInfo", userInfo.profileImage)
+
+      if (userInfo.id === "") {
+        setUserInfo((prev) => ({ ...prev, id: "Social-login" }))
+      }
     })
   }, [])
 
@@ -218,7 +206,10 @@ const MemberDetailPage = () => {
           <MDBody>
             <MDUpper>
               <ProfileLt>
-                <ProfileImg />
+                {userInfo.profileImage === "" ?
+                  <NoneProfileImg />
+                  : <ProfileImg src={userInfo.profileImage} alt="Profile" style={{ width: 80, height: 80, borderRadius: "50%" }} />
+                }
               </ProfileLt>
               <ProfileRt>
                 <Username>{userInfo.nickname}</Username>
@@ -228,14 +219,14 @@ const MemberDetailPage = () => {
             <MDLower>
               <MDLowerInfo><span>id</span>{userInfo.id}</MDLowerInfo>
               <MDLowerInfo><span>gender</span>{userInfo.gender}</MDLowerInfo>
-              <MDLowerInfo><span>birth</span>{userInfo.birth}</MDLowerInfo>
+              <MDLowerInfo><span>birth</span>{userInfo.birth.split(",").join("-")}</MDLowerInfo>
               <ChangePasswordLink><Link to="/"><div>비밀번호 변경</div></Link></ChangePasswordLink>
             </MDLower>
             <GenreContainer>
               <GenreComment>회원님이 선호하는 장르 입니다!</GenreComment>
               <GenreWrapper>
-                {sampleUserInfo.genres.map(genre =>
-                  <Genre key={genre.id}>{genre.value}</Genre>
+                {userInfo.genres.map(genre =>
+                  <Genre key={genre}>{genre}</Genre>
                 )}
               </GenreWrapper>
             </GenreContainer>
