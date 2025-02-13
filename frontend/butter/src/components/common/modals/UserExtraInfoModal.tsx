@@ -167,9 +167,6 @@ export const UserExtraInfoModal = ({
 
     if (formData.profileImage instanceof File) {
       formDataToSend.append("profileImage", formData.profileImage);
-    } else {
-      console.error("Invalid profile image");
-      return;
     }
     // API 호출 부분에서 formData를 사용\
     MemberExtraInfoRequest(formDataToSend).then((responseBody: MemberExtraInfoDto | null) => {
@@ -263,7 +260,6 @@ export const UserExtraInfoModal = ({
                 width="90px"
                 height="35px"
                 color="var(--yellow)"
-                onClick={handleSubmit}
               >
                 SUBMIT
               </MC.FilledBtn>
@@ -348,9 +344,6 @@ export const UserExtraInfoModal_v2 = ({
 
     if (formData.profileImage instanceof File) {
       formDataToSend.append("profileImage", formData.profileImage);
-    } else {
-      console.error("Invalid profile image");
-      return;
     }
     // API 호출 부분에서 formData를 사용\
     MemberExtraInfoRequest(formDataToSend).then((responseBody: MemberExtraInfoDto | null) => {
@@ -363,19 +356,16 @@ export const UserExtraInfoModal_v2 = ({
       <MC.ModalOverlay />
       <MC.ModalWrapper width={width} height={height} >
         <MC.ModalHeader>
-          <div>TYPE YOUR EXTRA INFO</div>
+          <div>유저 추가 정보 변경하기</div>
           <MC.ModalCloseBtn
-              textColor="white"
-              onClick={() => {
+            textColor="white"
+            onClick={() => {
               setModalType("");
-              }}>
-              X
+            }}>
+            X
           </MC.ModalCloseBtn>
         </MC.ModalHeader>
         <MC.ModalBody>
-          <MC.Comment_v2 textColor="white">
-            버터에 가입하신 것을 축하합니다!
-          </MC.Comment_v2>
           <MC.Comment>
             더 많은 기능을 즐기기 위해 몇 가지 정보를 추가로 입력해 주세요!
           </MC.Comment>
@@ -451,7 +441,6 @@ export const UserExtraInfoModal_v2 = ({
                 width="90px"
                 height="35px"
                 color="var(--yellow)"
-                onClick={handleSubmit}
               >
                 SUBMIT
               </MC.FilledBtn>
