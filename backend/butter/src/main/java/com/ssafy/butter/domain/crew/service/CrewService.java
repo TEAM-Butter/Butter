@@ -6,6 +6,7 @@ import com.ssafy.butter.domain.crew.dto.request.CrewGenreRequestDTO;
 import com.ssafy.butter.domain.crew.dto.request.CrewListRequestDTO;
 import com.ssafy.butter.domain.crew.dto.request.CrewMemberRequestDTO;
 import com.ssafy.butter.domain.crew.dto.request.CrewSaveRequestDTO;
+import com.ssafy.butter.domain.crew.dto.response.CrewMemberResponseDTO;
 import com.ssafy.butter.domain.crew.dto.response.CrewResponseDTO;
 import com.ssafy.butter.domain.crew.entity.Crew;
 
@@ -15,7 +16,7 @@ public interface CrewService {
 
     CrewResponseDTO createCrew(AuthInfoDTO currentUser, CrewSaveRequestDTO crewSaveRequestDTO);
 
-    void createCrewMember(AuthInfoDTO currentUser, CrewMemberRequestDTO crewMemberRequestDTO);
+    CrewMemberResponseDTO createCrewMember(AuthInfoDTO currentUser, CrewMemberRequestDTO crewMemberRequestDTO);
 
     void deleteCrewMember(AuthInfoDTO currentUser, Long crewId, Long memberId);
 
