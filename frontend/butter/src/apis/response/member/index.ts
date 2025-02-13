@@ -6,14 +6,14 @@ interface SignUpResponseDto {
 }
 
 interface MemberDetailResponseDto {
-    loginId: String,
-    email: String,
-    birthdate: String,
-    gender: String,
-    profileImageUrl: String,
-    nickname: String,
-    genres: String[],
-    avatarType: String,
+    loginId: string,
+    email: string,
+    birthdate: string,
+    gender: string,
+    profileImageUrl: string,
+    nickname: string,
+    genres: string[],
+    avatarType: string,
     isExtraInfoRegistered: boolean
 }
 

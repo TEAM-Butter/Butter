@@ -143,19 +143,18 @@ const ExtraEditBtn = styled.div`
     opacity: 0.8;
   }
   `
-interface Genre {
-  id: string;
-  value: string;
-}
 
 interface UserInfoDto {
   id: string;
   email: string;
   nickname: string;
-  genres: Genre[];
   birth: string;
   gender: string;
   pet: string;
+}
+
+interface GenresDto {
+  genres: string[];
 }
 
 const MemberDetailPage = () => {
@@ -186,12 +185,12 @@ const MemberDetailPage = () => {
     id: "",
     email: "",
     nickname: "",
-    genres: [],
     birth: "",
     gender: "",
     pet: "",
   })
 
+  const [userGenres, setUserGenres] = useState<GenresDto>([])
   useEffect(() => {
     memberDetailRequest().then((responseBody: MemberDetailResponseDto | null) => {
       if (!responseBody) return;
@@ -204,8 +203,9 @@ const MemberDetailPage = () => {
         birth: String(responseBody?.birthdate ?? ""),
         gender: String(responseBody?.gender ?? ""),
         pet: String(responseBody?.avatarType ?? ""),
-        genres: [],
       });
+
+      setUserGenres(responseBody?.genres ?? [])
     })
   }, [])
 
