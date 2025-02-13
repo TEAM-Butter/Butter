@@ -4,7 +4,6 @@ import com.ssafy.butter.auth.dto.AuthInfoDTO;
 import com.ssafy.butter.domain.chat.CustomPrincipal;
 import com.ssafy.butter.global.token.JwtExtractor;
 import com.ssafy.butter.global.token.JwtManager;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
@@ -13,6 +12,7 @@ import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.messaging.support.MessageHeaderAccessor;
 import org.springframework.stereotype.Component;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -34,11 +34,13 @@ public class StompAuthInterceptor implements ChannelInterceptor {
                     if (authInfo != null) {
                         accessor.setUser(new CustomPrincipal(authInfo));
                     } else {
-                        throw new IllegalArgumentException("STOMP ERR : 유효하지 않은 JWT");
+                        throw new IllegalArgumentException("STOMP ERR: 유효하지 않은 JWT");
                     }
+                } else {
+                    throw new IllegalArgumentException("STOMP ERR: JWT 토큰 형식이 올바르지 않습니다.");
                 }
             } else {
-                throw new IllegalArgumentException("STOMP ERR : 헤더에 JWT가 없음");
+                throw new IllegalArgumentException("STOMP ERR: 헤더에 JWT가 없습니다.");
             }
         }
         return message;

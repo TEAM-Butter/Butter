@@ -32,7 +32,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/v1/members")
+@RequestMapping("v1/members")
 @RequiredArgsConstructor
 @Tag(name = "Member Controller", description = "회원 관련 API")
 public class MemberController {
@@ -91,7 +91,7 @@ public class MemberController {
     @PostMapping("/check-loginId")
     public ResponseEntity<CheckLoginIdResponseDTO> checkEmailExists(
             @RequestBody CheckLoginIdDTO loginIdDTO) {
-        CheckLoginIdResponseDTO response = memberService.checkIfLoginIdExists(loginIdDTO);
+        CheckLoginIdResponseDTO response = memberService.checkIfLoginIdExists(loginIdDTO.loginId());
         return ResponseEntity.ok(response);
     }
 }

@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping("/api/v1/auth/email")
+@RequestMapping("/v1/auth/email")
 @Tag(name = "Email Authentication", description = "이메일 인증 관련 API")
 public class EmailAuthController {
     private final EmailService emailService;
@@ -27,7 +27,7 @@ public class EmailAuthController {
     )
     @PostMapping("/exists")
     public ResponseEntity<SendEmailDTO> existsEmail(@Valid @RequestBody SendEmailDTO email){
-        if(memberService.checkIfEmailExists(email)){
+        if(memberService.checkIfEmailExists(email.email())){
             return ResponseEntity.badRequest().body(email);
         }
         return ResponseEntity.ok(email);

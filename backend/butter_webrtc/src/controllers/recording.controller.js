@@ -2,11 +2,13 @@ import { Router } from "express";
 import { RecordingService } from "../services/recording.service.js";
 import { RoomService } from "../services/room.service.js";
 import { RECORDING_PLAYBACK_STRATEGY } from "../config.js";
+import multer from "multer";
 
 const recordingService = new RecordingService();
 const roomService = new RoomService();
 
 export const recordingController = Router();
+const upload = multer();
 
 recordingController.post("/start", async (req, res) => {
     const { roomName } = req.body;
@@ -125,6 +127,76 @@ recordingController.get("/:recordingName/url", async (req, res) => {
         res.status(500).json({ errorMessage: "Error getting recording URL" });
     }
 });
+
+recordingController.post("/clip", async (req, res) => {
+    const { recordingName, startTime, endTime, title } = req.body;
+
+    if (!recordingName || !startTime || !endTime || !title) {
+        res.status(400).json({ errorMessage: "recordingName, startTime, endTime and title are required" });
+        return;
+    }
+
+    try {
+        // clipRecording 서비스 호출
+        const result = await recordingService.clipRecording(recordingName, startTime, endTime, title);
+
+        if (result.success) {
+            res.json({ message: "Recording clipped successfully", clippedRecordingName: result.clippedRecordingName});
+        } else {
+            res.status(500).json({ errorMessage: "Error clipping recording", details: result.error });
+        }
+    } catch (error) {
+        console.error("Error clipping recording.", error);
+        res.status(500).json({ errorMessage: "Error clipping recording" });
+    }
+});
+
+recordingController.post("/thumnail", upload.single("image"), async (req, res) => {
+    const { recordingName } = req.body;
+    const imageFile = req.file;
+
+    if (!recordingName) {
+        res.status(400).json({ errorMessage: "recordingName is required" });
+        return;
+    }
+
+    if (!imageFile) {
+        return res.status(400).json({ errorMessage: "Image file is required" });
+    }
+
+    try {
+       // 썸네일 저장
+       const result = await recordingService.saveThumbnail(recordingName, imageFile.buffer);
+
+       if (result.success) {
+           res.json({ message: "Thumbnail saved successfully", thumbnailKey: result.thumbnailKey });
+       } else {
+           res.status(500).json({ errorMessage: "Error saving thumbnail", details: result.error });
+       }
+   } catch (error) {
+       console.error("Error saving thumbnail:", error);
+       res.status(500).json({ errorMessage: "Error saving thumbnail" });
+   }
+});
+
+recordingController.get("/thumbnail/:recordingName", async (req, res) => {
+    const { recordingName } = req.params;
+  
+    if (!recordingName) {
+      return res.status(400).json({ errorMessage: "recordingName is required" });
+    }
+  
+    try {
+      const thumbnailUrl = await recordingService.getThumbnailUrl(recordingName);
+      if (!thumbnailUrl) {
+        return res.status(404).json({ errorMessage: "Thumbnail not found" });
+      }
+      res.json({ thumbnailUrl });
+    } catch (error) {
+      console.error("Error fetching thumbnail:", error);
+      res.status(500).json({ errorMessage: "Error fetching thumbnail" });
+    }
+  });
 
 recordingController.delete("/:recordingName", async (req, res) => {
     const { recordingName } = req.params;

@@ -9,10 +9,13 @@ import {
   LIVEKIT_API_KEY,
   LIVEKIT_API_SECRET,
   RECORDINGS_PATH,
+  CLIPS_PATH,
   RECORDINGS_METADATA_PATH,
   RECORDING_FILE_PORTION_SIZE,
 } from "../config.js";
 import { S3Service } from "./s3.service.js";
+import fs from "fs";
+import {insertClip} from "./mysql.service.js"
 
 const s3Service = new S3Service();
 
@@ -197,5 +200,91 @@ export class RecordingService {
       RECORDINGS_METADATA_PATH +
       recordingName.replace(".mp4", ".json")
     );
+  }
+
+  getThumbnailKey(recordingName) {
+    return RECORDINGS_PATH + recordingName.replace(".mp4", ".jpg");
+  }
+
+  getClipKey(clippedRecordingName) {
+    return CLIPS_PATH + clippedRecordingName;
+  }
+
+  getClipThumbnailKey(clippedRecordingName) {
+    return CLIPS_PATH + clippedRecordingName.replace(".mp4", ".jpg")
+  }
+
+  async saveThumbnail(recordingName, imageBuffer) {
+    const thumbnailKey = this.getThumbnailKey(recordingName);
+  
+    try {
+      // 이미지 파일을 임시 파일로 저장
+      const tempThumbnailPath = `/tmp/${recordingName.replace(".mp4", ".jpg")}`;
+      fs.writeFileSync(tempThumbnailPath, imageBuffer);
+  
+      // S3에 업로드
+      await s3Service.uploadObject(thumbnailKey, fs.createReadStream(tempThumbnailPath));
+  
+      // 임시 파일 삭제
+      fs.unlinkSync(tempThumbnailPath);
+  
+      return { success: true, thumbnailKey };
+    } catch (error) {
+      console.error("Error saving thumbnail:", error);
+      return { success: false, error: error.message };
+    }
+  }
+
+  // 썸네일 URL 가져오기
+  async getThumbnailUrl(recordingName) {
+    const key = this.getThumbnailKey(recordingName);
+    
+    // 썸네일 존재 여부 확인
+    const exists = await s3Service.exists(key);
+    if (!exists) {
+      return null;
+    }
+
+    return s3Service.getObjectUrl(key);
+  }
+  
+  async clipRecording(recordingName, startTime, endTime, crewId, title) {
+    const inputKey = this.getRecordingKey(recordingName);
+    const clippedRecordingName = `clipped-${startTime}-${endTime}-${recordingName}.mp4`;
+    const outputKey = this.getClipKey(clippedRecordingName);
+    const thumbnailKey = this.getClipThumbnailKey(clippedRecordingName);
+
+    const tempInputPath = `/tmp/${recordingName}`;
+    const tempOutputPath = `/tmp/${clippedRecordingName}.mp4`;
+    const thumbnailPath = `/tmp/thumbnail-${clippedRecordingName}.jpg`;
+
+    try {
+      // S3에서 원본 영상 다운로드
+      await s3Service.downloadObject(inputKey, tempInputPath);
+
+      // FFmpeg을 이용해 영상 자르기
+      const command = `ffmpeg -i "${tempInputPath}" -ss ${startTime} -to ${endTime} -c copy "${tempOutputPath}"`;
+      await execPromise(command);
+
+      // 썸네일 추출 (10번째 프레임)
+      const thumbnailCommand = `ffmpeg -i "${tempOutputPath}" -vf "select='eq(n\\,10)'" -vsync vfr "${thumbnailPath}"`;
+      await execPromise(thumbnailCommand);
+
+      // 잘린 영상 S3에 업로드
+      await s3Service.uploadObject(outputKey, fs.createReadStream(tempOutputPath));
+      await s3Service.uploadObject(thumbnailKey, fs.createReadStream(thumbnailPath));
+
+      // 임시 파일 삭제
+      fs.unlinkSync(tempInputPath);
+      fs.unlinkSync(tempOutputPath);
+      fs.unlinkSync(thumbnailPath);
+
+      await insertClip(crewId, title, clippedRecordingName);
+
+      return { success: true, clippedRecordingName };
+    } catch (error) {
+      console.error("Error clipping recording:", error);
+      return { success: false, error: error.message };
+    }
   }
 }

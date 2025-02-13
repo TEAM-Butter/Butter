@@ -9,7 +9,7 @@ import { useUserStore } from ".././stores/UserStore";
 const Wrapper = styled.div`
   display: grid;
   grid-template-rows: 55px 1fr;
-  background-color: #1C1D2C;
+  background-color: var(--bgColor);
   height: 100vh;
 `
 
