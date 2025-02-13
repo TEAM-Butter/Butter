@@ -496,6 +496,7 @@ function SchedulePage() {
     return updatedPositions;
   };
 
+  const updatedPositions = useGeocodePositions(positions2)
 
 
   // ✅ markers가 변경될 때 로그 출력
