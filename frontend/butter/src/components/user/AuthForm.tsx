@@ -83,7 +83,7 @@ export const LoginForm = ({ setModalType }: ModalProps) => {
             const { accessToken } = responseBody as LoginResponseDto;
             setAccessToken(accessToken)
             navigator(`/`)
-            setUser(true, "guest", "profile.jpg", "pet1", String(responseBody?.authenticatedMemberInfo.memberType), Boolean(responseBody?.authenticatedMemberInfo.isExtraInfoRegistered));
+            setUser(true, String(responseBody?.authenticatedMemberInfo.nickname), String(responseBody?.authenticatedMemberInfo.profileImage), String(responseBody?.authenticatedMemberInfo.avatarType), String(responseBody?.authenticatedMemberInfo.memberType), Boolean(responseBody?.authenticatedMemberInfo.isExtraInfoRegistered));
         }
         )
     }
@@ -136,7 +136,7 @@ export const SignupForm = () => {
             const { accessToken } = responseBody as LoginResponseDto;
             setAccessToken(accessToken)
             navigator(`/`)
-            setUser(true, "guest", "profile.jpg", "pet1", String(responseBody?.authenticatedMemberInfo.memberType), Boolean(responseBody?.authenticatedMemberInfo.isExtraInfoRegistered));
+            setUser(true, String(responseBody?.authenticatedMemberInfo.nickname), String(responseBody?.authenticatedMemberInfo.profileImage), String(responseBody?.authenticatedMemberInfo.avatarType), String(responseBody?.authenticatedMemberInfo.memberType), Boolean(responseBody?.authenticatedMemberInfo.isExtraInfoRegistered));
         })
     }
 
