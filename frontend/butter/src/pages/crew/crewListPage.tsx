@@ -222,7 +222,7 @@ function CrewListPage() {
                     ? { Authorization: `Bearer ${token}`, "Content-Type": "application/json"}
                     : { "Content-Type": "application/json" };
                 setLoading(true);
-                const response = await axios.get(`${ServerUrl}/api/v1/crew/list?pageSize=10`, {headers}) // 크루 리스트 정보 받아옴
+                const response = await axios.get(`/crew/list?pageSize=10`, {headers}) // 크루 리스트 정보 받아옴
                 setCrewList(response.data);
                 console.log(response.data)
             } catch (err: any) {
