@@ -228,7 +228,7 @@ const VideoTrimmer = ({
   const [duration, setDuration] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
   const [isEditing, setIsEditing] = useState(false);
-  const SEVER_URL = "http://localhost:6080/api";
+  const SEVER_URL = import.meta.env.VITE_NODE_JS_SERVER || "";
 
   const {
     register,
