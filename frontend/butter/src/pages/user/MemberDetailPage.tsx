@@ -1,11 +1,10 @@
 import styled from "@emotion/styled";
-import axios from "axios";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { UserExtraInfoModal_v2 } from "../../components/common/modals/UserExtraInfoModal";
 import { memberDetailRequest } from "../../apis/request/member/memberRequest";
 import { MemberDetailResponseDto } from "../../apis/response/member";
-import { profile } from "console";
+import { ChangePSModal } from "../../components/common/modals/ChangePSModal";
 
 
 const MemberDetailPageWrapper = styled.div`
@@ -221,7 +220,7 @@ const MemberDetailPage = () => {
               </MDLowerInfo>
               <MDLowerInfo><span>gender</span>{userInfo.gender}</MDLowerInfo>
               <MDLowerInfo><span>birth</span>{userInfo.birth.split(",").join("-")}</MDLowerInfo>
-              <ChangePasswordLink><Link to="/"><div>비밀번호 변경</div></Link></ChangePasswordLink>
+              <ChangePasswordLink onClick={() => { setModalType("changePs") }} ><div>비밀번호 변경</div></ChangePasswordLink>
             </MDLower>
             <GenreContainer>
               <GenreComment>회원님이 선호하는 장르 입니다!</GenreComment>
@@ -239,6 +238,7 @@ const MemberDetailPage = () => {
         </ExtraEditBtn>
       </MemberDetailPageWrapper>
       {modalType === "extraInfo" && <UserExtraInfoModal_v2 width="800px" height="400px" setModalType={setModalType}></UserExtraInfoModal_v2>}
+      {modalType === "changePs" && <ChangePSModal width="500px" height="400px" setModalType={setModalType} ></ChangePSModal>}
     </>
   );
 };
