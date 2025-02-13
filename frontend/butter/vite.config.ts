@@ -23,7 +23,7 @@ export default defineConfig({
   plugins: [react()],
   server: {
     cors: true,
-    allowedHosts: ["192-168-30-199.openvidu-local.dev"],
+    allowedHosts: ["192-168-30-199.openvidu-local.dev", "i12e204.p.ssafy.io"],
     host: "0.0.0.0",
     port: 5080,
     proxy: {
@@ -34,6 +34,16 @@ export default defineConfig({
         ws: true,
         rewrite: (path) => path,
       },
+    },
+  },
+
+  // 절대 경로 설정
+  resolve: {
+    alias: {
+      "@": "/src",
+      "@components": "/src/components",
+      "@utils": "/src/utils",
+      "@assets": "/src/assets",
     },
   },
 });

@@ -1,11 +1,11 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import HomePage from "./pages/home/HomePage";
 import NotFoundPage from "./pages/error/NotFoundPage";
 import { userRoutes } from "./routes/userRoutes";
 import { streamRoutes } from "./routes/streamRoutes";
 import { buskingRoutes } from "./routes/buskingRoutes";
 import { crewRoutes } from "./routes/crewRoutes"
 import { breadRoutes } from "./routes/breadRoutes"
+import { homeRoutes } from "./routes/homeRoutes";
 import "./styles/index.css";
 import { CommonLayout } from "./layouts/CommonLayout";
 
@@ -20,6 +20,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route element={<CommonLayout />}>
+          {homeRoutes}
           {userRoutes}
           {streamRoutes}
           <Route path="/stream-list" element={<LiveListPage />} />
@@ -27,7 +28,6 @@ function App() {
           {buskingRoutes}
           {crewRoutes}
           {breadRoutes}
-          <Route path="/" element={<HomePage />} />
         </Route>
         <Route path="*" element={<NotFoundPage />} />
       </Routes>

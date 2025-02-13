@@ -22,8 +22,11 @@ import UserBox from "../../components/stream/UserBox";
 
 import background from "../../assets/background.png";
 import CharacterContainer from "../../components/stream/CharacterContainer";
+import { SocketContent } from "../../types/socket";
+import { io } from "socket.io-client";
 
-import socketIOClient from "socket.io-client";
+import { useUserStore } from "../../stores/UserStore";
+
 
 const LivePageWrapper = styled.div`
   display: flex;
@@ -202,10 +205,9 @@ function configureUrls() {
   // If APPLICATION_SERVER_URL is not configured, use default value from OpenVidu Local deployment
   if (!APPLICATION_SERVER_URL) {
     if (window.location.hostname === "localhost") {
-      APPLICATION_SERVER_URL = "http://localhost:6080/api/";
+      APPLICATION_SERVER_URL = "http://localhost:6080/";
     } else {
-      APPLICATION_SERVER_URL =
-        "https://" + window.location.hostname + ":6443/api/";
+      APPLICATION_SERVER_URL = "https://" + window.location.hostname + ":6443/";
     }
   }
 
@@ -235,25 +237,34 @@ const LivePage = () => {
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
   const [currentVideoUrl, setCurrentVideoUrl] = useState("");
   const navigate = useNavigate();
-  const socket = socketIOClient("http://localhost:5000");
+  // const socket = io.connect("http://localhost:5000");
+  const socket = io("http://localhost:5000", {
+    transports: ["websocket"],
+  });
+
+  // export const SocketContext = React.createContext<socketType>(socket);
 
   // 크루ID 로 roomName을 설정 //해쉬!!!
 
   const roomName = state.roomName;
-  let participantName = "user";
-  let role = "";
+
+  let role = useUserStore((state) => state.memberType);
+  let participantName = useUserStore((state) => state.nickname) ?? "guest";
+  console.log("role: "+role+" name: "+participantName)
 
   // socket.on("message", (content) => addToBulletin(content));
 
   //캐릭터를 동작시키는 함수를 적어라
-  socket.on("message", (content) => console.log(content));
+  socket.on("message", (content: SocketContent) =>
+    console.log("gagagag", content)
+  );
 
   if (!role) {
     if (window.location.hostname === "localhost") {
-      role = "publisher";
+      role = "crew";
       participantName = state.participantName;
     } else {
-      role = "subscriber";
+      role = "user";
     }
   }
 
@@ -419,7 +430,7 @@ const LivePage = () => {
       console.log("Connected to room successfully");
       console.log(room);
 
-      if (role == "publisher") {
+      if (role == "crew") {
         // Publish your camera and microphone
         await room.localParticipant.enableCameraAndMicrophone();
 
@@ -539,7 +550,7 @@ const LivePage = () => {
   console.log("recordings", recordings);
   return (
     <>
-      {role === "publisher" ? (
+      {role === "crew" ? (
         <>
           <LivePageWrapper>
             <Left>
@@ -551,7 +562,7 @@ const LivePage = () => {
                 />
               </LeftTop>
               <CharacterBox>
-                <CharacterContainer />
+                <CharacterContainer socket={socket} />
               </CharacterBox>
             </Left>
 
@@ -616,7 +627,7 @@ const LivePage = () => {
           <Left>
             <LeftTop></LeftTop>
             <CharacterBox>
-              <CharacterContainer />
+              <CharacterContainer socket={socket} />
             </CharacterBox>
           </Left>
 

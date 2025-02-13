@@ -216,16 +216,14 @@ function Navbar() {
                       </Link>
                     </>
                   ) : (
-                    <Link to="/">
+                    <Link to="/crew/register">
                       <SubItem>크루 등록</SubItem>
                     </Link>
                   )}
                   <Link to="/member/detail/guest">
                     <SubItem>회원정보 수정</SubItem>
                   </Link>
-                  <Link to="/">
-                    <SubItem onClick={memberLogout}>로그아웃</SubItem>
-                  </Link>
+                  <SubItem onClick={memberLogout}>로그아웃</SubItem>
                 </SubProfile>
               </Profile>
             ) : (

@@ -82,6 +82,8 @@ export class RecordingService {
       (roomName
         ? `?roomName=${roomName}` + (roomId ? `&roomId=${roomId}` : "")
         : "");
+    
+    console.log(url)
 
     const response = await this.httpRequest("GET", url);
     if (response.error) {

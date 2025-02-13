@@ -1,10 +1,9 @@
 import React, { useEffect } from "react";
-import axios from "axios";
+import { axiosInstance } from "../../../apis/axiosInstance";
 import { useNavigate, useLocation } from "react-router-dom";
 import { LoginResponseDto } from "../../../apis/response/auth";
 import { setAccessToken } from "../../../apis/auth";
 import { useUserStore } from "../../../stores/UserStore";
-import styled from "@emotion/styled";
 
 const NaverCallback: React.FC = () => {
   const navigate = useNavigate();
@@ -17,8 +16,8 @@ const NaverCallback: React.FC = () => {
     const code = searchParams.get("code");
 
     if (code) {
-      axios
-        .post("http://localhost:8080/api/v1/auth/login/social", {
+      axiosInstance
+        .post("/auth/login/social", {
           code: code,
           platform: "NAVER",
         })
@@ -40,7 +39,7 @@ const NaverCallback: React.FC = () => {
   }, [location.search, navigate]);
 
   return (
-      <p>로그인 처리 중...</p>
+    <p>로그인 처리 중...</p>
   );
 };
 

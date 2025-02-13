@@ -8,6 +8,7 @@ import editButton from "../../assets/editButton.png"
 import deleteButton from "../../assets/deleteButton.png"
 import styled from "@emotion/styled";
 
+
 const images = [sample1,sample2,sample3,sample4,sample5]
 
 import sample1 from "../../assets/sample1.png";
@@ -15,9 +16,10 @@ import sample2 from "../../assets/sample2.jpg";
 import sample3 from "../../assets/sample3.jpg";
 import sample4 from "../../assets/sample4.jpg";
 import sample5 from "../../assets/sample5.png";
+import { axiosInstance } from "../../apis/axiosInstance"
 
 
-const ServerUrl = 'http://i12e204.p.ssafy.io:8081'
+const ServerUrl = 'http://localhost:8080'
 
 const PageContainer=styled.div`
   display: flex; /* Flexbox 레이아웃 */
@@ -174,9 +176,9 @@ const DeleteButton = styled.img`
 
 function CrewNoticePage() {
 
-    const { crewId, noticeId } : any = useParams(); // crewId 파라미터 가져옴
-    const [ crewDetail, setCrewDetail ] = useState(null) // 크루 정보 받아오면 담을 변수
-    const [ crewNoticeDetail, setCrewNoticeDetail] = useState(['1th Notice','2th Notice','3th Notice', ])
+    const { id, noticeId } : any = useParams(); // crewId 파라미터 가져옴
+    const [ crewDetail, setCrewDetail ] = useState<any>(null) // 크루 정보 받아오면 담을 변수
+    const [ crewNoticeDetail, setCrewNoticeDetail] = useState<any>(['1th Notice','2th Notice','3th Notice', ])
     const [ loading, setLoading ] = useState(true) // 로딩 표시하는 변수
     const [error, setError] = useState(null) // 에러 상태
     const navigate = useNavigate()
@@ -211,10 +213,12 @@ function CrewNoticePage() {
     useEffect (() => {
         const fetchCrewDetail = async () => {
             try {
-                const noticeResponse = await axios.get(`${ServerUrl}/api/v1/crew/notice/detail/${crewId}`) // 크루 공지사항 정보 받아옴
-                setCrewNoticeDetail(noticeResponse.data);
-                const response = await axios.get(`${ServerUrl}/api/v1/crew/detail/${crewId}`) // 크루 디테일 정보 받아옴
+                const noticeResponse = await axiosInstance.get(`/crew/notice/detail/${id}`) // 크루 공지사항 정보 받아옴
+                setCrewNoticeDetail([noticeResponse.data]);
+                console.log("noticeResponse.data : ",noticeResponse.data)
+                const response = await axiosInstance.get(`/crew/detail/${id}`) // 크루 디테일 정보 받아옴
                 setCrewDetail(response.data);
+                console.log("response.data : ", response.data)
             } catch (err:any) {
                 setError(err.message); //요청 놓치면 에러 메세지 띄우기
             } finally {
@@ -222,29 +226,30 @@ function CrewNoticePage() {
             }
         }
 
-        if (crewId) {
+        if (id) {
             fetchCrewDetail();
         }
-    }, [crewId])
+    }, [id])
 
-
+    if (loading) return <div>Loading...</div>;
+    if (error) return <div>Error: {error}</div>;
 
     return (
     <PageContainer>
             <LayOut1>
             <Box1>
-            <div>CREW NAME {crewDetail} </div>
+                {crewDetail.name}
             <PlusBtnWrapper><div> Notice </div><div onClick={() => plusHandlerOn()} style={{fontSize: "30px"}}>+</div></PlusBtnWrapper>
             </Box1>
             <Box2>
             <div>{
                 crewNoticeDetail.map((a:any, i:any) => {
-                    return ( <NoticeWrapper> <NoticeImage src={images[i]} alt="noticeImg"></NoticeImage><NoticeText><div style={{fontSize: "20px"}}>{a}</div>  <div>공지사항 내용</div></NoticeText> <RightRightArrow onClick={() => {setBasicNum(i)}} src={rightRightArrow} alt='rightRightArrow'></RightRightArrow></NoticeWrapper> )
+                    return ( <NoticeWrapper> <NoticeImage src={images[i]} alt="noticeImg"></NoticeImage><NoticeText><div style={{fontSize: "20px"}}>{a.title}</div>  <div>{a.content}</div></NoticeText> <RightRightArrow onClick={() => {setBasicNum(i)}} src={rightRightArrow} alt='rightRightArrow'></RightRightArrow></NoticeWrapper> )
                 })
             }
             </div>
             </Box2>
-            <Box3 onClick={() => navigate(`/crew/detail/${crewId}`)}>
+            <Box3 onClick={() => navigate(`/crew/detail/${id}`)}>
             <GoBackText><div>Back to the </div><CrewPageText>crew page</CrewPageText></GoBackText>
             {noticeSwitch && <RightRightArrow src={rightRightArrowBlack} alt="rightRightArrowBlack"></RightRightArrow>}
             </Box3>
@@ -253,10 +258,10 @@ function CrewNoticePage() {
             {noticeSwitch && 
                 <div>
                     <Box4>
-                    <div>  {crewNoticeDetail.length > 0 ? crewNoticeDetail[basicNum] : '등록한 공지사항이 없습니다.'} </div>
+                    <div>  {crewNoticeDetail.length > 0 ? crewNoticeDetail[basicNum].title : '등록한 공지사항이 없습니다.'} </div>
                     </Box4>
                     <Box5>
-                    <div> Notice Content  </div>
+                    <div> {crewNoticeDetail[basicNum].content}  </div>
                     <EditAndDelBtn>
                     <NoticeImage2 src={images[basicNum]} alt="NoticeImage"></NoticeImage2>
                         <EditButton src={editButton} alt="editButton" onClick={()=> editHandlerOn()}></EditButton>

@@ -1,6 +1,6 @@
 // When running OpenVidu locally, leave this variable empty
 // For other deployment type, configure it with correct URL depending on your deployment
-var LIVEKIT_URL = "wss://i12e204.p.ssafy.io:5443";
+var LIVEKIT_URL = "";
 configureLiveKitUrl();
 
 const LivekitClient = window.LivekitClient;
@@ -15,7 +15,7 @@ function configureLiveKitUrl() {
         } else {
             LIVEKIT_URL = "wss://" + window.location.hostname + ":7443/";
         }
-        LIVEKIT_URL = "wss://i12e204.p.ssafy.io:5443";
+        //LIVEKIT_URL = "wss://i12e204.p.ssafy.io:5443";
     }
 }
 
@@ -150,7 +150,7 @@ window.onbeforeunload = () => {
 document.addEventListener("DOMContentLoaded", async function () {
     var currentPage = window.location.pathname;
 
-    if (currentPage === "/test/api/recordings.html") {
+    if (currentPage === "/recordings.html") {
         await listRecordings();
     } else {
         generateFormValues();
@@ -216,7 +216,7 @@ function removeAllLayoutElements() {
  * access to the endpoints.
  */
 async function getToken(roomName, participantName, isPublisher) {
-    const [error, body] = await httpRequest("POST", "/test/api/token", {
+    const [error, body] = await httpRequest("POST", "/token", {
         roomName,
         participantName,
         role: isPublisher ? "publisher" : "subscriber"
@@ -231,7 +231,7 @@ async function getToken(roomName, participantName, isPublisher) {
 }
 
 async function leave(roomName, participantName, isPublisher) {
-    const [error, body] = await httpRequest("POST", "/test/api/token/leave", {
+    const [error, body] = await httpRequest("POST", "/token/leave", {
         roomName,
         participantName,
         role: isPublisher ? "publisher" : "subscriber"
@@ -290,19 +290,19 @@ async function manageRecording() {
 }
 
 async function startRecording() {
-    return httpRequest("POST", "/test/api/recordings/start", {
+    return httpRequest("POST", "/recordings/start", {
         roomName: room.name
     });
 }
 
 async function stopRecording() {
-    return httpRequest("POST", "/test/api/recordings/stop", {
+    return httpRequest("POST", "/recordings/stop", {
         roomName: room.name
     });
 }
 
 async function deleteRecording(recordingName) {
-    const [error, _] = await httpRequest("DELETE", `/test/api/recordings/${recordingName}`);
+    const [error, _] = await httpRequest("DELETE", `/recordings/${recordingName}`);
 
     if (!error || error.status === 404) {
         deleteRecordingContainer(recordingName);
@@ -324,7 +324,7 @@ function deleteRecordingContainer(recordingName) {
 }
 
 async function listRecordings(roomName, roomId) {
-    const url = "/test/api/recordings" + (roomName ? `?roomName=${roomName}` + (roomId ? `&roomId=${roomId}` : "") : "");
+    const url = "/recordings" + (roomName ? `?roomName=${roomName}` + (roomId ? `&roomId=${roomId}` : "") : "");
     const [error, body] = await httpRequest("GET", url);
 
     if (!error) {
@@ -339,7 +339,7 @@ async function listRecordingsByRoom() {
 }
 
 async function getRecordingUrl(recordingName) {
-    const [_, body] = await httpRequest("GET", `/test/api/recordings/${recordingName}/url`);
+    const [_, body] = await httpRequest("GET", `/recordings/${recordingName}/url`);
     return body?.recordingUrl;
 }
 

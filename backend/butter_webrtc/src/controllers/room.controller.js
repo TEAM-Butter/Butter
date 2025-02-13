@@ -13,7 +13,7 @@ roomController.post("/", async (req, res) => {
     const role = req.body.role;
 
 
-    if (!roomName || !participantName || !role) {
+    if (!roomName || !participantName) {
         res.status(400).json({ errorMessage: "roomName and participantName are required" });
         return;
     }
@@ -22,7 +22,7 @@ roomController.post("/", async (req, res) => {
         // Create room if it doesn't exist
         const exists = await roomService.exists(roomName);
 
-        if(!exists && role !== "publisher"){
+        if(!exists && role !== "crew"){
             return res.status(403).json({ errorMessage: "Subscribers cannot create a new room" });
         }
 
@@ -52,14 +52,14 @@ roomController.post("/leave", async (req, res) => {
     }
 
     try {
-        if (role === "publisher") {
-            console.log(`Last publisher left ${roomName}. Scheduling room closure in 1 minutes.`);
+        if (role === "crew") {
+            console.log(`Last crew left ${roomName}. Scheduling room closure in 1 minutes.`);
                 
             // Schedule room deletion
-            const timer = setTimeout(async () => {
-                console.log(`Closing room ${roomName}...`);
-                await roomService.deleteRoom(roomName);
-            }, 1 * 60 * 1000); // 1 minutes
+            // const timer = setTimeout(async () => {
+            //     console.log(`Closing room ${roomName}...`);
+            //     await roomService.deleteRoom(roomName);
+            // }, 1 * 60 * 1000); // 1 minutes
         }
 
         res.json({ message: "Leave event processed." });

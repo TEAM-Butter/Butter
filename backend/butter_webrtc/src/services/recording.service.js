@@ -41,7 +41,7 @@ export class RecordingService {
     const fileOutput = new EncodedFileOutput({
       fileType: EncodedFileType.MP4,
       filepath: `${RECORDINGS_PATH}{room_name}-{room_id}-{time}`,
-      disableManifest: true,
+      disableManifest: true
     });
     // Start a RoomCompositeEgress to record all participants in the room
     const egressInfo = await this.egressClient.startRoomCompositeEgress(
@@ -70,20 +70,21 @@ export class RecordingService {
       RECORDINGS_PATH + RECORDINGS_METADATA_PATH,
       regex
     );
-    // const recordings = await Promise.all(metadataKeys.map((metadataKey) => s3Service.getObjectAsJson(metadataKey)));
-    const recordings = await Promise.all(
-      metadataKeys.map(async (metadataKey) => {
-        const metadata = await s3Service.getObjectAsJson(metadataKey);
-        const recordingExists = await this.existsRecording(metadata.name);
-        return recordingExists ? metadata : null;
-      })
-    );
-    const validRecordings = recordings.filter(
-      (recording) => recording !== null
-    );
+    const recordings = await Promise.all(metadataKeys.map((metadataKey) => s3Service.getObjectAsJson(metadataKey)));
+    // const recordings = await Promise.all(
+    //   metadataKeys.map(async (metadataKey) => {
+    //     const metadata = await s3Service.getObjectAsJson(metadataKey);
+    //     const recordingExists = await this.existsRecording(metadata.name);
+    //     return recordingExists ? metadata : null;
+    //   })
+    // );
+        
+    // const validRecordings = recordings.filter(
+    //   (recording) => recording !== null
+    // );
 
-    return this.filterAndSortRecordings(validRecordings, roomName, roomId);
-    // return this.filterAndSortRecordings(recordings, roomName, roomId);
+    // return this.filterAndSortRecordings(validRecordings, roomName, roomId);
+    return this.filterAndSortRecordings(recordings, roomName, roomId);
   }
 
   filterAndSortRecordings(recordings, roomName, roomId) {
@@ -171,7 +172,7 @@ export class RecordingService {
       roomId: egressInfo.roomId,
       startedAt: Number(egressInfo.startedAt) / 1_000_000,
       duration: Number(file.duration) / 1_000_000_000,
-      size: Number(file.size),
+      size: Number(file.size)
     };
   }
 
