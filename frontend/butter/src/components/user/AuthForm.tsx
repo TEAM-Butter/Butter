@@ -83,7 +83,9 @@ export const LoginForm = ({ setModalType }: ModalProps) => {
             const { accessToken } = responseBody as LoginResponseDto;
             setAccessToken(accessToken)
             navigator(`/`)
-            setUser(true, String(responseBody?.authenticatedMemberInfo.nickname), String(responseBody?.authenticatedMemberInfo.profileImage), String(responseBody?.authenticatedMemberInfo.avatarType), String(responseBody?.authenticatedMemberInfo.memberType), Boolean(responseBody?.authenticatedMemberInfo.isExtraInfoRegistered));
+
+
+            setUser(true, String(responseBody?.authenticatedMemberInfo.nickname), String(responseBody?.authenticatedMemberInfo.profileImage), String(responseBody?.authenticatedMemberInfo.avatarType), String(responseBody?.authenticatedMemberInfo.memberType), Boolean(responseBody?.authenticatedMemberInfo.isExtraInfoRegistered), responseBody?.authenticatedMemberInfo.genres || []);
         }
         )
     }
@@ -98,7 +100,7 @@ export const LoginForm = ({ setModalType }: ModalProps) => {
             <ForgetComment className="openModalBtn" onClick={() => { setModalType("forgotAuth") }}>아이디/ 비밀번호를 잊어버리셨나요?</ForgetComment>
             <WrongComment></WrongComment>
             <FormBtn bgColor="rgba(0,0,0,0.4)" type="button" onClick={LoginBtnHandler}>Log in</FormBtn>
-            <FormBtn bgColor="black"><NaverLogin/></FormBtn>
+            <FormBtn bgColor="black"><NaverLogin /></FormBtn>
         </FormWrapper>
     )
 };
@@ -136,7 +138,7 @@ export const SignupForm = () => {
             const { accessToken } = responseBody as LoginResponseDto;
             setAccessToken(accessToken)
             navigator(`/`)
-            setUser(true, String(responseBody?.authenticatedMemberInfo.nickname), String(responseBody?.authenticatedMemberInfo.profileImage), String(responseBody?.authenticatedMemberInfo.avatarType), String(responseBody?.authenticatedMemberInfo.memberType), Boolean(responseBody?.authenticatedMemberInfo.isExtraInfoRegistered));
+            setUser(true, String(responseBody?.authenticatedMemberInfo.nickname), String(responseBody?.authenticatedMemberInfo.profileImage), String(responseBody?.authenticatedMemberInfo.avatarType), String(responseBody?.authenticatedMemberInfo.memberType), Boolean(responseBody?.authenticatedMemberInfo.isExtraInfoRegistered), responseBody?.authenticatedMemberInfo.genres || []);
         })
     }
 

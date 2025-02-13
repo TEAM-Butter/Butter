@@ -8,6 +8,7 @@ interface UserState {
   avatarType: string | null;
   memberType: string | null;
   isExtraInfoRegistered: boolean;
+  genres: string[];
 
   setUser: (
     isLogin: boolean,
@@ -15,7 +16,8 @@ interface UserState {
     profileImage: string,
     avatarType: string,
     memberType: string,
-    isExtraInfoRegistered: boolean
+    isExtraInfoRegistered: boolean,
+    genres: string[],
   ) => void;
   logout: () => void;
 }
@@ -27,6 +29,7 @@ export const useUserStore = create<UserState>((set) => ({
   avatarType: null,
   memberType: null,
   isExtraInfoRegistered: true,
+  genres: [],
 
   setUser: (
     isLogin,
@@ -34,7 +37,8 @@ export const useUserStore = create<UserState>((set) => ({
     profileImage,
     avatarType,
     memberType,
-    isExtraInfoRegistered
+    isExtraInfoRegistered,
+    genres,
   ) =>
     set({
       isLogin,
@@ -43,6 +47,7 @@ export const useUserStore = create<UserState>((set) => ({
       avatarType,
       memberType,
       isExtraInfoRegistered,
+      genres,
     }),
   logout: () =>
     set({
@@ -52,5 +57,6 @@ export const useUserStore = create<UserState>((set) => ({
       avatarType: null,
       memberType: null,
       isExtraInfoRegistered: true,
+      genres: [],
     }),
 }));
