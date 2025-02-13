@@ -187,11 +187,13 @@ type TrackInfo = {
 
 // When running OpenVidu locally, leave these variables empty
 // For other deployment type, configure them with correct URLs depending on your deployment
-let APPLICATION_SERVER_URL = "";
+//let APPLICATION_SERVER_URL = "https://i12e204.p.ssafy.io/test/api";
 //let APPLICATION_SERVER_URL = "https://192.168.30.199:6080/";
+let APPLICATION_SERVER_URL = "";
 
-let LIVEKIT_URL = "";
+//let LIVEKIT_URL = "https://i12e204.p.ssafy.io:5443/twirp";
 //let LIVEKIT_URL = "wss://192.168.30.199:7880/";
+let LIVEKIT_URL = ""
 
 let TOKEN = "";
 configureUrls();
@@ -224,7 +226,7 @@ const LivePage = () => {
   );
   const [remoteTracks, setRemoteTracks] = useState<TrackInfo[]>([]);
   const { state } = useLocation();
-
+  const [isRecording, setIsRecording] = useState(false);
   const [recordingService, setRecordingService] =
     useState<RecordingService | null>(null);
   const [isLiveOffModalOpen, setIsLiveOffModalOpen] = useState(false);
@@ -274,6 +276,13 @@ const LivePage = () => {
           roomName,
           room.sid
         );
+        console.log(
+          "test입니다!!!!!!",
+          "roomName : ",
+          roomName,
+          "/room.sid",
+          room.sid
+        );
         setRecordings(recordingList);
       }
       // 모달 열기
@@ -319,12 +328,38 @@ const LivePage = () => {
     try {
       if (recordingService) {
         await recordingService.deleteRecording(recordingName);
-        setRecordings(recordings.filter((r) => r.name !== recordingName));
+        // setRecordings(recordings.filter((r) => r.name !== recordingName));
+        updateRecordingsList();
       }
     } catch (error) {
       console.error("Failed to delete recording:", error);
     }
   };
+
+  // Recording list update function
+  const updateRecordingsList = useCallback(async () => {
+    try {
+      if (recordingService && room) {
+        const recordingList = await recordingService.listRecordings(
+          roomName,
+          room.sid
+        );
+        setRecordings(recordingList);
+      }
+    } catch (error) {
+      console.error("Failed to load recordings:", error);
+      // TODO: Add error notification UI
+    }
+  }, [recordingService, room, roomName]);
+
+  // 녹화 상태 변경 핸들러
+  const handleRecordingStateChange = useCallback(
+    (recording: boolean) => {
+      setIsRecording(recording);
+      setTimeout(updateRecordingsList, 1000);
+    },
+    [updateRecordingsList]
+  );
 
   const leaveRoom = useCallback(async () => {
     // Leave the room by calling 'disconnect' method over the Room object
@@ -468,23 +503,44 @@ const LivePage = () => {
     };
   }, [leaveRoom]);
 
+  // useEffect(() => {
+  //   const fetchRecordings = async () => {
+  //     try {
+  //       if (recordingService && room) {
+  //         const recordingList = await recordingService.listRecordings(
+  //           roomName,
+  //           room.sid
+  //         );
+  //         setRecordings(recordingList);
+  //       }
+  //     } catch (error) {
+  //       console.error("Failed to load recordings:", error);
+  //     }
+  //   };
+
+  //   fetchRecordings();
+  // }, [recordingService]);
+  // recordingService가 변경될 때마다 목록 업데이트
   useEffect(() => {
-    const fetchRecordings = async () => {
-      try {
-        if (recordingService && room) {
-          const recordingList = await recordingService.listRecordings(
-            roomName,
-            room.sid
-          );
-          setRecordings(recordingList);
-        }
-      } catch (error) {
-        console.error("Failed to load recordings:", error);
+    updateRecordingsList();
+  }, [recordingService, updateRecordingsList]);
+
+  useEffect(() => {
+    let interval: ReturnType<typeof setInterval>;
+
+    if (isRecording) {
+      interval = setInterval(() => {
+        updateRecordingsList();
+      }, 5000); // 5초마다 업데이트
+    }
+
+    return () => {
+      if (interval) {
+        clearInterval(interval);
       }
     };
+  }, [isRecording, updateRecordingsList]);
 
-    fetchRecordings();
-  }, [recordingService]);
   console.log("room", room);
   console.log("recordings", recordings);
   return (
@@ -516,7 +572,10 @@ const LivePage = () => {
               </RightTop>
               <RightMiddle>
                 {recordingService && (
-                  <RecordingControls recordingService={recordingService} />
+                  <RecordingControls
+                    recordingService={recordingService}
+                    onRecordingStateChange={handleRecordingStateChange}
+                  />
                 )}
                 <div>{recordings.length}개의 녹화된 영상</div>
                 <RecordingListContainer>

@@ -1,5 +1,6 @@
 package com.ssafy.butter.domain.crew.entity;
 
+import com.ssafy.butter.domain.clip.entity.Clip;
 import com.ssafy.butter.domain.common.TimestampedEntity;
 import com.ssafy.butter.domain.crew.dto.request.CrewSaveRequestDTO;
 import com.ssafy.butter.domain.live.entity.Live;
@@ -45,6 +46,9 @@ public class Crew extends TimestampedEntity {
     @OneToMany(mappedBy = "crew", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Follow> follows = new ArrayList<>();
 
+    @OneToMany(mappedBy = "crew", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Clip> clips = new ArrayList<>();
+
     @Column(length = 50)
     @NotNull
     private String name;
@@ -68,14 +72,15 @@ public class Crew extends TimestampedEntity {
 
     @Builder
     public Crew(List<Schedule> schedules, List<Notice> notices, List<Live> lives, List<CrewGenre> crewGenres,
-                List<CrewMember> crewMembers, List<Follow> follows, String name, String description, String imageUrl,
-                String promotionUrl, String portfolioVideoUrl, int donationAmount) {
+                List<CrewMember> crewMembers, List<Follow> follows, List<Clip> clips, String name, String description,
+                String imageUrl, String promotionUrl, String portfolioVideoUrl, int donationAmount) {
         this.schedules = schedules;
         this.notices = notices;
         this.lives = lives;
         this.crewGenres = crewGenres;
         this.crewMembers = crewMembers;
         this.follows = follows;
+        this.clips = clips;
         this.name = name;
         this.description = description;
         this.imageUrl = imageUrl;

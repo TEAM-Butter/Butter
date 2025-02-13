@@ -17,9 +17,8 @@ import com.ssafy.butter.global.util.encrypt.EncryptUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Objects;
+import java.util.*;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -49,12 +48,12 @@ public class LoginServiceImpl implements LoginService{
                 .map(memberGenre -> memberGenre.getGenre().getName())
                 .toList();
         AuthenticatedMemberInfoDTO authenticatedMemberInfo = new AuthenticatedMemberInfoDTO(
-                null,
+                member.getNickname().getValue(),
                 member.getProfileImage(),
-                null,
+                member.getAvatarType().getName(),
                 memberType,
                 genres,
-                false
+                member.isExtraInfoRegistered()
         );
 
         AuthInfoDTO authInfo = new AuthInfoDTO(member.getId(),member.getEmail().getValue(), member.getGender().name(), member.getBirthDate().getDate());
@@ -79,16 +78,22 @@ public class LoginServiceImpl implements LoginService{
     @Transactional
     public LoginResponseDTO loginByOAuth(SocialLoginRequestDTO socialLoginRequestDTO){
         Member loginMember = oAuth2LoginServices.stream()
-                .filter(service -> Objects.equals(service.supports(), socialLoginRequestDTO.platform()))
+                .filter(service -> Objects.equals(service.supports().name(), socialLoginRequestDTO.platform()))
                 .findFirst()
                 .map(service -> service.convertUserDetailsToMemberEntity(socialLoginRequestDTO.code()))
                 .orElseThrow(() -> new IllegalArgumentException("ERR : 사용할 수 없는 OAuth 플랫폼입니다"));
 
-        Member member = memberService.findByEmail(loginMember.getEmail())
-                .orElse(memberService.save(loginMember));
+        boolean exists = memberService.checkIfEmailExists(loginMember.getEmail().getValue());
+        if(exists){
+            throw new IllegalArgumentException("해당 이메일로 가입한 회원이 존재함");
+        }
+
+        Member member = memberService.save(loginMember);
 
         String memberType = getMemberTypeInLogic(member);
-        List<String> genres = member.getMemberGenres().stream()
+        List<String> genres = Optional.ofNullable(member.getMemberGenres())
+                .orElse(Collections.emptyList()) // memberGenres가 null이면 빈 리스트 반환
+                .stream()
                 .map(memberGenre -> memberGenre.getGenre().getName())
                 .toList();
         AuthenticatedMemberInfoDTO authenticatedMemberInfo = new AuthenticatedMemberInfoDTO(

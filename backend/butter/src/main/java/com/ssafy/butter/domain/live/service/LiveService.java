@@ -17,4 +17,6 @@ public interface LiveService {
     List<LiveResponseDTO> getLiveList(LiveListRequestDTO liveListRequestDTO);
 
     Live findById(Long id);
+
+    void finishLive(AuthInfoDTO currentUser, Long id);
 }

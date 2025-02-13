@@ -129,17 +129,7 @@ public class  CrewServiceImpl implements CrewService {
      */
     @Override
     public List<CrewResponseDTO> getCrewList(CrewListRequestDTO crewListRequestDTO) {
-        Pageable pageable = PageRequest.of(0, crewListRequestDTO.pageSize());
-        if (crewListRequestDTO.keyword() == null) {
-            if (crewListRequestDTO.crewId() == null) {
-                return crewRepository.findAllByOrderByIdDesc(pageable).stream().map(CrewResponseDTO::fromEntity).toList();
-            } else {
-                return crewRepository.findAllByIdLessThanOrderByIdDesc(crewListRequestDTO.crewId(), pageable).stream().map(CrewResponseDTO::fromEntity).toList();
-            }
-        } else {
-            return null;
-        }
-        // TODO 키워드가 주어진 경우 처리 로직 필요
+        return crewRepository.getCrewList(crewListRequestDTO).stream().map(CrewResponseDTO::fromEntity).toList();
     }
 
     /**

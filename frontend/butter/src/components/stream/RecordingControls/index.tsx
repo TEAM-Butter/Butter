@@ -68,13 +68,27 @@ const ErrorMessage = styled.div`
 
 interface Props {
   recordingService: RecordingService;
+  onRecordingStateChange?: (isRecording: boolean) => void;
 }
 
-export const RecordingControls: React.FC<Props> = ({ recordingService }) => {
+export const RecordingControls: React.FC<Props> = ({
+  recordingService,
+  onRecordingStateChange,
+}) => {
   const [recordingStatus, setRecordingStatus] =
     useState<RecordingStatus>("STOPPED");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // 상태 변경 시 부모 컴포넌트에 알림
+  const updateRecordingState = useCallback(
+    (status: RecordingStatus) => {
+      setRecordingStatus(status);
+      if (onRecordingStateChange) {
+        onRecordingStateChange(status === "STARTED");
+      }
+    },
+    [onRecordingStateChange]
+  );
 
   // useCallback으로 핸들러 메모이제이션
   const handleStartRecording = useCallback(async () => {
@@ -88,15 +102,17 @@ export const RecordingControls: React.FC<Props> = ({ recordingService }) => {
       await recordingService.startRecording();
       console.log("start end");
       setRecordingStatus("STARTED");
+      updateRecordingState("STARTED");
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : "Failed to start recording";
       setError(errorMessage);
       setRecordingStatus("STOPPED");
+      updateRecordingState("STOPPED");
     } finally {
       setIsLoading(false);
     }
-  }, [recordingService]);
+  }, [recordingService, updateRecordingState]);
 
   const handleStopRecording = useCallback(async () => {
     if (recordingStatus !== "STARTED") {
@@ -126,6 +142,7 @@ export const RecordingControls: React.FC<Props> = ({ recordingService }) => {
     const initialStatus: RecordingStatus =
       recordingService.isRecordingInProgress() ? "STARTED" : "STOPPED";
     setRecordingStatus(initialStatus);
+    updateRecordingState(initialStatus);
 
     // 녹화 상태 변경 리스너
     // const unsubscribe = recordingService.listenToRecordingStatus((status) => {
