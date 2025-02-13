@@ -11,6 +11,7 @@ import sample5 from "../../assets/sample5.png";
 import { motion } from "framer-motion";
 import findIcon from "../../assets/findIcon.png";
 import { CrewSearchModal } from "../../components/common/modals/CrewSearchModal";
+import { axiosInstance } from "../../apis/axiosInstance";
 
 const Write = styled.div`
  font-size : 200px;
@@ -217,12 +218,8 @@ function CrewListPage() {
         const fetchCrewDetail = async () => {
             try {
                 // ✅ 헤더 추가: Authorization (JWT 토큰 포함)
-                const token = localStorage.getItem("accessToken"); // 토큰 가져오기
-                const headers = token
-                    ? { Authorization: `Bearer ${token}`, "Content-Type": "application/json"}
-                    : { "Content-Type": "application/json" };
                 setLoading(true);
-                const response = await axios.get(`/crew/list?pageSize=10`, {headers}) // 크루 리스트 정보 받아옴
+                const response = await axiosInstance.get(`/crew/list?pageSize=10&sortBy=followerCount`) // 크루 리스트 정보 받아옴
                 setCrewList(response.data);
                 console.log(response.data)
             } catch (err: any) {
