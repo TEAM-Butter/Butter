@@ -72,14 +72,6 @@ INSERT INTO member (create_date, is_extra_info_registered, email, nickname, pass
                                                                                                             (NOW(), 1, 'user4@example.com', 'UserFour', 'password4', 'userfour', 'FEMALE'),
                                                                                                             (NOW(), 1, 'user5@example.com', 'UserFive', 'password5', 'userfive', 'MALE');
 
--- live 테이블 (clip 테이블 참조를 위해 선행 삽입 필요)
-INSERT INTO live (crew_id, start_date, end_date, title) VALUES
-                                                            (1, NOW(), DATE_ADD(NOW(), INTERVAL 2 HOUR), 'Live Rock Show'),
-                                                            (2, NOW(), DATE_ADD(NOW(), INTERVAL 3 HOUR), 'Jazz Performance'),
-                                                            (3, NOW(), DATE_ADD(NOW(), INTERVAL 1 HOUR), 'Pop Music Show'),
-                                                            (4, NOW(), DATE_ADD(NOW(), INTERVAL 4 HOUR), 'Hip-Hop Cypher'),
-                                                            (5, NOW(), DATE_ADD(NOW(), INTERVAL 5 HOUR), 'Classical Evening');
-
 -- schedule 테이블 (liked_schedule 테이블 참조를 위해 선행 삽입 필요)
 INSERT INTO schedule (latitude, longitude, busking_date, create_date, crew_id, update_date, title, content, place) VALUES
                                                                                                                        (37.7749, -122.4194, NOW(), NOW(), 1, NOW(), 'San Francisco Street Performance', 'Enjoy live music', 'San Francisco'),
@@ -105,11 +97,11 @@ INSERT INTO schedule (latitude, longitude, busking_date, create_date, crew_id, u
 
 -- clip 테이블
 INSERT INTO clip (hit_count, crew_id, title, video_name) VALUES
-                                                            (100, 1, 'Rock Performance', 'http://video.url/clip1'),
-                                                            (200, 1, 'Jazz Solo', 'http://video.url/clip2'),
-                                                            (150, 2, 'Pop Star Performance', 'http://video.url/clip3'),
-                                                            (180, 2, 'Hip-Hop Freestyle', 'http://video.url/clip4'),
-                                                            (220, 2, 'Classical Sonata', 'http://video.url/clip5');
+                                                             (100, 1, 'Rock Performance', 'http://video.url/clip1'),
+                                                             (200, 1, 'Jazz Solo', 'http://video.url/clip2'),
+                                                             (150, 2, 'Pop Star Performance', 'http://video.url/clip3'),
+                                                             (180, 2, 'Hip-Hop Freestyle', 'http://video.url/clip4'),
+                                                             (220, 2, 'Classical Sonata', 'http://video.url/clip5');
 
 -- liked_clip 테이블
 INSERT INTO liked_clip (is_liked, clip_id, member_id) VALUES
@@ -220,6 +212,30 @@ INSERT INTO schedule (latitude, longitude, busking_date, create_date, crew_id, u
                                                                                                                        (37.5577, 126.9236, '2025-02-13 18:15:00', '2025-02-04 19:00:00', 9, '2025-02-04 19:00:00', '마술 퍼포먼스', '스트릿 매직쇼', '연남동 경의선숲길'),
                                                                                                                        (37.5512, 127.1047, '2025-02-13 12:45:00', '2025-02-04 20:15:00', 10, '2025-02-04 20:15:00', '현악 앙상블', '실내악 공연', '길동 생태공원');
 
+-- live 테이블 (clip 테이블 참조를 위해 선행 삽입 필요)
+INSERT INTO live (crew_id, end_date, schedule_id, start_date, title)
+VALUES
+    (1, '2025-02-12 10:30:00.000000', 1, '2025-02-12 09:00:00.000000', 'Live Title 1'),
+    (1, NULL, 6, '2025-02-12 11:00:00.000000', 'Live Title 2'),
+    (1, '2025-02-12 14:15:00.000000', 16, '2025-02-12 12:45:00.000000', 'Live Title 3'),
+    (1, '2025-02-12 16:45:00.000000', 21, '2025-02-12 15:00:00.000000', 'Live Title 4'),
+    (2, '2025-02-12 18:30:00.000000', 2, '2025-02-12 17:00:00.000000', 'Live Title 5'),
+    (2, NULL, 7, '2025-02-12 19:00:00.000000', 'Live Title 6'),
+    (2, '2025-02-12 22:15:00.000000', 17, '2025-02-12 20:45:00.000000', 'Live Title 7'),
+    (3, '2025-02-13 01:15:00.000000', 3, '2025-02-13 00:00:00.000000', 'Live Title 8'),
+    (3, NULL, 8, '2025-02-13 02:00:00.000000', 'Live Title 9'),
+    (3, '2025-02-13 05:00:00.000000', 18, '2025-02-13 03:30:00.000000', 'Live Title 10'),
+    (4, '2025-02-13 07:30:00.000000', 4, '2025-02-13 06:00:00.000000', 'Live Title 11'),
+    (4, NULL, 9, '2025-02-13 08:30:00.000000', 'Live Title 12'),
+    (5, '2025-02-13 11:45:00.000000', 5, '2025-02-13 10:15:00.000000', 'Live Title 13'),
+    (5, '2025-02-13 13:30:00.000000', 10, '2025-02-13 12:00:00.000000', 'Live Title 14'),
+    (6, NULL, 11, '2025-02-13 15:00:00.000000', 'Live Title 15'),
+    (6, '2025-02-13 17:45:00.000000', 26, '2025-02-13 16:15:00.000000', 'Live Title 16'),
+    (7, '2025-02-13 19:30:00.000000', 12, '2025-02-13 18:00:00.000000', 'Live Title 17'),
+    (8, NULL, 13, '2025-02-13 21:00:00.000000', 'Live Title 18'),
+    (9, '2025-02-13 23:45:00.000000', 14, '2025-02-13 22:15:00.000000', 'Live Title 19'),
+    (10, '2025-02-14 02:00:00.000000', 15, '2025-02-14 00:30:00.000000', 'Live Title 20');
+
 -- crew_genre 테이블
 INSERT INTO crew_genre (crew_genre_id, crew_id, genre_id)
 VALUES
@@ -286,4 +302,3 @@ VALUES
     (1,8,27,1), (1,8,26,2), (1,8,28,3),
     (1,9,31,1), (1,9,30,2), (1,9,29,5),
     (1,10,32,2);
-
