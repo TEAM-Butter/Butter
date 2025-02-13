@@ -4,6 +4,7 @@ import SockJS from "sockjs-client";
 
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
+import { getAccessToken } from "../../../apis/auth";
 
 // ChatRoomPageWrapper는 전체 페이지의 컨테이너 역할을 합니다.
 const ChatRoomPageWrapper = styled.div`
@@ -138,9 +139,7 @@ interface StreamChatProps {
 function StreamChat({ participantName, roomRole, streamId }: StreamChatProps) {
   const [stompClient, setStompClient] = useState<Client | null>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
-  const [role, setRole] = useState<"USER" | "HOST">(
-    roomRole === "publisher" ? "HOST" : "USER"
-  );
+  const role: "USER" | "HOST" = roomRole === "publisher" ? "HOST" : "USER";
   console.log("participantName", participantName, role, streamId);
   const chatAreaRef = useRef<HTMLDivElement>(null);
 
@@ -157,12 +156,17 @@ function StreamChat({ participantName, roomRole, streamId }: StreamChatProps) {
 
     // a.subscribe(); // 구독 ? -> 메세지 받을래요.
     // a.publish(); // 발행 -> 메세지 보낼래요.
-    const token =
-      "Bearer eyJhbGciOiJIUzUxMiJ9.eyJpZCI6MywiZW1haWwiOiJ1c2VyM0BleGFtcGxlLmNvbSIsImdlbmRlciI6Ik1BTEUiLCJiaXJ0aGRhdGUiOiIxOTkwLTAxLTAxIiwiaWF0IjoxNzM5Mzc2ODE5LCJleHAiOjE3MzkzODA0MTl9.SqRnuAxlxHm7mCbXeSYJT8zo7TfJSjwjGsNnq66C56hSAczp9V2FDma4F1uQrBrXq-Jidl0iC44B0t5JWhSiWw";
+    const token = `Bearer ${getAccessToken()}`;
     // a.activate();
-    console.log("여기입니다!!!!!!!!!!");
+    console.log("채팅방 입장 전!!!");
     const client = new Client({
-      webSocketFactory: () => new SockJS("http://localhost:8080/ws"),
+      // webSocketFactory: () => new SockJS("http://localhost:8080/ws"),
+      webSocketFactory: () => {
+        // 개발 환경에서는 http, 프로덕션에서는 https 사용
+        const protocol =
+          process.env.NODE_ENV === "development" ? "http" : "https";
+        return new SockJS(`${protocol}://localhost:8080/ws`);
+      },
       reconnectDelay: 5000,
       debug: (str) => console.log(str),
       // STOMP CONNECT 시 JWT 토큰을 헤더에 포함합니다.
@@ -218,7 +222,7 @@ function StreamChat({ participantName, roomRole, streamId }: StreamChatProps) {
         client.deactivate();
       }
     };
-  }, [participantName, streamId, role]);
+  }, [participantName, streamId]);
 
   const sendMessage = (message: string) => {
     if (!stompClient || !message.trim()) {
