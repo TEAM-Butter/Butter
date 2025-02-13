@@ -4,20 +4,23 @@ import { useState } from "react";
 import MainPageImg from "../../assets/home/MainPageImg.png"
 import { CrewRegisterRequest } from "../../apis/request/crew/crewRequest";
 import { CrewRegisterResponseDto } from "../../apis/response/crew";
-import { div } from "framer-motion/client";
 
 
 const CRPageWrapper = styled.div`
     width: 100%;
     height: 100%;
+    position:relative;
     background-image: url(${MainPageImg});
+    backdrop-filter: brightness(0.4);
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
     display: flex;
     padding: 20px;
+    margin: auto 0;
     justify-content: center;
     align-items: center;
+    flex-wrap: wrap;
     
     &::before {
         content: ""; /* 가상 요소를 생성하기 위한 필수 속성 */
@@ -28,13 +31,12 @@ const CRPageWrapper = styled.div`
         height: 100%;
         background-color: rgba(0, 0, 0, 0.2);
     }
-    `
+`
 
 const CRContainer = styled.div`
     padding: 20px 10px;
     filter: brightness(1.1);
     border-radius: 30px;
-    overflow: auto;
     background-color: rgba(255,255,255,0.1);
     backdrop-filter: blur(10px);
     width: 900px;
