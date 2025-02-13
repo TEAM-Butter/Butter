@@ -25,6 +25,9 @@ import CharacterContainer from "../../components/stream/CharacterContainer";
 import { SocketContent } from "../../types/socket";
 import { io } from "socket.io-client";
 
+import { useUserStore } from "../../stores/UserStore";
+
+
 const LivePageWrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
@@ -244,8 +247,10 @@ const LivePage = () => {
   // 크루ID 로 roomName을 설정 //해쉬!!!
 
   const roomName = state.roomName;
-  let participantName = "user";
-  let role = "";
+
+  let role = useUserStore((state) => state.memberType);
+  let participantName = useUserStore((state) => state.nickname) ?? "guest";
+  console.log("role: "+role+" name: "+participantName)
 
   // socket.on("message", (content) => addToBulletin(content));
 
@@ -256,10 +261,10 @@ const LivePage = () => {
 
   if (!role) {
     if (window.location.hostname === "localhost") {
-      role = "publisher";
+      role = "crew";
       participantName = state.participantName;
     } else {
-      role = "subscriber";
+      role = "user";
     }
   }
 
@@ -425,7 +430,7 @@ const LivePage = () => {
       console.log("Connected to room successfully");
       console.log(room);
 
-      if (role == "publisher") {
+      if (role == "crew") {
         // Publish your camera and microphone
         await room.localParticipant.enableCameraAndMicrophone();
 
@@ -545,7 +550,7 @@ const LivePage = () => {
   console.log("recordings", recordings);
   return (
     <>
-      {role === "publisher" ? (
+      {role === "crew" ? (
         <>
           <LivePageWrapper>
             <Left>

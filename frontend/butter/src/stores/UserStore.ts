@@ -22,11 +22,11 @@ interface UserState {
 
 // 로그인상태유지 : stores=> UserStore.ts
 export const useUserStore = create<UserState>((set) => ({
-  isLogin: !!getAccessToken(),
+  isLogin: true,
   nickname: null,
   profileImage: null,
   avatarType: null,
-  memberType: null,
+  memberType: "crew",
   isExtraInfoRegistered: true,
 
   setUser: (
