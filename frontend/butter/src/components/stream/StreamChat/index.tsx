@@ -1,8 +1,10 @@
 import styled from "@emotion/styled";
-import { Client } from "@stomp/stompjs";
-import { useEffect, useState } from "react";
+import { Client, IMessage } from "@stomp/stompjs";
+import SockJS from "sockjs-client";
+
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useParams } from "react-router";
+import { getAccessToken } from "../../../apis/auth";
 
 // ChatRoomPageWrapper는 전체 페이지의 컨테이너 역할을 합니다.
 const ChatRoomPageWrapper = styled.div`
@@ -20,6 +22,7 @@ const ChatArea = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
+  scroll-behavior: smooth;
 `;
 
 // 채팅 메시지
@@ -55,6 +58,12 @@ const LiveChatHeader = styled.div`
   padding: 10px;
   padding-left: 18px;
   background-color: #717171;
+`;
+
+const SenderName = styled.div`
+  font-size: 12px;
+  color: #ccc;
+  margin-bottom: 4px;
 `;
 const LiveChatTitle = styled.div`
   color: #ddd;
@@ -98,151 +107,193 @@ const InputField = styled.input`
   }
 `;
 
-interface IMessage {
-  message: string;
-  roomId: string;
-  sender: string;
-  type: "ENTER" | "TALK";
-}
+// interface IMessage {
+//   message: string;
+//   roomId: string;
+//   sender: string;
+//   type: "ENTER" | "TALK";
+// }
 
-interface ITextMessage {
+// interface ITextMessage {
+//   textMessage: string;
+// }
+
+type ChatMessage = {
+  type: "CHAT" | "JOIN" | "LEAVE" | "SYSTEM" | "STREAM_ENDED";
+  content: string;
+  sender: string;
+  streamId: string;
+  role: "USER" | "HOST";
+};
+
+interface FormInputs {
   textMessage: string;
 }
 
-function StreamChat() {
+interface StreamChatProps {
+  participantName: string;
+  roomRole: string;
+  streamId: string;
+}
+
+function StreamChat({ participantName, roomRole, streamId }: StreamChatProps) {
   const [stompClient, setStompClient] = useState<Client | null>(null);
-  const [messages, setMessages] = useState<IMessage[]>([]);
-  const { streamId } = useParams();
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const role: "USER" | "HOST" = roomRole === "crew" ? "HOST" : "USER";
+  console.log("participantName", participantName, role, streamId);
+  const chatAreaRef = useRef<HTMLDivElement>(null);
 
-  // const { state } = useLocation();
-  const state = {
-    name: {
-      username: "DaHee",
-    },
-  };
+  // // const { state } = useLocation();
+  // const state = {
+  //   name: {
+  //     username: "DaHee",
+  //   },
+  // };
 
-  const roomId = streamId as string;
-  const { register, handleSubmit, reset } = useForm();
-
-  console.log("State", state);
+  const { register, handleSubmit, reset } = useForm<FormInputs>();
   useEffect(() => {
     // STOMP 클라이언트 생성
 
     // a.subscribe(); // 구독 ? -> 메세지 받을래요.
     // a.publish(); // 발행 -> 메세지 보낼래요.
-
+    const token = `Bearer ${getAccessToken()}`;
     // a.activate();
-
+    console.log("채팅방 입장 전!!!");
     const client = new Client({
-      brokerURL: "ws://localhost:8080/ws",
-      connectHeaders: {
-        login: state.name.username,
-        passcode: state.name.username,
-      },
-      onConnect: () => {
-        console.log("SUCCESS!");
-        // 1. 구독
-        client.subscribe(`/topic/room/${roomId}`, (message) => {
-          const receivedMessage = JSON.parse(message.body);
-          console.log("Received message:", receivedMessage);
-
-          console.log("message", message);
-          setMessages((prev) => [...prev, receivedMessage]);
-          // TODO 받은 메세지 state로 해야함.
-        });
-
-        const enterMessage: IMessage = {
-          roomId: roomId as string,
-          message: `${state.name.username}님이 입장했습니다`,
-          sender: state.name.username,
-          type: "ENTER",
-        };
-
-        // 2. 입장 메시지 보내기
-        client.publish({
-          destination: `/app/room/${roomId}`,
-          body: JSON.stringify(enterMessage),
-        });
-
-        // 3. stompClient 상태 변경
-        setStompClient(client);
-      },
-      debug: function (str) {
-        console.log("STOMP Debug:", str);
+      // webSocketFactory: () => new SockJS("http://localhost:8080/ws"),
+      webSocketFactory: () => {
+        // 개발 환경에서는 http, 프로덕션에서는 https 사용
+        const protocol =
+          process.env.NODE_ENV === "development" ? "http" : "https";
+        return new SockJS(`${protocol}://localhost:8080/ws`);
       },
       reconnectDelay: 5000,
-      heartbeatIncoming: 4000,
-      heartbeatOutgoing: 4000,
+      debug: (str) => console.log(str),
+      // STOMP CONNECT 시 JWT 토큰을 헤더에 포함합니다.
+      connectHeaders: {
+        Authorization: token ? `Bearer ${token}` : "",
+      },
     });
 
-    client.activate();
+    client.onConnect = () => {
+      console.log("SUCCESS!");
+      // 1. 구독
+      client.subscribe(`/topic/stream/${streamId}`, (message: IMessage) => {
+        const receivedMessage = JSON.parse(message.body);
+        console.log("Received message:", receivedMessage);
+        console.log("message", message);
+        setMessages((prev) => [...prev, receivedMessage]);
+      });
 
+      const enterMessage: ChatMessage = {
+        streamId: streamId,
+        content: `${participantName}님이 입장했습니다`,
+        sender: participantName,
+        type: "JOIN",
+        role,
+      };
+
+      // 2. 입장 메시지 보내기
+      client.publish({
+        destination: `/app/chat.sendMessage/${streamId}`,
+        body: JSON.stringify(enterMessage),
+      });
+
+      // 3. stompClient 상태 변경
+      setStompClient(client);
+    };
+    client.activate();
     //useEffect가 unmount될 떄 실행됨 : clear함수
     return () => {
       if (client.connected) {
+        const exitMessage: ChatMessage = {
+          streamId: streamId,
+          content: `${participantName}님이 퇴장했습니다`,
+          sender: participantName,
+          type: "LEAVE",
+          role,
+        };
+
+        client.publish({
+          destination: `/app/chat.sendMessage/${streamId}`,
+          body: JSON.stringify(exitMessage),
+        });
+
         client.deactivate();
       }
     };
-  }, []);
+  }, [participantName, streamId]);
 
-  const sendMessage = (message: string | null) => {
-    if (!stompClient) return;
+  const sendMessage = (message: string) => {
+    if (!stompClient || !message.trim()) {
+      console.error("STOMP client not connected or empty message");
+      return;
+    }
 
-    const chatMessage = {
-      roomId: roomId,
-      message: message,
-      sender: state.name.username, // 실제 사용자 정보로 대체
-      type: "TALK",
-    };
+    try {
+      const chatMessage: ChatMessage = {
+        streamId,
+        content: message,
+        sender: participantName,
+        type: "CHAT",
+        role,
+      };
 
-    // 전송
-    stompClient.publish({
-      destination: `/app/room/${roomId}`,
-      body: JSON.stringify(chatMessage),
-    });
-
-    // if (textMessage.current) textMessage.current.value = "";
+      stompClient.publish({
+        destination: `/app/chat.sendMessage/${streamId}`,
+        body: JSON.stringify(chatMessage),
+      });
+    } catch (error) {
+      console.error("Failed to send message:", error);
+    }
   };
-  const onSubmit = (data: ITextMessage) => {
-    if (data.textMessage && data.textMessage.trim() !== "") {
+
+  const onSubmit = (data: FormInputs) => {
+    if (data.textMessage?.trim()) {
       sendMessage(data.textMessage);
       reset();
     }
   };
+
+  useEffect(() => {
+    if (chatAreaRef.current) {
+      chatAreaRef.current.scrollTop = chatAreaRef.current.scrollHeight;
+    }
+  }, [messages]);
   return (
     <ChatRoomPageWrapper>
       <LiveChatHeader>
         <LiveChatTitle>Live Chat</LiveChatTitle>
         <LiveChatCircle />
       </LiveChatHeader>
-      {/* 채팅 영역 */}
-      <ChatArea>
-        {/* 예시 메시지 */}
-        {messages.map(({ message, sender, type }, idx) => {
-          if (type === "ENTER") {
-            return <EnterMessage>{message}</EnterMessage>;
+
+      <ChatArea ref={chatAreaRef}>
+        {messages.map((message, idx) => {
+          const { content, sender, type } = message;
+
+          switch (type) {
+            case "JOIN":
+            case "LEAVE":
+              return <EnterMessage key={idx}>{content}</EnterMessage>;
+
+            case "CHAT":
+            default:
+              return (
+                <Message key={idx} isMine={participantName === sender}>
+                  <SenderName>{sender}</SenderName>
+                  {content}
+                </Message>
+              );
           }
-
-          return state.name.username === sender ? (
-            <Message isMine={true} key={idx}>
-              {message}
-            </Message>
-          ) : (
-            <Message isMine={false} key={idx}>
-              {message}
-            </Message>
-          );
         })}
-
-        {/* <Message isMine={true}>안녕하세요!</Message> */}
       </ChatArea>
 
       {/* 입력 필드 */}
       <form onSubmit={handleSubmit(onSubmit)}>
         <InputContainer>
           <InputField
-            placeholder="type your comment..."
-            {...register("textMessage")}
+            placeholder="Type your comment..."
+            {...register("textMessage", { required: true, maxLength: 200 })}
           />
           {/* <SendButton type="submit">➤</SendButton> */}
         </InputContainer>

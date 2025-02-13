@@ -6,6 +6,7 @@ import com.ssafy.butter.domain.crew.dto.request.CrewGenreRequestDTO;
 import com.ssafy.butter.domain.crew.dto.request.CrewListRequestDTO;
 import com.ssafy.butter.domain.crew.dto.request.CrewMemberRequestDTO;
 import com.ssafy.butter.domain.crew.dto.request.CrewSaveRequestDTO;
+import com.ssafy.butter.domain.crew.dto.response.CrewMemberResponseDTO;
 import com.ssafy.butter.domain.crew.dto.response.CrewResponseDTO;
 import com.ssafy.butter.domain.crew.service.CrewService;
 import com.ssafy.butter.global.token.CurrentUser;
@@ -28,7 +29,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 @RestController
-@RequestMapping("/api/v1/crew")
+@RequestMapping("v1/crew")
 @Tag(name = "Crew API", description = "크루 관련 API")
 public class CrewController {
 
@@ -52,11 +53,10 @@ public class CrewController {
             @ApiResponse(responseCode = "204", description = "크루 멤버 추가 성공")
     })
     @PostMapping("/member")
-    public ResponseEntity<Void> createCrewMember(
+    public ResponseEntity<CrewMemberResponseDTO> createCrewMember(
             @Parameter(hidden = true) @CurrentUser AuthInfoDTO currentUser,
             @RequestBody CrewMemberRequestDTO crewMemberRequestDTO) {
-        crewService.createCrewMember(currentUser, crewMemberRequestDTO);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(crewService.createCrewMember(currentUser, crewMemberRequestDTO));
     }
 
     @Operation(summary = "크루 멤버 삭제", description = "크루에서 특정 멤버를 삭제합니다.")
@@ -72,7 +72,10 @@ public class CrewController {
         return ResponseEntity.noContent().build();
     }
 
-    @Operation(summary = "크루 목록 조회", description = "크루 목록을 조회합니다.")
+    @Operation(
+            summary = "크루 목록 조회",
+            description = "크루 목록을 조회합니다.<br>" +
+                    "sortBy: followerCount, createDate 중 하나")
     @GetMapping("/list")
     public ResponseEntity<List<CrewResponseDTO>> getCrewList(
             @ParameterObject @ModelAttribute CrewListRequestDTO crewListRequestDTO) {

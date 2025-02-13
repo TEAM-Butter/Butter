@@ -1,17 +1,9 @@
-import axios from "axios";
 import { EmailExistSendDto, EmailVerifyCodeRequestDto, LoginRequestDto } from "../auth/authDto";
 import { EmailSendCodeResponseDto, EmailVerifyCodeResponseDto, LoginResponseDto } from "../../response/auth";
 import { axiosInstance } from "../../axiosInstance";
 
-const DOMAIN = `http://localhost:8080`;
-
-const API_DOMAIN = `${DOMAIN}/api/v1`;
-
-const LOGIN_URL = () => `${API_DOMAIN}/auth/login`;
-const EmailExist_URL = () => `${API_DOMAIN}/auth/email/send-code`;
-
 export const loginRequest = async (requestBody: LoginRequestDto) => {
-    const result = await axios.post(LOGIN_URL(), requestBody)
+    const result = await axiosInstance.post(`/auth/login`, requestBody)
         .then(response => {
             const responseBody: LoginResponseDto = response.data;
             console.log("Login response:", responseBody)
@@ -33,7 +25,7 @@ export const EmailExistRequest = async (requestBody: EmailExistSendDto) => {
             return false;
         })
         .catch(error => {
-            console.log("EmailExist response: 존재하는 이메일 입니다.")
+            console.log("EmailExist response: 존재하는 이메일 입니다.", error)
             return true
         })
 
@@ -59,11 +51,10 @@ export const EmailVerifyCodeRequest = async (requestBody: EmailVerifyCodeRequest
     const result = await axiosInstance.post(`/auth/email/verify-code`, requestBody)
         .then(response => {
             const responseBody: EmailVerifyCodeResponseDto = response.data;
-            // console.log("EmailVerifyCode response: 인증이 완료되었습니다.", responseBody)
             return responseBody;
         })
         .catch(error => {
-            // console.log("EmailVerifyCode error: 인증코드가 잘못되었습니다.", error)
+            console.log("EmailVerifyCode error: 인증코드가 잘못되었습니다.", error)
             return null
         })
 

@@ -22,9 +22,10 @@ import UserBox from "../../components/stream/UserBox";
 
 import background from "../../assets/background.png";
 import CharacterContainer from "../../components/stream/CharacterContainer";
-import { RecordingList } from "../../components/recording/RecordingList";
+import { SocketContent } from "../../types/socket";
+import { io } from "socket.io-client";
 
-import socketIOClient from "socket.io-client";
+import { useUserStore } from "../../stores/UserStore";
 
 const LivePageWrapper = styled.div`
   display: flex;
@@ -188,11 +189,14 @@ type TrackInfo = {
 
 // When running OpenVidu locally, leave these variables empty
 // For other deployment type, configure them with correct URLs depending on your deployment
-let APPLICATION_SERVER_URL = "https://i12e204.p.ssafy.io/test/api";
+//let APPLICATION_SERVER_URL = "https://i12e204.p.ssafy.io/test/api";
 //let APPLICATION_SERVER_URL = "https://192.168.30.199:6080/";
+let APPLICATION_SERVER_URL = import.meta.env.VITE_NODE_JS_SERVER || "";
 
-let LIVEKIT_URL = "https://i12e204.p.ssafy.io:5443/twirp";
+
+//let LIVEKIT_URL = "https://i12e204.p.ssafy.io:5443/twirp";
 //let LIVEKIT_URL = "wss://192.168.30.199:7880/";
+let LIVEKIT_URL = import.meta.env.VITE_NODE_JS_SERVER || "";
 
 let TOKEN = "";
 configureUrls();
@@ -225,33 +229,37 @@ const LivePage = () => {
   );
   const [remoteTracks, setRemoteTracks] = useState<TrackInfo[]>([]);
   const { state } = useLocation();
-
+  const [isRecording, setIsRecording] = useState(false);
   const [recordingService, setRecordingService] =
     useState<RecordingService | null>(null);
   const [isLiveOffModalOpen, setIsLiveOffModalOpen] = useState(false);
   const [recordings, setRecordings] = useState<Recording[]>([]);
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
   const [currentVideoUrl, setCurrentVideoUrl] = useState("");
+  const [participantRole, setParticipantRole] = useState("subscriber");
+
   const navigate = useNavigate();
-  const socket = socketIOClient("http://localhost:5000");
+  // const socket = io.connect("http://localhost:5000");
+  const socket = io("http://localhost:5000", {
+    transports: ["websocket"],
+  });
+
+  // export const SocketContext = React.createContext<socketType>(socket);
 
   // 크루ID 로 roomName을 설정 //해쉬!!!
 
   const roomName = state.roomName;
-  let participantName = "user";
-  let role = "";
 
-  // socket.on("message", (content) => addToBulletin(content));
-
-  //캐릭터를 동작시키는 함수를 적어라
-  socket.on("message", (content) => console.log(content));
+  let role = useUserStore((state) => state.memberType);
+  let participantName = useUserStore((state) => state.nickname) ?? "guest";
+  console.log("role: " + role + " name: " + participantName);
 
   if (!role) {
     if (window.location.hostname === "localhost") {
-      role = "publisher";
+      role = "crew";
       participantName = state.participantName;
     } else {
-      role = "subscriber";
+      role = "user";
     }
   }
 
@@ -266,6 +274,13 @@ const LivePage = () => {
       if (recordingService && room) {
         const recordingList = await recordingService.listRecordings(
           roomName,
+          room.sid
+        );
+        console.log(
+          "test입니다!!!!!!",
+          "roomName : ",
+          roomName,
+          "/room.sid",
           room.sid
         );
         setRecordings(recordingList);
@@ -313,12 +328,38 @@ const LivePage = () => {
     try {
       if (recordingService) {
         await recordingService.deleteRecording(recordingName);
-        setRecordings(recordings.filter((r) => r.name !== recordingName));
+        // setRecordings(recordings.filter((r) => r.name !== recordingName));
+        updateRecordingsList();
       }
     } catch (error) {
       console.error("Failed to delete recording:", error);
     }
   };
+
+  // Recording list update function
+  const updateRecordingsList = useCallback(async () => {
+    try {
+      if (recordingService && room) {
+        const recordingList = await recordingService.listRecordings(
+          roomName,
+          room.sid
+        );
+        setRecordings(recordingList);
+      }
+    } catch (error) {
+      console.error("Failed to load recordings:", error);
+      // TODO: Add error notification UI
+    }
+  }, [recordingService, room, roomName]);
+
+  // 녹화 상태 변경 핸들러
+  const handleRecordingStateChange = useCallback(
+    (recording: boolean) => {
+      setIsRecording(recording);
+      setTimeout(updateRecordingsList, 1000);
+    },
+    [updateRecordingsList]
+  );
 
   const leaveRoom = useCallback(async () => {
     // Leave the room by calling 'disconnect' method over the Room object
@@ -384,10 +425,10 @@ const LivePage = () => {
       console.log("Connected to room successfully");
       console.log(room);
 
-      if (role == "publisher") {
+      if (role == "crew") {
         // Publish your camera and microphone
         await room.localParticipant.enableCameraAndMicrophone();
-
+        setParticipantRole("publisher");
         console.log("enableCameraAndMicrophone");
 
         setLocalTrack(
@@ -463,35 +504,42 @@ const LivePage = () => {
   }, [leaveRoom]);
 
   useEffect(() => {
-    const fetchRecordings = async () => {
-      try {
-        if (recordingService && room) {
-          const recordingList = await recordingService.listRecordings(
-            roomName,
-            room.sid
-          );
-          setRecordings(recordingList);
-        }
-      } catch (error) {
-        console.error("Failed to load recordings:", error);
+    updateRecordingsList();
+  }, [recordingService, updateRecordingsList]);
+
+  useEffect(() => {
+    let interval: ReturnType<typeof setInterval>;
+
+    if (isRecording) {
+      interval = setInterval(() => {
+        updateRecordingsList();
+      }, 5000); // 5초마다 업데이트
+    }
+
+    return () => {
+      if (interval) {
+        clearInterval(interval);
       }
     };
+  }, [isRecording, updateRecordingsList]);
 
-    fetchRecordings();
-  }, [recordingService]);
   console.log("room", room);
   console.log("recordings", recordings);
   return (
     <>
-      {role === "publisher" ? (
+      {participantRole === "publisher" ? (
         <>
           <LivePageWrapper>
             <Left>
               <LeftTop>
-                <StreamChat />
+                <StreamChat
+                  participantName={participantName}
+                  roomRole={role}
+                  streamId={roomName}
+                />
               </LeftTop>
               <CharacterBox>
-                <CharacterContainer />
+                <CharacterContainer socket={socket} />
               </CharacterBox>
             </Left>
 
@@ -505,12 +553,15 @@ const LivePage = () => {
                   remoteTracks={remoteTracks}
                   serverUrl={APPLICATION_SERVER_URL}
                   token={TOKEN}
-                  role={role}
+                  role={participantRole}
                 />
               </RightTop>
               <RightMiddle>
                 {recordingService && (
-                  <RecordingControls recordingService={recordingService} />
+                  <RecordingControls
+                    recordingService={recordingService}
+                    onRecordingStateChange={handleRecordingStateChange}
+                  />
                 )}
                 <div>{recordings.length}개의 녹화된 영상</div>
                 <RecordingListContainer>
@@ -559,11 +610,11 @@ const LivePage = () => {
                 remoteTracks={remoteTracks} // localTrack 제거
                 serverUrl={APPLICATION_SERVER_URL}
                 token={TOKEN}
-                role={role}
+                role={participantRole}
               />
             </LeftTop>
             <CharacterBox>
-              <CharacterContainer />
+              <CharacterContainer socket={socket} />
             </CharacterBox>
           </Left>
 
@@ -572,11 +623,15 @@ const LivePage = () => {
               <UserBox
                 participantName={participantName}
                 roomName={roomName}
-                role={role}
+                role={participantRole}
               />
             </RightTop>
             <RightMiddle>
-              <StreamChat />
+              <StreamChat
+                participantName={participantName}
+                roomRole={role}
+                streamId={roomName}
+              />
             </RightMiddle>
             <BackBtn onClick={handleBackBtnClick}>
               <div style={{ color: "black" }}>

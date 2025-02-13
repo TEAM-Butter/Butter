@@ -1,5 +1,7 @@
 package com.ssafy.butter.domain.chat.service;
 
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -64,5 +66,11 @@ public class ChatRoomServiceImpl implements ChatRoomService{
                 sessionRoleMap.remove(sessionId);
             }
         }
+    }
+
+    @Override
+    public List<Map.Entry<String, CopyOnWriteArraySet<String>>> getRoomSessionsOrderBySessionCount() {
+        return roomSessions.entrySet().stream()
+                .sorted((o1, o2) -> o2.getValue().size() - o1.getValue().size()).toList();
     }
 }
