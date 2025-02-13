@@ -18,7 +18,7 @@ export class RecordingService {
     return this.isRecording;
   }
   async startRecording(): Promise<void> {
-    const response = await this.httpRequest("POST", "/recordings/start", {
+    const response = await this.httpRequest("POST", "recordings/start", {
       roomName: this.room.name,
     });
     if (response.error) {
@@ -27,7 +27,7 @@ export class RecordingService {
   }
 
   async stopRecording(): Promise<void> {
-    const response = await this.httpRequest("POST", "/recordings/stop", {
+    const response = await this.httpRequest("POST", "recordings/stop", {
       roomName: this.room.name,
     });
     if (response.error) {
