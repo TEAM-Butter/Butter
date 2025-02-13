@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -97,5 +98,20 @@ public class LiveServiceImpl implements LiveService {
     @Override
     public Live findById(Long id) {
         return liveRepository.findById(id).orElseThrow();
+    }
+
+    @Override
+    public void finishLive(AuthInfoDTO currentUser, Long id) {
+        Live live = liveRepository.findById(id).orElseThrow();
+        Crew crew = live.getCrew();
+        Member member = memberService.findById(currentUser.id());
+        if (!crewMemberService.findByCrewAndMember(crew, member).getIsCrewAdmin()) {
+            throw new IllegalArgumentException("Current user is not crew admin");
+        }
+        if (live.getEndDate() != null) {
+            throw new IllegalArgumentException("Live is already finished");
+        }
+        live.updateEndDate(LocalDateTime.now());
+        liveRepository.save(live);
     }
 }
