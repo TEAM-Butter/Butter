@@ -27,7 +27,6 @@ import { io } from "socket.io-client";
 
 import { useUserStore } from "../../stores/UserStore";
 
-
 const LivePageWrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
@@ -236,6 +235,8 @@ const LivePage = () => {
   const [recordings, setRecordings] = useState<Recording[]>([]);
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
   const [currentVideoUrl, setCurrentVideoUrl] = useState("");
+  const [participantRole, setParticipantRole] = useState("subscriber");
+
   const navigate = useNavigate();
   // const socket = io.connect("http://localhost:5000");
   const socket = io("http://localhost:5000", {
@@ -250,14 +251,7 @@ const LivePage = () => {
 
   let role = useUserStore((state) => state.memberType);
   let participantName = useUserStore((state) => state.nickname) ?? "guest";
-  console.log("role: "+role+" name: "+participantName)
-
-  // socket.on("message", (content) => addToBulletin(content));
-
-  //캐릭터를 동작시키는 함수를 적어라
-  socket.on("message", (content: SocketContent) =>
-    console.log("gagagag", content)
-  );
+  console.log("role: " + role + " name: " + participantName);
 
   if (!role) {
     if (window.location.hostname === "localhost") {
@@ -433,7 +427,7 @@ const LivePage = () => {
       if (role == "crew") {
         // Publish your camera and microphone
         await room.localParticipant.enableCameraAndMicrophone();
-
+        setParticipantRole("publisher");
         console.log("enableCameraAndMicrophone");
 
         setLocalTrack(
@@ -508,24 +502,6 @@ const LivePage = () => {
     };
   }, [leaveRoom]);
 
-  // useEffect(() => {
-  //   const fetchRecordings = async () => {
-  //     try {
-  //       if (recordingService && room) {
-  //         const recordingList = await recordingService.listRecordings(
-  //           roomName,
-  //           room.sid
-  //         );
-  //         setRecordings(recordingList);
-  //       }
-  //     } catch (error) {
-  //       console.error("Failed to load recordings:", error);
-  //     }
-  //   };
-
-  //   fetchRecordings();
-  // }, [recordingService]);
-  // recordingService가 변경될 때마다 목록 업데이트
   useEffect(() => {
     updateRecordingsList();
   }, [recordingService, updateRecordingsList]);
@@ -550,7 +526,7 @@ const LivePage = () => {
   console.log("recordings", recordings);
   return (
     <>
-      {role === "crew" ? (
+      {participantRole === "publisher" ? (
         <>
           <LivePageWrapper>
             <Left>
@@ -576,7 +552,7 @@ const LivePage = () => {
                   remoteTracks={remoteTracks}
                   serverUrl={APPLICATION_SERVER_URL}
                   token={TOKEN}
-                  role={role}
+                  role={participantRole}
                 />
               </RightTop>
               <RightMiddle>
@@ -625,14 +601,30 @@ const LivePage = () => {
       ) : (
         <LivePageWrapper>
           <Left>
-            <LeftTop></LeftTop>
+            <LeftTop>
+              <StreamLive
+                room={room}
+                participantName={participantName}
+                roomName={roomName}
+                remoteTracks={remoteTracks} // localTrack 제거
+                serverUrl={APPLICATION_SERVER_URL}
+                token={TOKEN}
+                role={participantRole}
+              />
+            </LeftTop>
             <CharacterBox>
               <CharacterContainer socket={socket} />
             </CharacterBox>
           </Left>
 
           <Right>
-            <RightTop></RightTop>
+            <RightTop>
+              <UserBox
+                participantName={participantName}
+                roomName={roomName}
+                role={participantRole}
+              />
+            </RightTop>
             <RightMiddle>
               <StreamChat
                 participantName={participantName}
@@ -651,125 +643,6 @@ const LivePage = () => {
       )}
     </>
   );
-  // return (
-  //   <>
-  //     {role === "publisher" ? (
-  //       <>
-  //         <LivePageWrapper>
-  //           <Left>
-  //             <LeftTop>
-  //               <StreamChat
-  //                 participantName={participantName}
-  //                 roomRole={role}
-  //                 streamId={roomName}
-  //               />
-  //             </LeftTop>
-  //             <CharacterBox>
-  //               <CharacterContainer />
-  //             </CharacterBox>
-  //           </Left>
-
-  //           <Right>
-  //             <RightTop>
-  //               <StreamLive
-  //                 room={room}
-  //                 participantName={participantName}
-  //                 roomName={roomName}
-  //                 localTrack={localTrack}
-  //                 remoteTracks={remoteTracks}
-  //                 serverUrl={APPLICATION_SERVER_URL}
-  //                 token={TOKEN}
-  //                 role={role}
-  //               />
-  //             </RightTop>
-  //             <RightMiddle>
-  //               {recordingService && (
-  //                 <RecordingControls
-  //                   recordingService={recordingService}
-  //                   onRecordingStateChange={handleRecordingStateChange}
-  //                 />
-  //               )}
-  //               <div>{recordings.length}개의 녹화된 영상</div>
-  //               <RecordingListContainer>
-  //                 {recordings.map((recording) => (
-  //                   <RecordingItem key={recording.name}>
-  //                     <RecordingInfo>
-  //                       <p>녹화 시간 : {formatDate(recording.startedAt)}</p>
-  //                     </RecordingInfo>
-  //                   </RecordingItem>
-  //                 ))}
-  //               </RecordingListContainer>
-  //             </RightMiddle>
-
-  //             <LiveOffBtn onClick={handleLiveOffBtnClick}>
-  //               <span style={{ fontWeight: 700 }}>Off </span>the Live
-  //             </LiveOffBtn>
-  //           </Right>
-  //         </LivePageWrapper>
-  //         <LiveOffModal
-  //           isOpen={isLiveOffModalOpen}
-  //           recordings={recordings}
-  //           onClose={() => setIsLiveOffModalOpen(false)}
-  //           onConfirm={handleRealLiveOffBtnClick}
-  //           onPlay={handlePlayRecording}
-  //           onDelete={handleDeleteRecording}
-  //         />
-
-  //         {/* 비디오 재생 모달 */}
-  //         <RecordingModal
-  //           isOpen={isVideoModalOpen}
-  //           onClose={() => {
-  //             setIsVideoModalOpen(false);
-  //             setCurrentVideoUrl("");
-  //           }}
-  //           videoUrl={currentVideoUrl}
-  //         />
-  //       </>
-  //     ) : (
-  //       <LivePageWrapper>
-  //         <Left>
-  //           <LeftTop>
-  //             <StreamLive
-  //               room={room}
-  //               participantName={participantName}
-  //               roomName={roomName}
-  //               remoteTracks={remoteTracks} // localTrack 제거
-  //               serverUrl={APPLICATION_SERVER_URL}
-  //               token={TOKEN}
-  //               role={role}
-  //             />
-  //           </LeftTop>
-  //           <CharacterBox>
-  //             <CharacterContainer />
-  //           </CharacterBox>
-  //         </Left>
-
-  //         <Right>
-  //           <RightTop>
-  //             <UserBox
-  //               participantName={participantName}
-  //               roomName={roomName}
-  //               role={role}
-  //             />
-  //           </RightTop>
-  //           <RightMiddle>
-  //             <StreamChat
-  //               participantName={participantName}
-  //               roomRole={role}
-  //               streamId={roomName}
-  //             />
-  //           </RightMiddle>
-  //           <BackBtn onClick={handleBackBtnClick}>
-  //             <div style={{ color: "black" }}>
-  //               <span style={{ fontWeight: 700 }}>Back </span>to the live
-  //             </div>
-  //             <div> &gt;</div>
-  //           </BackBtn>
-  //         </Right>
-  //       </LivePageWrapper>
-  //     )}
-  //   </>
-  // );
 };
 
 export default LivePage;
