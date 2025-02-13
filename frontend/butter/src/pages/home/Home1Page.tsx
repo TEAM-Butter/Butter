@@ -5,9 +5,10 @@ import { keyframes } from "@emotion/react";
 import MainPageImg from "../../assets/home/MainPageImg.png"
 import LpImg2 from "../../assets/home/LpImg2.png"
 
-const HomePageWrapper = styled.div`
+const HomePageWrapper = styled(motion.div)`
   overflow: hidden;
   display: flex;
+  position: absolute;
   justify-content: center;
   align-items: center;
   width: 100%;
@@ -21,7 +22,7 @@ const Container = styled.div`
   background-size: cover;
   border-radius: 20px;
   width: 97%;
-  height: 95%;
+  height: 97%;
   box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.2);
   
   display: grid;
@@ -29,7 +30,7 @@ const Container = styled.div`
   `
 
 const LogoText = styled(motion.div)`
-  padding-top: 100px;
+  padding-top: 120px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -61,6 +62,7 @@ const SignUpBtn = styled.div`
 
   &:hover {
     backdrop-filter: blur(5px);
+    border: 1px solid #9AA594;
     margin-bottom: 2px;
     box-shadow: 0 8px 15px rgba(0,0,0,0.2), 0 5px 10px rgba(0,0,0,0.15);
   }
@@ -109,10 +111,11 @@ const LpImgBox = styled.div`
   animation: ${rotate} 12s linear infinite;
   `
 
-const HomePage = () => {
+const Home1Page = () => {
 
   return (<>
-    <HomePageWrapper>
+    <HomePageWrapper 
+    >
       <Container>
         <LogoText
           initial={{ y: 50, opacity: 0 }}
@@ -137,4 +140,4 @@ const HomePage = () => {
   </>);
 };
 
-export default HomePage;
+export default Home1Page;
