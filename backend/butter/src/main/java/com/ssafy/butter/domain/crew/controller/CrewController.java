@@ -6,6 +6,7 @@ import com.ssafy.butter.domain.crew.dto.request.CrewGenreRequestDTO;
 import com.ssafy.butter.domain.crew.dto.request.CrewListRequestDTO;
 import com.ssafy.butter.domain.crew.dto.request.CrewMemberRequestDTO;
 import com.ssafy.butter.domain.crew.dto.request.CrewSaveRequestDTO;
+import com.ssafy.butter.domain.crew.dto.response.CrewMemberResponseDTO;
 import com.ssafy.butter.domain.crew.dto.response.CrewResponseDTO;
 import com.ssafy.butter.domain.crew.service.CrewService;
 import com.ssafy.butter.global.token.CurrentUser;
@@ -52,11 +53,10 @@ public class CrewController {
             @ApiResponse(responseCode = "204", description = "크루 멤버 추가 성공")
     })
     @PostMapping("/member")
-    public ResponseEntity<Void> createCrewMember(
+    public ResponseEntity<CrewMemberResponseDTO> createCrewMember(
             @Parameter(hidden = true) @CurrentUser AuthInfoDTO currentUser,
             @RequestBody CrewMemberRequestDTO crewMemberRequestDTO) {
-        crewService.createCrewMember(currentUser, crewMemberRequestDTO);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(crewService.createCrewMember(currentUser, crewMemberRequestDTO));
     }
 
     @Operation(summary = "크루 멤버 삭제", description = "크루에서 특정 멤버를 삭제합니다.")
