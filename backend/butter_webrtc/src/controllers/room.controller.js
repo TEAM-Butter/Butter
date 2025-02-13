@@ -22,7 +22,7 @@ roomController.post("/", async (req, res) => {
         // Create room if it doesn't exist
         const exists = await roomService.exists(roomName);
 
-        if(!exists && role !== "publisher"){
+        if(!exists && role !== "crew"){
             return res.status(403).json({ errorMessage: "Subscribers cannot create a new room" });
         }
 
@@ -52,7 +52,7 @@ roomController.post("/leave", async (req, res) => {
     }
 
     try {
-        if (role === "publisher") {
+        if (role === "crew") {
             console.log(`Last publisher left ${roomName}. Scheduling room closure in 1 minutes.`);
                 
             // Schedule room deletion
