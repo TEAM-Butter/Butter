@@ -196,7 +196,7 @@ let APPLICATION_SERVER_URL = "";
 
 //let LIVEKIT_URL = "https://i12e204.p.ssafy.io:5443/twirp";
 //let LIVEKIT_URL = "wss://192.168.30.199:7880/";
-let LIVEKIT_URL = ""
+let LIVEKIT_URL = "";
 
 let TOKEN = "";
 configureUrls();
@@ -555,7 +555,11 @@ const LivePage = () => {
           <LivePageWrapper>
             <Left>
               <LeftTop>
-                <StreamChat />
+                <StreamChat
+                  participantName={participantName}
+                  roomRole={role}
+                  streamId={roomName}
+                />
               </LeftTop>
               <CharacterBox>
                 <CharacterContainer socket={socket} />
@@ -621,32 +625,20 @@ const LivePage = () => {
       ) : (
         <LivePageWrapper>
           <Left>
-            <LeftTop>
-              <StreamLive
-                room={room}
-                participantName={participantName}
-                roomName={roomName}
-                remoteTracks={remoteTracks} // localTrack 제거
-                serverUrl={APPLICATION_SERVER_URL}
-                token={TOKEN}
-                role={role}
-              />
-            </LeftTop>
+            <LeftTop></LeftTop>
             <CharacterBox>
               <CharacterContainer socket={socket} />
             </CharacterBox>
           </Left>
 
           <Right>
-            <RightTop>
-              <UserBox
-                participantName={participantName}
-                roomName={roomName}
-                role={role}
-              />
-            </RightTop>
+            <RightTop></RightTop>
             <RightMiddle>
-              <StreamChat />
+              <StreamChat
+                participantName={participantName}
+                roomRole={role}
+                streamId={roomName}
+              />
             </RightMiddle>
             <BackBtn onClick={handleBackBtnClick}>
               <div style={{ color: "black" }}>
@@ -659,6 +651,125 @@ const LivePage = () => {
       )}
     </>
   );
+  // return (
+  //   <>
+  //     {role === "publisher" ? (
+  //       <>
+  //         <LivePageWrapper>
+  //           <Left>
+  //             <LeftTop>
+  //               <StreamChat
+  //                 participantName={participantName}
+  //                 roomRole={role}
+  //                 streamId={roomName}
+  //               />
+  //             </LeftTop>
+  //             <CharacterBox>
+  //               <CharacterContainer />
+  //             </CharacterBox>
+  //           </Left>
+
+  //           <Right>
+  //             <RightTop>
+  //               <StreamLive
+  //                 room={room}
+  //                 participantName={participantName}
+  //                 roomName={roomName}
+  //                 localTrack={localTrack}
+  //                 remoteTracks={remoteTracks}
+  //                 serverUrl={APPLICATION_SERVER_URL}
+  //                 token={TOKEN}
+  //                 role={role}
+  //               />
+  //             </RightTop>
+  //             <RightMiddle>
+  //               {recordingService && (
+  //                 <RecordingControls
+  //                   recordingService={recordingService}
+  //                   onRecordingStateChange={handleRecordingStateChange}
+  //                 />
+  //               )}
+  //               <div>{recordings.length}개의 녹화된 영상</div>
+  //               <RecordingListContainer>
+  //                 {recordings.map((recording) => (
+  //                   <RecordingItem key={recording.name}>
+  //                     <RecordingInfo>
+  //                       <p>녹화 시간 : {formatDate(recording.startedAt)}</p>
+  //                     </RecordingInfo>
+  //                   </RecordingItem>
+  //                 ))}
+  //               </RecordingListContainer>
+  //             </RightMiddle>
+
+  //             <LiveOffBtn onClick={handleLiveOffBtnClick}>
+  //               <span style={{ fontWeight: 700 }}>Off </span>the Live
+  //             </LiveOffBtn>
+  //           </Right>
+  //         </LivePageWrapper>
+  //         <LiveOffModal
+  //           isOpen={isLiveOffModalOpen}
+  //           recordings={recordings}
+  //           onClose={() => setIsLiveOffModalOpen(false)}
+  //           onConfirm={handleRealLiveOffBtnClick}
+  //           onPlay={handlePlayRecording}
+  //           onDelete={handleDeleteRecording}
+  //         />
+
+  //         {/* 비디오 재생 모달 */}
+  //         <RecordingModal
+  //           isOpen={isVideoModalOpen}
+  //           onClose={() => {
+  //             setIsVideoModalOpen(false);
+  //             setCurrentVideoUrl("");
+  //           }}
+  //           videoUrl={currentVideoUrl}
+  //         />
+  //       </>
+  //     ) : (
+  //       <LivePageWrapper>
+  //         <Left>
+  //           <LeftTop>
+  //             <StreamLive
+  //               room={room}
+  //               participantName={participantName}
+  //               roomName={roomName}
+  //               remoteTracks={remoteTracks} // localTrack 제거
+  //               serverUrl={APPLICATION_SERVER_URL}
+  //               token={TOKEN}
+  //               role={role}
+  //             />
+  //           </LeftTop>
+  //           <CharacterBox>
+  //             <CharacterContainer />
+  //           </CharacterBox>
+  //         </Left>
+
+  //         <Right>
+  //           <RightTop>
+  //             <UserBox
+  //               participantName={participantName}
+  //               roomName={roomName}
+  //               role={role}
+  //             />
+  //           </RightTop>
+  //           <RightMiddle>
+  //             <StreamChat
+  //               participantName={participantName}
+  //               roomRole={role}
+  //               streamId={roomName}
+  //             />
+  //           </RightMiddle>
+  //           <BackBtn onClick={handleBackBtnClick}>
+  //             <div style={{ color: "black" }}>
+  //               <span style={{ fontWeight: 700 }}>Back </span>to the live
+  //             </div>
+  //             <div> &gt;</div>
+  //           </BackBtn>
+  //         </Right>
+  //       </LivePageWrapper>
+  //     )}
+  //   </>
+  // );
 };
 
 export default LivePage;

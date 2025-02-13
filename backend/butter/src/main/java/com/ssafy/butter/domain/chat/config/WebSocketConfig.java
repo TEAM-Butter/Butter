@@ -19,9 +19,10 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     private final JwtManager jwtManager;
     private final JwtExtractor jwtExtractor;
 
+
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/ws").setAllowedOrigins("http://localhost:5080", "http://localhost:5173", "http://i12e204.p.ssafy.io","https://i12e204.p.ssafy.io").withSockJS();
+        registry.addEndpoint("/ws").setAllowedOrigins("http://localhost:5080","http://localhost:5081", "http://localhost:5173", "https://192-168-30-199.openvidu-local.dev:5443").withSockJS();
     }
 
     @Override
