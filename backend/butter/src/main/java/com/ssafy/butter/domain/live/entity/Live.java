@@ -51,4 +51,8 @@ public class Live {
         this.endDate = endDate;
         this.schedule = schedule;
     }
+
+    public void updateEndDate(LocalDateTime endDate) {
+        this.endDate = endDate;
+    }
 }

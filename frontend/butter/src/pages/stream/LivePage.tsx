@@ -22,8 +22,8 @@ import UserBox from "../../components/stream/UserBox";
 
 import background from "../../assets/background.png";
 import CharacterContainer from "../../components/stream/CharacterContainer";
-
-import socketIOClient from "socket.io-client";
+import { SocketContent } from "../../types/socket";
+import { io } from "socket.io-client";
 
 import { useUserStore } from "../../stores/UserStore";
 
@@ -237,7 +237,13 @@ const LivePage = () => {
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
   const [currentVideoUrl, setCurrentVideoUrl] = useState("");
   const navigate = useNavigate();
-  const socket = socketIOClient("http://localhost:5000");
+  // const socket = io.connect("http://localhost:5000");
+  const socket = io("http://localhost:5000", {
+    transports: ["websocket"],
+  });
+
+  // export const SocketContext = React.createContext<socketType>(socket);
+
   // 크루ID 로 roomName을 설정 //해쉬!!!
 
   const roomName = state.roomName;
@@ -249,7 +255,9 @@ const LivePage = () => {
   // socket.on("message", (content) => addToBulletin(content));
 
   //캐릭터를 동작시키는 함수를 적어라
-  socket.on("message", (content) => console.log(content));
+  socket.on("message", (content: SocketContent) =>
+    console.log("gagagag", content)
+  );
 
   if (!role) {
     if (window.location.hostname === "localhost") {
@@ -550,7 +558,7 @@ const LivePage = () => {
                 <StreamChat />
               </LeftTop>
               <CharacterBox>
-                <CharacterContainer />
+                <CharacterContainer socket={socket} />
               </CharacterBox>
             </Left>
 
@@ -625,7 +633,7 @@ const LivePage = () => {
               />
             </LeftTop>
             <CharacterBox>
-              <CharacterContainer />
+              <CharacterContainer socket={socket} />
             </CharacterBox>
           </Left>
 
