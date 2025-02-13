@@ -61,6 +61,7 @@ const MDLowerInfo = styled.div`
   }
 `
 const ChangePasswordLink = styled.div`
+  padding: 130px 0 10px 0;
   display: flex;
   height: 30px;
   justify-content: flex-end;
@@ -79,6 +80,7 @@ const ChangePasswordLink = styled.div`
 `
 
 const ProfileLt = styled.div``
+
 const NoneProfileImg = styled.img`
   width: 80px;
   height: 80px;
