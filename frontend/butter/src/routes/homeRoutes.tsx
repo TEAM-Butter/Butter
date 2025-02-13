@@ -11,5 +11,4 @@ export const homeRoutes = (
     <Route path="home3" element={<Home3Page/>}/>
     <Route path="home4" element={<Home4Page/>}/>
   </Route>
-
 );

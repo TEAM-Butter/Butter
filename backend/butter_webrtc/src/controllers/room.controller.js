@@ -10,10 +10,10 @@ export const roomController = Router();
 roomController.post("/", async (req, res) => {
     const roomName = req.body.roomName;
     const participantName = req.body.participantName;
-    const role = req.body.role;
+    const role = "publisher";
 
 
-    if (!roomName || !participantName || !role) {
+    if (!roomName || !participantName) {
         res.status(400).json({ errorMessage: "roomName and participantName are required" });
         return;
     }
@@ -56,10 +56,10 @@ roomController.post("/leave", async (req, res) => {
             console.log(`Last publisher left ${roomName}. Scheduling room closure in 1 minutes.`);
                 
             // Schedule room deletion
-            const timer = setTimeout(async () => {
-                console.log(`Closing room ${roomName}...`);
-                await roomService.deleteRoom(roomName);
-            }, 1 * 60 * 1000); // 1 minutes
+            // const timer = setTimeout(async () => {
+            //     console.log(`Closing room ${roomName}...`);
+            //     await roomService.deleteRoom(roomName);
+            // }, 1 * 60 * 1000); // 1 minutes
         }
 
         res.json({ message: "Leave event processed." });

@@ -1,6 +1,7 @@
 package com.ssafy.butter.domain.live.service;
 
 import com.ssafy.butter.auth.dto.AuthInfoDTO;
+import com.ssafy.butter.domain.chat.service.ChatRoomService;
 import com.ssafy.butter.domain.crew.entity.Crew;
 import com.ssafy.butter.domain.crew.service.CrewMemberService;
 import com.ssafy.butter.domain.crew.service.CrewService;
@@ -13,12 +14,14 @@ import com.ssafy.butter.domain.member.entity.Member;
 import com.ssafy.butter.domain.member.service.member.MemberService;
 import com.ssafy.butter.domain.schedule.service.ScheduleService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 @RequiredArgsConstructor
 @Service
@@ -29,6 +32,7 @@ public class LiveServiceImpl implements LiveService {
     private final CrewService crewService;
     private final CrewMemberService crewMemberService;
     private final ScheduleService scheduleService;
+    private final ChatRoomService chatRoomService;
 
     private final LiveRepository liveRepository;
 
@@ -45,23 +49,49 @@ public class LiveServiceImpl implements LiveService {
                 .startDate(liveSaveRequestDTO.startDate())
                 .schedule(liveSaveRequestDTO.scheduleId() == null ? null : scheduleService.findById(liveSaveRequestDTO.scheduleId()))
                 .build();
-        return LiveResponseDTO.fromEntity(liveRepository.save(live));
+        return LiveResponseDTO.from(
+                liveRepository.save(live),
+                chatRoomService.getUserCount(crew.getId().toString()));
     }
 
     @Override
     public LiveResponseDTO getLiveDetail(Long id) {
-        return LiveResponseDTO.fromEntity(liveRepository.findById(id).orElseThrow());
+        Live live = liveRepository.findById(id).orElseThrow();
+        return LiveResponseDTO.from(live, chatRoomService.getUserCount(live.getCrew().getId().toString()));
     }
 
     @Override
     public List<LiveResponseDTO> getLiveList(LiveListRequestDTO liveListRequestDTO) {
-        Pageable pageable = PageRequest.of(0, liveListRequestDTO.pageSize());
-        if (liveListRequestDTO.liveId() == null) {
-            return liveRepository.findAllByOrderByIdDesc(pageable).stream().map(LiveResponseDTO::fromEntity).toList();
-        } else {
-            return liveRepository.findAllByIdLessThanOrderByIdDesc(liveListRequestDTO.liveId(), pageable).stream().map(LiveResponseDTO::fromEntity).toList();
+        switch (liveListRequestDTO.sortBy()) {
+            case "viewerCount":
+                return getLiveListOrderByViewerCount(liveListRequestDTO);
+            case "startDate":
+                return getLiveListOrderByStartDate(liveListRequestDTO);
+            default:
+                return getLiveListOrderByStartDate(liveListRequestDTO);
         }
-        // TODO search type에 따른 처리 로직 추가
+    }
+
+    private List<LiveResponseDTO> getLiveListOrderByViewerCount(LiveListRequestDTO liveListRequestDTO) {
+        List<Map.Entry<String, CopyOnWriteArraySet<String>>> sortedRoomSessions = chatRoomService.getRoomSessionsOrderBySessionCount();
+        List<Live> lives = liveRepository.getActiveLiveList(liveListRequestDTO);
+        Map<Long, Integer> crewIdLiveIndices = new HashMap<>();
+        for (int i = 0; i < lives.size(); i++) {
+            crewIdLiveIndices.put(lives.get(i).getCrew().getId(), i);
+        }
+        List<LiveResponseDTO> liveResponseDTOs = new ArrayList<>();
+        for (Map.Entry<String, CopyOnWriteArraySet<String>> roomSession : sortedRoomSessions) {
+            Integer liveIndex = crewIdLiveIndices.get(Long.parseLong(roomSession.getKey()));
+            if (liveIndex != null) {
+                liveResponseDTOs.add(LiveResponseDTO.from(lives.get(liveIndex), roomSession.getValue().size()));
+            }
+        }
+        return liveResponseDTOs;
+    }
+
+    private List<LiveResponseDTO> getLiveListOrderByStartDate(LiveListRequestDTO liveListRequestDTO) {
+        return liveRepository.getActiveLiveListOrderByStartDate(liveListRequestDTO).stream()
+                .map(live -> LiveResponseDTO.from(live, chatRoomService.getUserCount(live.getCrew().getId().toString()))).toList();
     }
 
     @Override

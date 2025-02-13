@@ -202,9 +202,9 @@ function configureUrls() {
   // If APPLICATION_SERVER_URL is not configured, use default value from OpenVidu Local deployment
   if (!APPLICATION_SERVER_URL) {
     if (window.location.hostname === "localhost") {
-      APPLICATION_SERVER_URL = "http://localhost:6080/api/";
+      APPLICATION_SERVER_URL = "http://localhost:6080/";
     } else {
-      APPLICATION_SERVER_URL = "https://" + window.location.hostname + ":6443/api/";
+      APPLICATION_SERVER_URL = "https://" + window.location.hostname + ":6443/";
     }
   }
 
