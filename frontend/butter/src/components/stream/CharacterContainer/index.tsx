@@ -156,7 +156,6 @@ const CharacterContainer = ({ socket }: CharacterContainer) => {
       return;
     }
 
-    console.log("asdfnasdnfl");
     setMyEmotionState({
       isEmoting: true,
       currentEmotion: getEmotionImage(emotionType),
@@ -201,10 +200,8 @@ const CharacterContainer = ({ socket }: CharacterContainer) => {
   };
 
   useEffect(() => {
-    console.log("asjdfkjsjd");
     const handleMessage = (content: SocketContent) => {
       // const id = content.idx || 1;
-      console.log("여기입니다 1");
       const id = 1;
       if (content.role === "publisher" && canUserAct(id)) {
         switch (content.label) {

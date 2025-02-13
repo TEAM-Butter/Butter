@@ -139,7 +139,7 @@ interface StreamChatProps {
 function StreamChat({ participantName, roomRole, streamId }: StreamChatProps) {
   const [stompClient, setStompClient] = useState<Client | null>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
-  const role: "USER" | "HOST" = roomRole === "publisher" ? "HOST" : "USER";
+  const role: "USER" | "HOST" = roomRole === "crew" ? "HOST" : "USER";
   console.log("participantName", participantName, role, streamId);
   const chatAreaRef = useRef<HTMLDivElement>(null);
 

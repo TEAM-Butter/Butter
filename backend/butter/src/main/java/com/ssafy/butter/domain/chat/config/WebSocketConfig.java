@@ -1,6 +1,5 @@
 package com.ssafy.butter.domain.chat.config;
 
-import com.ssafy.butter.domain.chat.interceptor.StompAuthInterceptor;
 import com.ssafy.butter.global.token.JwtExtractor;
 import com.ssafy.butter.global.token.JwtManager;
 import lombok.RequiredArgsConstructor;
@@ -31,8 +30,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         registry.enableSimpleBroker("/topic");
     }
 
-    @Override
-    public void configureClientInboundChannel(ChannelRegistration registration) {
-        registration.interceptors(new StompAuthInterceptor(jwtManager, jwtExtractor));
-    }
+//    @Override
+//    public void configureClientInboundChannel(ChannelRegistration registration) {
+//        registration.interceptors(new StompAuthInterceptor(jwtManager, jwtExtractor));
+//    }
 }
