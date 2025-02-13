@@ -24,13 +24,23 @@ public class SseNotificationRepository implements NotificationRepository {
 
     @Override
     public Map<String, SseEmitter> findAllEmitterStartsWithUsername(String username) {
-        //TODO : 유저 네임에 해당하는 emitter 반환
+        Map<String, SseEmitter> result = new ConcurrentHashMap<>();
+        emitters.forEach((key, emitters) -> {
+            if(key.startsWith(username)){
+                result.put(key, emitters);
+            }
+        });
         return emitters;
     }
 
     @Override
     public Map<String, Object> findAllEventCacheStartsWithUsername(String username) {
-        //TODO : 유저의 이벤트 캐시 목록 반환
+        Map<String, Object> result = new ConcurrentHashMap<>();
+        eventCache.forEach((key, event) -> {
+            if(key.startsWith(username)){
+                result.put(key, event);
+            }
+        });
         return eventCache;
     }
 
