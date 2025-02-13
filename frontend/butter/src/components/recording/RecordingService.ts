@@ -10,7 +10,7 @@ export class RecordingService {
     this.room = room;
     // this.baseUrl = baseUrl;
     this.baseUrl =
-      import.meta.env.VITE_APPLICATION_SERVER_URL ||
+      import.meta.env.VITE_NODE_JS_SERVER ||
       "http://localhost:6080/api";
   }
 
