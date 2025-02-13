@@ -5,16 +5,16 @@ import com.ssafy.butter.domain.live.entity.Live;
 import com.ssafy.butter.domain.schedule.entity.Schedule;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
-public record LiveResponseDTO(Long id, CrewDTO crew, String title, LocalDateTime startDate, LocalDateTime endDate, ScheduleDTO schedule) {
+public record LiveResponseDTO(Long id, CrewDTO crew, String title, Integer viewerCount, LocalDateTime startDate, LocalDateTime endDate, ScheduleDTO schedule) {
 
-    public static LiveResponseDTO fromEntity(Live live) {
+    public static LiveResponseDTO from(Live live, Integer viewerCount) {
         return new LiveResponseDTO(
                 live.getId(),
                 CrewDTO.fromEntity(live.getCrew()),
                 live.getTitle(),
+                viewerCount,
                 live.getStartDate(),
                 live.getEndDate(),
                 live.getSchedule() == null ? null : ScheduleDTO.fromEntity(live.getSchedule())

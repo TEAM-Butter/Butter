@@ -5,11 +5,14 @@ import jakarta.validation.constraints.NotNull;
 public record LiveListRequestDTO(
 
         Long liveId,
+        String title,
+        String crewName,
+        String crewGenre,
 
         @NotNull
         Integer pageSize,
 
         @NotNull
-        Integer searchType
+        String sortBy
 ) {
 }
