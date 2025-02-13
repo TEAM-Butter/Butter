@@ -8,9 +8,9 @@ public class CookieUtil {
     public static void addCookie(HttpServletResponse response, String name, String value, long maxAge, boolean httpOnly) {
         ResponseCookie cookie = ResponseCookie.from(name, value)
                 .path("/")
-                .sameSite("strict")
+                .sameSite("Strict")
                 .secure(false)
-                .httpOnly(true)
+                .httpOnly(httpOnly)
                 .maxAge(maxAge)
                 .build();
 
