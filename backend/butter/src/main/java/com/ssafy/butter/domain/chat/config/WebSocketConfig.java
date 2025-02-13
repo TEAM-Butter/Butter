@@ -22,7 +22,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/ws").setAllowedOrigins("http://localhost:5080", "http://localhost:5173").withSockJS();
+        registry.addEndpoint("/ws").setAllowedOrigins("http://localhost:5080","http://localhost:5081", "http://localhost:5173", "https://192-168-30-199.openvidu-local.dev:5443").withSockJS();
     }
 
     @Override
