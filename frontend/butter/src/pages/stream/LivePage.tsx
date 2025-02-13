@@ -243,7 +243,8 @@ const LivePage = () => {
   const roomName = state.roomName;
 
   let role = useUserStore((state) => state.memberType);
-  let participantName = useUserStore((state) => state.nickname);
+  let participantName = useUserStore((state) => state.nickname) ?? "guest";
+  console.log("role: "+role+" name: "+participantName)
 
   // socket.on("message", (content) => addToBulletin(content));
 
