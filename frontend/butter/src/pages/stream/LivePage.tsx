@@ -238,17 +238,12 @@ const LivePage = () => {
   const [currentVideoUrl, setCurrentVideoUrl] = useState("");
   const navigate = useNavigate();
   const socket = socketIOClient("http://localhost:5000");
-
   // 크루ID 로 roomName을 설정 //해쉬!!!
 
-  const { memberType, nickname } = useUserStore((state) => ({
-    memberType: state.memberType,
-    nickname: state.nickname
-  }));
-  
   const roomName = state.roomName;
-  let participantName = nickname;
-  let role = memberType;
+
+  let role = useUserStore((state) => state.memberType);
+  let participantName = useUserStore((state) => state.nickname);
 
   // socket.on("message", (content) => addToBulletin(content));
 
