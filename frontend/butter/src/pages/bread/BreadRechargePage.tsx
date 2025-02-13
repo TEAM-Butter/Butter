@@ -37,7 +37,7 @@ const StyledLabel = styled.label`
   color: black;
 `;
 
-const ServerUrl = 'http://localhost:8080'
+const ServerUrl = import.meta.env.VITE_SPRING_BOOT_SERVER
 
 const BreadRechargePage = () => {
   const [selectedAmount, setSelectedAmount] = useState(100);
@@ -70,7 +70,7 @@ const BreadRechargePage = () => {
       async (response: any) => {
         if (response.success) {
           try {
-            const verifyResponse = await fetch(`${ServerUrl}/api/v1/bread/verify-payment`, {
+            const verifyResponse = await fetch(`${ServerUrl}/v1/bread/verify-payment`, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({ impUid: response.imp_uid }),
