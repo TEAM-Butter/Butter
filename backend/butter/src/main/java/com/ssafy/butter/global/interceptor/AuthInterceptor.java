@@ -28,24 +28,24 @@ public class AuthInterceptor implements HandlerInterceptor {
      * @param handler
      * @return
      */
-//    @Override
-//    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
-//            throws IOException {
-//
-//        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
-//            return true;
-//        }
-//
-//        Enumeration<String> headers = request.getHeaders(HttpHeaders.AUTHORIZATION);
-//        String token = jwtTokenExtractor.extract(headers);
-//
-//        if (jwtTokenManager.isValid(token)) {
-//            return true;
-//        }
-//
-//        log.info("ERR : 권한 없음" + request.getRequestURI());
-//        response.sendError(HttpStatus.UNAUTHORIZED.value(), "Unauthorized");
-//        return false;
-//    }
+    @Override
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
+            throws IOException {
+
+        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+            return true;
+        }
+
+        Enumeration<String> headers = request.getHeaders(HttpHeaders.AUTHORIZATION);
+        String token = jwtTokenExtractor.extract(headers);
+
+        if (jwtTokenManager.isValid(token)) {
+            return true;
+        }
+
+        log.info("ERR : 권한 없음" + request.getRequestURI());
+        response.sendError(HttpStatus.UNAUTHORIZED.value(), "Unauthorized");
+        return false;
+    }
 
 }
