@@ -27,8 +27,6 @@ import socketIOClient from "socket.io-client";
 
 import { useUserStore } from "../../stores/UserStore";
 
-const memberType = useUserStore((state) => state.memberType);
-const nickname = useUserStore((state) => state.nickname);
 
 const LivePageWrapper = styled.div`
   display: flex;
@@ -243,6 +241,11 @@ const LivePage = () => {
 
   // 크루ID 로 roomName을 설정 //해쉬!!!
 
+  const { memberType, nickname } = useUserStore((state) => ({
+    memberType: state.memberType,
+    nickname: state.nickname
+  }));
+  
   const roomName = state.roomName;
   let participantName = nickname;
   let role = memberType;
