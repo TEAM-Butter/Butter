@@ -53,7 +53,7 @@ export class RecordingService {
   async deleteRecording(recordingName: string): Promise<void> {
     const response = await this.httpRequest(
       "DELETE",
-      `/recordings/${recordingName}`
+      `recordings/${recordingName}`
     );
     if (response.error && response.error.status !== 404) {
       throw new Error(`Failed to delete recording: ${response.error.message}`);
@@ -63,7 +63,7 @@ export class RecordingService {
   async getRecordingUrl(recordingName: string): Promise<string> {
     const response = await this.httpRequest(
       "GET",
-      `/recordings/${recordingName}/url`
+      `recordings/${recordingName}/url`
     );
     if (response.error) {
       throw new Error(`Failed to get recording URL: ${response.error.message}`);
@@ -78,7 +78,7 @@ export class RecordingService {
     roomId?: string
   ): Promise<Recording[]> {
     const url =
-      "/recordings" +
+      "recordings" +
       (roomName
         ? `?roomName=${roomName}` + (roomId ? `&roomId=${roomId}` : "")
         : "");
