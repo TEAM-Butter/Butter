@@ -1,6 +1,7 @@
 package com.ssafy.butter.domain.live.repository;
 
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.ssafy.butter.domain.crew.entity.QCrew;
 import com.ssafy.butter.domain.crew.entity.QCrewGenre;
@@ -60,7 +61,8 @@ public class LiveRepositoryImpl implements LiveRepository {
 
     @Override
     public List<Live> getActiveLiveListOrderByStartDate(LiveListRequestDTO liveListRequestDTO) {
-        return jpaQueryFactory.selectFrom(qLive)
+        return jpaQueryFactory.selectDistinct(qLive)
+                .from(qLive)
                 .join(qLive.crew, qCrew).fetchJoin()
                 .join(qCrew.crewGenres, qCrewGenre).fetchJoin()
                 .join(qCrewGenre.genre, qGenre).fetchJoin()
@@ -93,7 +95,13 @@ public class LiveRepositoryImpl implements LiveRepository {
         }
         // 크루 장르 검색 조건
         if (liveListRequestDTO.crewGenre() != null) {
-            booleanBuilder.and(qGenre.name.eq(liveListRequestDTO.crewGenre()));
+            booleanBuilder.and(qCrew.id.in(
+                    JPAExpressions.select(qCrew.id)
+                            .from(qCrew)
+                            .join(qCrew.crewGenres, qCrewGenre)
+                            .join(qCrewGenre.genre, qGenre)
+                            .where(qGenre.name.eq(liveListRequestDTO.crewGenre()))
+            ));
         }
         return booleanBuilder;
     }
