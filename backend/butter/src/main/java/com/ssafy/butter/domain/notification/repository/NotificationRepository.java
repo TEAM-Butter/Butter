@@ -8,9 +8,9 @@ public interface NotificationRepository {
 
     void saveEventCache(String eventCacheId, Object event);
 
-    Map<String, SseEmitter> findAllEmitterStartsWithUsername(String username);
+    Map<String, SseEmitter> findAllEmitterStartsWithMemberId(Long memberId);
 
-    Map<String, Object> findAllEventCacheStartsWithUsername(String username);
+    Map<String, Object> findAllEventCacheStartsWithMemberId(Long memberId);
 
     void deleteEmitterById(String id);
 
