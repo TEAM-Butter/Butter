@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { getAccessToken } from "../apis/auth";
+import { persist, createJSONStorage } from "zustand/middleware";
 
 interface UserState {
   isLogin: boolean;
@@ -22,41 +23,49 @@ interface UserState {
   logout: () => void;
 }
 
-export const useUserStore = create<UserState>((set) => ({
-  isLogin: !!getAccessToken(),
-  nickname: null,
-  profileImage: null,
-  avatarType: null,
-  memberType: null,
-  isExtraInfoRegistered: true,
-  genres: [],
-
-  setUser: (
-    isLogin,
-    nickname,
-    profileImage,
-    avatarType,
-    memberType,
-    isExtraInfoRegistered,
-    genres,
-  ) =>
-    set({
-      isLogin,
-      nickname,
-      profileImage,
-      avatarType,
-      memberType,
-      isExtraInfoRegistered,
-      genres,
-    }),
-  logout: () =>
-    set({
-      isLogin: false,
+export const useUserStore = create<UserState>()(
+  persist(
+    (set) => ({
+      isLogin: !!getAccessToken(),
       nickname: null,
       profileImage: null,
       avatarType: null,
       memberType: null,
       isExtraInfoRegistered: true,
       genres: [],
+
+      setUser: (
+        isLogin,
+        nickname,
+        profileImage,
+        avatarType,
+        memberType,
+        isExtraInfoRegistered,
+        genres
+      ) =>
+        set({
+          isLogin,
+          nickname,
+          profileImage,
+          avatarType,
+          memberType,
+          isExtraInfoRegistered,
+          genres,
+        }),
+      logout: () =>
+        set({
+          isLogin: false,
+          nickname: null,
+          profileImage: null,
+          avatarType: null,
+          memberType: null,
+          isExtraInfoRegistered: true,
+          genres: [],
+        }),
     }),
-}));
+    {
+      name: "user-storage",
+      storage: createJSONStorage(() => sessionStorage),
+    }
+  )
+);

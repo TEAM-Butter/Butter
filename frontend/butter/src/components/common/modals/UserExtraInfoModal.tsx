@@ -11,7 +11,7 @@ import pet5 from "/src/assets/pets/pet5.png";
 import pet6 from "/src/assets/pets/pet6.png";
 import { useUserStore } from "../../../stores/UserStore";
 import { MemberExtraInfoRequest } from "../../../apis/request/member/memberRequest";
-import { MemberExtraInfoDto } from "../../../apis/request/member/memberDto";
+import { MemberExtraInfoResponseDto } from "../../../apis/response/member";
 
 const ExtraInfoForm = styled.form`
   display: flex;
@@ -169,8 +169,12 @@ export const UserExtraInfoModal = ({
       formDataToSend.append("profileImage", formData.profileImage);
     }
     // API 호출 부분에서 formData를 사용\
-    MemberExtraInfoRequest(formDataToSend).then((responseBody: MemberExtraInfoDto | null) => {
+    MemberExtraInfoRequest(formDataToSend).then((responseBody: MemberExtraInfoResponseDto | null) => {
       console.log("Response:", responseBody);
+      useUserStore.setState({ nickname: responseBody?.nickname })
+      useUserStore.setState({ profileImage: responseBody?.profileImage })
+      useUserStore.setState({ avatarType: responseBody?.avatarType })
+      useUserStore.setState({ genres: responseBody?.genres })
     });
     console.log("Final Data:", formData);
   };
@@ -346,10 +350,13 @@ export const UserExtraInfoModal_v2 = ({
       formDataToSend.append("profileImage", formData.profileImage);
     }
     // API 호출 부분에서 formData를 사용\
-    MemberExtraInfoRequest(formDataToSend).then((responseBody: MemberExtraInfoDto | null) => {
-      console.log("Response:", responseBody);
+    MemberExtraInfoRequest(formDataToSend).then((responseBody: MemberExtraInfoResponseDto | null) => {
+      console.log("MemberExtraInfo Response:", responseBody);
+      useUserStore.setState({ nickname: responseBody?.nickname })
+      useUserStore.setState({ profileImage: responseBody?.profileImage })
+      useUserStore.setState({ avatarType: responseBody?.avatarType })
+      useUserStore.setState({ genres: responseBody?.genres })
     });
-    console.log("Final Data:", formData);
   };
   return (
     <>

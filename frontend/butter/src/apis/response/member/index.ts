@@ -22,10 +22,17 @@ interface CheckLoginIdResponseDto {
     message: string,
 }
 
+interface MemberExtraInfoResponseDto {
+    nickname: string;
+    profileImage: string;
+    avatarType: string;
+    genres: string[];
+}
 
 
 export type {
     SignUpResponseDto,
     MemberDetailResponseDto,
     CheckLoginIdResponseDto,
+    MemberExtraInfoResponseDto,
 }

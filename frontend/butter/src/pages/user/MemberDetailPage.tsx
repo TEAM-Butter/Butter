@@ -1,10 +1,10 @@
 import styled from "@emotion/styled";
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 import { UserExtraInfoModal_v2 } from "../../components/common/modals/UserExtraInfoModal";
 import { memberDetailRequest } from "../../apis/request/member/memberRequest";
 import { MemberDetailResponseDto } from "../../apis/response/member";
 import { ChangePSModal } from "../../components/common/modals/ChangePSModal";
+import { useUserStore } from "../../stores/UserStore";
 
 
 const MemberDetailPageWrapper = styled.div`
@@ -154,24 +154,20 @@ const ExtraEditBtn = styled.div`
 interface UserInfoDto {
   id: string;
   email: string;
-  nickname: string;
   birth: string;
   gender: string;
-  pet: string;
-  genres: string[];
-  profileImage: string;
 }
 
 const MemberDetailPage = () => {
+  const nickname = useUserStore(state => state.nickname)
+  const genres = useUserStore(state => state.genres)
+  const profileImg = useUserStore(state => state.profileImage)
+  const avatarType = useUserStore(state => state.avatarType)
   const [userInfo, setUserInfo] = useState<UserInfoDto>({
     id: "",
     email: "",
-    nickname: "",
     birth: "",
     gender: "",
-    pet: "",
-    genres: [],
-    profileImage: ""
   })
 
   useEffect(() => {
@@ -182,15 +178,10 @@ const MemberDetailPage = () => {
       setUserInfo({
         id: String(responseBody.loginId ?? ""),
         email: String(responseBody.email ?? ""),
-        nickname: String(responseBody.nickname ?? ""),
         birth: String(responseBody.birthdate ?? ""),
         gender: String(responseBody.gender ?? ""),
-        pet: String(responseBody.avatarType ?? ""),
-        genres: responseBody.genres,
-        profileImage: String(responseBody.profileImage ?? ""),
       });
 
-      console.log("userInfo", userInfo.profileImage)
     })
   }, [])
 
@@ -203,13 +194,13 @@ const MemberDetailPage = () => {
           <MDBody>
             <MDUpper>
               <ProfileLt>
-                {userInfo.profileImage === "" ?
+                {profileImg === "" ?
                   <NoneProfileImg />
-                  : <ProfileImg src={userInfo.profileImage} alt="Profile" style={{ width: 80, height: 80, borderRadius: "50%" }} />
+                  : <ProfileImg src={profileImg || ""} alt="Profile" style={{ width: 80, height: 80, borderRadius: "50%" }} />
                 }
               </ProfileLt>
               <ProfileRt>
-                <Username>{userInfo.nickname}</Username>
+                <Username>{nickname}</Username>
                 <UserEmail>{userInfo.email}</UserEmail>
               </ProfileRt>
             </MDUpper>
@@ -227,7 +218,7 @@ const MemberDetailPage = () => {
             <GenreContainer>
               <GenreComment>회원님이 선호하는 장르 입니다!</GenreComment>
               <GenreWrapper>
-                {userInfo.genres.map(genre =>
+                {genres.map(genre =>
                   <Genre key={genre}>{genre}</Genre>
                 )}
               </GenreWrapper>

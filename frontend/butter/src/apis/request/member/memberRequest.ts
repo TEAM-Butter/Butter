@@ -1,5 +1,5 @@
-import axios from "axios";
-import { CheckLoginIdRequestDto, SignUpRequestDto, MemberExtraInfoDto } from "./memberDto";
+import { CheckLoginIdRequestDto, SignUpRequestDto } from "./memberDto";
+import { MemberExtraInfoResponseDto } from "../../response/member";
 import { CheckLoginIdResponseDto, MemberDetailResponseDto, SignUpResponseDto } from "../../response/member";
 import { axiosInstance } from "../../axiosInstance";
 
@@ -38,7 +38,7 @@ export const MemberExtraInfoRequest = async (requestBody: FormData) => {
         }
     })
         .then(response => {
-            const responseBody: MemberExtraInfoDto = response.data;
+            const responseBody: MemberExtraInfoResponseDto = response.data;
             return responseBody
         })
         .catch(error => {
