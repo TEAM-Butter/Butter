@@ -16,8 +16,12 @@ import org.springframework.web.client.HttpClientErrorException;
 @RequestMapping("v1/bread")
 public class BreadController {
     private static final Logger logger = LoggerFactory.getLogger(BreadController.class);
-    private static final String IMP_KEY = "0177100740840012"; // 아임포트 API Key
-    private static final String IMP_SECRET = "iHsE5LJhcDZP8iQEqC4ZX3QvaCe7uUkmv5w7FeNYcL2U5d6KDjzaup7mFP0qQ8bqPOsnWSU60RcHI4gE"; // 아임포트 API Secret
+     
+    @Value("${iamport.api.key}")
+    private String IMP_KEY;
+
+    @Value("${iamport.api.secret}")
+    private String IMP_SECRET;
 
     // 결제 검증 API
     @PostMapping("/verify-payment")
