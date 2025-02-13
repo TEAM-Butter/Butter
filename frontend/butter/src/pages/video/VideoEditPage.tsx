@@ -163,7 +163,7 @@ const VideoEditPage = () => {
   const params = useParams();
   const id = params.id;
   const [recordings, setRecordings] = useState<Recording[] | null>(null);
-  const SEVER_URL = "http://localhost:6080/api";
+  const SEVER_URL = import.meta.env.VITE_NODE_JS_SERVER || "";
   const getRecordings = async (id: string) => {
     try {
       const response = await axios.get(`${SEVER_URL}/recordings`, {
