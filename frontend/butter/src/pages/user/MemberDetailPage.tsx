@@ -190,10 +190,6 @@ const MemberDetailPage = () => {
       });
 
       console.log("userInfo", userInfo.profileImage)
-
-      if (userInfo.id === "") {
-        setUserInfo((prev) => ({ ...prev, id: "Social-login" }))
-      }
     })
   }, [])
 
@@ -217,7 +213,12 @@ const MemberDetailPage = () => {
               </ProfileRt>
             </MDUpper>
             <MDLower>
-              <MDLowerInfo><span>id</span>{userInfo.id}</MDLowerInfo>
+              <MDLowerInfo><span>id</span>
+                {userInfo.id === "" ?
+                  "Social-login" :
+                  `${userInfo.id}`
+                }
+              </MDLowerInfo>
               <MDLowerInfo><span>gender</span>{userInfo.gender}</MDLowerInfo>
               <MDLowerInfo><span>birth</span>{userInfo.birth.split(",").join("-")}</MDLowerInfo>
               <ChangePasswordLink><Link to="/"><div>비밀번호 변경</div></Link></ChangePasswordLink>
