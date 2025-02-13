@@ -1,7 +1,7 @@
 package com.ssafy.butter.domain.clip.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.ssafy.butter.domain.live.entity.Live;
+import com.ssafy.butter.domain.crew.entity.Crew;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
@@ -24,9 +24,9 @@ public class Clip {
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "live_id")
+    @JoinColumn(name = "crew_id")
     @NotNull
-    private Live live;
+    private Crew crew;
 
     @Column(length = 50)
     @NotNull
@@ -34,7 +34,7 @@ public class Clip {
 
     @Column(length = 2048)
     @NotNull
-    private String videoUrl;
+    private String videoName;
 
     @NotNull
     private Long hitCount;
@@ -44,15 +44,15 @@ public class Clip {
     private List<LikedClip> likedClips = new ArrayList<>();
 
     @Builder
-    public Clip(Live live, String title, String videoUrl, Long hitCount, List<LikedClip> likedClips) {
-        this.live = live;
+    public Clip(Crew crew, String title, String videoName, Long hitCount, List<LikedClip> likedClips) {
+        this.crew = crew;
         this.title = title;
-        this.videoUrl = videoUrl;
+        this.videoName = videoName;
         this.hitCount = hitCount;
         this.likedClips = likedClips;
     }
 
-    public void updateVideoUrl(String videoUrl) {
-        this.videoUrl = videoUrl;
+    public void updateVideoName(String videoName) {
+        this.videoName = videoName;
     }
 }

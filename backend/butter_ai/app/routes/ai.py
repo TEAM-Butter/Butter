@@ -27,26 +27,35 @@ def upload_frame():
 
     # YOLO v10 객체 탐지
     detection = process_frame(frame)
+    if detection is None:
+        detection = {"status": "no_object"}
+    detection["participant"] = request.form.get("participant")
+    detection["role"] = request.form.get("role")
 
     # 웹소켓으로 탐지 결과 송신
     sock.emit("message", detection, room=room_id)
 
-    return detection if detection else {"status": "no_object"}, 200
+    return detection, 200
 
 
 @sock.on("join")
 def on_join(data):
-    room_id = data["roomId"]
+    room_id = data["roomName"]
     if room_id is None or room_id == '':
+        print("No room ID provided")
         sock.emit("message", "No room ID provided", room=room_id)
         return
 
+    print("Joined room {}".format(room_id))
+
+    role = data["role"]
+
     join_room(room_id)
-    sock.emit("message", f"User {request.sid} joined room {room_id}", room=room_id)
+    sock.emit("message", f"User {request.sid}({role}) joined room {room_id}", room=room_id)
 
 
 @sock.on("leave")
 def on_leave(data):
-    room_id = data["roomId"]
+    room_id = data["roomName"]
     leave_room(room_id)
     sock.emit("message", f"User {request.sid} left room {room_id}", room=room_id)

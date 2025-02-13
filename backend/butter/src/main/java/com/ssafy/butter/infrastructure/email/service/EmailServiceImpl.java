@@ -4,6 +4,7 @@ import com.ssafy.butter.domain.member.entity.Member;
 import com.ssafy.butter.domain.member.service.member.MemberService;
 import com.ssafy.butter.domain.member.vo.Email;
 import com.ssafy.butter.domain.member.vo.Password;
+import com.ssafy.butter.global.util.encrypt.EncryptUtils;
 import com.ssafy.butter.infrastructure.email.constants.EmailConstants;
 import com.ssafy.butter.infrastructure.email.constants.EmailErrorMessages;
 import com.ssafy.butter.infrastructure.email.dto.request.SendEmailDTO;
@@ -25,6 +26,7 @@ import org.springframework.data.redis.RedisConnectionFailureException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -34,6 +36,7 @@ public class EmailServiceImpl implements EmailService{
     private final MemberService memberService;
     private final JavaMailSender javaMailSender;
     private final RedisManager redisManager;
+    private final EncryptUtils encryptUtils;
 
     /**
      * 이메일 인증 코드 검증 후, EmailType에 따른 후속 작업
@@ -42,6 +45,7 @@ public class EmailServiceImpl implements EmailService{
      * @return VerifyCodeResponseDTO 결과 DTO (메시지, 타입, 추가 정보)
      */
     @Override
+    @Transactional
     public VerifyCodeResponseDTO verifyCodeAndHandleAction(VerifyCodeEmailDTO verifyCodeEmailDTO) {
         // 이메일 인증 코드 검증 (예외 발생 시 서비스 계층에서 처리)
         boolean isValid = verifyCode(verifyCodeEmailDTO);
@@ -67,10 +71,10 @@ public class EmailServiceImpl implements EmailService{
                 Member memberForReset = memberService.findByEmail(new Email(verifyCodeEmailDTO.email()))
                         .orElseThrow(() ->
                                 new IllegalArgumentException("ERR : 해당 이메일로 가입된 계정을 찾을 수 없습니다."));
-                String tempPassword = createRandomCode();
-                memberForReset.changePassword(Password.raw(tempPassword));
-                memberService.save(memberForReset);
-                additionalInfo = tempPassword;
+                String tempPasswordStr = createRandomCode();
+                Password tempPassword = Password.raw(tempPasswordStr).encrypt(encryptUtils);
+                memberForReset.changePassword(tempPassword);
+                additionalInfo = tempPasswordStr;
                 break;
 
             default:

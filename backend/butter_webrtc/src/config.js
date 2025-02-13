@@ -14,6 +14,14 @@ export const AWS_REGION = process.env.AWS_REGION || "us-east-1";
 export const S3_BUCKET = process.env.S3_BUCKET || "openvidu";
 
 export const RECORDINGS_PATH = process.env.RECORDINGS_PATH ?? "recordings/";
+export const CLIPS_PATH = process.env.CLIPS_PATH ?? "clips/";
 export const RECORDINGS_METADATA_PATH = ".metadata/";
-export const RECORDING_PLAYBACK_STRATEGY = process.env.RECORDING_PLAYBACK_STRATEGY || "S3"; // PROXY or S3
+export const RECORDING_PLAYBACK_STRATEGY =
+  process.env.RECORDING_PLAYBACK_STRATEGY || "S3"; // PROXY or S3
 export const RECORDING_FILE_PORTION_SIZE = 5 * 1024 * 1024; // 5MB
+
+// MySql configuration
+export const MYSQL_ENDPOINT = process.env.MYSQL_ENDPOINT || "localhost";
+export const MYSQL_USER = process.env.MYSQL_USER || "root";
+export const MYSQL_PASSWORD = process.env.MYSQL_PASSWORD || "Cvbnm75391@";
+export const MYSQL_DATABASE = process.env.MYSQL_DATABASE || "butter";

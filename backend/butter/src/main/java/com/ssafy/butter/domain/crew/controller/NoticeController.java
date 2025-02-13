@@ -24,7 +24,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/v1/crew/notice")
+@RequestMapping("v1/crew/notice")
 @Slf4j
 @Tag(name = "Notice API", description = "크루 공지사항 관련 API")
 public class NoticeController {

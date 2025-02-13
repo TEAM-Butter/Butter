@@ -16,6 +16,7 @@ interface StreamLiveProps {
   remoteTracks: TrackInfo[];
   serverUrl: string;
   token: string;
+  role: string;
 }
 
 const StreamLive = ({
@@ -26,6 +27,7 @@ const StreamLive = ({
   remoteTracks,
   serverUrl,
   token,
+  role,
 }: StreamLiveProps) => {
   console.log("remoeteTracks 정보입니다", remoteTracks);
   return (
@@ -57,6 +59,7 @@ const StreamLive = ({
                         participantIdentity={participantName}
                         local={true}
                         roomName={roomName}
+                        role={role}
                       />
                       {/* <div className="absolute bottom-2 left-2 bg-black bg-opacity-50 px-2 py-1 rounded text-white text-sm">
                         {participantName}

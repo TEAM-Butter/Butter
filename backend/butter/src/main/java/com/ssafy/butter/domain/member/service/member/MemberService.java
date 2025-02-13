@@ -32,7 +32,7 @@ public interface MemberService {
     ProfileUpdateResponseDTO updateProfile(ProfileUpdateRequestDTO profileUpdateRequestDTO, Long memberId);
     PasswordUpdateResponseDTO updatePassword(PasswordUpdateRequestDTO passwordUpdateRequestDTO, AuthInfoDTO authInfoDTO);
     RegisterExtraInfoResponseDTO saveExtraUserInfo(ExtraInfoDTO extraInfoDTO, Long memberId);
-    boolean checkIfEmailExists(SendEmailDTO emailDTO);
-    CheckLoginIdResponseDTO checkIfLoginIdExists(CheckLoginIdDTO loginIdDTO);
+    boolean checkIfEmailExists(String email);
+    CheckLoginIdResponseDTO checkIfLoginIdExists(String loginId);
 
 }

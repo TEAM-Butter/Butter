@@ -8,6 +8,7 @@ import { SignUpRequestDto } from "../../apis/request/member/memberDto";
 import { setAccessToken } from "../../apis/auth";
 import { useNavigate } from "react-router-dom";
 import { useUserStore } from "../../stores/UserStore";
+import NaverLogin from "./Naver/NaverLogin";
 
 
 const FormWrapper = styled.form`
@@ -46,11 +47,8 @@ const FormBtn = styled.button<ColorProps>`
     font-size: 18px;
     color: white;
     margin-top: 12px;
+`
 
-    span {
-        color: var(--yellow);
-    }
-    `
 interface ColorProps {
     bgColor?: string;
     textColor?: string;
@@ -100,7 +98,7 @@ export const LoginForm = ({ setModalType }: ModalProps) => {
             <ForgetComment className="openModalBtn" onClick={() => { setModalType("forgotAuth") }}>아이디/ 비밀번호를 잊어버리셨나요?</ForgetComment>
             <WrongComment></WrongComment>
             <FormBtn bgColor="rgba(0,0,0,0.4)" type="button" onClick={LoginBtnHandler}>Log in</FormBtn>
-            <FormBtn bgColor="black">Log in with <span>kakao</span></FormBtn>
+            <FormBtn bgColor="black"><NaverLogin/></FormBtn>
         </FormWrapper>
     )
 };
