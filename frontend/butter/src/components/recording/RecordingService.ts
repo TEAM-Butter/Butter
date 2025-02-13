@@ -10,7 +10,7 @@ export class RecordingService {
     this.room = room;
     // this.baseUrl = baseUrl;
     this.baseUrl =
-      import.meta.env.VITE_APPLICATION_SERVER_URL || "http://localhost:6080/api";
+      import.meta.env.VITE_APPLICATION_SERVER_URL || "http://localhost:6080";
   }
 
   isRecordingInProgress(): boolean {
@@ -81,6 +81,8 @@ export class RecordingService {
       (roomName
         ? `?roomName=${roomName}` + (roomId ? `&roomId=${roomId}` : "")
         : "");
+    
+    console.log(url)
 
     const response = await this.httpRequest("GET", url);
     if (response.error) {
