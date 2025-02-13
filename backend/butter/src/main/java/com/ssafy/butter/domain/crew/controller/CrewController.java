@@ -72,7 +72,10 @@ public class CrewController {
         return ResponseEntity.noContent().build();
     }
 
-    @Operation(summary = "크루 목록 조회", description = "크루 목록을 조회합니다.")
+    @Operation(
+            summary = "크루 목록 조회",
+            description = "크루 목록을 조회합니다.<br>" +
+                    "sortBy: followerCount, createDate 중 하나")
     @GetMapping("/list")
     public ResponseEntity<List<CrewResponseDTO>> getCrewList(
             @ParameterObject @ModelAttribute CrewListRequestDTO crewListRequestDTO) {

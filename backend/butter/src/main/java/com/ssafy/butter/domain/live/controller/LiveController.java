@@ -47,7 +47,10 @@ public class LiveController {
         return ResponseEntity.ok(liveService.getLiveDetail(id));
     }
 
-    @Operation(summary = "라이브 목록 조회", description = "라이브 목록을 조회합니다.")
+    @Operation(
+            summary = "라이브 목록 조회",
+            description = "라이브 목록을 조회합니다.<br>" +
+                    "sortBy: viewerCount, startDate 중 하나")
     @GetMapping("/list")
     public ResponseEntity<List<LiveResponseDTO>> getLiveList(
             @ParameterObject @ModelAttribute LiveListRequestDTO liveListRequestDTO) {
