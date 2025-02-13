@@ -274,13 +274,13 @@ function CrewDetailPage() {
         const fetchCrewDetail = async () => {
             try {
                 setLoading(true);
-                const response = await axiosInstance.get(`${ServerUrl}/api/v1/crew/detail/${id}`) // 크루 디테일 정보 받아옴
+                const response = await axiosInstance.get(`/crew/detail/${id}`) // 크루 디테일 정보 받아옴
                 setCrewDetail(response.data);
                 console.log("response.data : ", response.data)
-                const scheduleResponse = await axiosInstance.get(`${ServerUrl}/api/v1/schedule/detail/${id}`) // 크루 스케쥴 정보 받아옴 
+                const scheduleResponse = await axiosInstance.get(`/schedule/detail/${id}`) // 크루 스케쥴 정보 받아옴 
                 setCrewScheduleDetail([scheduleResponse.data]);
                 console.log("scheduleResponse.data : ", scheduleResponse.data)
-                const noticeResponse = await axiosInstance.get(`${ServerUrl}/api/v1/crew/notice/detail/${id}`) // 크루 공지사항 정보 받아옴
+                const noticeResponse = await axiosInstance.get(`/crew/notice/detail/${id}`) // 크루 공지사항 정보 받아옴
                 setCrewNoticeDetail([noticeResponse.data]);
                 console.log("noticeResponse.data : ", noticeResponse.data)
                 

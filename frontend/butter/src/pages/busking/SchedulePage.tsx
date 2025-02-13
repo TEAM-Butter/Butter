@@ -260,8 +260,6 @@ const DateTextBox2 = styled.p`
   font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 `
 
-const ServerUrl = 'http://localhost:8080'
-
 
 function SchedulePage() {
   useKakaoLoader()
@@ -633,7 +631,7 @@ useEffect(() => {
     const fecthDaySchedule = async () => {
       try {
           setLoading(true) 
-          const response = await axiosInstance.get(`${ServerUrl}/api/v1/schedule?pageSize=60&date=${todayStr}`)
+          const response = await axiosInstance.get(`/schedule?pageSize=60&date=${todayStr}`)
           setDaySchedule(response.data);
           console.log("daySchedule : ", response.data)
 
@@ -661,7 +659,7 @@ useEffect(() => {
     const fecthDaySchedule = async () => {
       try {
       
-          const response = await axiosInstance.get(`${ServerUrl}/api/v1/schedule?pageSize=60&date=${selectedDate}`)
+          const response = await axiosInstance.get(`/schedule?pageSize=60&date=${selectedDate}`)
           setDaySchedule(response.data);
           console.log("daySchedule : ", response.data)
           const bounds = new kakao.maps.LatLngBounds()
