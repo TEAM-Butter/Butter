@@ -2,8 +2,7 @@ import { useState } from "react"
 import { Map } from "react-kakao-maps-sdk"
 import useKakaoLoader from "../crew/samplePage"
 
-export default function MoveMap() {
-  useKakaoLoader()
+export default function MoveMap() { 
 
   const [state, setState] = useState({
     // 지도의 초기 위치

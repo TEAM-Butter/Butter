@@ -40,6 +40,13 @@ VALUES (2, 2, 'user456', 'User Two', 'user2@example.com', '1995-05-15', 200, '$2
 INSERT INTO member (member_type_id, avatar_type_id, login_id, nickname, email, birth_date, bread_amount, password, profile_image, gender, create_date, is_extra_info_registered)
 VALUES (1, 2, 'butter123', '빠다', 'user3@example.com', '1990-01-01', 100, '$2a$12$EGlsV9zlJcfjr2Iplvxq9uY1to7FUnsUG9wUFj4mJpD3kPRl7Wsz6', NULL, 'MALE', NOW(), FALSE);
 
+INSERT INTO member (member_type_id, avatar_type_id, login_id, nickname, email, birth_date, bread_amount, password, profile_image, gender, create_date, is_extra_info_registered)
+VALUES (2, 3, 'choco789', '초코', 'user4@example.com', '1998-08-20', 150, '$2a$12$Qj1l2Rv68mGBtW/PyG7qEueUslfh2WZs.Jwo9t8kOi4B9uU7J7D9C', NULL, 'FEMALE', NOW(), TRUE);
+
+INSERT INTO member (member_type_id, avatar_type_id, login_id, nickname, email, birth_date, bread_amount, password, profile_image, gender, create_date, is_extra_info_registered)
+VALUES (1, 1, 'straw999', '딸기', 'user5@example.com', '1992-12-10', 180, '$2a$12$Y7LSF6/NwYpMc74uOTn6ZeUOujMPJHMT/FzghyATC08oM8Ykx.JhO', NULL, 'MALE', NOW(), FALSE);
+
+
 -- 더미 데이터 삽입
 
 -- crew 테이블
@@ -56,6 +63,11 @@ VALUES
     (2000,'2024-03-28 17:51:27.000000',2,'2025-02-12 09:42:34.000000','Jazz Ensemble','A jazz music crew','http://image.url/crew2','http://video.url/crew2','http://promo.url/crew2'),
     (2200,'2024-02-23 16:52:47.000000',5,'2025-02-12 09:42:34.000000','Classical Orchestra','A classical music crew','http://image.url/crew5','http://video.url/crew5','http://promo.url/crew5');
 
+-- CrewMember 더미 데이터 INSERT
+INSERT INTO crew_member (crew_id, member_id, is_crew_admin) VALUES
+                                                                (8, 3, TRUE),     -- butter123을 크루장(admin)으로 지정
+                                                                (8, 4, FALSE);   -- choco789를 일반 멤버로 지정
+
 -- bread_log_type 테이블
 INSERT INTO bread_log_type (name) VALUES
                                       ('Deposit'),
@@ -71,6 +83,14 @@ INSERT INTO member (create_date, is_extra_info_registered, email, nickname, pass
                                                                                                             (NOW(), 1, 'user3@example.com', 'UserThree', 'password3', 'userthree', 'MALE'),
                                                                                                             (NOW(), 1, 'user4@example.com', 'UserFour', 'password4', 'userfour', 'FEMALE'),
                                                                                                             (NOW(), 1, 'user5@example.com', 'UserFive', 'password5', 'userfive', 'MALE');
+
+-- live 테이블 (clip 테이블 참조를 위해 선행 삽입 필요)
+INSERT INTO live (crew_id, start_date, end_date, title) VALUES
+                                                            (1, NOW(), DATE_ADD(NOW(), INTERVAL 2 HOUR), 'Live Rock Show'),
+                                                            (2, NOW(), DATE_ADD(NOW(), INTERVAL 3 HOUR), 'Jazz Performance'),
+                                                            (3, NOW(), DATE_ADD(NOW(), INTERVAL 1 HOUR), 'Pop Music Show'),
+                                                            (4, NOW(), DATE_ADD(NOW(), INTERVAL 4 HOUR), 'Hip-Hop Cypher'),
+                                                            (5, NOW(), DATE_ADD(NOW(), INTERVAL 5 HOUR), 'Classical Evening');
 
 -- schedule 테이블 (liked_schedule 테이블 참조를 위해 선행 삽입 필요)
 INSERT INTO schedule (latitude, longitude, busking_date, create_date, crew_id, update_date, title, content, place) VALUES

@@ -20,6 +20,8 @@ import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid' // a plugin!
 import { Calendar } from '@fullcalendar/core';
 import interactionPlugin from '@fullcalendar/interaction'; // for selectable
+import { axiosInstance } from "../../apis/axiosInstance";
+import axios, { Axios } from "axios";
 
 
 const images = [sample1,sample2,sample3,sample4,sample5]
@@ -247,15 +249,18 @@ const DateTextBox2 = styled.p`
   bottom: 10px;
   right: 10px;
   color: black;
-  background-color: gray;
+  background: var(--liner);
   border-radius: 30px;
   height: 30px;
   width: 150px;
   display: flex;
   justify-content: center;
   align-items: center;
+  font-size: 15px;
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 `
 
+const ServerUrl = 'http://localhost:8080'
 
 
 function SchedulePage() {
@@ -270,12 +275,9 @@ function SchedulePage() {
   const [map, setMap] = useState<kakao.maps.Map | null>(null);
   const [positions2, setPositions] = useState<any>([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [searchTerm, setSearchTerm] = useState("전국");
+  const [searchTerm, setSearchTerm] = useState("");
   const [myLocation, setMyLocation] = useState<{ lat: number; lng: number } |null>(null);
   const [myAddress, setMyAddress] = useState<string>(""); // 내 위치 주소 저장
-
-
-
   const calendarRef = useRef<FullCalendar | null>(null); // 🔥 useRef 타입 명시
   const [selectedDate, setSelectedDate] = useState<any>(null);
 
@@ -286,32 +288,32 @@ function SchedulePage() {
   };
 
 
+  
 
-
-
+  // 날짜 선택하는 함수
   const handleDateSelect = (selectInfo: any) => {
     const selectedDate = selectInfo.startStr; // 선택한 날짜
     console.log("🗓 선택한 날짜:", selectedDate);
-
+    
     setSelectedDate(selectedDate);
 
     // ✅ 백엔드 API 요청
-    fetch("https://your-backend-api.com/busking-schedule", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ selectedDate }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log("🎸 버스킹 일정:", data);
-      })
-      .catch((error) => console.error("🚨 오류 발생:", error));
-  };
+  //   fetch(`${ServerUrl}/api/v1/schedule`, {
+  //     method: "GET",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //     body: JSON.stringify({ selectedDate }),
+  //   })
+  //     .then((res) => res.json())
+  //     .then((data) => {
+  //       console.log("🎸 버스킹 일정:", data);
+  //     })
+  //     .catch((error) => console.error("🚨 오류 발생:", error));
+   };
 
 
-
+   // 검색해주는 함수
   const handleSearch = () => {
     if (!searchTerm.trim()) return;
     console.log("검색어:", searchTerm);
@@ -347,7 +349,7 @@ function SchedulePage() {
     })
   };
 
-    
+  //목록 선택하면 확대해서 보여주게하는 함수
   const handleResultClick = (pos: any) => {
     setInfo(pos); // ✅ 선택된 위치 정보 저장
     setIsOpenSmall(true); // ✅ 정보창 열기
@@ -364,7 +366,7 @@ function SchedulePage() {
 
 
 
-
+  // 지도 레벨 조정하는 함수
   const myLocationLevel = (type: "increase" | "decrease" | "upgrade" | "search") => {
     const map = mapRef.current
     if (!map) return
@@ -416,9 +418,9 @@ function SchedulePage() {
 
 
 
-
-
+  //맨처음 랜더링 될때 전국맛집 검색하기
   useEffect(() => {
+  
     // 분리 주석
     if (!map) return
     const ps = new kakao.maps.services.Places()
@@ -429,7 +431,7 @@ function SchedulePage() {
         // LatLngBounds 객체에 좌표를 추가합니다
         const bounds = new kakao.maps.LatLngBounds()
         let markers2 = []
-      
+
         for (var i = 0; i < data.length; i++) {
           // @ts-ignore
           markers2.push({
@@ -444,7 +446,7 @@ function SchedulePage() {
         }
       
         setMarkers(markers2)
-      
+
         // // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
         // map.setBounds(bounds)
       }
@@ -454,43 +456,45 @@ function SchedulePage() {
   }, [map])
 
 
-          interface Position {
-          position: {
-            lat: number;
-            lng: number;
-          };
-          content: string;
-          address?: string; // 추가: 변환된 주소
+    interface Position {
+    position: {
+      lat: number;
+      lng: number;
+    };
+    content: string;
+    address?: string; // 추가: 변환된 주소
+  }
+
+  
+  // 지도 주소로 변환해주는 함수
+  const useGeocodePositions = (positions: Position[]) => {
+
+  const [updatedPositions, setUpdatedPositions] = useState<Position[]>([]);
+
+  useEffect(() => {
+    
+    if (!window.kakao || !window.kakao.maps) return;
+
+    const geocoder = new kakao.maps.services.Geocoder();
+    let tempPositions: Position[] = [];
+
+    positions.forEach((pos, index) => {
+      geocoder.coord2Address(pos.position.lng, pos.position.lat, (result, status) => {
+        if (status === kakao.maps.services.Status.OK) {
+          const address = result[0]?.address?.address_name || "알 수 없음";
+          tempPositions.push({ ...pos, address });
+
+          // 모든 위치의 주소 변환이 완료되면 상태 업데이트
+          if (tempPositions.length === positions.length) {
+            setUpdatedPositions(tempPositions);
+          }
         }
-
-        const useGeocodePositions = (positions: Position[]) => {
-          const [updatedPositions, setUpdatedPositions] = useState<Position[]>([]);
-
-          useEffect(() => {
-            if (!window.kakao || !window.kakao.maps) return;
-
-            const geocoder = new kakao.maps.services.Geocoder();
-            let tempPositions: Position[] = [];
-
-            positions.forEach((pos, index) => {
-              geocoder.coord2Address(pos.position.lng, pos.position.lat, (result, status) => {
-                if (status === kakao.maps.services.Status.OK) {
-                  const address = result[0]?.address?.address_name || "알 수 없음";
-                  tempPositions.push({ ...pos, address });
-
-                  // 모든 위치의 주소 변환이 완료되면 상태 업데이트
-                  if (tempPositions.length === positions.length) {
-                    setUpdatedPositions(tempPositions);
-                  }
-                }
-              });
-            });
-          }, [positions]);
-
-          return updatedPositions;
-        };
-
-const updatedPositions = useGeocodePositions(positions2);
+      });
+    });
+  }, [positions]);
+    
+    return updatedPositions;
+  };
 
 
 
@@ -501,22 +505,30 @@ useEffect(() => {
 
 }, [markers]);
 
+  // positions2가 변경될 때 로그 출력
 useEffect(() => {
+  
   console.log("✅ positions2 상태 업데이트됨:", positions2);
-
+  
 }, [positions2]);
 
+
+ // state가 변경될 때 로그 출력
 useEffect(() => {
   console.log("✅ state 상태 업데이트됨:", state);
 
 }, [state]);
 
+ // state.center가 변경될 때 로그 출력
 useEffect(() => {
   console.log("✅내 위치 업데이트 됨", state);
 
 }, [state.center]);
 
 
+
+
+// 오늘 날짜 가져와서 선택 날짜를 오늘 날짜로 바꿔놓는 함수
 useEffect(() => {
   const todayStr = getToday(); // 🔥 오늘 날짜 가져오기
   setSelectedDate(todayStr); // ✅ 초기값을 오늘 날짜로 설정
@@ -529,11 +541,12 @@ useEffect(() => {
       end: todayStr,
       allDay: true,
     });
+
   }
 }, []);
 
 
-
+  // 현 위치 찾아주는 함수
   const FindMyLocation = function() {
     if (navigator.geolocation) {
  
@@ -581,6 +594,101 @@ useEffect(() => {
       }))
     }
   }
+
+
+//   const [changeProcess, setChangeProcess] = useState<any>([]);
+//   const divideSchedule = function (date: string, daySchedule: any) {
+//      // ✅ date 값을 연도, 월, 일로 분해
+//     const [year, month, day] = date.split("-").map(Number); // "2025-02-05" → [2025, 2, 5]
+
+//     daySchedule.forEach((a: any) => {
+//         // ✅ buskingDate에서 연도, 월, 일 추출
+//         const [bYear, bMonth, bDay] = a.buskingDate;
+
+//         // ✅ 연도, 월, 일이 동일한 경우만 추가
+//         if (bYear === year && bMonth === month && bDay === day) {
+//             setChangeProcess(daySchedule);
+//             console.log("changeProgress : ", changeProcess)
+//         }
+//     });
+//     // ✅ 상태 업데이트
+//     setChangeProcess([...changeProcess]);
+//     setPositions(changeProcess)
+// };
+
+
+
+
+
+
+
+  const [ loading, setLoading ] = useState(true) // 로딩 표시하는 변수
+  const [error, setError] = useState(null) // 에러 상태
+  const [daySchedule, setDaySchedule ] = useState<any>([])
+
+  //오늘 날짜 가져와서 스케쥴 받아오는 함수
+  useEffect(()=> {
+    const todayStr= getToday();// 🔥 오늘 날짜 가져오기
+    const fecthDaySchedule = async () => {
+      try {
+          setLoading(true) 
+          const response = await axiosInstance.get(`${ServerUrl}/api/v1/schedule?pageSize=60&date=${todayStr}`)
+          setDaySchedule(response.data);
+          console.log("daySchedule : ", response.data)
+
+      } catch (err :any) {
+        setError(err.message);
+      } finally {
+        setLoading(false)
+      }
+    }
+    
+    fecthDaySchedule()
+
+  }, [])
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
+
+
+  // const registerSchedule = function (date : string, daySchedule : any ) {
+  //   const [changeProcess, setChangeProcss] = useState([{position : {lan: "", lng: ""}, content : "", place:"", title:"", buskingDate : [], crew : {}}])
+  //   daySchedule.map((a : any, i : number)=> {changeProcess.push({position :{lan : a.latitude, lng: a.longitude}, content : a.content, place: a.place, title: a.title, buskingDate : a.buskingDate, crew : a.crew }) })
+
+  // }
+  
+  const ChooseDay = function(selectedDate : any) {
+    const fecthDaySchedule = async () => {
+      try {
+      
+          const response = await axiosInstance.get(`${ServerUrl}/api/v1/schedule?pageSize=60&date=${selectedDate}`)
+          setDaySchedule(response.data);
+          console.log("daySchedule : ", response.data)
+          const bounds = new kakao.maps.LatLngBounds()
+          let markers3 = []
+          for (var i = 0; i < daySchedule.length; i++) {
+            // @ts-ignore
+            markers3.push({
+              position: {
+                lat: parseFloat(daySchedule[i].latitude),
+                lng: parseFloat(daySchedule[i].longitude),
+              },
+              content: daySchedule[i].place,
+            })
+            // @ts-ignore
+            bounds.extend(new kakao.maps.LatLng(daySchedule[i].latitude, daySchedule[i].longitude))}
+            // console.log("20개가 베스트", markers3)
+            setMarkers(markers3)
+      } catch (err :any) {
+        setError(err.message);
+      } finally {
+ 
+      }
+    }
+    
+    fecthDaySchedule()
+   
+  }
+
 
 
 
@@ -806,7 +914,7 @@ useEffect(() => {
                 selectAllow={(selectInfo : any) => {
                   return selectInfo.end - selectInfo.start === 86400000; // 하루(밀리초 단위)만 허용
                 }}
-                dateClick={(info) => setSelectedDate(info.dateStr)} // ✅ 날짜 클릭 시 업데이트
+                dateClick={(info) => {setSelectedDate(info.dateStr); ChooseDay(selectedDate)} } // ✅ 날짜 클릭 시 업데이트
               />
                 {/* 선택한 날짜를 화면에 표시 */}
                 {selectedDate && <DateTextBox>선택한 날짜: {selectedDate}</DateTextBox>}
