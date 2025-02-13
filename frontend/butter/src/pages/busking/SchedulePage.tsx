@@ -275,7 +275,7 @@ function SchedulePage() {
   const [map, setMap] = useState<kakao.maps.Map | null>(null);
   const [positions2, setPositions] = useState<any>([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [searchTerm, setSearchTerm] = useState("전국");
+  const [searchTerm, setSearchTerm] = useState("");
   const [myLocation, setMyLocation] = useState<{ lat: number; lng: number } |null>(null);
   const [myAddress, setMyAddress] = useState<string>(""); // 내 위치 주소 저장
   const calendarRef = useRef<FullCalendar | null>(null); // 🔥 useRef 타입 명시
@@ -288,9 +288,9 @@ function SchedulePage() {
   };
 
 
+  
 
-
-
+  // 날짜 선택하는 함수
   const handleDateSelect = (selectInfo: any) => {
     const selectedDate = selectInfo.startStr; // 선택한 날짜
     console.log("🗓 선택한 날짜:", selectedDate);
@@ -313,7 +313,7 @@ function SchedulePage() {
    };
 
 
-
+   // 검색해주는 함수
   const handleSearch = () => {
     if (!searchTerm.trim()) return;
     console.log("검색어:", searchTerm);
@@ -349,7 +349,7 @@ function SchedulePage() {
     })
   };
 
-    
+  //목록 선택하면 확대해서 보여주게하는 함수
   const handleResultClick = (pos: any) => {
     setInfo(pos); // ✅ 선택된 위치 정보 저장
     setIsOpenSmall(true); // ✅ 정보창 열기
@@ -366,7 +366,7 @@ function SchedulePage() {
 
 
 
-
+  // 지도 레벨 조정하는 함수
   const myLocationLevel = (type: "increase" | "decrease" | "upgrade" | "search") => {
     const map = mapRef.current
     if (!map) return
@@ -418,8 +418,9 @@ function SchedulePage() {
 
 
 
-
+  //맨처음 랜더링 될때 전국맛집 검색하기
   useEffect(() => {
+  
     // 분리 주석
     if (!map) return
     const ps = new kakao.maps.services.Places()
@@ -430,7 +431,7 @@ function SchedulePage() {
         // LatLngBounds 객체에 좌표를 추가합니다
         const bounds = new kakao.maps.LatLngBounds()
         let markers2 = []
-      
+
         for (var i = 0; i < data.length; i++) {
           // @ts-ignore
           markers2.push({
@@ -445,7 +446,7 @@ function SchedulePage() {
         }
       
         setMarkers(markers2)
-      
+
         // // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
         // map.setBounds(bounds)
       }
@@ -455,19 +456,23 @@ function SchedulePage() {
   }, [map])
 
 
-          interface Position {
-          position: {
-            lat: number;
-            lng: number;
-          };
-          content: string;
-          address?: string; // 추가: 변환된 주소
-        }
+    interface Position {
+    position: {
+      lat: number;
+      lng: number;
+    };
+    content: string;
+    address?: string; // 추가: 변환된 주소
+  }
 
+  
+  // 지도 주소로 변환해주는 함수
   const useGeocodePositions = (positions: Position[]) => {
+
   const [updatedPositions, setUpdatedPositions] = useState<Position[]>([]);
 
   useEffect(() => {
+    
     if (!window.kakao || !window.kakao.maps) return;
 
     const geocoder = new kakao.maps.services.Geocoder();
@@ -487,11 +492,9 @@ function SchedulePage() {
       });
     });
   }, [positions]);
-
+    
     return updatedPositions;
   };
-
-const updatedPositions = useGeocodePositions(positions2);
 
 
 
@@ -502,22 +505,30 @@ useEffect(() => {
 
 }, [markers]);
 
+  // positions2가 변경될 때 로그 출력
 useEffect(() => {
+  
   console.log("✅ positions2 상태 업데이트됨:", positions2);
-
+  
 }, [positions2]);
 
+
+ // state가 변경될 때 로그 출력
 useEffect(() => {
   console.log("✅ state 상태 업데이트됨:", state);
 
 }, [state]);
 
+ // state.center가 변경될 때 로그 출력
 useEffect(() => {
   console.log("✅내 위치 업데이트 됨", state);
 
 }, [state.center]);
 
 
+
+
+// 오늘 날짜 가져와서 선택 날짜를 오늘 날짜로 바꿔놓는 함수
 useEffect(() => {
   const todayStr = getToday(); // 🔥 오늘 날짜 가져오기
   setSelectedDate(todayStr); // ✅ 초기값을 오늘 날짜로 설정
@@ -535,7 +546,7 @@ useEffect(() => {
 }, []);
 
 
-
+  // 현 위치 찾아주는 함수
   const FindMyLocation = function() {
     if (navigator.geolocation) {
  
@@ -615,6 +626,7 @@ useEffect(() => {
   const [error, setError] = useState(null) // 에러 상태
   const [daySchedule, setDaySchedule ] = useState<any>([])
 
+  //오늘 날짜 가져와서 스케쥴 받아오는 함수
   useEffect(()=> {
     const todayStr= getToday();// 🔥 오늘 날짜 가져오기
     const fecthDaySchedule = async () => {
@@ -647,7 +659,7 @@ useEffect(() => {
   const ChooseDay = function(selectedDate : any) {
     const fecthDaySchedule = async () => {
       try {
-          setLoading(true) 
+      
           const response = await axiosInstance.get(`${ServerUrl}/api/v1/schedule?pageSize=60&date=${selectedDate}`)
           setDaySchedule(response.data);
           console.log("daySchedule : ", response.data)
@@ -664,11 +676,12 @@ useEffect(() => {
             })
             // @ts-ignore
             bounds.extend(new kakao.maps.LatLng(daySchedule[i].latitude, daySchedule[i].longitude))}
+            // console.log("20개가 베스트", markers3)
             setMarkers(markers3)
       } catch (err :any) {
         setError(err.message);
       } finally {
-        setLoading(false)
+ 
       }
     }
     
