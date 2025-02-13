@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssafy.butter.domain.bread.dto.request.BreadRechargeRequestDTO;
 import com.ssafy.butter.domain.bread.dto.response.PaymentVerificationResponseDTO;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,8 +19,8 @@ import org.springframework.web.client.RestTemplate;
 
 @RestController
 @RequestMapping("v1/bread")
+@Slf4j
 public class BreadController {
-    private static final Logger logger = LoggerFactory.getLogger(BreadController.class);
      
     @Value("${iamport.api.key}")
     private String IMP_KEY;
@@ -36,7 +37,7 @@ public class BreadController {
             // 결제 정보 조회
             String paymentResponse = getPaymentInfo(breadRechargeRequest.impUid(), accessToken);
 
-            logger.info(paymentResponse);
+            log.info(paymentResponse);
             // 결제 상태가 'paid'인 경우
             if ("paid".equals(paymentResponse)) {
                 return ResponseEntity.ok().body(new PaymentVerificationResponseDTO(true, "결제 검증 완료"));
@@ -77,7 +78,7 @@ public class BreadController {
         String paymentUrl = "https://api.iamport.kr/payments/" + impUid;
         RestTemplate restTemplate = new RestTemplate();
 
-        logger.info("accessToken : "+accessToken);
+        log.info("accessToken : "+accessToken);
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", accessToken);
         HttpEntity<String> entity = new HttpEntity<>(headers);
@@ -87,6 +88,7 @@ public class BreadController {
 
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode responseJson = objectMapper.readTree(response.getBody());
+            log.info("responseJson : "+responseJson);
 
             if (response.getStatusCode() == HttpStatus.OK) {
                 return responseJson.path("response").path("access_token").asText();
