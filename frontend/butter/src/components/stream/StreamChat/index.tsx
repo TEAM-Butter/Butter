@@ -141,6 +141,7 @@ function StreamChat({ participantName, roomRole, streamId }: StreamChatProps) {
   const [role, setRole] = useState<"USER" | "HOST">(
     roomRole === "publisher" ? "HOST" : "USER"
   );
+  console.log("participantName", participantName, role, streamId);
   const chatAreaRef = useRef<HTMLDivElement>(null);
 
   // // const { state } = useLocation();
@@ -159,7 +160,7 @@ function StreamChat({ participantName, roomRole, streamId }: StreamChatProps) {
     const token =
       "Bearer eyJhbGciOiJIUzUxMiJ9.eyJpZCI6MywiZW1haWwiOiJ1c2VyM0BleGFtcGxlLmNvbSIsImdlbmRlciI6Ik1BTEUiLCJiaXJ0aGRhdGUiOiIxOTkwLTAxLTAxIiwiaWF0IjoxNzM5Mzc2ODE5LCJleHAiOjE3MzkzODA0MTl9.SqRnuAxlxHm7mCbXeSYJT8zo7TfJSjwjGsNnq66C56hSAczp9V2FDma4F1uQrBrXq-Jidl0iC44B0t5JWhSiWw";
     // a.activate();
-
+    console.log("여기입니다!!!!!!!!!!");
     const client = new Client({
       webSocketFactory: () => new SockJS("http://localhost:8080/ws"),
       reconnectDelay: 5000,
@@ -263,21 +264,6 @@ function StreamChat({ participantName, roomRole, streamId }: StreamChatProps) {
       </LiveChatHeader>
 
       <ChatArea ref={chatAreaRef}>
-        {/* {messages.map(({ content, sender, type }, idx) => {
-          if (type === "JOIN") {
-            return <EnterMessage>{content}</EnterMessage>;
-          }
-
-          return participantName === sender ? (
-            <Message isMine={true} key={idx}>
-              {content}
-            </Message>
-          ) : (
-            <Message isMine={false} key={idx}>
-              {content}
-            </Message>
-          );
-        })} */}
         {messages.map((message, idx) => {
           const { content, sender, type } = message;
 
