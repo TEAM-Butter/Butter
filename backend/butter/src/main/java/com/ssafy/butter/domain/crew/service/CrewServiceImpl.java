@@ -264,4 +264,10 @@ public class  CrewServiceImpl implements CrewService {
         crewGenreRepository.deleteAllByCrew(crew);
         crewGenreRepository.saveAll(crewGenres);
     }
+
+    @Override
+    public List<CrewResponseDTO> getFollowedCrewList(AuthInfoDTO currentUser) {
+        return crewRepository.getFollowedCrewList(currentUser.id()).stream()
+                .map(CrewResponseDTO::fromEntity).toList();
+    }
 }
