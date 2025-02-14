@@ -196,7 +196,7 @@ let APPLICATION_SERVER_URL = import.meta.env.VITE_NODE_JS_SERVER || "";
 
 //let LIVEKIT_URL = "https://i12e204.p.ssafy.io:5443/twirp";
 //let LIVEKIT_URL = "wss://192.168.30.199:7880/";
-let LIVEKIT_URL = import.meta.env.VITE_NODE_JS_SERVER || "";
+let LIVEKIT_URL = import.meta.env.VITE_LIVEKIT_SERVER || "";
 
 let TOKEN = "";
 configureUrls();
@@ -451,7 +451,7 @@ const LivePage = () => {
     role: string
   ) {
     try {
-      const response = await fetch(APPLICATION_SERVER_URL + "token", {
+      const response = await fetch(APPLICATION_SERVER_URL + "/token", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

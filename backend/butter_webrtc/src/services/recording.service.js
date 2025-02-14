@@ -9,12 +9,17 @@ import {
   LIVEKIT_API_KEY,
   LIVEKIT_API_SECRET,
   RECORDINGS_PATH,
+  CLIPS_TMP_PATH,
   CLIPS_PATH,
   RECORDINGS_METADATA_PATH,
   RECORDING_FILE_PORTION_SIZE,
 } from "../config.js";
 import { S3Service } from "./s3.service.js";
 import fs from "fs";
+import os from "os";
+import path from "path";
+import { exec } from "node:child_process";
+import { Stream, Readable } from 'stream';
 // import {insertClip} from "./mysql.service.js"
 
 const s3Service = new S3Service();
@@ -144,6 +149,16 @@ export class RecordingService {
     return s3Service.getObjectUrl(key);
   }
 
+  async getClipUrl(clipName) {
+    const key = this.getClipKey(clipName);
+    return s3Service.getObjectUrl(key);
+  }
+
+  async getClipTmpUrl(clipTmpName) {
+    const key = this.getClipTmpKey(clipTmpName);
+    return s3Service.getObjectUrl(key);
+  }
+
   async existsRecording(recordingName) {
     const key = this.getRecordingKey(recordingName);
     return s3Service.exists(key);
@@ -209,6 +224,10 @@ export class RecordingService {
     return RECORDINGS_PATH + recordingName.replace(".mp4", ".jpg");
   }
 
+  getClipTmpKey(clippedRecordingName) {
+    return CLIPS_TMP_PATH + clippedRecordingName;
+  }
+
   getClipKey(clippedRecordingName) {
     return CLIPS_PATH + clippedRecordingName;
   }
@@ -254,46 +273,65 @@ export class RecordingService {
     return s3Service.getObjectUrl(key);
   }
 
-  async clipRecording(recordingName, startTime, endTime, crewId, title) {
+  async clipRecording(recordingName, startTime, endTime, title) {
+    console.log("Time "+startTime+", "+endTime);
+    const result = recordingName.split('-')[0];
     const inputKey = this.getRecordingKey(recordingName);
-    const clippedRecordingName = `clipped-${startTime}-${endTime}-${recordingName}.mp4`;
-    const outputKey = this.getClipKey(clippedRecordingName);
-    const thumbnailKey = this.getClipThumbnailKey(clippedRecordingName);
+    const outputKey = this.getClipTmpKey(`clip-${result}-${startTime}-${title}`);
 
-    const tempInputPath = `/tmp/${recordingName}`;
-    const tempOutputPath = `/tmp/${clippedRecordingName}.mp4`;
-    const thumbnailPath = `/tmp/thumbnail-${clippedRecordingName}.jpg`;
+    const tempDir = os.tmpdir();
+    console.log('os.tmpdir(): ', os.tmpdir());
+    const tempInputPath = path.join(tempDir, `/${recordingName}`);
+    const tempOutputPath = path.join(tempDir, `/${`clip-${result}-${startTime}-${title}`}`);
+
+    const duration = endTime - startTime;
 
     try {
+      if (!fs.existsSync(tempDir)) {
+        fs.mkdirSync(tempDir, { recursive: true });
+      }
+
       // S3에서 원본 영상 다운로드
-      await s3Service.downloadObject(inputKey, tempInputPath);
+      const inputStream = await s3Service.getObject(inputKey);
+      if (inputStream instanceof Readable) {
+        console.log('File is a Readable stream');
+      }
+      if (Buffer.isBuffer(inputStream)) {
+        console.log('File is a Buffer');
+      } else if (inputStream instanceof Stream) {
+        console.log('File is a Stream');
+      }
+      const writeStream = fs.createWriteStream(tempInputPath);
+      inputStream.pipe(writeStream);
 
-      // FFmpeg을 이용해 영상 자르기
-      const command = `ffmpeg -i "${tempInputPath}" -ss ${startTime} -to ${endTime} -c copy "${tempOutputPath}"`;
-      await execPromise(command);
+      await new Promise((resolve, reject) => {
+        writeStream.on("finish", resolve);
+        writeStream.on("error", reject);
+      });
 
-      // 썸네일 추출 (10번째 프레임)
-      const thumbnailCommand = `ffmpeg -i "${tempOutputPath}" -vf "select='eq(n\\,10)'" -vsync vfr "${thumbnailPath}"`;
-      await execPromise(thumbnailCommand);
+      // ffmpeg를 이용해 영상 자르기
+      await new Promise((resolve, reject) => {
+        exec(
+          `ffmpeg -y -i "${tempInputPath}" -ss ${startTime} -t ${duration} -c:v libx264 -preset fast -crf 23 -c:a aac -b:a 128k "${tempOutputPath}"`,
+          (error, stdout, stderr) => {
+            if (error) {
+              console.error("FFmpeg error:", error, stderr);
+              reject(error);
+            } else {
+              resolve();
+            }
+          }
+        );
+      });
 
       // 잘린 영상 S3에 업로드
-      await s3Service.uploadObject(
-        outputKey,
-        fs.createReadStream(tempOutputPath)
-      );
-      await s3Service.uploadObject(
-        thumbnailKey,
-        fs.createReadStream(thumbnailPath)
-      );
+      await s3Service.uploadVideo(outputKey, fs.createReadStream(tempOutputPath));
 
-      // 임시 파일 삭제
+      // 로컬 파일 삭제
       fs.unlinkSync(tempInputPath);
       fs.unlinkSync(tempOutputPath);
-      fs.unlinkSync(thumbnailPath);
 
-      // await insertClip(crewId, title, clippedRecordingName);
-
-      return { success: true, clippedRecordingName };
+      return { success: true, clipUrl: this.getClipTmpUrl(`clip-${result}-${startTime}-${title}`) };
     } catch (error) {
       console.error("Error clipping recording:", error);
       return { success: false, error: error.message };

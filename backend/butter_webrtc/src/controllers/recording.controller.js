@@ -141,7 +141,7 @@ recordingController.post("/clip", async (req, res) => {
         const result = await recordingService.clipRecording(recordingName, startTime, endTime, title);
 
         if (result.success) {
-            res.json({ message: "Recording clipped successfully", clippedRecordingName: result.clippedRecordingName});
+            res.json({ message: "Recording clipped successfully", clipUrl: result.clipUrl});
         } else {
             res.status(500).json({ errorMessage: "Error clipping recording", details: result.error });
         }
