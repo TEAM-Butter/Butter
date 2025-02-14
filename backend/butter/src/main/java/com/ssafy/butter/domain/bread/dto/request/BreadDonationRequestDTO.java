@@ -5,9 +5,6 @@ import jakarta.validation.constraints.NotNull;
 public record BreadDonationRequestDTO(
 
         @NotNull
-        Long memberId,
-
-        @NotNull
         Long crewId,
 
         @NotNull
