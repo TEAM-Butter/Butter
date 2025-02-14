@@ -17,6 +17,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+
 @RequiredArgsConstructor
 @Service
 @Transactional
@@ -39,6 +41,8 @@ public class BreadServiceImpl implements BreadService {
         BreadLog breadLog = BreadLog.builder()
                 .member(member)
                 .breadLogType(breadLogTypeRepository.findByName("Recharge").orElseThrow())
+                .amount(amount)
+                .createDate(LocalDateTime.now())
                 .build();
         breadLogRepository.save(breadLog);
         member.updateBreadAmount(member.getBreadAmount().getAmount() + amount);
@@ -54,8 +58,9 @@ public class BreadServiceImpl implements BreadService {
         BreadLog breadLog = BreadLog.builder()
                 .member(member)
                 .crew(crew)
-                // TODO 리펙토링...?
                 .breadLogType(breadLogTypeRepository.findByName("Donate").orElseThrow())
+                .amount(breadDonationRequestDTO.amount())
+                .createDate(LocalDateTime.now())
                 .build();
         breadLogRepository.save(breadLog);
         member.updateBreadAmount(member.getBreadAmount().getAmount() - breadDonationRequestDTO.amount());
@@ -64,6 +69,16 @@ public class BreadServiceImpl implements BreadService {
 
     @Override
     public void settleBread(AuthInfoDTO authInfoDTO, BreadSettlementRequestDTO breadSettlementRequestDTO) {
-
+        Member member = memberService.findById(authInfoDTO.id());
+        Crew crew = crewService.findById(breadSettlementRequestDTO.crewId());
+        crewService.validateCrewAdmin(crew, member);
+        BreadLog breadLog = BreadLog.builder()
+                .crew(crew)
+                .member(member)
+                .breadLogType(breadLogTypeRepository.findByName("Settle").orElseThrow())
+                .amount(breadSettlementRequestDTO.amount())
+                .createDate(LocalDateTime.now())
+                .build();
+        breadLogRepository.save(breadLog);
     }
 }
