@@ -29,10 +29,15 @@ interface MemberExtraInfoResponseDto {
     genres: string[];
 }
 
+interface PasswordUpdateResponseDto {
+    accessToken: string;
+    refreshToken: string;
+}
 
 export type {
     SignUpResponseDto,
     MemberDetailResponseDto,
     CheckLoginIdResponseDto,
     MemberExtraInfoResponseDto,
+    PasswordUpdateResponseDto,
 }

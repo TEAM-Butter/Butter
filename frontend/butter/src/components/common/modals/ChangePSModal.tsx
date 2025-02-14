@@ -1,5 +1,7 @@
+import { useState } from "react";
 import * as MC from "./modalComponents/modalComponents"
 import styled from "@emotion/styled";
+import { PasswordUpdateRequest } from "../../../apis/request/member/memberRequest";
 
 interface ModalSizeProps {
     width: string;
@@ -32,6 +34,22 @@ const ChangePSInput = styled.input`
 `;
 
 export const ChangePSModal = ({ setModalType, width, height }: ModalProps) => {
+    const [ currentPs, setCurrentPs ] = useState("")
+    const [ changePs, setChangePs ] = useState("")
+    const [ checkChangePs, setCheckChangePs ] = useState("")
+    const [ changePsComment, setChangePsComment] = useState("")
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault()
+        setChangePsComment("비밀번호를 확인 중 입니다.")
+        if( changePs === checkChangePs ){
+            PasswordUpdateRequest({ currentPassword: currentPs, newPassword: changePs})
+            .then(
+                
+            )
+        }
+        }
+
     return (
         <>
             <MC.ModalOverlay />
