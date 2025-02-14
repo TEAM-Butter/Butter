@@ -6,14 +6,14 @@ interface SignUpResponseDto {
 }
 
 interface MemberDetailResponseDto {
-    loginId: String,
-    email: String,
-    birthdate: String,
-    gender: String,
-    profileImageUrl: String,
-    nickname: String,
-    genres: String[],
-    avatarType: String,
+    loginId: string,
+    email: string,
+    birthdate: string,
+    gender: string,
+    profileImage: string,
+    nickname: string,
+    genres: string[],
+    avatarType: string,
     isExtraInfoRegistered: boolean
 }
 
@@ -22,10 +22,17 @@ interface CheckLoginIdResponseDto {
     message: string,
 }
 
+interface MemberExtraInfoResponseDto {
+    nickname: string;
+    profileImage: string;
+    avatarType: string;
+    genres: string[];
+}
 
 
 export type {
     SignUpResponseDto,
     MemberDetailResponseDto,
     CheckLoginIdResponseDto,
+    MemberExtraInfoResponseDto,
 }

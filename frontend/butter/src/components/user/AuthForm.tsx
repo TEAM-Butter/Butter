@@ -75,67 +75,32 @@ export const LoginForm = ({ setModalType }: ModalProps) => {
   const [loginId, setLoginId] = useState<string>("");
   const [password, setPassword] = useState<string>("");
 
-  const LoginBtnHandler = () => {
-    const requestBody: LoginRequestDto = { loginId, password };
-    loginRequest(requestBody).then((responseBody: LoginResponseDto | null) => {
-      const { accessToken } = responseBody as LoginResponseDto;
-      setAccessToken(accessToken);
-      navigator(`/`);
-      setUser(
-        true,
-        "guest",
-        "profile.jpg",
-        "pet1",
-        String(responseBody?.authenticatedMemberInfo.memberType),
-        Boolean(responseBody?.authenticatedMemberInfo.isExtraInfoRegistered)
-      );
-    });
-  };
-  return (
-    <FormWrapper
-      onSubmit={(e) => {
-        e.preventDefault();
-        LoginBtnHandler();
-      }}
-    >
-      <LgText textColor="black">
-        Log into
-        <br />
-        your account
-      </LgText>
-      <TextInput
-        type="text"
-        value={loginId}
-        onChange={(e) => setLoginId(e.target.value)}
-        placeholder="type your id."
-      />
-      <TextInput
-        type="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        placeholder="type your password."
-      />
-      <ForgetComment
-        className="openModalBtn"
-        onClick={() => {
-          setModalType("forgotAuth");
-        }}
-      >
-        아이디/ 비밀번호를 잊어버리셨나요?
-      </ForgetComment>
-      <WrongComment></WrongComment>
-      <FormBtn
-        bgColor="rgba(0,0,0,0.4)"
-        type="button"
-        onClick={LoginBtnHandler}
-      >
-        Log in
-      </FormBtn>
-      <FormBtn bgColor="black">
-        <NaverLogin />
-      </FormBtn>
-    </FormWrapper>
-  );
+    const LoginBtnHandler = () => {
+        const requestBody: LoginRequestDto = { loginId, password };
+        loginRequest(requestBody).then((responseBody: LoginResponseDto | null) => {
+            const { accessToken } = responseBody as LoginResponseDto;
+            setAccessToken(accessToken)
+            navigator(`/`)
+
+
+            setUser(true, String(responseBody?.authenticatedMemberInfo.nickname), String(responseBody?.authenticatedMemberInfo.profileImage), String(responseBody?.authenticatedMemberInfo.avatarType), String(responseBody?.authenticatedMemberInfo.memberType), Boolean(responseBody?.authenticatedMemberInfo.isExtraInfoRegistered), responseBody?.authenticatedMemberInfo.genres || []);
+        }
+        )
+    }
+    return (
+        <FormWrapper onSubmit={(e) => {
+            e.preventDefault()
+            LoginBtnHandler()
+        }} >
+            <LgText textColor="black">Log into<br />your account</LgText>
+            <TextInput required type="text" value={loginId} onChange={(e) => setLoginId(e.target.value)} placeholder="type your id." />
+            <TextInput required type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="type your password." />
+            <ForgetComment className="openModalBtn" onClick={() => { setModalType("forgotAuth") }}>아이디/ 비밀번호를 잊어버리셨나요?</ForgetComment>
+            <WrongComment></WrongComment>
+            <FormBtn bgColor="rgba(0,0,0,0.4)" type="button" onClick={LoginBtnHandler}>Log in</FormBtn>
+            <FormBtn bgColor="black"><NaverLogin /></FormBtn>
+        </FormWrapper>
+    )
 };
 
 const RadioWrapper = styled.div`
@@ -181,84 +146,45 @@ export const SignupForm = () => {
     });
   };
 
-  const SignUpBtnHandler = () => {
-    const requestBody: SignUpRequestDto = {
-      loginId,
-      password,
-      email,
-      gender,
-      birthDate,
-    };
-    signupRequest(requestBody).then(() => {
-      LoginHandler();
-    });
-  };
+    const LoginHandler = () => {
+        const requestBody: LoginRequestDto = { loginId, password };
+        loginRequest(requestBody).then((responseBody: LoginResponseDto | null) => {
+            const { accessToken } = responseBody as LoginResponseDto;
+            setAccessToken(accessToken)
+            navigator(`/`)
+            setUser(true, String(responseBody?.authenticatedMemberInfo.nickname), String(responseBody?.authenticatedMemberInfo.profileImage), String(responseBody?.authenticatedMemberInfo.avatarType), String(responseBody?.authenticatedMemberInfo.memberType), Boolean(responseBody?.authenticatedMemberInfo.isExtraInfoRegistered), responseBody?.authenticatedMemberInfo.genres || []);
+        })
+    }
 
-  return (
-    <FormWrapper>
-      <LgText textColor="black">
-        Sign up
-        <br />
-        your account
-      </LgText>
-      <TextInput
-        type="text"
-        value={loginId}
-        onChange={(e) => setLoginId(e.target.value)}
-        placeholder="type your id."
-      />
-      <TextInput
-        type="email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        placeholder="type your email."
-      />
-      <TextInput
-        type="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        placeholder="type your password."
-      />
-      <RadioWrapper>
-        <InputLabel>
-          <RadioInput
-            type="radio"
-            id="female"
-            name="gender"
-            value="FEMALE"
-            onChange={(e) => setGender(e.target.value)}
-          />
-          woman
-        </InputLabel>
-        <InputLabel>
-          <RadioInput
-            type="radio"
-            id="male"
-            name="gender"
-            value="MALE"
-            onChange={(e) => setGender(e.target.value)}
-          />
-          man
-        </InputLabel>
-      </RadioWrapper>
-      <InputLabel>
-        Birth Date
-        <BirthInput
-          type="date"
-          value={birthDate}
-          onChange={(e) => setBirthDate(e.target.value)}
-          required
-          aria-required="true"
-        />
-      </InputLabel>
-      <WrongComment></WrongComment>
-      <FormBtn
-        bgColor="rgba(0,0,0,0.4)"
-        type="button"
-        onClick={SignUpBtnHandler}
-      >
-        Sign up
-      </FormBtn>
-    </FormWrapper>
-  );
+    const handleSubmit = () => {
+        const requestBody: SignUpRequestDto = { loginId, password, email, gender, birthDate };
+        signupRequest(requestBody).then(() => {
+            LoginHandler()
+        })
+    }
+
+    return (
+        <FormWrapper onSubmit={handleSubmit} >
+            <LgText textColor="black">Sign up<br />your account</LgText>
+            <TextInput required type="text" value={loginId} onChange={(e) => setLoginId(e.target.value)} placeholder="type your id." />
+            <TextInput required type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="type your email." />
+            <TextInput required type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="type your password." />
+            <RadioWrapper>
+                <InputLabel>
+                    <RadioInput required type="radio" id="female" name="gender" value="FEMALE" onChange={(e) => setGender(e.target.value)} />
+                    woman
+                </InputLabel>
+                <InputLabel>
+                    <RadioInput required type="radio" id="male" name="gender" value="MALE" onChange={(e) => setGender(e.target.value)} />
+                    man
+                </InputLabel>
+            </RadioWrapper>
+            <InputLabel>
+                Birth Date
+                <BirthInput required type="date" value={birthDate} onChange={(e) => setBirthDate(e.target.value)} aria-required="true" />
+            </InputLabel>
+            <WrongComment></WrongComment>
+            <FormBtn bgColor="rgba(0,0,0,0.4)" type="submit">Sign up</FormBtn>
+        </FormWrapper>
+    )
 };

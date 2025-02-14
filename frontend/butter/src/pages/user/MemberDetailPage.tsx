@@ -1,10 +1,10 @@
 import styled from "@emotion/styled";
-import axios from "axios";
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 import { UserExtraInfoModal_v2 } from "../../components/common/modals/UserExtraInfoModal";
 import { memberDetailRequest } from "../../apis/request/member/memberRequest";
 import { MemberDetailResponseDto } from "../../apis/response/member";
+import { ChangePSModal } from "../../components/common/modals/ChangePSModal";
+import { useUserStore } from "../../stores/UserStore";
 
 
 const MemberDetailPageWrapper = styled.div`
@@ -61,6 +61,7 @@ const MDLowerInfo = styled.div`
   }
 `
 const ChangePasswordLink = styled.div`
+  padding: 130px 0 10px 0;
   display: flex;
   height: 30px;
   justify-content: flex-end;
@@ -79,11 +80,17 @@ const ChangePasswordLink = styled.div`
 `
 
 const ProfileLt = styled.div``
-const ProfileImg = styled.img`
+
+const NoneProfileImg = styled.img`
   width: 80px;
   height: 80px;
   border-radius: 50%;
   background-color: var(--gray-bright);
+  `
+const ProfileImg = styled.img`
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
   `
 const ProfileRt = styled.div`
   display: flex;
@@ -143,69 +150,38 @@ const ExtraEditBtn = styled.div`
     opacity: 0.8;
   }
   `
-interface Genre {
-  id: string;
-  value: string;
-}
 
 interface UserInfoDto {
   id: string;
   email: string;
-  nickname: string;
-  genres: Genre[];
   birth: string;
   gender: string;
-  pet: string;
 }
 
 const MemberDetailPage = () => {
-  const sampleUserInfo = {
-    id: "guest-id",
-    email: "guest@naver.com",
-    nickname: "guest",
-    genres: [
-      {
-        id: "R&B",
-        value: "R&B",
-      },
-      {
-        id: "Indie",
-        value: "Indie",
-      },
-      {
-        id: "Pop",
-        value: "Pop",
-      },
-    ],
-    birth: "20001028",
-    gender: "woman",
-    pet: "pet1",
-  }
-
+  const nickname = useUserStore(state => state.nickname)
+  const genres = useUserStore(state => state.genres)
+  const profileImg = useUserStore(state => state.profileImage)
+  const avatarType = useUserStore(state => state.avatarType)
   const [userInfo, setUserInfo] = useState<UserInfoDto>({
     id: "",
     email: "",
-    nickname: "",
-    genres: [],
     birth: "",
     gender: "",
-    pet: "",
   })
 
   useEffect(() => {
     memberDetailRequest().then((responseBody: MemberDetailResponseDto | null) => {
       if (!responseBody) return;
-      console.log(responseBody)
+      // console.log(responseBody)
 
       setUserInfo({
-        id: String(responseBody?.loginId ?? ""),
-        email: String(responseBody?.email ?? ""),
-        nickname: String(responseBody?.nickname ?? ""),
-        birth: String(responseBody?.birthdate ?? ""),
-        gender: String(responseBody?.gender ?? ""),
-        pet: String(responseBody?.avatarType ?? ""),
-        genres: [],
+        id: String(responseBody.loginId ?? ""),
+        email: String(responseBody.email ?? ""),
+        birth: String(responseBody.birthdate ?? ""),
+        gender: String(responseBody.gender ?? ""),
       });
+
     })
   }, [])
 
@@ -218,24 +194,32 @@ const MemberDetailPage = () => {
           <MDBody>
             <MDUpper>
               <ProfileLt>
-                <ProfileImg />
+                {profileImg === "" ?
+                  <NoneProfileImg />
+                  : <ProfileImg src={profileImg || ""} alt="Profile" style={{ width: 80, height: 80, borderRadius: "50%" }} />
+                }
               </ProfileLt>
               <ProfileRt>
-                <Username>{userInfo.nickname}</Username>
+                <Username>{nickname}</Username>
                 <UserEmail>{userInfo.email}</UserEmail>
               </ProfileRt>
             </MDUpper>
             <MDLower>
-              <MDLowerInfo><span>id</span>{userInfo.id}</MDLowerInfo>
+              <MDLowerInfo><span>id</span>
+                {userInfo.id === "" ?
+                  "Social-login" :
+                  `${userInfo.id}`
+                }
+              </MDLowerInfo>
               <MDLowerInfo><span>gender</span>{userInfo.gender}</MDLowerInfo>
-              <MDLowerInfo><span>birth</span>{userInfo.birth}</MDLowerInfo>
-              <ChangePasswordLink><Link to="/"><div>비밀번호 변경</div></Link></ChangePasswordLink>
+              <MDLowerInfo><span>birth</span>{userInfo.birth.split(",").join("-")}</MDLowerInfo>
+              <ChangePasswordLink onClick={() => { setModalType("changePs") }} ><div>비밀번호 변경</div></ChangePasswordLink>
             </MDLower>
             <GenreContainer>
               <GenreComment>회원님이 선호하는 장르 입니다!</GenreComment>
               <GenreWrapper>
-                {sampleUserInfo.genres.map(genre =>
-                  <Genre key={genre.id}>{genre.value}</Genre>
+                {genres.map(genre =>
+                  <Genre key={genre}>{genre}</Genre>
                 )}
               </GenreWrapper>
             </GenreContainer>
@@ -247,6 +231,7 @@ const MemberDetailPage = () => {
         </ExtraEditBtn>
       </MemberDetailPageWrapper>
       {modalType === "extraInfo" && <UserExtraInfoModal_v2 width="800px" height="400px" setModalType={setModalType}></UserExtraInfoModal_v2>}
+      {modalType === "changePs" && <ChangePSModal width="500px" height="400px" setModalType={setModalType} ></ChangePSModal>}
     </>
   );
 };
