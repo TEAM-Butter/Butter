@@ -74,6 +74,8 @@ def on_leave(data):
 
 @sock.on("increaseEmotionCount")
 def on_increase_emotion_count(data):
+    print("################ Increase emotion count ################")
+    print(data)
     room_id = data["roomName"]
     if room_id is None or room_id == '':
         print("No room ID provided")
@@ -81,6 +83,8 @@ def on_increase_emotion_count(data):
         return
 
     websocket_room_service.increase_motion_count(room_id, data["emotion"])
+    sock.emit("increaseEmotionCount", websocket_room_service.room_motions[room_id], room=room_id)
+    print(websocket_room_service.room_motions)
 
 
 def get_room_size(room_id):
