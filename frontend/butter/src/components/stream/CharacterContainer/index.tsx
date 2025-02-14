@@ -14,6 +14,12 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { SocketContent } from "../../../types/socket";
 import { Socket } from "socket.io-client";
 import { RoomName } from "@livekit/components-react";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import ThumbUpAltOutlinedIcon from "@mui/icons-material/ThumbUpAltOutlined";
+import BakeryDiningOutlinedIcon from "@mui/icons-material/BakeryDiningOutlined";
+import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
+import { small } from "framer-motion/client";
 
 // const images = [pet1, pet2, pet3, pet4, pet5, pet6];
 
@@ -53,6 +59,30 @@ const Emotion = styled(motion.img)`
   opacity: 0;
 `;
 
+const EmotionClickBox = styled.div`
+  display: flex;
+  justify-content: space-evenly;
+  width: 250px;
+  height: 40px;
+  background-color: black;
+  position: absolute;
+  left: 35%;
+  left: 50%; // 부모 요소의 중앙을 기준점으로 설정
+  transform: translateX(-50%); // 자신의 너비의 절반만큼 왼쪽으로 이동
+  border-bottom-left-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-left: 30px;
+  padding-right: 30px;
+  border-bottom-right-radius: 18px;
+`;
+
+const BreadBox = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 5px;
+`;
 const Character = styled.img`
   width: 10vh;
   height: auto;
@@ -72,13 +102,22 @@ const TotalInfoBox = styled.div`
 `;
 
 const TotalUserInfo = styled.div`
+  display: flex;
+  align-items: center;
   color: black;
+  gap: 2px;
 `;
 const TotalHeartsInfo = styled.div`
+  display: flex;
+  align-items: center;
   color: black;
+  gap: 2px;
 `;
 const TotalLikesInfo = styled.div`
+  display: flex;
+  align-items: center;
   color: black;
+  gap: 2px;
 `;
 
 interface CharacterContainer {
@@ -174,13 +213,13 @@ const CharacterContainer = ({
       updateActionTime(userId);
 
       setTimeout(() => {
-        if (emotion === "heart") {
+        if (emotion === "heart" && !myEmotionState.isEmoting) {
           socket.emit("increaseEmotionCount", {
             roomName,
             emotion: "heart",
           });
         }
-        if (emotion === "like") {
+        if (emotion === "like" && !myEmotionState.isEmoting) {
           socket.emit("increaseEmotionCount", {
             roomName,
             emotion: "like",
@@ -192,7 +231,7 @@ const CharacterContainer = ({
         });
       }, EMOTION_DURATION);
     },
-    []
+    [myEmotionState.isEmoting]
   );
 
   const handleOtherEmotion = useCallback(
@@ -233,7 +272,6 @@ const CharacterContainer = ({
       switch (content.label) {
         case "little_heart":
           console.log("여기입니다 2");
-          setHeartCount((prev) => prev + 1);
           if (id === MY_CHARACTER_INDEX) {
             console.log("여기입니다 3");
             handleMyEmotion(heart, id, "heart");
@@ -250,7 +288,6 @@ const CharacterContainer = ({
           }
           break;
         case "like":
-          setLikeCount((prev) => prev + 1);
           if (id === MY_CHARACTER_INDEX) {
             handleMyEmotion(like, id, "like");
           } else {
@@ -269,6 +306,10 @@ const CharacterContainer = ({
   };
   const handleSocketOn = () => {
     socket.on("message", handleMessage);
+    socket.on("increaseEmotionCount", (content) => {
+      setHeartCount(content.heart);
+      setLikeCount(content.like);
+    });
   };
 
   useEffect(() => {
@@ -277,10 +318,44 @@ const CharacterContainer = ({
 
   return (
     <CharacterContainerWrapper>
+      <EmotionClickBox>
+        <div style={{ gap: "10px", display: "flex" }}>
+          <FavoriteBorderIcon
+            onClick={() => {
+              socket.emit("increaseEmotionCount", {
+                roomName,
+                emotion: "heart",
+              });
+            }}
+            fontSize="small"
+          />
+          <ThumbUpAltOutlinedIcon
+            onClick={() => {
+              socket.emit("increaseEmotionCount", {
+                roomName,
+                emotion: "like",
+              });
+            }}
+            fontSize="small"
+          />
+        </div>
+        <BreadBox>
+          <BakeryDiningOutlinedIcon /> Charge
+        </BreadBox>
+      </EmotionClickBox>
       <TotalInfoBox>
-        <TotalUserInfo>16</TotalUserInfo>
-        <TotalHeartsInfo>{heartCount}</TotalHeartsInfo>
-        <TotalLikesInfo>{likeCount}</TotalLikesInfo>
+        <TotalUserInfo>
+          <PersonOutlineOutlinedIcon fontSize="small" />
+          16
+        </TotalUserInfo>
+        <TotalHeartsInfo>
+          <FavoriteIcon fontSize="small" />
+          {heartCount}
+        </TotalHeartsInfo>
+        <TotalLikesInfo>
+          <ThumbUpAltOutlinedIcon fontSize="small" />
+          {likeCount}
+        </TotalLikesInfo>
       </TotalInfoBox>
       {characters.map((char) => (
         <CharacterBox
