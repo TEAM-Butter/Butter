@@ -1,4 +1,4 @@
-import * as MC from "./modalComponents/modalComponents"
+import * as MC from "./modalComponents/modalComponents.tsx"
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import styled from "@emotion/styled";

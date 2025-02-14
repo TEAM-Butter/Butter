@@ -1,12 +1,15 @@
 import axios from "axios"
 import { useParams, useNavigate } from "react-router-dom"
 import { useState, useEffect } from "react"
-
+import "./crewCss.css";
 import rightArrow from "../../assets/rightArrow.png"
 import leftArrow from "../../assets/leftArrow.png"
 import upArrow from "../../assets/upArrow.png"
 import editButton from "../../assets/editButton.png"
+import plusButton from "../../assets/plusButton.png"
 import followButton from "../../assets/followButton.png"
+import cancelButton from "../../assets/cancelButton.png"
+import deleteIcon from "../../assets/deleteIcon.png"
 import sample1 from "../../assets/sample1.png";
 import sample2 from "../../assets/sample2.jpg";
 import sample3 from "../../assets/sample3.jpg";
@@ -14,6 +17,8 @@ import sample4 from "../../assets/sample4.jpg";
 import sample5 from "../../assets/sample5.png";
 import styled from "@emotion/styled";
 import { axiosInstance } from "../../apis/axiosInstance"
+import { SchedulePlusModal } from "../../components/common/modals/SchedulePlusModal.tsx";
+import { div } from "framer-motion/client";
 
 
 const images = [sample1,sample2,sample3,sample4,sample5]
@@ -72,9 +77,9 @@ const Box3=styled.div`
   background-color: rgb(22, 22, 22);
   border-radius: 20px;
   height: 180px;
-  width : 45%;
+  width : 35%;
   display: flex;
-  padding-left: 20px;
+  margin-right: -45px;
   text-align: left;
   align-items: center;
   justify-content: space-between;
@@ -104,7 +109,6 @@ const Box5=styled.div`
   border-radius: 20px;
   height: 300px;
   margin-bottom: 25px;
-
 `
 
 const Box6=styled.div`
@@ -130,6 +134,7 @@ const Box7=styled.div`
   padding-top: 15px;
   padding-bottom: 15px;
   padding-left: 20px;
+  gap: 10px;
 `
 
 const Arrow = styled.img`
@@ -153,8 +158,13 @@ const TextName = styled.div`
     margin-bottom: 10px;
 `
 const TextGenre = styled.div`
-    font-size: 15px;
-    
+    font-size: 12px;
+    display: flex;
+    gap : 5px;
+    height: 5px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    align-items: center;
     white-space: pre;
 `
 const TextExplain = styled.div`
@@ -175,6 +185,7 @@ const ImageMovingBox = styled.div`
 padding-right : 10px;
 display: flex;
 gap: 10px;
+padding-left: 10px;
 `
 
 const Box1BottomWrapper = styled.div`
@@ -311,7 +322,7 @@ function CrewDetailPage() {
                     </Right>
                     <CrewNameWrapper>
                         <TextName> {crewDetail.name}</TextName>
-                        <TextGenre> 장르1, 장르2, 장르3 </TextGenre>
+                        <TextGenre >{crewDetail.genres.map((a : any, i: number) => {return (<CrewGenre>{a}</CrewGenre> )})}</TextGenre>
                         <TextExplain>{crewDetail.description}</TextExplain>
                     </CrewNameWrapper>
                     <Box1BottomWrapper>
@@ -329,12 +340,12 @@ function CrewDetailPage() {
             {crewDetailSwitch &&   
                 <Box2>
                     <CrewPicture src={sample3}></CrewPicture>
-                    <TextFollowNum> 크루 팔로우 수 :</TextFollowNum>
+                    <TextFollowNum> 크루 팔로우 수 : {crewDetail.followerCnt}</TextFollowNum>
                 </Box2>
             }
             {crewEditSwitch && <CrewEditComponent2 />}
            
-            <Box3> <SnsText><div style={{ fontSize : "20px"}}>SNS</div><div>link</div></SnsText> 변수<UpArrowTag src={upArrow} alt="upArrow"></UpArrowTag></Box3>
+            <Box3> <SnsText><div style={{ fontSize : "20px"}}>SNS</div><div>link</div></SnsText><UpArrowTag src={upArrow} alt="upArrow"></UpArrowTag></Box3>
             <Box4 onClick={()=>{navigate(`/stream/live/${id}`)}}><LiveText1>Live</LiveText1><div>On</div> </Box4>
         </LayOut3>       
                 </LayOut1>
@@ -342,7 +353,7 @@ function CrewDetailPage() {
                 <ScheduleEditComponent crewScheduleDetail={crewScheduleDetail} crewDetail={crewDetail} />
                 
                 <Box6><div>Notice</div><PlusBtn>+</PlusBtn></Box6>
-                <Box7> {crewNoticeDetail.map((a : any, i : any)=>
+                <Box7 id="scroll-area"> {crewDetail.notices.map((a : any, i : any)=>
                                 {return(<NoticeBox key={i}>
                                             <NoticeImg src={images[i+1]}></NoticeImg>
                                                 <NoticeWrapperBox> 
@@ -386,27 +397,157 @@ const CrewMemberEditModalContent = styled.div`
 `;
 
 
+const CancelButton = styled.img`
+    height:  20px;
+    margin-top: 5px;
+`
+
+const ButtonWrapper = styled.div`
+    display: flex;
+    justify-content: end;
+    padding-right: 20px;
+    padding-top: 15px;
+    gap: 10px;
+`
+
+const CrewNameInputBox = styled.div`
+
+`
+
+const CrewNameInput = styled.input`
+      background-color: gray;
+      border: none;
+  color: white;
+  border-radius: 30px;
+  height: 50px;
+  width: 420px;
+  padding-left: 20px;
+  padding-right: 20px;
+  font-size: 40px;
+  font-weight: bold;
+  margin-left: 20px;
+  
+`
+
+const CrewDetailInputBox = styled.div`
+    background-color: rgb(66, 66, 66);
+    padding: 20px;
+    margin-left: 20px;
+    margin-right: 20px;
+    height: 150px;
+    border-radius: 20px;
+`
+const CrewDetailInput = styled.input`
+    background-color: rgb(66, 66, 66);
+    border: none;
+    color: white;
+    border-radius: 5px;
+    height: 110px;
+    width: 600px;
+    padding-left: 20px;
+    padding-right: 20px;
+    font-size: 20px;
+    padding-bottom: 60px;
+`
+
+const CrewGenreBox = styled.div`
+    display: flex;
+    gap : 10px;
+    padding-left: 20px;
+`
+
+const CrewGenre = styled.div`
+     border: 1px solid white;
+     padding : 6px 8px;
+     border-radius: 30px;
+     font-size: 13px;
+`
+
+const Hr2 = styled.hr`
+    border: none;
+  border-top: 3px solid white; /* 가로줄 스타일 */
+  margin: 10px 0; /* 위아래 여백 */
+`
+
+
+const MemberEditWrapper = styled.div`
+    position: relative;
+    display: flex;
+    padding-left: 20px;
+`
+
+const CrewMemberPicture = styled.img`
+    width: 45px;
+    height: 45px;
+    border-radius: 50px;
+    position: absolute;
+`
+
+const DeleteIcon = styled.img`
+    height: 19px;
+    width: 19px;
+    border-radius: 50px;
+    position: absolute;
+    left: 48px;
+    top: -2px;
+`
+
+const Box8= styled.div`
+    display: flex;
+    gap: 35px;
+    padding-bottom: 20px;
+`
+
+const PlusButton = styled.img`
+        width: 45px;
+    height: 45px;
+    border-radius: 50px;
+    margin-left: 20px;
+`
+
+
+
 
 function CrewEditComponent1({ crewDetail, handleEditClick }: { crewDetail: any; handleEditClick: () => void }) {
 
     const [crewMemberPlusModalOpen, setCrewMemberPlusModalOpen] = useState(false) // 크루 멤버 추가 모달 스위치
-
+      const [Name, setTitle] = useState("");
+      const [content, setContent] = useState("");
+       // 🔹 입력값 변경 시 상태 업데이트
+       const handleTitleChange = (e : any) => setTitle(e.target.value);
+       const handleContentChange = (e : any) => setContent(e.target.value);
     return (
     <div>
      
         <Box1>
-            <button onClick={handleEditClick}>취소</button>
-            <button onClick={handleEditClick}>수정확정</button>
-                  
-            <div>크루 이름 : {crewDetail.name}</div>
-            <div>크루 설명 : {crewDetail.description}</div>
-            <div>크루 멤버1 사진 : <button>멤버삭제</button></div>
-            <div>크루 멤버2 사진 : <button>멤버삭제</button></div>
-            <div>크루 멤버3 사진 : <button>멤버삭제</button></div>
-            <div>크루 멤버4 사진 : <button>멤버삭제</button></div>
-          
             
-            <button onClick={() =>setCrewMemberPlusModalOpen(true)}>멤버추가</button>
+            <ButtonWrapper>
+                <CancelButton src={cancelButton} alt="cancelButton" onClick={handleEditClick}>
+                </CancelButton>
+                <EditButton src={editButton} alt="editButton" onClick={handleEditClick}>
+                </EditButton>
+            </ButtonWrapper>
+            <CrewNameInputBox>
+                <CrewNameInput type="text" placeholder={crewDetail.name} value={Name} onChange={handleTitleChange}></CrewNameInput>
+                <Hr2 />
+            <CrewGenreBox >{crewDetail.genres.map((a : any, i: number) => {return (<CrewGenre>{a}</CrewGenre> )})}</CrewGenreBox>
+            </CrewNameInputBox>
+            <CrewDetailInputBox>
+            <CrewDetailInput type="text" placeholder={crewDetail.description}  value={content} onChange={handleContentChange}></CrewDetailInput>
+            </CrewDetailInputBox>
+
+            <Box8>
+            <MemberEditWrapper>
+            <CrewMemberPicture src={sample1} alt="sample1"></CrewMemberPicture>
+            <DeleteIcon src={deleteIcon} alt="deleteIcon"></DeleteIcon>
+            </MemberEditWrapper>
+            <MemberEditWrapper>
+            <CrewMemberPicture src={sample1} alt="sample1"></CrewMemberPicture>
+            <DeleteIcon src={deleteIcon} alt="deleteIcon"></DeleteIcon>
+            </MemberEditWrapper>
+            <PlusButton src={plusButton} alt="plusButton" onClick={() =>setCrewMemberPlusModalOpen(true)}></PlusButton>
+            </Box8>          
+            
         </Box1>
         {crewMemberPlusModalOpen && (
             <CrewMemberEditModalOverlay>
@@ -515,6 +656,7 @@ const ScheduleList = styled.div`
     flex-direction: column;
     align-items: center;
     gap: 20px;
+    
 `
 
 const ScheduleWrapper = styled.div`
@@ -522,6 +664,7 @@ const ScheduleWrapper = styled.div`
     align-items: center;
     justify-content: space-between;
     padding-right: 20px;
+    
 `
 
 const ScheduleTitle = styled.div`
@@ -541,13 +684,37 @@ const ScheduleImg = styled.img`
     width: 50px;
 `
 
+const Box10 = styled.div`
+    
+`
+
+
+const SchedulPlusWrapper = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: absolute;
+    right: 0px;
+    top : 70px;
+    background-color: black;
+    height: 40px;
+  width: 130px;
+  font-size: 20px;
+  color: white;
+  z-index: 500;
+  padding-left: 13px;
+  padding-right: 13px;
+  border-radius: 30px;
+  border: 2px solid white;
+`
+
 function ScheduleEditComponent({crewScheduleDetail,crewDetail}:any) {
     const [isSchedulePlusModalOpen, setisSchedulePlusModalOpen] = useState(false) // 스케쥴 추가 스위치
     const [isScheduleDetailModalOpen, setisScheduleDetailModalOpen] = useState(false) // 스케쥴 디테일 스위치
     const [isScheduleEditModalOpen, setisScheduleEditModalOpen] = useState(false) // 스케쥴 디테일 스위치
     const [selectedScheduleIndex, setSelectedScheduleIndex] = useState<any>(null); // 선택된 스케줄 인덱스
-    
-
+    const [modalType, setModalType] = useState("")
+    const { id} = useParams()
 
 
     const openModal = () => {
@@ -563,18 +730,23 @@ function ScheduleEditComponent({crewScheduleDetail,crewDetail}:any) {
         <div>
             <ScheduleText>
             <BuskingText >Busking </BuskingText> <p>Schedule </p>
-            <p onClick={openModal}>+</p>
-            
+            <div onClick={()=>{
+                setModalType("SchedulePlus");
+             }}>
+               +
+            </div>
             </ScheduleText>
             <Hr />
         </div>
-        <ScheduleList> 
+        <Box10>
+        <ScheduleList id="scroll-area"> 
             {
-            crewScheduleDetail.map((a:any, i:any) => {
-                return ( <ScheduleWrapper key={i}> <ScheduleImg src={images[i+1]} alt="ScheduleImg"></ScheduleImg> <ScheduleTitle><ScheduleTitleComponent1>{i+1}번 스케쥴 Title Section</ScheduleTitleComponent1><div>{a.content}</div></ScheduleTitle><LeftArrowTag onClick={()=> {setisScheduleDetailModalOpen(true); setSelectedScheduleIndex(i+1)}} src={leftArrow} alt="leftArrow"></LeftArrowTag></ScheduleWrapper>)
+            crewDetail.schedules.map((a:any, i:any) => {
+                return ( <ScheduleWrapper key={i} > <ScheduleImg src={images[i+1]} alt="ScheduleImg"></ScheduleImg> <ScheduleTitle><ScheduleTitleComponent1>{i+1}번 스케쥴 Title Section</ScheduleTitleComponent1><div>{a.content}</div></ScheduleTitle><LeftArrowTag onClick={()=> {setisScheduleDetailModalOpen(true); setSelectedScheduleIndex(i+1)}} src={leftArrow} alt="leftArrow"></LeftArrowTag></ScheduleWrapper>)
             })
             }
         </ScheduleList>
+        </Box10>
                {/* 스케쥴 추가 모달 */}
                {isSchedulePlusModalOpen && (
                 <SchedulePlusModalOverlay>
@@ -621,9 +793,12 @@ function ScheduleEditComponent({crewScheduleDetail,crewDetail}:any) {
                     </SchedulePlusModalContent>
                 </SchedulePlusModalOverlay>
                 )}
-
-
+              
+                { modalType === "SchedulePlus" && <SchedulePlusModal width="600px" height="500px" setModalType={setModalType} id={id}></SchedulePlusModal>}
        </Box5>
+
+
+
     )}
 
 
