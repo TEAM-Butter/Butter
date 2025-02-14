@@ -1,7 +1,7 @@
 import axios from "axios"
 import { useParams, useNavigate } from "react-router-dom"
 import { useState, useEffect } from "react"
-import "./crewCss.css";
+import "./CrewCss.css";
 import rightArrow from "../../assets/rightArrow.png"
 import leftArrow from "../../assets/leftArrow.png"
 import upArrow from "../../assets/upArrow.png"
