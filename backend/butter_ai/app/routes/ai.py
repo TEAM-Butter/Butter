@@ -32,8 +32,6 @@ def upload_frame():
     detection = process_frame(frame)
     if detection is None:
         detection = {"status": "no_object"}
-    else:
-        websocket_room_service.increase_motion_count(room_id, detection["label"])
     detection["participant"] = request.form.get("participant")
     detection["role"] = request.form.get("role")
 
@@ -62,11 +60,27 @@ def on_join(data):
 @sock.on("leave")
 def on_leave(data):
     room_id = data["roomName"]
+    if room_id is None or room_id == '':
+        print("No room ID provided")
+        sock.emit("message", "No room ID provided", room=room_id)
+        return
+
     leave_room(room_id)
     if get_room_size(room_id) == 0:
         print(f"Room {room_id} is empty")
         websocket_room_service.remove_room(room_id)
     sock.emit("message", f"User {request.sid} left room {room_id}", room=room_id)
+
+
+@sock.on("increaseEmotionCount")
+def on_increase_emotion_count(data):
+    room_id = data["roomName"]
+    if room_id is None or room_id == '':
+        print("No room ID provided")
+        sock.emit("message", "No room ID provided", room=room_id)
+        return
+
+    websocket_room_service.increase_motion_count(room_id, data["emotion"])
 
 
 def get_room_size(room_id):
