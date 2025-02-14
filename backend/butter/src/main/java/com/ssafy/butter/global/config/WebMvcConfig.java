@@ -33,11 +33,11 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addInterceptor(authInterceptor)
                 .addPathPatterns("/**")
                 .excludePathPatterns("/error")
-                .excludePathPatterns("/api/v1/auth/**")
-                .excludePathPatterns("/api/v1/auth/login/**")
-                .excludePathPatterns("/api/v1/members/signup")
-                .excludePathPatterns("/api/v1/members/check-loginId")
-                .excludePathPatterns("/api/v1/email/**")
+                .excludePathPatterns("/v1/auth/**")
+                .excludePathPatterns("/v1/auth/login/**")
+                .excludePathPatterns("/v1/members/signup")
+                .excludePathPatterns("/v1/members/check-loginId")
+                .excludePathPatterns("/v1/email/**")
                 .excludePathPatterns("https://openapi.naver.com/v1/nid/me")
                 .excludePathPatterns("/swagger-ui/**", "/v3/api-docs/**");
         //TODO : 테스트할 때 엔드포인트 확인하기
