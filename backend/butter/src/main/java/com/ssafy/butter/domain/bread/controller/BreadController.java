@@ -3,10 +3,12 @@ package com.ssafy.butter.domain.bread.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ssafy.butter.auth.dto.AuthInfoDTO;
 import com.ssafy.butter.domain.bread.dto.request.BreadDonationRequestDTO;
 import com.ssafy.butter.domain.bread.dto.request.BreadRechargeRequestDTO;
 import com.ssafy.butter.domain.bread.dto.response.PaymentVerificationResponseDTO;
 import com.ssafy.butter.domain.bread.service.BreadService;
+import com.ssafy.butter.global.token.CurrentUser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,24 +36,13 @@ public class BreadController {
 
     // 결제 검증 API
     @PostMapping("/verify-payment")
-    public ResponseEntity<?> verifyPayment(@RequestBody BreadRechargeRequestDTO breadRechargeRequest) {
-        try {
-            // 아임포트 액세스 토큰 발급
-            String accessToken = getAccessToken();
-            // 결제 정보 조회
-            String paymentResponse = getPaymentInfo(breadRechargeRequest.impUid(), accessToken);
-
-            log.info(paymentResponse);
-            // 결제 상태가 'paid'인 경우
-            if ("paid".equals(paymentResponse)) {
-                return ResponseEntity.ok().body(new PaymentVerificationResponseDTO(true, "결제 검증 완료"));
-            } else {
-                return ResponseEntity.ok().body(new PaymentVerificationResponseDTO(false, "결제 실패 또는 미결제 상태"));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(500).body(new PaymentVerificationResponseDTO(false, "서버 오류 발생"));
+    public ResponseEntity<?> verifyPayment(
+            @CurrentUser AuthInfoDTO authInfoDTO,
+            @RequestBody BreadRechargeRequestDTO breadRechargeRequest) {
+        if (!"paid".equals(getPaymentInfo(breadRechargeRequest.impUid(), getAccessToken()))) {
+            return ResponseEntity.ok().body(new PaymentVerificationResponseDTO(false, "결제 실패 또는 미결제 상태"));
         }
+            return ResponseEntity.ok().body(new PaymentVerificationResponseDTO(true, "결제 검증 완료"));
     }
 
     // 액세스 토큰 발급
@@ -71,7 +62,7 @@ public class BreadController {
 
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode responseJson = objectMapper.readTree(response.getBody());
-            return responseJson.path("response").path("status").asText();
+            return responseJson.path("response").path("access_token").asText();
         } catch (HttpClientErrorException | JsonProcessingException e) {
             throw new RuntimeException("액세스 토큰 발급 실패: " + e.getMessage());
         }
@@ -95,7 +86,7 @@ public class BreadController {
             log.info("responseJson : "+responseJson);
 
             if (response.getStatusCode() == HttpStatus.OK) {
-                return responseJson.path("response").path("access_token").asText();
+                return responseJson.path("response").path("status").asText();
             } else {
                 throw new RuntimeException("결제 정보 조회 실패: " + response.getStatusCode());
             }
