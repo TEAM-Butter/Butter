@@ -9,6 +9,7 @@ import com.ssafy.butter.domain.bread.dto.request.BreadRechargeRequestDTO;
 import com.ssafy.butter.domain.bread.dto.response.PaymentVerificationResponseDTO;
 import com.ssafy.butter.domain.bread.service.BreadService;
 import com.ssafy.butter.global.token.CurrentUser;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,6 +25,7 @@ import org.springframework.web.client.RestTemplate;
 @RestController
 @RequestMapping("/v1/bread")
 @Slf4j
+@Tag(name = "Bread API", description = "빵 관련 API")
 public class BreadController {
      
     @Value("${iamport.api.key}")
@@ -32,17 +34,21 @@ public class BreadController {
     @Value("${iamport.api.secret}")
     private String IMP_SECRET;
 
+    private final ObjectMapper objectMapper;
+
     private final BreadService breadService;
 
     // 결제 검증 API
-    @PostMapping("/verify-payment")
-    public ResponseEntity<?> verifyPayment(
+    @PostMapping("/verify-payment") 
+    public ResponseEntity<PaymentVerificationResponseDTO> verifyPayment(
             @CurrentUser AuthInfoDTO authInfoDTO,
-            @RequestBody BreadRechargeRequestDTO breadRechargeRequest) {
-        if (!"paid".equals(getPaymentInfo(breadRechargeRequest.impUid(), getAccessToken()))) {
+            @RequestBody BreadRechargeRequestDTO breadRechargeRequestDTO) {
+        JsonNode responseJson = getPaymentInfo(breadRechargeRequestDTO.impUid(), getAccessToken());
+        if (!"paid".equals(responseJson.get("response").get("status").asText())) {
             return ResponseEntity.ok().body(new PaymentVerificationResponseDTO(false, "결제 실패 또는 미결제 상태"));
         }
-            return ResponseEntity.ok().body(new PaymentVerificationResponseDTO(true, "결제 검증 완료"));
+        breadService.rechargeBread(authInfoDTO, responseJson.get("response").get("amount").asInt());
+        return ResponseEntity.ok().body(new PaymentVerificationResponseDTO(true, "결제 검증 완료"));
     }
 
     // 액세스 토큰 발급
@@ -60,7 +66,6 @@ public class BreadController {
         try {
             ResponseEntity<String> response = restTemplate.postForEntity(tokenUrl, entity, String.class);
 
-            ObjectMapper objectMapper = new ObjectMapper();
             JsonNode responseJson = objectMapper.readTree(response.getBody());
             return responseJson.path("response").path("access_token").asText();
         } catch (HttpClientErrorException | JsonProcessingException e) {
@@ -69,24 +74,19 @@ public class BreadController {
     }
 
     // 결제 정보 조회
-    private String getPaymentInfo(String impUid, String accessToken) {
+    private JsonNode getPaymentInfo(String impUid, String accessToken) {
         String paymentUrl = "https://api.iamport.kr/payments/" + impUid;
         RestTemplate restTemplate = new RestTemplate();
 
-        log.info("accessToken : "+accessToken);
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", accessToken);
         HttpEntity<String> entity = new HttpEntity<>(headers);
 
         try {
             ResponseEntity<String> response = restTemplate.exchange(paymentUrl, HttpMethod.GET, entity, String.class);
-
-            ObjectMapper objectMapper = new ObjectMapper();
             JsonNode responseJson = objectMapper.readTree(response.getBody());
-            log.info("responseJson : "+responseJson);
-
             if (response.getStatusCode() == HttpStatus.OK) {
-                return responseJson.path("response").path("status").asText();
+                return responseJson;
             } else {
                 throw new RuntimeException("결제 정보 조회 실패: " + response.getStatusCode());
             }
@@ -96,8 +96,10 @@ public class BreadController {
     }
 
     @PostMapping("/donate")
-    public ResponseEntity<Void> donateBread(@RequestBody BreadDonationRequestDTO breadDonationRequestDTO) {
-        breadService.donateBread(breadDonationRequestDTO);
+    public ResponseEntity<Void> donateBread(
+            @CurrentUser AuthInfoDTO authInfoDTO,
+            @RequestBody BreadDonationRequestDTO breadDonationRequestDTO) {
+        breadService.donateBread(authInfoDTO, breadDonationRequestDTO);
         return ResponseEntity.noContent().build();
     }
 }
