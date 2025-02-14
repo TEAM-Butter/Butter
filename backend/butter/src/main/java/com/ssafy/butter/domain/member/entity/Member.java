@@ -2,32 +2,17 @@ package com.ssafy.butter.domain.member.entity;
 
 import com.ssafy.butter.domain.crew.entity.Genre;
 import com.ssafy.butter.domain.member.enums.Gender;
-import com.ssafy.butter.domain.member.vo.BirthDate;
-import com.ssafy.butter.domain.member.vo.BreadAmount;
-import com.ssafy.butter.domain.member.vo.Email;
-import com.ssafy.butter.domain.member.vo.Nickname;
-import com.ssafy.butter.domain.member.vo.Password;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Embedded;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
+import com.ssafy.butter.domain.member.vo.*;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -129,6 +114,10 @@ public class Member {
     private void updateMemberGenres(List<Genre> newGenres){
         memberGenres.clear();
         newGenres.forEach(genre -> this.memberGenres.add(new MemberGenre(this, genre)));
+    }
+
+    public void updateBreadAmount(Integer breadAmount) {
+        this.breadAmount = new BreadAmount(breadAmount);
     }
 }
 
