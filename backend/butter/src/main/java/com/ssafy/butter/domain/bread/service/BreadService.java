@@ -1,10 +1,12 @@
 package com.ssafy.butter.domain.bread.service;
 
+import com.ssafy.butter.auth.dto.AuthInfoDTO;
 import com.ssafy.butter.domain.bread.dto.request.BreadDonationRequestDTO;
+import com.ssafy.butter.domain.bread.dto.request.BreadRechargeRequestDTO;
 
 public interface BreadService {
 
-    void rechargeBread(long amount);
+    void rechargeBread(AuthInfoDTO authInfoDTO, int amount);
 
-    void donateBread(BreadDonationRequestDTO breadDonationRequestDTO);
+    void donateBread(AuthInfoDTO authInfoDTO, BreadDonationRequestDTO breadDonationRequestDTO);
 }
