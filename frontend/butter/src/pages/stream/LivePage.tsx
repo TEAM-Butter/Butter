@@ -22,7 +22,6 @@ import UserBox from "../../components/stream/UserBox";
 
 import background from "../../assets/background.png";
 import CharacterContainer from "../../components/stream/CharacterContainer";
-import { SocketContent } from "../../types/socket";
 import { io } from "socket.io-client";
 
 import { useUserStore } from "../../stores/UserStore";
@@ -193,10 +192,9 @@ type TrackInfo = {
 //let APPLICATION_SERVER_URL = "https://192.168.30.199:6080/";
 let APPLICATION_SERVER_URL = import.meta.env.VITE_NODE_JS_SERVER || "";
 
-
 //let LIVEKIT_URL = "https://i12e204.p.ssafy.io:5443/twirp";
 //let LIVEKIT_URL = "wss://192.168.30.199:7880/";
-let LIVEKIT_URL = import.meta.env.VITE_NODE_JS_SERVER || "";
+let LIVEKIT_URL = import.meta.env.VITE_LIVEKIT_SERVER || "";
 
 let TOKEN = "";
 configureUrls();
@@ -250,8 +248,9 @@ const LivePage = () => {
 
   const roomName = state.roomName;
 
-  let role = useUserStore((state) => state.memberType);
-  let participantName = useUserStore((state) => state.nickname) ?? "guest";
+  let role = useUserStore((state) => state.memberType) ?? "user";
+  let participantName =
+    useUserStore((state) => state.nickname) ?? "guest" + Math.random();
   console.log("role: " + role + " name: " + participantName);
 
   if (!role) {
@@ -369,11 +368,11 @@ const LivePage = () => {
       setLocalTrack(undefined);
       setRemoteTracks([]);
     }
-  }, [room]);
+  }, []);
 
   const joinRoom = useCallback(async () => {
     // Initialize a new Room object
-
+    console.log("webRTC 방에 접속을 시도합니다다");
     console.log("APP" + APPLICATION_SERVER_URL);
     console.log("LIVE" + LIVEKIT_URL);
     const room = new Room();
@@ -411,24 +410,28 @@ const LivePage = () => {
     );
 
     try {
+      //이거는 방 만드는 사람 로직 추가할 때 수정해야합니다다
+      if (role === "crew") {
+        setParticipantRole("publisher");
+      }
+      console.log("아암ㄹ나ㅓㅇ루마ㅓㄴ율 ㅏㅓ;ㅁ뉼;");
       // Get a token from your application server with the room name and participant name
-      const token = await getToken(roomName, participantName, role);
+      const token = await getToken(roomName, participantName, participantRole);
       // Connect to the room with the LiveKit URL and the token
 
       //방에 참가 할 때 본인이 publisher인지 subscriber인지 정보
-      socket.emit("join", { roomName, role });
+      socket.emit("join", { roomName, participantRole });
 
-      console.log("token!!!!", token);
-      console.log(role);
+      console.log("webRtc token :", token);
       await room.connect(LIVEKIT_URL, token);
 
-      console.log("Connected to room successfully");
-      console.log(room);
+      console.log("webRtc 접속성공");
+      console.log("webRTCroom 정보입니다!!:", room);
+      console.log("Participantrole 입니다!!", participantRole);
 
-      if (role == "crew") {
+      if (participantRole === "publisher") {
         // Publish your camera and microphone
         await room.localParticipant.enableCameraAndMicrophone();
-        setParticipantRole("publisher");
         console.log("enableCameraAndMicrophone");
 
         setLocalTrack(
@@ -443,12 +446,12 @@ const LivePage = () => {
       );
       // await leaveRoom();
     }
-  }, [participantName, role, roomName]);
+  }, [participantName, participantRole, roomName]);
 
   async function getToken(
     roomName: string,
     participantName: string,
-    role: string
+    participantRole: string
   ) {
     try {
       const response = await fetch(APPLICATION_SERVER_URL + "token", {
@@ -459,7 +462,7 @@ const LivePage = () => {
         body: JSON.stringify({
           roomName,
           participantName,
-          role,
+          participantRole,
         }),
       });
 
@@ -491,15 +494,14 @@ const LivePage = () => {
 
   useEffect(() => {
     joinRoom();
-    console.log("방에 입장하겠습니다");
-    console.log("room정보", room);
+    console.log("webRTC방에 입장하겠습니다");
   }, [joinRoom]);
   //조건부 렌더링
 
   useEffect(() => {
     return () => {
       leaveRoom();
-      console.log("방을 떠났습니다");
+      console.log("webRTC방을 떠났습니다");
     };
   }, [leaveRoom]);
 
@@ -523,8 +525,6 @@ const LivePage = () => {
     };
   }, [isRecording, updateRecordingsList]);
 
-  console.log("room", room);
-  console.log("recordings", recordings);
   return (
     <>
       {participantRole === "publisher" ? (

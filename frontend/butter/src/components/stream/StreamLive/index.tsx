@@ -31,7 +31,7 @@ const StreamLive = ({
   role,
 }: StreamLiveProps) => {
   console.log("remoeteTracks 정보입니다", remoteTracks);
-
+  console.log("Stream component에서 room을 받아들입니다.", room);
   return (
     <div className="w-full h-full">
       {!room ? (
