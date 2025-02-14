@@ -220,7 +220,7 @@ async function getToken(roomName, participantName, isPublisher) {
     const [error, body] = await httpRequest("POST", "/token", {
         roomName,
         participantName,
-        role: isPublisher ? "publisher" : "subscriber"
+        participantRole: isPublisher ? "publisher" : "subscriber"
     });
     //console.log(isPublisher ? "publisher" : "subscriber")
 
