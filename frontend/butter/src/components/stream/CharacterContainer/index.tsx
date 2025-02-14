@@ -13,6 +13,7 @@ import styled from "@emotion/styled";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { SocketContent } from "../../../types/socket";
 import { Socket } from "socket.io-client";
+import { RoomName } from "@livekit/components-react";
 
 // const images = [pet1, pet2, pet3, pet4, pet5, pet6];
 
@@ -83,6 +84,7 @@ const TotalLikesInfo = styled.div`
 interface CharacterContainer {
   socket: Socket;
   participantName: string;
+  roomName: string;
 }
 
 interface CharacterData {
@@ -99,6 +101,7 @@ const MY_CHARACTER_INDEX = 1; //내 캐릭터의 인덱스
 const CharacterContainer = ({
   socket,
   participantName,
+  roomName,
 }: CharacterContainer) => {
   const [characters, setCharacters] = useState<CharacterData[]>(() =>
     Array.from({ length: 13 }, (_, index) => ({
@@ -173,11 +176,13 @@ const CharacterContainer = ({
       setTimeout(() => {
         if (emotion === "heart") {
           socket.emit("increaseEmotionCount", {
+            roomName,
             emotion: "heart",
           });
         }
         if (emotion === "like") {
           socket.emit("increaseEmotionCount", {
+            roomName,
             emotion: "like",
           });
         }
