@@ -238,7 +238,7 @@ const LivePage = () => {
 
   const navigate = useNavigate();
   // const socket = io.connect("http://localhost:5000");
-  const socket = io("http://localhost:5000", {
+  const socket = io(`${import.meta.env.VITE_FLASK_SERVER}`, {
     transports: ["websocket"],
   });
 
