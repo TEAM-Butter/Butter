@@ -2,7 +2,8 @@ export const SERVER_PORT = process.env.SERVER_PORT || 6080;
 export const APP_NAME = "openvidu-recording-advanced-node";
 
 // LiveKit configuration
-export const LIVEKIT_URL = process.env.LIVEKIT_URL || "http://localhost:7880";
+// export const LIVEKIT_URL = process.env.LIVEKIT_URL || "http://localhost:7880";
+export const LIVEKIT_URL = "https://i12e204.p.ssafy.io:5443";
 export const LIVEKIT_API_KEY = process.env.LIVEKIT_API_KEY || "devkey";
 export const LIVEKIT_API_SECRET = process.env.LIVEKIT_API_SECRET || "secret";
 
