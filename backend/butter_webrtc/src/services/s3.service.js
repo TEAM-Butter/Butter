@@ -41,6 +41,18 @@ export class S3Service {
         return this.run(command);
     }
 
+    async uploadVideo(key, videoBuffer) {
+        const params = {
+          Bucket: S3_BUCKET,
+          Key: key,
+          Body: videoBuffer,             // JSON.stringify 제거, 바이너리 그대로 전달
+          ContentType: 'video/mp4'       // 콘텐츠 타입 명시
+        };
+        const command = new PutObjectCommand(params);
+        return this.run(command);
+      }
+
+      
     async exists(key) {
         try {
             await this.headObject(key);

@@ -1,9 +1,12 @@
 import base64
+
+import flask_socketio
 import numpy as np
 import cv2
 from flask import Blueprint, request, jsonify
-from flask_socketio import join_room, leave_room
+from flask_socketio import join_room, leave_room, rooms
 from app.services.ai_service import process_frame
+from app.services import websocket_room_service
 
 from app import sock
 
@@ -57,5 +60,32 @@ def on_join(data):
 @sock.on("leave")
 def on_leave(data):
     room_id = data["roomName"]
+    if room_id is None or room_id == '':
+        print("No room ID provided")
+        sock.emit("message", "No room ID provided", room=room_id)
+        return
+
     leave_room(room_id)
+    if get_room_size(room_id) == 0:
+        print(f"Room {room_id} is empty")
+        websocket_room_service.remove_room(room_id)
     sock.emit("message", f"User {request.sid} left room {room_id}", room=room_id)
+
+
+@sock.on("increaseEmotionCount")
+def on_increase_emotion_count(data):
+    print("################ Increase emotion count ################")
+    print(data)
+    room_id = data["roomName"]
+    if room_id is None or room_id == '':
+        print("No room ID provided")
+        sock.emit("message", "No room ID provided", room=room_id)
+        return
+
+    websocket_room_service.increase_motion_count(room_id, data["emotion"])
+    sock.emit("increaseEmotionCount", websocket_room_service.room_motions[room_id], room=room_id)
+    print(websocket_room_service.room_motions)
+
+
+def get_room_size(room_id):
+    return len(sock.server.manager.rooms.get("/", {}).get(room_id, {}))

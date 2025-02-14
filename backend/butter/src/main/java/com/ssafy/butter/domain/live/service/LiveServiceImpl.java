@@ -12,6 +12,8 @@ import com.ssafy.butter.domain.live.entity.Live;
 import com.ssafy.butter.domain.live.repository.LiveRepository;
 import com.ssafy.butter.domain.member.entity.Member;
 import com.ssafy.butter.domain.member.service.member.MemberService;
+import com.ssafy.butter.domain.notification.enums.NotificationType;
+import com.ssafy.butter.domain.notification.service.NotificationService;
 import com.ssafy.butter.domain.schedule.service.ScheduleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -34,6 +36,7 @@ public class LiveServiceImpl implements LiveService {
     private final CrewMemberService crewMemberService;
     private final ScheduleService scheduleService;
     private final ChatRoomService chatRoomService;
+    private final NotificationService notificationService;
 
     private final LiveRepository liveRepository;
 
@@ -50,6 +53,12 @@ public class LiveServiceImpl implements LiveService {
                 .startDate(liveSaveRequestDTO.startDate())
                 .schedule(liveSaveRequestDTO.scheduleId() == null ? null : scheduleService.findById(liveSaveRequestDTO.scheduleId()))
                 .build();
+
+        String content = "새로운 라이브: " + live.getTitle();
+        String notificationType = NotificationType.SCHEDULE.getAlias();
+        String url = NotificationType.SCHEDULE.getPath() + live.getId();
+        notificationService.sendNotificationToFollowers(live.getCrew(), content, notificationType, url);
+
         return LiveResponseDTO.from(
                 liveRepository.save(live),
                 chatRoomService.getUserCount(crew.getId().toString()));

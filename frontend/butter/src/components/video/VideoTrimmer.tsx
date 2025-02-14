@@ -282,7 +282,7 @@ const VideoTrimmer = ({
       console.log("📡 서버 요청 중...");
       console.log(recordingName, title, startSeconds, endSeconds);
       const response = await fetch(
-        "http://localhost:6080/api/recordings/clip",
+        `${SEVER_URL}/recordings/clip`,
         {
           method: "POST",
           headers: {
@@ -293,6 +293,7 @@ const VideoTrimmer = ({
             title,
             startTime: startSeconds,
             endTime: endSeconds,
+            time: new Date()
           }),
         }
       );
@@ -301,7 +302,8 @@ const VideoTrimmer = ({
 
       if (response.ok) {
         console.log("✅ 서버 응답:", data);
-        alert(`녹화 클립 생성 완료: ${data.clippedRecordingName}`);
+        console.log(data.clipUrl)
+        alert(`녹화 클립 생성 완료`);
       } else {
         console.error("❌ 오류 발생:", data.errorMessage);
         alert(`오류 발생: ${data.errorMessage}`);

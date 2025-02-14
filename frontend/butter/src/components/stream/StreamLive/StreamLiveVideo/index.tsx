@@ -37,6 +37,7 @@ function StreamLiveVideo({
         async (blob) => {
           if (blob) {
             const formData = new FormData();
+            console.log("streamer의 영상을 서버로 보냅니다");
             formData.append("file", blob);
 
             // 참가자 정보와 룸 정보도 함께 전송
@@ -45,7 +46,9 @@ function StreamLiveVideo({
             formData.append("role", role);
             formData.append("room-id", roomName);
 
-            const serverUrl = "http://localhost:5000/ai/upload_frame";
+            const serverUrl = `${
+              import.meta.env.VITE_FLASK_SERVER
+            }/ai/upload_frame`;
 
             // const agent = new https.Agent({
             //   rejectUnauthorized: false,

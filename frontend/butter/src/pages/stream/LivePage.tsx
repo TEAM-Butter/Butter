@@ -238,7 +238,7 @@ const LivePage = () => {
 
   const navigate = useNavigate();
   // const socket = io.connect("http://localhost:5000");
-  const socket = io("http://localhost:5000", {
+  const socket = io(`${import.meta.env.VITE_FLASK_SERVER}`, {
     transports: ["websocket"],
   });
 
@@ -414,13 +414,15 @@ const LivePage = () => {
       if (role === "crew") {
         setParticipantRole("publisher");
       }
-      console.log("아암ㄹ나ㅓㅇ루마ㅓㄴ율 ㅏㅓ;ㅁ뉼;");
+      console.log(
+        `확인용 입니다!!!!!!!!${roomName}, ${participantName}, ${participantRole}`
+      );
       // Get a token from your application server with the room name and participant name
       const token = await getToken(roomName, participantName, participantRole);
       // Connect to the room with the LiveKit URL and the token
 
       //방에 참가 할 때 본인이 publisher인지 subscriber인지 정보
-      socket.emit("join", { roomName, participantRole });
+      socket.emit("join", { roomName, role: participantRole });
 
       console.log("webRtc token :", token);
       await room.connect(LIVEKIT_URL, token);
@@ -454,7 +456,7 @@ const LivePage = () => {
     participantRole: string
   ) {
     try {
-      const response = await fetch(APPLICATION_SERVER_URL + "token", {
+      const response = await fetch(APPLICATION_SERVER_URL + "/token", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -539,7 +541,11 @@ const LivePage = () => {
                 />
               </LeftTop>
               <CharacterBox>
-                <CharacterContainer socket={socket} />
+                <CharacterContainer
+                  socket={socket}
+                  participantName={participantName}
+                  roomName={roomName}
+                />
               </CharacterBox>
             </Left>
 
@@ -614,7 +620,11 @@ const LivePage = () => {
               />
             </LeftTop>
             <CharacterBox>
-              <CharacterContainer socket={socket} />
+              <CharacterContainer
+                socket={socket}
+                participantName={participantName}
+                roomName={roomName}
+              />
             </CharacterBox>
           </Left>
 

@@ -288,7 +288,7 @@ function CrewListPage() {
             </CrewBox>
             )})} 
         </CrewListContainer>
-       { modalType === "crewSearch" && <CrewSearchModal width="600px" height="300px" setModalType={setModalType}></CrewSearchModal>}
+       { modalType === "crewSearch" && <CrewSearchModal width="600px" height="500px" setModalType={setModalType}></CrewSearchModal>}
        </div>
     )
 }

@@ -14,16 +14,14 @@ import com.ssafy.butter.domain.crew.entity.CrewMember;
 import com.ssafy.butter.domain.crew.entity.Follow;
 import com.ssafy.butter.domain.crew.entity.Genre;
 import com.ssafy.butter.domain.crew.repository.CrewGenreRepository;
-import com.ssafy.butter.domain.crew.repository.crewmember.CrewMemberRepository;
 import com.ssafy.butter.domain.crew.repository.crew.CrewRepository;
+import com.ssafy.butter.domain.crew.repository.crewmember.CrewMemberRepository;
 import com.ssafy.butter.domain.crew.repository.follow.FollowRepository;
 import com.ssafy.butter.domain.crew.repository.genre.GenreRepository;
 import com.ssafy.butter.domain.member.entity.Member;
 import com.ssafy.butter.domain.member.service.member.MemberService;
 import com.ssafy.butter.infrastructure.awsS3.S3ImageUploader;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -86,10 +84,7 @@ public class  CrewServiceImpl implements CrewService {
     public CrewMemberResponseDTO createCrewMember(AuthInfoDTO currentUser, CrewMemberRequestDTO crewMemberRequestDTO) {
         Member currentMember = memberService.findById(currentUser.id());
         Crew crew = crewRepository.findById(crewMemberRequestDTO.crewId()).orElseThrow();
-        CrewMember currentCrewMember = crewMemberRepository.findByCrewAndMember(crew, currentMember).orElseThrow();
-        if (!currentCrewMember.getIsCrewAdmin()) {
-            throw new IllegalArgumentException("Current user is not crew admin");
-        }
+        validateCrewAdmin(crew, currentMember);
 
         Member member = memberService.findById(crewMemberRequestDTO.memberId());
         crewMemberRepository.findByCrewAndMember(crew, member).ifPresent(crewMember -> {
@@ -114,10 +109,7 @@ public class  CrewServiceImpl implements CrewService {
     public void deleteCrewMember(AuthInfoDTO currentUser, Long crewId, Long memberId) {
         Member currentMember = memberService.findById(currentUser.id());
         Crew crew = crewRepository.findById(crewId).orElseThrow();
-        CrewMember currentCrewMember = crewMemberRepository.findByCrewAndMember(crew, currentMember).orElseThrow();
-        if (!currentCrewMember.getIsCrewAdmin()) {
-            throw new IllegalArgumentException("Current user is not crew admin");
-        }
+        validateCrewAdmin(crew, currentMember);
         Member member = memberService.findById(memberId);
         CrewMember crewMember = crewMemberRepository.findByCrewAndMember(crew, member).orElseThrow();
         crewMemberRepository.delete(crewMember);
@@ -154,10 +146,7 @@ public class  CrewServiceImpl implements CrewService {
     public CrewResponseDTO updateCrew(AuthInfoDTO currentUser, Long id, CrewSaveRequestDTO crewSaveRequestDTO) {
         Member currentMember = memberService.findById(currentUser.id());
         Crew crew = crewRepository.findById(id).orElseThrow();
-        CrewMember currentCrewMember = crewMemberRepository.findByCrewAndMember(crew, currentMember).orElseThrow();
-        if (!currentCrewMember.getIsCrewAdmin()) {
-            throw new IllegalArgumentException("Current user is not crew admin");
-        }
+        validateCrewAdmin(crew, currentMember);
         String imageUrl = null;
         if (crewSaveRequestDTO.image() != null) {
             imageUrl = s3ImageUploader.uploadImage(crewSaveRequestDTO.image());
@@ -177,10 +166,7 @@ public class  CrewServiceImpl implements CrewService {
     public CrewResponseDTO deleteCrew(AuthInfoDTO currentUser, Long id) {
         Member currentMember = memberService.findById(currentUser.id());
         Crew crew = crewRepository.findById(id).orElseThrow();
-        CrewMember currentCrewMember = crewMemberRepository.findByCrewAndMember(crew, currentMember).orElseThrow();
-        if (!currentCrewMember.getIsCrewAdmin()) {
-            throw new IllegalArgumentException("Current user is not crew admin");
-        }
+        validateCrewAdmin(crew, currentMember);
         crewRepository.delete(crew);
         return CrewResponseDTO.fromEntity(crew);
     }
@@ -250,10 +236,7 @@ public class  CrewServiceImpl implements CrewService {
     public void createCrewGenre(AuthInfoDTO currentUser, Long id, CrewGenreRequestDTO crewGenreRequestDTO) {
         Member currentMember = memberService.findById(currentUser.id());
         Crew crew = crewRepository.findById(id).orElseThrow();
-        CrewMember currentCrewMember = crewMemberRepository.findByCrewAndMember(crew, currentMember).orElseThrow();
-        if (!currentCrewMember.getIsCrewAdmin()) {
-            throw new IllegalArgumentException("Current user is not crew admin");
-        }
+        CrewMember currentCrewMember = validateCrewAdmin(crew, currentMember);
 
         List<Genre> genres = crewGenreRequestDTO.genreNames().stream()
                 .map(genreName -> genreRepository.findByName(genreName).orElseThrow()).toList();
@@ -269,5 +252,14 @@ public class  CrewServiceImpl implements CrewService {
     public List<CrewResponseDTO> getFollowedCrewList(AuthInfoDTO currentUser) {
         return crewRepository.getFollowedCrewList(currentUser.id()).stream()
                 .map(CrewResponseDTO::fromEntity).toList();
+    }
+
+    @Override
+    public CrewMember validateCrewAdmin(Crew crew, Member member) {
+        CrewMember crewMember = crewMemberRepository.findByCrewAndMember(crew, member).orElseThrow();
+        if (crewMember.getIsCrewAdmin()) {
+            throw new IllegalArgumentException("Current user is not crew admin");
+        }
+        return crewMember;
     }
 }
