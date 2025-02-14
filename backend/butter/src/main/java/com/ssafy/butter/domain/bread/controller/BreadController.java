@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssafy.butter.auth.dto.AuthInfoDTO;
 import com.ssafy.butter.domain.bread.dto.request.BreadDonationRequestDTO;
 import com.ssafy.butter.domain.bread.dto.request.BreadRechargeRequestDTO;
+import com.ssafy.butter.domain.bread.dto.request.BreadSettlementRequestDTO;
 import com.ssafy.butter.domain.bread.dto.response.PaymentVerificationResponseDTO;
 import com.ssafy.butter.domain.bread.service.BreadService;
 import com.ssafy.butter.global.token.CurrentUser;
@@ -100,6 +101,14 @@ public class BreadController {
             @CurrentUser AuthInfoDTO authInfoDTO,
             @RequestBody BreadDonationRequestDTO breadDonationRequestDTO) {
         breadService.donateBread(authInfoDTO, breadDonationRequestDTO);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/settle")
+    public ResponseEntity<Void> settleBread(
+            @CurrentUser AuthInfoDTO authInfoDTO,
+            @RequestBody BreadSettlementRequestDTO breadSettlementRequestDTO) {
+        breadService.settleBread(authInfoDTO, breadSettlementRequestDTO);
         return ResponseEntity.noContent().build();
     }
 }
