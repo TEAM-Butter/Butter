@@ -414,7 +414,9 @@ const LivePage = () => {
       if (role === "crew") {
         setParticipantRole("publisher");
       }
-      console.log("아암ㄹ나ㅓㅇ루마ㅓㄴ율 ㅏㅓ;ㅁ뉼;");
+      console.log(
+        `확인용 입니다!!!!!!!!${roomName}, ${participantName}, ${participantRole}`
+      );
       // Get a token from your application server with the room name and participant name
       const token = await getToken(roomName, participantName, participantRole);
       // Connect to the room with the LiveKit URL and the token
