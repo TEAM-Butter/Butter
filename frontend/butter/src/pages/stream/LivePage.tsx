@@ -22,8 +22,10 @@ import UserBox from "../../components/stream/UserBox";
 
 import background from "../../assets/background.png";
 import CharacterContainer from "../../components/stream/CharacterContainer";
+import { SocketContent } from "../../types/socket";
+import { io } from "socket.io-client";
 
-import socketIOClient from "socket.io-client";
+import { useUserStore } from "../../stores/UserStore";
 
 const LivePageWrapper = styled.div`
   display: flex;
@@ -189,11 +191,12 @@ type TrackInfo = {
 // For other deployment type, configure them with correct URLs depending on your deployment
 //let APPLICATION_SERVER_URL = "https://i12e204.p.ssafy.io/test/api";
 //let APPLICATION_SERVER_URL = "https://192.168.30.199:6080/";
-let APPLICATION_SERVER_URL = "";
+let APPLICATION_SERVER_URL = import.meta.env.VITE_NODE_JS_SERVER || "";
+
 
 //let LIVEKIT_URL = "https://i12e204.p.ssafy.io:5443/twirp";
 //let LIVEKIT_URL = "wss://192.168.30.199:7880/";
-let LIVEKIT_URL = ""
+let LIVEKIT_URL = import.meta.env.VITE_NODE_JS_SERVER || "";
 
 let TOKEN = "";
 configureUrls();
@@ -233,26 +236,30 @@ const LivePage = () => {
   const [recordings, setRecordings] = useState<Recording[]>([]);
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
   const [currentVideoUrl, setCurrentVideoUrl] = useState("");
+  const [participantRole, setParticipantRole] = useState("subscriber");
+
   const navigate = useNavigate();
-  const socket = socketIOClient("http://localhost:5000");
+  // const socket = io.connect("http://localhost:5000");
+  const socket = io("http://localhost:5000", {
+    transports: ["websocket"],
+  });
+
+  // export const SocketContext = React.createContext<socketType>(socket);
 
   // 크루ID 로 roomName을 설정 //해쉬!!!
 
   const roomName = state.roomName;
-  let participantName = "user";
-  let role = "";
 
-  // socket.on("message", (content) => addToBulletin(content));
-
-  //캐릭터를 동작시키는 함수를 적어라
-  socket.on("message", (content) => console.log(content));
+  let role = useUserStore((state) => state.memberType);
+  let participantName = useUserStore((state) => state.nickname) ?? "guest";
+  console.log("role: " + role + " name: " + participantName);
 
   if (!role) {
     if (window.location.hostname === "localhost") {
-      role = "publisher";
+      role = "crew";
       participantName = state.participantName;
     } else {
-      role = "subscriber";
+      role = "user";
     }
   }
 
@@ -418,10 +425,10 @@ const LivePage = () => {
       console.log("Connected to room successfully");
       console.log(room);
 
-      if (role == "publisher") {
+      if (role == "crew") {
         // Publish your camera and microphone
         await room.localParticipant.enableCameraAndMicrophone();
-
+        setParticipantRole("publisher");
         console.log("enableCameraAndMicrophone");
 
         setLocalTrack(
@@ -496,24 +503,6 @@ const LivePage = () => {
     };
   }, [leaveRoom]);
 
-  // useEffect(() => {
-  //   const fetchRecordings = async () => {
-  //     try {
-  //       if (recordingService && room) {
-  //         const recordingList = await recordingService.listRecordings(
-  //           roomName,
-  //           room.sid
-  //         );
-  //         setRecordings(recordingList);
-  //       }
-  //     } catch (error) {
-  //       console.error("Failed to load recordings:", error);
-  //     }
-  //   };
-
-  //   fetchRecordings();
-  // }, [recordingService]);
-  // recordingService가 변경될 때마다 목록 업데이트
   useEffect(() => {
     updateRecordingsList();
   }, [recordingService, updateRecordingsList]);
@@ -538,15 +527,19 @@ const LivePage = () => {
   console.log("recordings", recordings);
   return (
     <>
-      {role === "publisher" ? (
+      {participantRole === "publisher" ? (
         <>
           <LivePageWrapper>
             <Left>
               <LeftTop>
-                <StreamChat />
+                <StreamChat
+                  participantName={participantName}
+                  roomRole={role}
+                  streamId={roomName}
+                />
               </LeftTop>
               <CharacterBox>
-                <CharacterContainer />
+                <CharacterContainer socket={socket} />
               </CharacterBox>
             </Left>
 
@@ -560,7 +553,7 @@ const LivePage = () => {
                   remoteTracks={remoteTracks}
                   serverUrl={APPLICATION_SERVER_URL}
                   token={TOKEN}
-                  role={role}
+                  role={participantRole}
                 />
               </RightTop>
               <RightMiddle>
@@ -617,11 +610,11 @@ const LivePage = () => {
                 remoteTracks={remoteTracks} // localTrack 제거
                 serverUrl={APPLICATION_SERVER_URL}
                 token={TOKEN}
-                role={role}
+                role={participantRole}
               />
             </LeftTop>
             <CharacterBox>
-              <CharacterContainer />
+              <CharacterContainer socket={socket} />
             </CharacterBox>
           </Left>
 
@@ -630,11 +623,15 @@ const LivePage = () => {
               <UserBox
                 participantName={participantName}
                 roomName={roomName}
-                role={role}
+                role={participantRole}
               />
             </RightTop>
             <RightMiddle>
-              <StreamChat />
+              <StreamChat
+                participantName={participantName}
+                roomRole={role}
+                streamId={roomName}
+              />
             </RightMiddle>
             <BackBtn onClick={handleBackBtnClick}>
               <div style={{ color: "black" }}>

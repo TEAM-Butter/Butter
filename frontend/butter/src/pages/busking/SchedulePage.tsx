@@ -260,8 +260,6 @@ const DateTextBox2 = styled.p`
   font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 `
 
-const ServerUrl = 'http://localhost:8080'
-
 
 function SchedulePage() {
   useKakaoLoader()
@@ -466,37 +464,41 @@ function SchedulePage() {
   }
 
   
-  // 지도 주소로 변환해주는 함수
+  // 지도 주소를 리스트에 추가해주는 함수
   const useGeocodePositions = (positions: Position[]) => {
-
-  const [updatedPositions, setUpdatedPositions] = useState<Position[]>([]);
-
-  useEffect(() => {
-    
-    if (!window.kakao || !window.kakao.maps) return;
-
-    const geocoder = new kakao.maps.services.Geocoder();
-    let tempPositions: Position[] = [];
-
-    positions.forEach((pos, index) => {
-      geocoder.coord2Address(pos.position.lng, pos.position.lat, (result, status) => {
-        if (status === kakao.maps.services.Status.OK) {
-          const address = result[0]?.address?.address_name || "알 수 없음";
-          tempPositions.push({ ...pos, address });
-
-          // 모든 위치의 주소 변환이 완료되면 상태 업데이트
-          if (tempPositions.length === positions.length) {
-            setUpdatedPositions(tempPositions);
-          }
-        }
-      });
-    });
-  }, [positions]);
-    
+    const [updatedPositions, setUpdatedPositions] = useState<Position[]>([]);
+  
+    useEffect(() => {
+      if (!window.kakao || !window.kakao.maps) return;
+      if (positions.length === 0) return;
+  
+      const geocoder = new kakao.maps.services.Geocoder();
+  
+      const fetchAddresses = async () => {
+        const results = await Promise.all(
+          positions.map((pos) => 
+            new Promise<Position>((resolve) => {
+              geocoder.coord2Address(pos.position.lng, pos.position.lat, (result, status) => {
+                if (status === kakao.maps.services.Status.OK) {
+                  resolve({ ...pos, address: result[0]?.address?.address_name || "알 수 없음" });
+                } else {
+                  resolve({ ...pos, address: "주소 변환 실패" });
+                }
+              });
+            })
+          )
+        );
+  
+        setUpdatedPositions(results);  // ✅ 모든 변환 완료 후 상태 업데이트
+      };
+  
+      fetchAddresses();
+    }, [positions]);  // ✅ positions이 변경될 때만 실행
+  
     return updatedPositions;
   };
-
-
+  
+const updatedPositions = useGeocodePositions(positions2)
 
   // ✅ markers가 변경될 때 로그 출력
 useEffect(() => {
@@ -507,9 +509,9 @@ useEffect(() => {
 
   // positions2가 변경될 때 로그 출력
 useEffect(() => {
-  
   console.log("✅ positions2 상태 업데이트됨:", positions2);
   
+
 }, [positions2]);
 
 
@@ -632,7 +634,7 @@ useEffect(() => {
     const fecthDaySchedule = async () => {
       try {
           setLoading(true) 
-          const response = await axiosInstance.get(`${ServerUrl}/api/v1/schedule?pageSize=60&date=${todayStr}`)
+          const response = await axiosInstance.get(`/schedule?pageSize=60&date=${todayStr}`)
           setDaySchedule(response.data);
           console.log("daySchedule : ", response.data)
 
@@ -656,38 +658,33 @@ useEffect(() => {
 
   // }
   
-  const ChooseDay = function(selectedDate : any) {
-    const fecthDaySchedule = async () => {
-      try {
+  const ChooseDay = async (selectedDate: any) => {
+    try {
+      const response = await axiosInstance.get(`/schedule?pageSize=60&date=${selectedDate}`);
       
-          const response = await axiosInstance.get(`${ServerUrl}/api/v1/schedule?pageSize=60&date=${selectedDate}`)
-          setDaySchedule(response.data);
-          console.log("daySchedule : ", response.data)
-          const bounds = new kakao.maps.LatLngBounds()
-          let markers3 = []
-          for (var i = 0; i < daySchedule.length; i++) {
-            // @ts-ignore
-            markers3.push({
-              position: {
-                lat: parseFloat(daySchedule[i].latitude),
-                lng: parseFloat(daySchedule[i].longitude),
-              },
-              content: daySchedule[i].place,
-            })
-            // @ts-ignore
-            bounds.extend(new kakao.maps.LatLng(daySchedule[i].latitude, daySchedule[i].longitude))}
-            // console.log("20개가 베스트", markers3)
-            setMarkers(markers3)
-      } catch (err :any) {
-        setError(err.message);
-      } finally {
- 
-      }
+      const schedules = response.data; // ✅ 데이터를 변수에 저장
+      setDaySchedule(schedules); // ✅ 상태 업데이트
+  
+      console.log("daySchedule : ", schedules);
+  
+      const bounds = new kakao.maps.LatLngBounds();
+      let markers3 = schedules.map((schedule: any) => ({
+        position: {
+          lat: parseFloat(schedule.latitude),
+          lng: parseFloat(schedule.longitude),
+        },
+        content: schedule.place,
+      }));
+  
+      markers3.forEach((marker:any) => {
+        bounds.extend(new kakao.maps.LatLng(marker.position.lat, marker.position.lng));
+      });
+  
+      setMarkers(markers3); // ✅ markers3를 한 번에 업데이트
+    } catch (err: any) {
+      setError(err.message);
     }
-    
-    fecthDaySchedule()
-   
-  }
+  };
 
 
 
@@ -914,7 +911,7 @@ useEffect(() => {
                 selectAllow={(selectInfo : any) => {
                   return selectInfo.end - selectInfo.start === 86400000; // 하루(밀리초 단위)만 허용
                 }}
-                dateClick={(info) => {setSelectedDate(info.dateStr); ChooseDay(selectedDate)} } // ✅ 날짜 클릭 시 업데이트
+                dateClick={(info) => {setSelectedDate(info.dateStr); ChooseDay(selectedDate);} } // ✅ 날짜 클릭 시 업데이트
               />
                 {/* 선택한 날짜를 화면에 표시 */}
                 {selectedDate && <DateTextBox>선택한 날짜: {selectedDate}</DateTextBox>}

@@ -198,6 +198,14 @@ function Navbar() {
                   <Link to="/bread/recharge">
                     <SubItem>브레드 충전</SubItem>
                   </Link>
+                  <SubItem
+                    className="openModalBtn"
+                    onClick={() => {
+                      setModalType("streaming");
+                    }}
+                  >
+                    스트리밍 라이브
+                  </SubItem>
                   {memberType == "crew" ? (
                     <>
                       <SubItem

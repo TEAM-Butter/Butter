@@ -10,14 +10,15 @@ export class RecordingService {
     this.room = room;
     // this.baseUrl = baseUrl;
     this.baseUrl =
-      import.meta.env.VITE_APPLICATION_SERVER_URL || "http://localhost:6080";
+      import.meta.env.VITE_NODE_JS_SERVER ||
+      "http://localhost:6080/api";
   }
 
   isRecordingInProgress(): boolean {
     return this.isRecording;
   }
   async startRecording(): Promise<void> {
-    const response = await this.httpRequest("POST", "/recordings/start", {
+    const response = await this.httpRequest("POST", "recordings/start", {
       roomName: this.room.name,
     });
     if (response.error) {
@@ -26,7 +27,7 @@ export class RecordingService {
   }
 
   async stopRecording(): Promise<void> {
-    const response = await this.httpRequest("POST", "/recordings/stop", {
+    const response = await this.httpRequest("POST", "recordings/stop", {
       roomName: this.room.name,
     });
     if (response.error) {
@@ -52,7 +53,7 @@ export class RecordingService {
   async deleteRecording(recordingName: string): Promise<void> {
     const response = await this.httpRequest(
       "DELETE",
-      `/recordings/${recordingName}`
+      `recordings/${recordingName}`
     );
     if (response.error && response.error.status !== 404) {
       throw new Error(`Failed to delete recording: ${response.error.message}`);
@@ -62,7 +63,7 @@ export class RecordingService {
   async getRecordingUrl(recordingName: string): Promise<string> {
     const response = await this.httpRequest(
       "GET",
-      `/recordings/${recordingName}/url`
+      `recordings/${recordingName}/url`
     );
     if (response.error) {
       throw new Error(`Failed to get recording URL: ${response.error.message}`);
@@ -77,7 +78,7 @@ export class RecordingService {
     roomId?: string
   ): Promise<Recording[]> {
     const url =
-      "/recordings" +
+      "recordings" +
       (roomName
         ? `?roomName=${roomName}` + (roomId ? `&roomId=${roomId}` : "")
         : "");
@@ -101,9 +102,12 @@ export class RecordingService {
         body: method !== "GET" ? JSON.stringify(body) : undefined,
       });
 
+      console.log("리스트 조회", response);
       const responseBody = await response.json();
 
       if (!response.ok) {
+        console.log("리스트 조회 실패");
+
         return {
           error: {
             status: response.status,

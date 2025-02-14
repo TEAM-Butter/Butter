@@ -47,10 +47,22 @@ public class LiveController {
         return ResponseEntity.ok(liveService.getLiveDetail(id));
     }
 
-    @Operation(summary = "라이브 목록 조회", description = "라이브 목록을 조회합니다.")
+    @Operation(
+            summary = "라이브 목록 조회",
+            description = "라이브 목록을 조회합니다.<br>" +
+                    "sortBy: viewerCount, startDate 중 하나")
     @GetMapping("/list")
     public ResponseEntity<List<LiveResponseDTO>> getLiveList(
             @ParameterObject @ModelAttribute LiveListRequestDTO liveListRequestDTO) {
         return ResponseEntity.ok(liveService.getLiveList(liveListRequestDTO));
+    }
+
+    @Operation(summary = "라이브 종료", description = "라이브를 종료합니다.")
+    @PatchMapping("/{id}")
+    public ResponseEntity<List<LiveResponseDTO>> finishLive(
+            @Parameter(hidden = true) @CurrentUser AuthInfoDTO currentUser,
+            @PathVariable Long id) {
+        liveService.finishLive(currentUser, id);
+        return ResponseEntity.noContent().build();
     }
 }

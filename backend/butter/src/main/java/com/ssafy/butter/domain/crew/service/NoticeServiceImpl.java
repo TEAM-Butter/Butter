@@ -11,6 +11,8 @@ import com.ssafy.butter.domain.crew.repository.crew.CrewRepository;
 import com.ssafy.butter.domain.crew.repository.notice.NoticeRepository;
 import com.ssafy.butter.domain.member.entity.Member;
 import com.ssafy.butter.domain.member.service.member.MemberService;
+import com.ssafy.butter.domain.notification.enums.NotificationType;
+import com.ssafy.butter.domain.notification.service.NotificationService;
 import com.ssafy.butter.infrastructure.awsS3.S3ImageUploader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -26,6 +28,7 @@ public class NoticeServiceImpl implements NoticeService {
     private final S3ImageUploader s3ImageUploader;
 
     private final MemberService memberService;
+    private final NotificationService notificationService;
 
     private final CrewRepository crewRepository;
     private final CrewMemberRepository crewMemberRepository;
@@ -55,6 +58,12 @@ public class NoticeServiceImpl implements NoticeService {
                 .content(noticeSaveRequestDTO.content())
                 .imageUrl(imageUrl)
                 .build();
+
+        String content = "크루 공지: " + notice.getTitle();
+        String notificationType = NotificationType.NOTICE.getAlias();
+        String url = NotificationType.NOTICE.getPath() + notice.getId();
+        notificationService.sendNotificationToFollowers(notice.getCrew(), content, notificationType, url);
+
         return NoticeResponseDTO.fromEntity(noticeRepository.save(notice));
     }
 

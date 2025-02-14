@@ -10,72 +10,70 @@ import { useNavigate } from "react-router-dom";
 import { useUserStore } from "../../stores/UserStore";
 import NaverLogin from "./Naver/NaverLogin";
 
-
 const FormWrapper = styled.form`
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+`;
 
 const LgText = styled.div<ColorProps>`
-    min-height: 100px;
-    display: flex;
-    flex-direction: column-reverse;
-    font-size: 35px;
-    color: ${(props) => props.textColor};
-    font-weight: 200;
-`
+  min-height: 100px;
+  display: flex;
+  flex-direction: column-reverse;
+  font-size: 35px;
+  color: ${(props) => props.textColor};
+  font-weight: 200;
+`;
 
 const TextInput = styled.input`
-    background-color: transparent;
-    border: none;
-    border-bottom: 1px solid black;
-    padding: 15px 5px;
-    font-size: 17px;
-    font-weight: 500;
-    margin-top: 10px;
-`
-
+  background-color: transparent;
+  border: none;
+  border-bottom: 1px solid black;
+  padding: 15px 5px;
+  font-size: 17px;
+  font-weight: 500;
+  margin-top: 10px;
+`;
 
 const FormBtn = styled.button<ColorProps>`
-    border: none;
-    background-color: ${(props) => props.bgColor};
-    width: 100%;
-    height: 50px;
-    border-radius: 30px;
-    font-size: 18px;
-    color: white;
-    margin-top: 12px;
-`
+  border: none;
+  background-color: ${(props) => props.bgColor};
+  width: 100%;
+  height: 50px;
+  border-radius: 30px;
+  font-size: 18px;
+  color: white;
+  margin-top: 12px;
+`;
 
 interface ColorProps {
-    bgColor?: string;
-    textColor?: string;
+  bgColor?: string;
+  textColor?: string;
 }
 
 const WrongComment = styled.div`
-    flex: 1;
-    min-height: 30px;
-`
+  flex: 1;
+  min-height: 30px;
+`;
 
 // Login Css
 const ForgetComment = styled.div`
-    color: #6D6D6D;
-    font-size: 14px;
-    padding: 10px 0 15px 0;
-`
+  color: #6d6d6d;
+  font-size: 14px;
+  padding: 10px 0 15px 0;
+`;
 
 interface ModalProps {
-    setModalType: React.Dispatch<React.SetStateAction<string>>,
+  setModalType: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export const LoginForm = ({ setModalType }: ModalProps) => {
-    const setUser = useUserStore(state => state.setUser)
-    const navigator = useNavigate();
+  const setUser = useUserStore((state) => state.setUser);
+  const navigator = useNavigate();
 
-    const [loginId, setLoginId] = useState<string>('')
-    const [password, setPassword] = useState<string>('')
+  const [loginId, setLoginId] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
 
     const LoginBtnHandler = () => {
         const requestBody: LoginRequestDto = { loginId, password };
@@ -106,31 +104,47 @@ export const LoginForm = ({ setModalType }: ModalProps) => {
 };
 
 const RadioWrapper = styled.div`
-    display: flex;
-    gap: 5px;
-    padding: 10px 0;`
+  display: flex;
+  gap: 5px;
+  padding: 10px 0;
+`;
 
 const InputLabel = styled.label`
-    color: var(--darkgray);
-    display: flex;
-    align-items: center;
-    gap: 3px;
-    `
-const RadioInput = styled.input`
-`
+  color: var(--darkgray);
+  display: flex;
+  align-items: center;
+  gap: 3px;
+`;
+const RadioInput = styled.input``;
 const BirthInput = styled.input`
-    margin-left: 5px;
-    `
+  margin-left: 5px;
+`;
 
 export const SignupForm = () => {
-    const navigator = useNavigate();
-    const setUser = useUserStore(state => state.setUser)
-    const [loginId, setLoginId] = useState<string>('')
-    const [email, setEmail] = useState<string>('')
-    const [password, setPassword] = useState<string>('')
-    const [gender, setGender] = useState<string>('')
-    const [birthDate, setBirthDate] = useState<string>('')
+  const navigator = useNavigate();
+  const setUser = useUserStore((state) => state.setUser);
+  const [loginId, setLoginId] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [gender, setGender] = useState<string>("");
+  const [birthDate, setBirthDate] = useState<string>("");
 
+  const LoginHandler = () => {
+    const requestBody: LoginRequestDto = { loginId, password };
+    loginRequest(requestBody).then((responseBody: LoginResponseDto | null) => {
+      const { accessToken } = responseBody as LoginResponseDto;
+      setAccessToken(accessToken);
+      navigator(`/`);
+      setUser(
+        true,
+        "guest",
+        "profile.jpg",
+        "pet1",
+        String(responseBody?.authenticatedMemberInfo.memberType),
+        Boolean(responseBody?.authenticatedMemberInfo.isExtraInfoRegistered)
+      );
+    });
+  };
 
     const LoginHandler = () => {
         const requestBody: LoginRequestDto = { loginId, password };
@@ -174,4 +188,3 @@ export const SignupForm = () => {
         </FormWrapper>
     )
 };
-
