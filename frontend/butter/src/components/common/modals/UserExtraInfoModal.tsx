@@ -1,6 +1,6 @@
 import { ExtraFileInput } from "../input/FileInput";
 import { useState } from "react";
-import * as MC from "./modalComponents/modalComponents"
+import * as MC from "./modalComponents/modalComponents.tsx"
 import styled from "@emotion/styled";
 import Select from "react-select";
 import pet1 from "/src/assets/pets/pet1.png";

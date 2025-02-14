@@ -1,5 +1,5 @@
 import { useState } from "react";
-import * as MC from "./modalComponents/modalComponents"
+import * as MC from "./modalComponents/modalComponents.tsx"
 import styled from "@emotion/styled";
 
 const ForgotInfo = styled.div`
