@@ -9,6 +9,8 @@ import com.ssafy.butter.domain.crew.dto.request.CrewSaveRequestDTO;
 import com.ssafy.butter.domain.crew.dto.response.CrewMemberResponseDTO;
 import com.ssafy.butter.domain.crew.dto.response.CrewResponseDTO;
 import com.ssafy.butter.domain.crew.entity.Crew;
+import com.ssafy.butter.domain.crew.entity.CrewMember;
+import com.ssafy.butter.domain.member.entity.Member;
 
 import java.util.List;
 
@@ -37,4 +39,6 @@ public interface CrewService {
     Crew findById(Long id);
 
     void createCrewGenre(AuthInfoDTO currentUser, Long id, CrewGenreRequestDTO crewGenreRequestDTO);
+
+    CrewMember validateCrewAdmin(Crew crew, Member member);
 }
