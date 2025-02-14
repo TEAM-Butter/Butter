@@ -78,20 +78,48 @@ export class RecordingService {
     const recordings = await Promise.all(
       metadataKeys.map((metadataKey) => s3Service.getObjectAsJson(metadataKey))
     );
-    // const recordings = await Promise.all(
-    //   metadataKeys.map(async (metadataKey) => {
-    //     const metadata = await s3Service.getObjectAsJson(metadataKey);
-    //     const recordingExists = await this.existsRecording(metadata.name);
-    //     return recordingExists ? metadata : null;
-    //   })
-    // );
-
-    // const validRecordings = recordings.filter(
-    //   (recording) => recording !== null
-    // );
-
-    // return this.filterAndSortRecordings(validRecordings, roomName, roomId);
+    
     return this.filterAndSortRecordings(recordings, roomName, roomId);
+  }
+
+  async listClips(crewId) {
+    const keyStart =
+      CLIPS_PATH + "clip-" + (crewId ? `${crewId}` : "");
+    const keyEnd = ".mp4";
+    const regex = new RegExp(`^${keyStart}.*${keyEnd}$`);
+
+    // List all egress metadata files in the recordings path that match the regex
+    const clipKeys = await s3Service.listObjects(
+      CLIPS_PATH,
+      regex
+    );
+
+    const clips = clipKeys.map((clipKey) => {
+      // Extract the timestamp from the clip name (assuming the name contains a timestamp)
+      const timestamp = clipKey.split('-').pop().replace('.mp4', '');
+      const clipName = clipKey.split('/').pop();
+      return { clipKey, clipName, timestamp: parseInt(timestamp) };
+    });
+
+    // Sort clips by timestamp in descending order
+    sortedClips = clips.sort((a, b) => b.timestamp - a.timestamp);
+    
+    return sortedClips.map((clip) => clip.clipName);
+  }
+
+  filterAndSortRecordings(recordings, roomName, roomId) {
+    let filteredRecordings = recordings;
+
+    if (roomName || roomId) {
+      filteredRecordings = recordings.filter((recording) => {
+        return (
+          (!roomName || recording.roomName === roomName) &&
+          (!roomId || recording.roomId === roomId)
+        );
+      });
+    }
+
+    return filteredRecordings.sort((a, b) => b.startedAt - a.startedAt);
   }
 
   filterAndSortRecordings(recordings, roomName, roomId) {
@@ -159,8 +187,23 @@ export class RecordingService {
     return s3Service.getObjectUrl(key);
   }
 
+  async getCrewIdToClipName(clipName) {
+    const crewName = clipName.split('-')[1];
+    return crewName;
+  }
+
   async existsRecording(recordingName) {
     const key = this.getRecordingKey(recordingName);
+    return s3Service.exists(key);
+  }
+
+  async existsClipTmp(clipTmpName) {
+    const key = this.getClipTmpKey(clipTmpName);
+    return s3Service.exists(key);
+  }
+
+  async existsClip(clipName) {
+    const key = this.getClipKey(clipName);
     return s3Service.exists(key);
   }
 
@@ -225,7 +268,7 @@ export class RecordingService {
   }
 
   getClipTmpKey(clippedRecordingName) {
-    return CLIPS_TMP_PATH + clippedRecordingName;
+    return CLIPS_PATH + clippedRecordingName;
   }
 
   getClipKey(clippedRecordingName) {
@@ -273,16 +316,17 @@ export class RecordingService {
     return s3Service.getObjectUrl(key);
   }
 
-  async clipRecording(recordingName, startTime, endTime, title) {
+  async clipRecording(recordingName, startTime, endTime, time) {
     console.log("Time "+startTime+", "+endTime);
+    const clipName = `clip-${result}-${time}`
     const result = recordingName.split('-')[0];
     const inputKey = this.getRecordingKey(recordingName);
-    const outputKey = this.getClipTmpKey(`clip-${result}-${startTime}-${title}`);
+    const outputKey = this.getClipTmpKey(clipName);
 
     const tempDir = os.tmpdir();
     console.log('os.tmpdir(): ', os.tmpdir());
     const tempInputPath = path.join(tempDir, `/${recordingName}`);
-    const tempOutputPath = path.join(tempDir, `/${`clip-${result}-${startTime}-${title}`}`);
+    const tempOutputPath = path.join(tempDir, `/${clipName}`);
 
     const duration = endTime - startTime;
 
@@ -293,14 +337,6 @@ export class RecordingService {
 
       // S3에서 원본 영상 다운로드
       const inputStream = await s3Service.getObject(inputKey);
-      if (inputStream instanceof Readable) {
-        console.log('File is a Readable stream');
-      }
-      if (Buffer.isBuffer(inputStream)) {
-        console.log('File is a Buffer');
-      } else if (inputStream instanceof Stream) {
-        console.log('File is a Stream');
-      }
       const writeStream = fs.createWriteStream(tempInputPath);
       inputStream.pipe(writeStream);
 
@@ -331,9 +367,21 @@ export class RecordingService {
       fs.unlinkSync(tempInputPath);
       fs.unlinkSync(tempOutputPath);
 
-      return { success: true, clipUrl: this.getClipTmpUrl(`clip-${result}-${startTime}-${title}`) };
+      return { success: true, clipUrl: await this.getClipTmpUrl(clipName), clipName: clipName};
     } catch (error) {
       console.error("Error clipping recording:", error);
+      return { success: false, error: error.message };
+    }
+  }
+
+  async saveClipRecording(title, clipName) {
+    try {
+      //Mysql에 저장
+
+      // 성공적으로 완료되면 URL 반환
+      return { success: true, clipName: clipName };
+    } catch (error) {
+      console.error("Error saving clip:", error);
       return { success: false, error: error.message };
     }
   }

@@ -293,6 +293,7 @@ const VideoTrimmer = ({
             title,
             startTime: startSeconds,
             endTime: endSeconds,
+            time: new Date()
           }),
         }
       );
@@ -301,7 +302,8 @@ const VideoTrimmer = ({
 
       if (response.ok) {
         console.log("✅ 서버 응답:", data);
-        alert(`녹화 클립 생성 완료: ${data.clipUrl}`);
+        console.log(data.clipUrl)
+        alert(`녹화 클립 생성 완료`);
       } else {
         console.error("❌ 오류 발생:", data.errorMessage);
         alert(`오류 발생: ${data.errorMessage}`);
