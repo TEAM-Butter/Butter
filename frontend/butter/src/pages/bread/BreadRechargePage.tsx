@@ -1,6 +1,7 @@
 import styled from "@emotion/styled";
 import { useState } from "react";
 import { loadPaymentWidget } from "@iamport/payment"; // 아임포트 SDK 추가
+import { axiosInstance } from "../../apis/axiosInstance";
 
 const SignupPageWrapper = styled.div`
   width: 100%;
@@ -37,7 +38,9 @@ const StyledLabel = styled.label`
   color: black;
 `;
 
-const ServerUrl = import.meta.env.VITE_SPRING_BOOT_SERVER
+interface BreadResponseDto {
+    impUid: string,
+}
 
 const BreadRechargePage = () => {
   const [selectedAmount, setSelectedAmount] = useState(100);
@@ -69,24 +72,20 @@ const BreadRechargePage = () => {
       },
       async (response: any) => {
         if (response.success) {
-          try {
-            const verifyResponse = await fetch(`${ServerUrl}/v1/bread/verify-payment`, {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ impUid: response.imp_uid }),
-            });
-
-            const verifyData = await verifyResponse.json();
-
-            if (verifyData.success) {
+          const verifyResponse = await axiosInstance.post('/bread/verify-payment', { impUid: response.imp_uid })
+            .then(response => {
+              const responseBody : BreadResponseDto = response.data;
               alert("결제가 성공적으로 완료되었습니다.");
-            } else {
-              alert("결제 검증에 실패했습니다. 고객센터에 문의하세요.");
-            }
-          } catch (error) {
-            console.error("결제 검증 오류:", error);
-            alert("결제 검증 중 오류가 발생했습니다.");
-          }
+              console.log(responseBody);
+              return responseBody
+            })
+            .catch(error => {
+                console.log("MemberExtraInfo api error:", error)
+                alert("결제 검증에 실패했습니다. 고객센터에 문의하세요.");
+                return null
+            })
+          
+          console.log(verifyResponse)
         } else {
           alert(`결제 실패: ${response.error_msg}`);
         }
