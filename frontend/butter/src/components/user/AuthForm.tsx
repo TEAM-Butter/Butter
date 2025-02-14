@@ -95,8 +95,8 @@ export const LoginForm = ({ setModalType }: ModalProps) => {
             LoginBtnHandler()
         }} >
             <LgText textColor="black">Log into<br />your account</LgText>
-            <TextInput type="text" value={loginId} onChange={(e) => setLoginId(e.target.value)} placeholder="type your id." />
-            <TextInput type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="type your password." />
+            <TextInput required type="text" value={loginId} onChange={(e) => setLoginId(e.target.value)} placeholder="type your id." />
+            <TextInput required type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="type your password." />
             <ForgetComment className="openModalBtn" onClick={() => { setModalType("forgotAuth") }}>아이디/ 비밀번호를 잊어버리셨나요?</ForgetComment>
             <WrongComment></WrongComment>
             <FormBtn bgColor="rgba(0,0,0,0.4)" type="button" onClick={LoginBtnHandler}>Log in</FormBtn>
@@ -142,7 +142,7 @@ export const SignupForm = () => {
         })
     }
 
-    const SignUpBtnHandler = () => {
+    const handleSubmit = () => {
         const requestBody: SignUpRequestDto = { loginId, password, email, gender, birthDate };
         signupRequest(requestBody).then(() => {
             LoginHandler()
@@ -150,27 +150,27 @@ export const SignupForm = () => {
     }
 
     return (
-        <FormWrapper>
+        <FormWrapper onSubmit={handleSubmit} >
             <LgText textColor="black">Sign up<br />your account</LgText>
-            <TextInput type="text" value={loginId} onChange={(e) => setLoginId(e.target.value)} placeholder="type your id." />
-            <TextInput type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="type your email." />
-            <TextInput type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="type your password." />
+            <TextInput required type="text" value={loginId} onChange={(e) => setLoginId(e.target.value)} placeholder="type your id." />
+            <TextInput required type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="type your email." />
+            <TextInput required type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="type your password." />
             <RadioWrapper>
                 <InputLabel>
-                    <RadioInput type="radio" id="female" name="gender" value="FEMALE" onChange={(e) => setGender(e.target.value)} />
+                    <RadioInput required type="radio" id="female" name="gender" value="FEMALE" onChange={(e) => setGender(e.target.value)} />
                     woman
                 </InputLabel>
                 <InputLabel>
-                    <RadioInput type="radio" id="male" name="gender" value="MALE" onChange={(e) => setGender(e.target.value)} />
+                    <RadioInput required type="radio" id="male" name="gender" value="MALE" onChange={(e) => setGender(e.target.value)} />
                     man
                 </InputLabel>
             </RadioWrapper>
             <InputLabel>
                 Birth Date
-                <BirthInput type="date" value={birthDate} onChange={(e) => setBirthDate(e.target.value)} required aria-required="true" />
+                <BirthInput required type="date" value={birthDate} onChange={(e) => setBirthDate(e.target.value)} aria-required="true" />
             </InputLabel>
             <WrongComment></WrongComment>
-            <FormBtn bgColor="rgba(0,0,0,0.4)" type="button" onClick={SignUpBtnHandler}>Sign up</FormBtn>
+            <FormBtn bgColor="rgba(0,0,0,0.4)" type="submit">Sign up</FormBtn>
         </FormWrapper>
     )
 };
