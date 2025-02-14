@@ -11,8 +11,8 @@ import clap from "../../../assets/clap.png";
 import mic from "../../../assets/mic.png";
 import styled from "@emotion/styled";
 import { useEffect, useRef, useState } from "react";
-import { Socket } from "socket.io-client";
 import { SocketContent } from "../../../types/socket";
+import { Socket } from "socket.io-client";
 
 // const images = [pet1, pet2, pet3, pet4, pet5, pet6];
 
