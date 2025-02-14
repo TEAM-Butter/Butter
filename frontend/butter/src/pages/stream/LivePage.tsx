@@ -22,8 +22,9 @@ import UserBox from "../../components/stream/UserBox";
 
 import background from "../../assets/background.png";
 import CharacterContainer from "../../components/stream/CharacterContainer";
+import { io } from "socket.io-client";
 
-import socketIOClient from "socket.io-client";
+import { useUserStore } from "../../stores/UserStore";
 
 const LivePageWrapper = styled.div`
   display: flex;
@@ -189,11 +190,11 @@ type TrackInfo = {
 // For other deployment type, configure them with correct URLs depending on your deployment
 //let APPLICATION_SERVER_URL = "https://i12e204.p.ssafy.io/test/api";
 //let APPLICATION_SERVER_URL = "https://192.168.30.199:6080/";
-let APPLICATION_SERVER_URL = "";
+let APPLICATION_SERVER_URL = import.meta.env.VITE_NODE_JS_SERVER || "";
 
 //let LIVEKIT_URL = "https://i12e204.p.ssafy.io:5443/twirp";
 //let LIVEKIT_URL = "wss://192.168.30.199:7880/";
-let LIVEKIT_URL = ""
+let LIVEKIT_URL = import.meta.env.VITE_LIVEKIT_SERVER || "";
 
 let TOKEN = "";
 configureUrls();
@@ -202,9 +203,9 @@ function configureUrls() {
   // If APPLICATION_SERVER_URL is not configured, use default value from OpenVidu Local deployment
   if (!APPLICATION_SERVER_URL) {
     if (window.location.hostname === "localhost") {
-      APPLICATION_SERVER_URL = "http://localhost:6080/api/";
+      APPLICATION_SERVER_URL = "http://localhost:6080/";
     } else {
-      APPLICATION_SERVER_URL = "https://" + window.location.hostname + ":6443/api/";
+      APPLICATION_SERVER_URL = "https://" + window.location.hostname + ":6443/";
     }
   }
 
@@ -233,26 +234,31 @@ const LivePage = () => {
   const [recordings, setRecordings] = useState<Recording[]>([]);
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
   const [currentVideoUrl, setCurrentVideoUrl] = useState("");
+  const [participantRole, setParticipantRole] = useState("subscriber");
+
   const navigate = useNavigate();
-  const socket = socketIOClient("http://localhost:5000");
+  // const socket = io.connect("http://localhost:5000");
+  const socket = io(`${import.meta.env.VITE_FLASK_SERVER}`, {
+    transports: ["websocket"],
+  });
+
+  // export const SocketContext = React.createContext<socketType>(socket);
 
   // 크루ID 로 roomName을 설정 //해쉬!!!
 
   const roomName = state.roomName;
-  let participantName = "user";
-  let role = "";
 
-  // socket.on("message", (content) => addToBulletin(content));
-
-  //캐릭터를 동작시키는 함수를 적어라
-  socket.on("message", (content) => console.log(content));
+  let role = useUserStore((state) => state.memberType) ?? "user";
+  let participantName =
+    useUserStore((state) => state.nickname) ?? "guest" + Math.random();
+  console.log("role: " + role + " name: " + participantName);
 
   if (!role) {
     if (window.location.hostname === "localhost") {
-      role = "publisher";
+      role = "crew";
       participantName = state.participantName;
     } else {
-      role = "subscriber";
+      role = "user";
     }
   }
 
@@ -362,11 +368,11 @@ const LivePage = () => {
       setLocalTrack(undefined);
       setRemoteTracks([]);
     }
-  }, [room]);
+  }, []);
 
   const joinRoom = useCallback(async () => {
     // Initialize a new Room object
-
+    console.log("webRTC 방에 접속을 시도합니다다");
     console.log("APP" + APPLICATION_SERVER_URL);
     console.log("LIVE" + LIVEKIT_URL);
     const room = new Room();
@@ -404,24 +410,30 @@ const LivePage = () => {
     );
 
     try {
+      //이거는 방 만드는 사람 로직 추가할 때 수정해야합니다다
+      if (role === "crew") {
+        setParticipantRole("publisher");
+      }
+      console.log(
+        `확인용 입니다!!!!!!!!${roomName}, ${participantName}, ${participantRole}`
+      );
       // Get a token from your application server with the room name and participant name
-      const token = await getToken(roomName, participantName, role);
+      const token = await getToken(roomName, participantName, participantRole);
       // Connect to the room with the LiveKit URL and the token
 
       //방에 참가 할 때 본인이 publisher인지 subscriber인지 정보
-      socket.emit("join", { roomName, role });
+      socket.emit("join", { roomName, role: participantRole });
 
-      console.log("token!!!!", token);
-      console.log(role);
+      console.log("webRtc token :", token);
       await room.connect(LIVEKIT_URL, token);
 
-      console.log("Connected to room successfully");
-      console.log(room);
+      console.log("webRtc 접속성공");
+      console.log("webRTCroom 정보입니다!!:", room);
+      console.log("Participantrole 입니다!!", participantRole);
 
-      if (role == "publisher") {
+      if (participantRole === "publisher") {
         // Publish your camera and microphone
         await room.localParticipant.enableCameraAndMicrophone();
-
         console.log("enableCameraAndMicrophone");
 
         setLocalTrack(
@@ -436,12 +448,12 @@ const LivePage = () => {
       );
       // await leaveRoom();
     }
-  }, [participantName, role, roomName]);
+  }, [participantName, participantRole, roomName]);
 
   async function getToken(
     roomName: string,
     participantName: string,
-    role: string
+    participantRole: string
   ) {
     try {
       const response = await fetch(APPLICATION_SERVER_URL + "token", {
@@ -452,7 +464,7 @@ const LivePage = () => {
         body: JSON.stringify({
           roomName,
           participantName,
-          role,
+          participantRole,
         }),
       });
 
@@ -484,36 +496,17 @@ const LivePage = () => {
 
   useEffect(() => {
     joinRoom();
-    console.log("방에 입장하겠습니다");
-    console.log("room정보", room);
+    console.log("webRTC방에 입장하겠습니다");
   }, [joinRoom]);
   //조건부 렌더링
 
   useEffect(() => {
     return () => {
       leaveRoom();
-      console.log("방을 떠났습니다");
+      console.log("webRTC방을 떠났습니다");
     };
   }, [leaveRoom]);
 
-  // useEffect(() => {
-  //   const fetchRecordings = async () => {
-  //     try {
-  //       if (recordingService && room) {
-  //         const recordingList = await recordingService.listRecordings(
-  //           roomName,
-  //           room.sid
-  //         );
-  //         setRecordings(recordingList);
-  //       }
-  //     } catch (error) {
-  //       console.error("Failed to load recordings:", error);
-  //     }
-  //   };
-
-  //   fetchRecordings();
-  // }, [recordingService]);
-  // recordingService가 변경될 때마다 목록 업데이트
   useEffect(() => {
     updateRecordingsList();
   }, [recordingService, updateRecordingsList]);
@@ -534,19 +527,24 @@ const LivePage = () => {
     };
   }, [isRecording, updateRecordingsList]);
 
-  console.log("room", room);
-  console.log("recordings", recordings);
   return (
     <>
-      {role === "publisher" ? (
+      {participantRole === "publisher" ? (
         <>
           <LivePageWrapper>
             <Left>
               <LeftTop>
-                <StreamChat />
+                <StreamChat
+                  participantName={participantName}
+                  roomRole={role}
+                  streamId={roomName}
+                />
               </LeftTop>
               <CharacterBox>
-                <CharacterContainer />
+                <CharacterContainer
+                  socket={socket}
+                  participantName={participantName}
+                />
               </CharacterBox>
             </Left>
 
@@ -560,7 +558,7 @@ const LivePage = () => {
                   remoteTracks={remoteTracks}
                   serverUrl={APPLICATION_SERVER_URL}
                   token={TOKEN}
-                  role={role}
+                  role={participantRole}
                 />
               </RightTop>
               <RightMiddle>
@@ -617,11 +615,14 @@ const LivePage = () => {
                 remoteTracks={remoteTracks} // localTrack 제거
                 serverUrl={APPLICATION_SERVER_URL}
                 token={TOKEN}
-                role={role}
+                role={participantRole}
               />
             </LeftTop>
             <CharacterBox>
-              <CharacterContainer />
+              <CharacterContainer
+                socket={socket}
+                participantName={participantName}
+              />
             </CharacterBox>
           </Left>
 
@@ -630,11 +631,15 @@ const LivePage = () => {
               <UserBox
                 participantName={participantName}
                 roomName={roomName}
-                role={role}
+                role={participantRole}
               />
             </RightTop>
             <RightMiddle>
-              <StreamChat />
+              <StreamChat
+                participantName={participantName}
+                roomRole={role}
+                streamId={roomName}
+              />
             </RightMiddle>
             <BackBtn onClick={handleBackBtnClick}>
               <div style={{ color: "black" }}>

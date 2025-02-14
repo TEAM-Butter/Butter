@@ -37,6 +37,7 @@ function StreamLiveVideo({
         async (blob) => {
           if (blob) {
             const formData = new FormData();
+            console.log("streamer의 영상을 서버로 보냅니다");
             formData.append("file", blob);
 
             // 참가자 정보와 룸 정보도 함께 전송

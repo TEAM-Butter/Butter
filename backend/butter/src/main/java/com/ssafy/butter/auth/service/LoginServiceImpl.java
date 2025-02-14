@@ -9,19 +9,19 @@ import com.ssafy.butter.auth.dto.response.ReissueResponseDTO;
 import com.ssafy.butter.auth.enums.MemberTypes;
 import com.ssafy.butter.domain.crew.entity.CrewMember;
 import com.ssafy.butter.domain.crew.service.CrewMemberService;
-import com.ssafy.butter.domain.member.dto.response.RegisterExtraInfoResponseDTO;
 import com.ssafy.butter.domain.member.entity.Member;
 import com.ssafy.butter.domain.member.service.member.MemberService;
 import com.ssafy.butter.global.token.JwtManager;
 import com.ssafy.butter.global.util.encrypt.EncryptUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
 import java.util.*;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class LoginServiceImpl implements LoginService{
@@ -83,12 +83,8 @@ public class LoginServiceImpl implements LoginService{
                 .map(service -> service.convertUserDetailsToMemberEntity(socialLoginRequestDTO.code()))
                 .orElseThrow(() -> new IllegalArgumentException("ERR : 사용할 수 없는 OAuth 플랫폼입니다"));
 
-        boolean exists = memberService.checkIfEmailExists(loginMember.getEmail().getValue());
-        if(exists){
-            throw new IllegalArgumentException("해당 이메일로 가입한 회원이 존재함");
-        }
-
-        Member member = memberService.save(loginMember);
+        Member member = memberService.findByEmail(loginMember.getEmail())
+                .orElseGet(() -> memberService.save(loginMember));
 
         String memberType = getMemberTypeInLogic(member);
         List<String> genres = Optional.ofNullable(member.getMemberGenres())

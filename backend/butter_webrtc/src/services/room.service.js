@@ -62,18 +62,4 @@ export class RoomService {
             console.error("Error sending data to room", error);
         }
     }
-
-    async sendDataToRoom(roomName, rawData) {
-        const data = encoder.encode(JSON.stringify(rawData));
-        const options = {
-            topic: "RECORDING_DELETED",
-            destinationSids: []
-        };
-
-        try {
-            await this.roomClient.sendData(roomName, data, DataPacket_Kind.RELIABLE, options);
-        } catch (error) {
-            console.error("Error sending data to room", error);
-        }
-    }
 }

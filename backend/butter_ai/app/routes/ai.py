@@ -1,9 +1,12 @@
 import base64
+
+import flask_socketio
 import numpy as np
 import cv2
 from flask import Blueprint, request, jsonify
-from flask_socketio import join_room, leave_room
+from flask_socketio import join_room, leave_room, rooms
 from app.services.ai_service import process_frame
+from app.services import websocket_room_service
 
 from app import sock
 
@@ -29,6 +32,8 @@ def upload_frame():
     detection = process_frame(frame)
     if detection is None:
         detection = {"status": "no_object"}
+    else:
+        websocket_room_service.increase_motion_count(room_id, detection["label"])
     detection["participant"] = request.form.get("participant")
     detection["role"] = request.form.get("role")
 
@@ -58,4 +63,11 @@ def on_join(data):
 def on_leave(data):
     room_id = data["roomName"]
     leave_room(room_id)
+    if get_room_size(room_id) == 0:
+        print(f"Room {room_id} is empty")
+        websocket_room_service.remove_room(room_id)
     sock.emit("message", f"User {request.sid} left room {room_id}", room=room_id)
+
+
+def get_room_size(room_id):
+    return len(sock.server.manager.rooms.get("/", {}).get(room_id, {}))

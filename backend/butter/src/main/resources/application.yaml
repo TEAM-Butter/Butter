@@ -19,6 +19,11 @@ spring:
     username: '${custom.db.username}'
     password: '${custom.db.password}'
 
+  servlet:
+    multipart:
+      max-file-size: 1GB
+      max-request-size: 1GB
+
   jpa:
     hibernate:
       ddl-auto: create
@@ -73,3 +78,8 @@ cloud:
     credentials:
       accessKey: ${custom.aws.s3.access-key}
       secretKey: ${custom.aws.s3.secret-key}
+
+iamport:
+  api:
+    key: ${custom.iamport.api.key}
+    secret: ${custom.iamport.api.secret}

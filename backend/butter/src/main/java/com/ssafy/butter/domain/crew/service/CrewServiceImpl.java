@@ -6,6 +6,7 @@ import com.ssafy.butter.domain.crew.dto.request.CrewGenreRequestDTO;
 import com.ssafy.butter.domain.crew.dto.request.CrewListRequestDTO;
 import com.ssafy.butter.domain.crew.dto.request.CrewMemberRequestDTO;
 import com.ssafy.butter.domain.crew.dto.request.CrewSaveRequestDTO;
+import com.ssafy.butter.domain.crew.dto.response.CrewMemberResponseDTO;
 import com.ssafy.butter.domain.crew.dto.response.CrewResponseDTO;
 import com.ssafy.butter.domain.crew.entity.Crew;
 import com.ssafy.butter.domain.crew.entity.CrewGenre;
@@ -82,7 +83,7 @@ public class  CrewServiceImpl implements CrewService {
      * @param crewMemberRequestDTO 크루와 크루 멤버 정보를 담은 DTO
      */
     @Override
-    public void createCrewMember(AuthInfoDTO currentUser, CrewMemberRequestDTO crewMemberRequestDTO) {
+    public CrewMemberResponseDTO createCrewMember(AuthInfoDTO currentUser, CrewMemberRequestDTO crewMemberRequestDTO) {
         Member currentMember = memberService.findById(currentUser.id());
         Crew crew = crewRepository.findById(crewMemberRequestDTO.crewId()).orElseThrow();
         CrewMember currentCrewMember = crewMemberRepository.findByCrewAndMember(crew, currentMember).orElseThrow();
@@ -100,7 +101,7 @@ public class  CrewServiceImpl implements CrewService {
                 .member(member)
                 .isCrewAdmin(true)
                 .build();
-        crewMemberRepository.save(crewMember);
+        return CrewMemberResponseDTO.from(crewMemberRepository.save(crewMember).getMember());
     }
 
     /**

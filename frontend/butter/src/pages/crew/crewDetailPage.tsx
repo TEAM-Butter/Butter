@@ -13,6 +13,7 @@ import sample3 from "../../assets/sample3.jpg";
 import sample4 from "../../assets/sample4.jpg";
 import sample5 from "../../assets/sample5.png";
 import styled from "@emotion/styled";
+import { axiosInstance } from "../../apis/axiosInstance"
 
 
 const images = [sample1,sample2,sample3,sample4,sample5]
@@ -248,13 +249,13 @@ const SnsText = styled.div`
     flex-direction: column;
 `
 
-const ServerUrl = 'http://i12e204.p.ssafy.io:8081'
+const ServerUrl = 'http://localhost:8080'
 
 function CrewDetailPage() {
     
     const navigate = useNavigate()
     const { id } = useParams(); // crewId 파라미터 가져옴
-    const [ crewDetail, setCrewDetail ] = useState(null) // 크루 정보 받아오면 담을 변수
+    const [ crewDetail, setCrewDetail ] = useState<any>(null) // 크루 정보 받아오면 담을 변수
     const [ loading, setLoading ] = useState(true) // 로딩 표시하는 변수
     const [error, setError] = useState(null) // 에러 상태
     const [ crewScheduleDetail, setCrewScheduleDetail] = useState(['1번','2번','3번'])
@@ -273,12 +274,15 @@ function CrewDetailPage() {
         const fetchCrewDetail = async () => {
             try {
                 setLoading(true);
-                const response = await axios.get(`${ServerUrl}/api/v1/crew/detail/${id}`) // 크루 디테일 정보 받아옴
+                const response = await axiosInstance.get(`/crew/detail/${id}`) // 크루 디테일 정보 받아옴
                 setCrewDetail(response.data);
-                const scheduleResponse = await axios.get(`${ServerUrl}/api/v1/schedule/detail/${id}`) // 크루 스케쥴 정보 받아옴 
-                setCrewScheduleDetail(scheduleResponse.data);
-                const noticeResponse = await axios.get(`${ServerUrl}/api/v1/crew/notice/detail/${id}`) // 크루 공지사항 정보 받아옴
-                setCrewNoticeDetail(noticeResponse.data);
+                console.log("response.data : ", response.data)
+                const scheduleResponse = await axiosInstance.get(`/schedule/detail/${id}`) // 크루 스케쥴 정보 받아옴 
+                setCrewScheduleDetail([scheduleResponse.data]);
+                console.log("scheduleResponse.data : ", scheduleResponse.data)
+                const noticeResponse = await axiosInstance.get(`/crew/notice/detail/${id}`) // 크루 공지사항 정보 받아옴
+                setCrewNoticeDetail([noticeResponse.data]);
+                console.log("noticeResponse.data : ", noticeResponse.data)
                 
             } catch (err:any) {
                 setError(err.message); //요청 놓치면 에러 메세지 띄우기
@@ -292,8 +296,8 @@ function CrewDetailPage() {
         }
     }, [id])
     
-    // if (loading) return <div>Loading...</div>;
-    // if (error) return <div>Error: {error}</div>;
+    if (loading) return <div>Loading...</div>;
+    if (error) return <div>Error: {error}</div>;
 
     return (
        <PageContainer >
@@ -306,9 +310,9 @@ function CrewDetailPage() {
                     <EditButton onClick={() => handleEditClick()} src={editButton} alt="editButton"></EditButton>
                     </Right>
                     <CrewNameWrapper>
-                        <TextName>Crew Name {id} {crewDetail}</TextName>
-                        <TextGenre>크루 장르1     크루 장르2     크루 장르3 </TextGenre>
-                        <TextExplain>이 크루는 이 세상 최고의 크루이며,,,{crewDetail}</TextExplain>
+                        <TextName> {crewDetail.name}</TextName>
+                        <TextGenre> 장르1, 장르2, 장르3 </TextGenre>
+                        <TextExplain>{crewDetail.description}</TextExplain>
                     </CrewNameWrapper>
                     <Box1BottomWrapper>
                       <ImageMovingBox>
@@ -330,7 +334,7 @@ function CrewDetailPage() {
             }
             {crewEditSwitch && <CrewEditComponent2 />}
            
-            <Box3> <SnsText><div style={{ fontSize : "20px"}}>SNS</div><div>link</div></SnsText> {crewDetail} <UpArrowTag src={upArrow} alt="upArrow"></UpArrowTag></Box3>
+            <Box3> <SnsText><div style={{ fontSize : "20px"}}>SNS</div><div>link</div></SnsText> 변수<UpArrowTag src={upArrow} alt="upArrow"></UpArrowTag></Box3>
             <Box4 onClick={()=>{navigate(`/stream/live/${id}`)}}><LiveText1>Live</LiveText1><div>On</div> </Box4>
         </LayOut3>       
                 </LayOut1>
@@ -338,7 +342,16 @@ function CrewDetailPage() {
                 <ScheduleEditComponent crewScheduleDetail={crewScheduleDetail} crewDetail={crewDetail} />
                 
                 <Box6><div>Notice</div><PlusBtn>+</PlusBtn></Box6>
-                <Box7> {crewNoticeDetail.map((a, i)=>{return(<NoticeBox key={i}><NoticeImg src={images[i+1]}></NoticeImg><NoticeWrapperBox> <NoticeTitle>{i+1}번 Notice Title</NoticeTitle><NoticeContent> 내용{a}</NoticeContent></NoticeWrapperBox> <Arrow onClick={() => {navigate(`/crew/notice/detail/${id}/${i}`)}} src={rightArrow} alt="rightArrow"></Arrow></NoticeBox>)})}</Box7>
+                <Box7> {crewNoticeDetail.map((a : any, i : any)=>
+                                {return(<NoticeBox key={i}>
+                                            <NoticeImg src={images[i+1]}></NoticeImg>
+                                                <NoticeWrapperBox> 
+                                                    <NoticeTitle>{i+1}번 Notice Title</NoticeTitle>
+                                                    <NoticeContent> {a.content}</NoticeContent>
+                                                </NoticeWrapperBox> 
+                                            <Arrow onClick={() => {navigate(`/crew/notice/detail/${id}/${i}`)}} src={rightArrow} alt="rightArrow"></Arrow>
+                                        </NoticeBox>)})}
+                </Box7>
                 </LayOut2>
 
          
@@ -385,12 +398,12 @@ function CrewEditComponent1({ crewDetail, handleEditClick }: { crewDetail: any; 
             <button onClick={handleEditClick}>취소</button>
             <button onClick={handleEditClick}>수정확정</button>
                   
-            <div>크루 정보 : {crewDetail}</div>
-            <div>크루 설명 : {crewDetail}</div>
-            <div>크루 멤버1 사진 : {crewDetail} <button>멤버삭제</button></div>
-            <div>크루 멤버2 사진 : {crewDetail} <button>멤버삭제</button></div>
-            <div>크루 멤버3 사진 : {crewDetail} <button>멤버삭제</button></div>
-            <div>크루 멤버4 사진 : {crewDetail} <button>멤버삭제</button></div>
+            <div>크루 이름 : {crewDetail.name}</div>
+            <div>크루 설명 : {crewDetail.description}</div>
+            <div>크루 멤버1 사진 : <button>멤버삭제</button></div>
+            <div>크루 멤버2 사진 : <button>멤버삭제</button></div>
+            <div>크루 멤버3 사진 : <button>멤버삭제</button></div>
+            <div>크루 멤버4 사진 : <button>멤버삭제</button></div>
           
             
             <button onClick={() =>setCrewMemberPlusModalOpen(true)}>멤버추가</button>
@@ -558,7 +571,7 @@ function ScheduleEditComponent({crewScheduleDetail,crewDetail}:any) {
         <ScheduleList> 
             {
             crewScheduleDetail.map((a:any, i:any) => {
-                return ( <ScheduleWrapper key={i}> <ScheduleImg src={images[i+1]} alt="ScheduleImg"></ScheduleImg> <ScheduleTitle><ScheduleTitleComponent1>{i+1}번 스케쥴 Title Section</ScheduleTitleComponent1><div>schedule detail content{a}</div></ScheduleTitle><LeftArrowTag onClick={()=> {setisScheduleDetailModalOpen(true); setSelectedScheduleIndex(i+1)}} src={leftArrow} alt="leftArrow"></LeftArrowTag></ScheduleWrapper>)
+                return ( <ScheduleWrapper key={i}> <ScheduleImg src={images[i+1]} alt="ScheduleImg"></ScheduleImg> <ScheduleTitle><ScheduleTitleComponent1>{i+1}번 스케쥴 Title Section</ScheduleTitleComponent1><div>{a.content}</div></ScheduleTitle><LeftArrowTag onClick={()=> {setisScheduleDetailModalOpen(true); setSelectedScheduleIndex(i+1)}} src={leftArrow} alt="leftArrow"></LeftArrowTag></ScheduleWrapper>)
             })
             }
         </ScheduleList>
@@ -584,8 +597,8 @@ function ScheduleEditComponent({crewScheduleDetail,crewDetail}:any) {
                    {isScheduleDetailModalOpen && 
                 <ScheduleDetailModalOverlay>
                     <ScheduleDetailModalContent>
-                        <div> 크루 이름 {crewDetail} | 크루 정보 <button onClick={() => { setisScheduleDetailModalOpen(false) }}>닫기</button></div>
-                        <div> 스케쥴 제목 : {crewScheduleDetail[selectedScheduleIndex-1]}</div>
+                        <div> 크루 이름 {crewDetail.name} | 크루 정보 <button onClick={() => { setisScheduleDetailModalOpen(false) }}>닫기</button></div>
+                        <div> 스케쥴 제목 : {crewScheduleDetail[selectedScheduleIndex-1].title}</div>
                         <button>북마크 버튼</button><button>삭제</button><button onClick={()=> {setisScheduleEditModalOpen(true); setisScheduleDetailModalOpen(false)}}>수정</button>
                         
                     </ScheduleDetailModalContent>

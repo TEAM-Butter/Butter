@@ -4,20 +4,23 @@ import { useState } from "react";
 import MainPageImg from "../../assets/home/MainPageImg.png"
 import { CrewRegisterRequest } from "../../apis/request/crew/crewRequest";
 import { CrewRegisterResponseDto } from "../../apis/response/crew";
-import { div } from "framer-motion/client";
 
 
 const CRPageWrapper = styled.div`
     width: 100%;
     height: 100%;
+    position:relative;
     background-image: url(${MainPageImg});
+    backdrop-filter: brightness(0.4);
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
     display: flex;
     padding: 20px;
+    margin: auto 0;
     justify-content: center;
     align-items: center;
+    flex-wrap: wrap;
     
     &::before {
         content: ""; /* 가상 요소를 생성하기 위한 필수 속성 */
@@ -28,17 +31,24 @@ const CRPageWrapper = styled.div`
         height: 100%;
         background-color: rgba(0, 0, 0, 0.2);
     }
-    `
+`
 
 const CRContainer = styled.div`
     padding: 20px 10px;
     filter: brightness(1.1);
     border-radius: 30px;
-    overflow: auto;
+    background-color: rgba(255,255,255,0.1);
     backdrop-filter: blur(10px);
     width: 900px;
     display: grid;
     grid-template-rows: 55px auto;
+
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.2);
+    transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+
+    &:hover {
+        box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+    }
 `
 
 const CRHeader = styled.header`
@@ -84,12 +94,12 @@ const CRLtWrapper = styled.div`
     gap: 10px;
 `
 
-const CRInputWrapper= styled.div`
+const CRInputWrapper = styled.div`
     display: grid;
     gap: 10px;
 `
 
-const CRLabel= styled.label`
+const CRLabel = styled.label`
     display: flex;
     align-items: center;
     gap: 10px;
@@ -109,7 +119,7 @@ const CRLabel= styled.label`
 }
 `
 
-const CRInput= styled.input`
+const CRInput = styled.input`
     width: 100%;
     height: 45px;
     border: none;
@@ -151,25 +161,25 @@ interface FormDataState {
     image: File | null; // ✅ 파일 업로드를 위해 File | null 타입 사용
     promotionUrl: string;
     portfolioVideo: File | null; // ✅ 파일 업로드를 위해 File | null 타입 사용
-  }
+}
 
 const CrewRegisterPage = () => {
-    const [ isSubmit, setIsSubmit ] = useState(false)
+    const [isSubmit, setIsSubmit] = useState(false)
     const [formData, setFormData] = useState<FormDataState>({
         name: "",
         description: "",
         image: null,
         promotionUrl: "",
         portfolioVideo: null,
-      });
+    });
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+        const { name, value } = e.target;
+        setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
-    const setFile = (file : File | null, fileType: "img" | "video") => {
-        if (fileType === "img"){
+    const setFile = (file: File | null, fileType: "img" | "video") => {
+        if (fileType === "img") {
             setFormData((prev) => ({ ...prev, image: file }))
         } else {
             setFormData((prev) => ({ ...prev, portfolioVideo: file }))
@@ -196,7 +206,7 @@ const CrewRegisterPage = () => {
             console.error("Invalid portfolioVideo");
             return;
         }
-        
+
         setIsSubmit(true)
         CrewRegisterRequest(formDataToSend).then((responseBody: CrewRegisterResponseDto | null) => {
             console.log("CrewRegister Response:", responseBody);
@@ -204,49 +214,49 @@ const CrewRegisterPage = () => {
         console.log("Final Data:", formData);
     }
 
-    
+
     return (
-       <CRPageWrapper>
-        <CRContainer>
-            <CRHeader>REGISTER CREW</CRHeader>
-            { isSubmit ? 
-                <CRComment_v2>크루 등록이 정상적으로 요청되었습니다.</CRComment_v2>
-            :
-            <CRBody>
-                <CRComment>크루가 되어 많은 관객과 함께 버스킹을 시작해보세요!</CRComment>            
-                <CRForm onSubmit={handleSubmit}>
-                <CRRtWrapper>
-                    <CRInputWrapper>
-                        <CRLabel><span>1</span>크루의 사진을 등록해 주세요 !</CRLabel>
-                        <CrewRegisterFileInput fileType="img" setFile={setFile} />
-                    </CRInputWrapper>
-                    <CRInputWrapper>
-                        <CRLabel><span>2</span>크루의 이름을 입력해 주세요 !</CRLabel>
-                        <CRInput name="name" value={formData.name} onChange={handleChange} type="text" required></CRInput>
-                    </CRInputWrapper>
-                    <CRInputWrapper>
-                        <CRLabel><span>3</span>크루를 소개할 문구를 작성해 주세요 !</CRLabel>
-                        <CRInput name="description" value={formData.description} onChange={handleChange} type="text" required></CRInput>
-                    </CRInputWrapper>
-                </CRRtWrapper>
-                <CRLtWrapper>
-                    <CRInputWrapper>
-                        <CRLabel><span>4</span>크루를 홍보할 SNS 주소를 입력해 주세요 !</CRLabel>
-                        <CRInput name="promotionUrl" value={formData.promotionUrl} onChange={handleChange} type="text"></CRInput>
-                    </CRInputWrapper>
-                    <CRInputWrapper>
-                        <CRLabel><span>5</span>크루의 포트폴리오를 업로드 하세요!</CRLabel>
-                        <CrewRegisterFileInput fileType="video" setFile={setFile} />
-                    </CRInputWrapper>
-                    <CRBtnWrapper>
-                        <CRBtn type="submit" >SUBMIT</CRBtn>
-                    </CRBtnWrapper>
-                </CRLtWrapper>
-                </CRForm>
-            </CRBody>
-            }
-        </CRContainer>
-       </CRPageWrapper>
+        <CRPageWrapper>
+            <CRContainer>
+                <CRHeader>REGISTER CREW</CRHeader>
+                {isSubmit ?
+                    <CRComment_v2>크루 등록이 정상적으로 요청되었습니다.</CRComment_v2>
+                    :
+                    <CRBody>
+                        <CRComment>크루가 되어 많은 관객과 함께 버스킹을 시작해보세요!</CRComment>
+                        <CRForm onSubmit={handleSubmit}>
+                            <CRRtWrapper>
+                                <CRInputWrapper>
+                                    <CRLabel><span>1</span>크루의 사진을 등록해 주세요 !</CRLabel>
+                                    <CrewRegisterFileInput fileType="img" setFile={setFile} />
+                                </CRInputWrapper>
+                                <CRInputWrapper>
+                                    <CRLabel><span>2</span>크루의 이름을 입력해 주세요 !</CRLabel>
+                                    <CRInput name="name" value={formData.name} onChange={handleChange} type="text" required></CRInput>
+                                </CRInputWrapper>
+                                <CRInputWrapper>
+                                    <CRLabel><span>3</span>크루를 소개할 문구를 작성해 주세요 !</CRLabel>
+                                    <CRInput name="description" value={formData.description} onChange={handleChange} type="text" required></CRInput>
+                                </CRInputWrapper>
+                            </CRRtWrapper>
+                            <CRLtWrapper>
+                                <CRInputWrapper>
+                                    <CRLabel><span>4</span>크루를 홍보할 SNS 주소를 입력해 주세요 !</CRLabel>
+                                    <CRInput name="promotionUrl" value={formData.promotionUrl} onChange={handleChange} type="text"></CRInput>
+                                </CRInputWrapper>
+                                <CRInputWrapper>
+                                    <CRLabel><span>5</span>크루의 포트폴리오를 업로드 하세요!</CRLabel>
+                                    <CrewRegisterFileInput fileType="video" setFile={setFile} />
+                                </CRInputWrapper>
+                                <CRBtnWrapper>
+                                    <CRBtn type="submit" >SUBMIT</CRBtn>
+                                </CRBtnWrapper>
+                            </CRLtWrapper>
+                        </CRForm>
+                    </CRBody>
+                }
+            </CRContainer>
+        </CRPageWrapper>
     )
 }
 

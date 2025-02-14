@@ -43,12 +43,12 @@ interface ModalSizeProps {
 }
 
 interface ModalProps extends ModalSizeProps {
-  setForgotInfo: React.Dispatch<React.SetStateAction<string>>; 
+  setForgotInfo: React.Dispatch<React.SetStateAction<string>>;
   setModalType: React.Dispatch<React.SetStateAction<string>>;
   setType: React.Dispatch<React.SetStateAction<string>>;
 }
 
-export const ForgotAuthModal = ({ setModalType, setForgotInfo, setType,  width, height }: ModalProps) => {
+export const ForgotAuthModal = ({ setModalType, setForgotInfo, setType, width, height }: ModalProps) => {
   const [email_id, setEmail_id] = useState("")
   const [code_id, setCode_id] = useState("")
   const [id_ps, setId_ps] = useState("")
@@ -62,10 +62,10 @@ export const ForgotAuthModal = ({ setModalType, setForgotInfo, setType,  width, 
   const handleCheckLoginId = () => {
     const requestBody: CheckLoginIdRequestDto = { loginId: id_ps }
     setForgotPsComment("아이디를 확인 중 입니다.")
-    
+
     CheckLoginIdRequest(requestBody).then((responseBody: CheckLoginIdResponseDto | null) => {
       if (id_ps && responseBody) {
-        if( responseBody.exists ) {
+        if (responseBody.exists) {
           setForgotPsComment("존재하는 아이디 입니다.")
           setIsIdExist(true)
         } else {
@@ -78,14 +78,14 @@ export const ForgotAuthModal = ({ setModalType, setForgotInfo, setType,  width, 
       }
     })
   }
-  
+
   const handleEmailSendCode = (type: string) => {
     if (type === "id") {
       setForgotIdComment("이메일을 확인 중 입니다.")
       const requestBody: EmailExistSendDto = { email: email_id, type: "FIND_ID" }
-      
+
       EmailExistRequest(requestBody).then((responseBody) => {
-        if ( email_id && responseBody) {
+        if (email_id && responseBody) {
           EmailSendCodeRequest(requestBody).then((responseBody) => {
             console.log('responseBody:', responseBody)
             setForgotIdComment("인증코드가 발송되었습니다.")
@@ -94,12 +94,12 @@ export const ForgotAuthModal = ({ setModalType, setForgotInfo, setType,  width, 
           setForgotIdComment("존재하지 않는 이메일 입니다.")
         }
       })
-      
+
     } else if ((type === "ps")) {
       if (isIdExist) {
         setForgotPsComment("이메일을 확인 중 입니다.")
         const requestBody: EmailExistSendDto = { email: email_ps, type: "RESET_PASSWORD" }
-        
+
         EmailExistRequest(requestBody).then((responseBody) => {
           if (email_ps && responseBody) {
             EmailSendCodeRequest(requestBody).then((responseBody) => {
@@ -113,37 +113,37 @@ export const ForgotAuthModal = ({ setModalType, setForgotInfo, setType,  width, 
       } else {
         setForgotPsComment("아이디를 확인 해주세요.")
       }
-    }      
+    }
   }
-    
-    const handleEmailVerifyCode = (type: string) => {
-      if (type === "id") {
-        setForgotIdComment("인증코드를 확인 중 입니다.")
-        const requestBody: EmailVerifyCodeRequestDto = { email: email_id, verifyCode: code_id, type: "FIND_ID" }
-        
-        EmailVerifyCodeRequest(requestBody).then((responseBody : EmailVerifyCodeResponseDto | null) => {
-          if (responseBody) {
-            setForgotInfo(responseBody.additionalInfo)
-            setType("id")
-            setModalType("forgotAuthInfo")
-            setForgotIdComment("인증이 완료되었습니다.")
-          } else {
-            setForgotIdComment("인증코드가 일치하지 않습니다.")
-          }
-        })
-      } else {
-        const requestBody: EmailVerifyCodeRequestDto = { email: email_ps, verifyCode: code_ps, type: "RESET_PASSWORD" }
-        setForgotPsComment("인증코드를 확인 중 입니다.")
-        
-        EmailVerifyCodeRequest(requestBody).then((responseBody) => {
-          if (responseBody) {
-            setForgotInfo(responseBody.additionalInfo)
-            setType("ps")
-            setModalType("forgotAuthInfo")
-            setForgotPsComment("인증이 완료되었습니다.")
-          } else {
-            setForgotPsComment("인증코드가 일치하지 않습니다.")
-          }
+
+  const handleEmailVerifyCode = (type: string) => {
+    if (type === "id") {
+      setForgotIdComment("인증코드를 확인 중 입니다.")
+      const requestBody: EmailVerifyCodeRequestDto = { email: email_id, verifyCode: code_id, type: "FIND_ID" }
+
+      EmailVerifyCodeRequest(requestBody).then((responseBody: EmailVerifyCodeResponseDto | null) => {
+        if (responseBody) {
+          setForgotInfo(responseBody.additionalInfo)
+          setType("id")
+          setModalType("forgotAuthInfo")
+          setForgotIdComment("인증이 완료되었습니다.")
+        } else {
+          setForgotIdComment("인증코드가 일치하지 않습니다.")
+        }
+      })
+    } else {
+      const requestBody: EmailVerifyCodeRequestDto = { email: email_ps, verifyCode: code_ps, type: "RESET_PASSWORD" }
+      setForgotPsComment("인증코드를 확인 중 입니다.")
+
+      EmailVerifyCodeRequest(requestBody).then((responseBody) => {
+        if (responseBody) {
+          setForgotInfo(responseBody.additionalInfo)
+          setType("ps")
+          setModalType("forgotAuthInfo")
+          setForgotPsComment("인증이 완료되었습니다.")
+        } else {
+          setForgotPsComment("인증코드가 일치하지 않습니다.")
+        }
       })
     }
   }
@@ -174,7 +174,7 @@ export const ForgotAuthModal = ({ setModalType, setForgotInfo, setType,  width, 
             }}>
               <ForgotInputWrapper>
                 <ForgotLabel>이메일</ForgotLabel>
-                <ForgotInput type="email" value={email_id} onChange={(e) => setEmail_id(e.target.value)} />
+                <ForgotInput required type="email" value={email_id} onChange={(e) => setEmail_id(e.target.value)} />
                 <MC.FilledBtn
                   textColor="white"
                   width="140px"
@@ -191,7 +191,7 @@ export const ForgotAuthModal = ({ setModalType, setForgotInfo, setType,  width, 
             }}>
               <ForgotInputWrapper>
                 <ForgotLabel>인증번호</ForgotLabel>
-                <ForgotInput value={code_id} onChange={(e) => setCode_id(e.target.value)} />
+                <ForgotInput required value={code_id} onChange={(e) => setCode_id(e.target.value)} />
                 <MC.FilledBtn
                   textColor="white"
                   width="140px"
@@ -202,7 +202,7 @@ export const ForgotAuthModal = ({ setModalType, setForgotInfo, setType,  width, 
                 </MC.FilledBtn>
               </ForgotInputWrapper>
             </ForgotForm>
-            <ForgotComment>{ forgotIdComment ? forgotIdComment : ""}</ForgotComment>
+            <ForgotComment>{forgotIdComment ? forgotIdComment : ""}</ForgotComment>
           </ForgotFormWrapper>
 
 
@@ -216,13 +216,13 @@ export const ForgotAuthModal = ({ setModalType, setForgotInfo, setType,  width, 
             }}>
               <ForgotInputWrapper>
                 <ForgotLabel>아이디</ForgotLabel>
-                <ForgotInput value={id_ps} onChange={(e) => setId_ps(e.target.value)} />
+                <ForgotInput required value={id_ps} onChange={(e) => setId_ps(e.target.value)} />
                 <MC.FilledBtn
                   textColor="white"
                   width="140px"
                   height="100%"
                   color="black"
-                  >
+                >
                   확인
                 </MC.FilledBtn>
               </ForgotInputWrapper>
@@ -233,13 +233,13 @@ export const ForgotAuthModal = ({ setModalType, setForgotInfo, setType,  width, 
             }}>
               <ForgotInputWrapper>
                 <ForgotLabel>이메일</ForgotLabel>
-                <ForgotInput type="email" value={email_ps} onChange={(e) => setEmail_ps(e.target.value)} />
+                <ForgotInput required type="email" value={email_ps} onChange={(e) => setEmail_ps(e.target.value)} />
                 <MC.FilledBtn
                   textColor="white"
                   width="140px"
                   height="100%"
                   color="black"
-                  >
+                >
                   인증번호 발송
                 </MC.FilledBtn>
               </ForgotInputWrapper>
@@ -250,18 +250,18 @@ export const ForgotAuthModal = ({ setModalType, setForgotInfo, setType,  width, 
             }}>
               <ForgotInputWrapper>
                 <ForgotLabel>인증번호</ForgotLabel>
-                <ForgotInput value={code_ps} onChange={(e) => setCode_ps(e.target.value)} />
+                <ForgotInput required value={code_ps} onChange={(e) => setCode_ps(e.target.value)} />
                 <MC.FilledBtn
                   textColor="white"
                   width="140px"
                   height="100%"
                   color="black"
-                  >
+                >
                   인증번호 확인
                 </MC.FilledBtn>
               </ForgotInputWrapper>
             </ForgotForm>
-            <ForgotComment>{ forgotPsComment ? forgotPsComment : ""}</ForgotComment>
+            <ForgotComment>{forgotPsComment ? forgotPsComment : ""}</ForgotComment>
           </ForgotFormWrapper>
         </MC.ModalBody_v2>
       </MC.ModalWrapper_v2>

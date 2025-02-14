@@ -26,68 +26,6 @@ const UserBox = ({
 }: VideoStreamProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  // const sendFrameToServer = useCallback(async () => {
-  //   if (!videoRef.current) return;
-
-  //   try {
-  //     const canvas = document.createElement("canvas");
-  //     const context = canvas.getContext("2d");
-
-  //     canvas.width = videoRef.current.videoWidth;
-  //     canvas.height = videoRef.current.videoHeight;
-
-  //     context?.drawImage(videoRef.current, 0, 0);
-  //     console.log("서버로 보내기 전");
-  //     canvas.toBlob(
-  //       async (blob) => {
-  //         if (blob) {
-  //           const formData = new FormData();
-  //           formData.append("file", blob);
-  //           const serverUrl = "/ai/upload_frame";
-
-  //           try {
-  //             const response = await fetch(serverUrl, {
-  //               method: "POST",
-  //               body: formData,
-  //               // mode: "cors",
-  //               // credentials: "omit", // 추가
-  //               headers: {
-  //                 Accept: "application/json",
-  //                 // Origin: window.location.origin, // 추가
-  //               },
-  //             });
-  //             if (!response.ok) {
-  //               throw new Error(`HTTP error! status: ${response.status}`);
-  //             }
-
-  //             const data = await response.json();
-  //             console.log("서버 응답:", data);
-  //           } catch (error) {
-  //             if (
-  //               error instanceof TypeError &&
-  //               error.message === "Failed to fetch"
-  //             ) {
-  //               console.error(
-  //                 "서버 연결 실패. 서버가 실행 중인지 확인해주세요.",
-  //                 {
-  //                   error,
-  //                   url: serverUrl,
-  //                   origin: window.location.origin,
-  //                 }
-  //               );
-  //             } else {
-  //               console.error("전송 오류:", error);
-  //             }
-  //           }
-  //         }
-  //       },
-  //       "image/jpeg",
-  //       0.95
-  //     );
-  //   } catch (err) {
-  //     console.error("프레임 캡처 중 오류:", err);
-  //   }
-  // }, []);
   const sendFrameToServer = async () => {
     if (!videoRef.current) return;
 
@@ -103,6 +41,7 @@ const UserBox = ({
       canvas.toBlob(
         async (blob) => {
           if (blob) {
+            console.log("유저의 이미지를 서버로 보냅니다");
             const formData = new FormData();
             formData.append("file", blob);
             // 참가자 정보와 룸 정보도 함께 전송

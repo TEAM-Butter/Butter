@@ -15,7 +15,7 @@ import {
 } from "../config.js";
 import { S3Service } from "./s3.service.js";
 import fs from "fs";
-import {insertClip} from "./mysql.service.js"
+// import {insertClip} from "./mysql.service.js"
 
 const s3Service = new S3Service();
 
@@ -70,20 +70,23 @@ export class RecordingService {
       RECORDINGS_PATH + RECORDINGS_METADATA_PATH,
       regex
     );
-    // const recordings = await Promise.all(metadataKeys.map((metadataKey) => s3Service.getObjectAsJson(metadataKey)));
     const recordings = await Promise.all(
-      metadataKeys.map(async (metadataKey) => {
-        const metadata = await s3Service.getObjectAsJson(metadataKey);
-        const recordingExists = await this.existsRecording(metadata.name);
-        return recordingExists ? metadata : null;
-      })
+      metadataKeys.map((metadataKey) => s3Service.getObjectAsJson(metadataKey))
     );
-    const validRecordings = recordings.filter(
-      (recording) => recording !== null
-    );
+    // const recordings = await Promise.all(
+    //   metadataKeys.map(async (metadataKey) => {
+    //     const metadata = await s3Service.getObjectAsJson(metadataKey);
+    //     const recordingExists = await this.existsRecording(metadata.name);
+    //     return recordingExists ? metadata : null;
+    //   })
+    // );
 
-    return this.filterAndSortRecordings(validRecordings, roomName, roomId);
-    // return this.filterAndSortRecordings(recordings, roomName, roomId);
+    // const validRecordings = recordings.filter(
+    //   (recording) => recording !== null
+    // );
+
+    // return this.filterAndSortRecordings(validRecordings, roomName, roomId);
+    return this.filterAndSortRecordings(recordings, roomName, roomId);
   }
 
   filterAndSortRecordings(recordings, roomName, roomId) {
@@ -211,23 +214,26 @@ export class RecordingService {
   }
 
   getClipThumbnailKey(clippedRecordingName) {
-    return CLIPS_PATH + clippedRecordingName.replace(".mp4", ".jpg")
+    return CLIPS_PATH + clippedRecordingName.replace(".mp4", ".jpg");
   }
 
   async saveThumbnail(recordingName, imageBuffer) {
     const thumbnailKey = this.getThumbnailKey(recordingName);
-  
+
     try {
       // 이미지 파일을 임시 파일로 저장
       const tempThumbnailPath = `/tmp/${recordingName.replace(".mp4", ".jpg")}`;
       fs.writeFileSync(tempThumbnailPath, imageBuffer);
-  
+
       // S3에 업로드
-      await s3Service.uploadObject(thumbnailKey, fs.createReadStream(tempThumbnailPath));
-  
+      await s3Service.uploadObject(
+        thumbnailKey,
+        fs.createReadStream(tempThumbnailPath)
+      );
+
       // 임시 파일 삭제
       fs.unlinkSync(tempThumbnailPath);
-  
+
       return { success: true, thumbnailKey };
     } catch (error) {
       console.error("Error saving thumbnail:", error);
@@ -238,7 +244,7 @@ export class RecordingService {
   // 썸네일 URL 가져오기
   async getThumbnailUrl(recordingName) {
     const key = this.getThumbnailKey(recordingName);
-    
+
     // 썸네일 존재 여부 확인
     const exists = await s3Service.exists(key);
     if (!exists) {
@@ -247,7 +253,7 @@ export class RecordingService {
 
     return s3Service.getObjectUrl(key);
   }
-  
+
   async clipRecording(recordingName, startTime, endTime, crewId, title) {
     const inputKey = this.getRecordingKey(recordingName);
     const clippedRecordingName = `clipped-${startTime}-${endTime}-${recordingName}.mp4`;
@@ -271,15 +277,21 @@ export class RecordingService {
       await execPromise(thumbnailCommand);
 
       // 잘린 영상 S3에 업로드
-      await s3Service.uploadObject(outputKey, fs.createReadStream(tempOutputPath));
-      await s3Service.uploadObject(thumbnailKey, fs.createReadStream(thumbnailPath));
+      await s3Service.uploadObject(
+        outputKey,
+        fs.createReadStream(tempOutputPath)
+      );
+      await s3Service.uploadObject(
+        thumbnailKey,
+        fs.createReadStream(thumbnailPath)
+      );
 
       // 임시 파일 삭제
       fs.unlinkSync(tempInputPath);
       fs.unlinkSync(tempOutputPath);
       fs.unlinkSync(thumbnailPath);
 
-      await insertClip(crewId, title, clippedRecordingName);
+      // await insertClip(crewId, title, clippedRecordingName);
 
       return { success: true, clippedRecordingName };
     } catch (error) {

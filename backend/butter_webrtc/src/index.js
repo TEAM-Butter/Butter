@@ -2,8 +2,6 @@ import "dotenv/config.js";
 import express from "express";
 import cors from "cors";
 import path from "path";
-import https from "https";
-import fs from "fs";
 import { fileURLToPath } from "url";
 import { SERVER_PORT } from "./config.js";
 import { roomController } from "./controllers/room.controller.js";
@@ -30,9 +28,9 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 app.use(express.static(path.join(__dirname, "../public")));
 
-app.use("/api/token", roomController);
-app.use("/api/recordings", recordingController);
-app.use("/api/livekit/webhook", webhookController);
+app.use("/token", roomController);
+app.use("/recordings", recordingController);
+app.use("/livekit/webhook", webhookController);
 
 app.listen(SERVER_PORT, () => {
   console.log("Server started on port:", SERVER_PORT);

@@ -8,7 +8,10 @@ import sample2 from "../../assets/sample2.jpg";
 import sample3 from "../../assets/sample3.jpg";
 import sample4 from "../../assets/sample4.jpg";
 import sample5 from "../../assets/sample5.png";
-
+import { motion } from "framer-motion";
+import findIcon from "../../assets/findIcon.png";
+import { CrewSearchModal } from "../../components/common/modals/CrewSearchModal";
+import { axiosInstance } from "../../apis/axiosInstance";
 
 const Write = styled.div`
  font-size : 200px;
@@ -57,7 +60,7 @@ const ImgStyle = styled.img<ImgProps>`
     ${({ index }) => index === 2 && "right: 80px; z-index: 3;"}
 
     &:hover {
-        transform: translateY(-20px); /* 위로 이동 */
+        transform: translateY(-30px); /* 위로 이동 */
     }
 `;
 
@@ -87,7 +90,6 @@ const CrewBox = styled.div`
 const ImgStyle2 = styled.img<any>`
     width: 100%; /* 부모 div의 너비에 맞춰 이미지 크기 */
     height: 170px; /* 비율에 맞게 높이 설정 */
-
 `;
 
 
@@ -97,6 +99,7 @@ const Box1 = styled.div`
  margin-right : 30px;
  margin-top : 50px;
  font-size : 30px;
+ position: relative;
 `
 
 const P1 = styled.div`
@@ -113,61 +116,179 @@ const Box2 = styled.div`
  font-size : 15px;
 `
 
-const ServerUrl = 'http://i12e204.p.ssafy.io:8081'
+const ServerUrl = 'http://localhost:8080'
+
+
+const TabsContainer = styled.ul`
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-weight: 500;
+  font-size: 14px;
+  display: flex;
+  width: 100%;
+`;
+
+const Tab = styled(motion.li)`
+  border-radius: 20px;
+  width: 100%;
+  padding: 15px 5px;
+  position: relative;
+  cursor: pointer;
+  height: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+  user-select: none;
+  justify-content: center;
+`;
+
+
+
+const tabs = ["Popular", "Favor Genre"];
+
+
+const Underline = styled(motion.div)`
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--accent);
+`;
+
+const Nav = styled.nav`
+  background: #040a14;
+  color: white;
+  padding: 5px;
+  border-radius: 20px;
+  height: 40px;
+  width: 260px;
+  display: flex;
+  margin-top: auto;
+  position: absolute;
+  left: 40px;
+`;
+
+
+const FindBox = styled.img`
+  color: white;
+  border-radius: 30px;
+  height: 20px;
+  width: 20px;
+
+`
+const SearchWrapper = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: absolute;
+    right: 0px;
+    top : 70px;
+    background-color: black;
+    height: 40px;
+  width: 130px;
+  font-size: 20px;
+  color: white;
+  z-index: 500;
+  padding-left: 13px;
+  padding-right: 13px;
+  border-radius: 30px;
+  border: 2px solid white;
+`
+const SearchText = styled.div`
+    
+`
 
 
 function CrewListPage() {
+    const [selectedTab, setSelectedTab] = useState(tabs[0]);
     const [crewId, setCrewId] = useState(0)  
     const [ loading, setLoading ] = useState(true) // 로딩 표시하는 변수
     const [ error, setError] = useState(null) // 에러 상태
-    const [ crewList, setCrewList] = useState(['1번크루','2번크루','3번크루','4번크루','5번크루'])
+    const [ crewList, setCrewList] = useState([])
     const images = [sample1,sample2,sample3,sample4,sample5]
-    
-    // useEffect (() => {
-    //     const fetchCrewDetail = async () => {
-    //         try {
-    //             setLoading(true);
-    //             const response = await axios.get(`${ServerUrl}/api/v1/crew/list`) // 크루 리스트 정보 받아옴
-    //             setCrewList(response.data);
-    //         } catch (err:any) {
-    //             setError(err.message); //요청 놓치면 에러 메세지 띄우기
-    //         } finally {
-    //             setLoading(false) // 요청 끝나면 로딩끄기
-    //         }
-    //     }
+    const [isModalOpen, setIsModalOpen] = useState(false)
+    const [modalType, setModalType] = useState("")
 
-    //     if (crewId) {
-    //         fetchCrewDetail();
-    //     }
-    // }, [crewId])
+
+    useEffect (() => {
+        const fetchCrewDetail = async () => {
+            try {
+                // ✅ 헤더 추가: Authorization (JWT 토큰 포함)
+                setLoading(true);
+                const response = await axiosInstance.get(`/crew/list?pageSize=10&sortBy=followerCount`) // 크루 리스트 정보 받아옴
+                setCrewList(response.data);
+                console.log(response.data)
+            } catch (err: any) {
+                setError(err.message); //요청 놓치면 에러 메세지 띄우기
+            } finally {
+                setLoading(false) // 요청 끝나면 로딩끄기
+            }
+        }
+
+        fetchCrewDetail();
+  
+
+    }, [])
     
-    // if (loading) return <div>Loading...</div>;
-    // if (error) return <div>Error: {error}</div>;
+    if (loading) return <div>Loading...</div>;
+    if (error) return <div>Error: {error}</div>;
     return (
         <div>
         <Box1>
+            <SearchWrapper onClick={()=>{
+                setModalType("crewSearch")
+                // setIsModalOpen(!true)
+             }}>
+            <SearchText>크루 검색</SearchText>
+            <FindBox src={findIcon} alt="findIcon"></FindBox>
+            </SearchWrapper>
+            <Nav>
+                <TabsContainer>
+                {tabs.map((item) => (
+                    <Tab
+                    key={item}
+                    initial={false}
+                    animate={{
+                        backgroundColor: item === selectedTab ? "#eee" : "#eee0",
+                        color: item === selectedTab ? "#000000" : "#eee",
+                    }}
+                    onClick={() => setSelectedTab(item)}
+                    >
+                    {item}
+                    {item === selectedTab && <Underline layoutId="underline" />}
+                    </Tab>
+                ))}
+                </TabsContainer>
+            </Nav>
+          
             <P1>Busking </P1> <p>Crew</p>
+            
         </Box1>
+        
         <Box2>
+        
         <p>당신의 마음에 맞는 크루를 지금 바로 찾아보세요!</p>
         </Box2>
        <Write>
        <div>C</div>
        <ImgContainer>
-        <ImgStyle src={sample4} alt="Crew Logo 1" index={0} size="230px" />
-        <ImgStyle src={sample2} alt="Crew Logo 2" index={1} size="230px" />
-        <ImgStyle src={sample3} alt="Crew Logo 3" index={2} size="230px" />
+       {crewList.map((a : any, i ) =>{if(i <=2 ) return(<Link to={`/crew/detail/${a.id}`}><ImgStyle src={images[i]} alt="Crew Logo 1" index={i} size="230px" /></Link> )})}
         </ImgContainer>
        <Div1 > REW</Div1>
        </Write>
        <CrewListContainer>
-        {crewList.map((a, i)=>{return( 
+        {crewList.map((a :any, i : number)=>{ if (3 <=i && i <=7 )return(
+             
             <CrewBox key={i}>
-            <Link to={`/crew/detail/${i+1}`}><div>{a}</div><ImgStyle2 src={images[i]} alt="crewImage"></ImgStyle2></Link>
+            <Link to={`/crew/detail/${a.id}`}><div>{a.name}</div><ImgStyle2 src={images[i]} alt="crewImage"></ImgStyle2></Link>
             </CrewBox>
             )})} 
         </CrewListContainer>
-       
+       { modalType === "crewSearch" && <CrewSearchModal width="600px" height="300px" setModalType={setModalType}></CrewSearchModal>}
        </div>
     )
 }

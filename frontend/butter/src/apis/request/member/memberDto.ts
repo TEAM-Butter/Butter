@@ -6,7 +6,7 @@ interface SignUpRequestDto {
     gender: string,
 }
 
-interface MemberExtraInfoDto {
+interface MemberExtraInfoRequestDto {
     nickname: string;
     profileImage: File | null;
     avatarType: string;
@@ -19,6 +19,6 @@ interface CheckLoginIdRequestDto {
 
 export type {
     SignUpRequestDto,
-    MemberExtraInfoDto,
+    MemberExtraInfoRequestDto,
     CheckLoginIdRequestDto,
 }
