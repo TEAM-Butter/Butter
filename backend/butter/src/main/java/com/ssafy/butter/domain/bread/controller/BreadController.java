@@ -10,6 +10,8 @@ import com.ssafy.butter.domain.bread.dto.request.BreadSettlementRequestDTO;
 import com.ssafy.butter.domain.bread.dto.response.PaymentVerificationResponseDTO;
 import com.ssafy.butter.domain.bread.service.BreadService;
 import com.ssafy.butter.global.token.CurrentUser;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,10 +41,12 @@ public class BreadController {
 
     private final BreadService breadService;
 
-    // 결제 검증 API
+    @Operation(summary = "결제 검증", description = "결제 요청을 검증합니다.<br>" +
+            "성공 시 요청한 만큼 사용자 계정에 빵이 추가됩니다. " +
+            "실패 시 추가되지 않습니다.")
     @PostMapping("/verify-payment") 
     public ResponseEntity<PaymentVerificationResponseDTO> verifyPayment(
-            @CurrentUser AuthInfoDTO authInfoDTO,
+            @Parameter(hidden = true) @CurrentUser AuthInfoDTO authInfoDTO,
             @RequestBody BreadRechargeRequestDTO breadRechargeRequestDTO) {
         JsonNode responseJson = getPaymentInfo(breadRechargeRequestDTO.impUid(), getAccessToken());
         if (!"paid".equals(responseJson.get("response").get("status").asText())) {
@@ -96,17 +100,19 @@ public class BreadController {
         }
     }
 
+    @Operation(summary = "빵 후원", description = "빵을 후원합니다.")
     @PostMapping("/donate")
     public ResponseEntity<Void> donateBread(
-            @CurrentUser AuthInfoDTO authInfoDTO,
+            @Parameter(hidden = true) @CurrentUser AuthInfoDTO authInfoDTO,
             @RequestBody BreadDonationRequestDTO breadDonationRequestDTO) {
         breadService.donateBread(authInfoDTO, breadDonationRequestDTO);
         return ResponseEntity.noContent().build();
     }
 
+    @Operation(summary = "빵 정산", description = "빵을 정산합니다.")
     @PostMapping("/settle")
     public ResponseEntity<Void> settleBread(
-            @CurrentUser AuthInfoDTO authInfoDTO,
+            @Parameter(hidden = true) @CurrentUser AuthInfoDTO authInfoDTO,
             @RequestBody BreadSettlementRequestDTO breadSettlementRequestDTO) {
         breadService.settleBread(authInfoDTO, breadSettlementRequestDTO);
         return ResponseEntity.noContent().build();
