@@ -107,4 +107,10 @@ public class ClipServiceImpl implements ClipService {
         likedClip.updateIsLiked(false);
         likedClipRepository.save(likedClip);
     }
+
+    @Override
+    public List<ClipResponseDTO> getLikedClipList(AuthInfoDTO currentUser) {
+        return clipRepository.getLikedClipList(currentUser.id()).stream()
+                .map(ClipResponseDTO::fromEntity).toList();
+    }
 }

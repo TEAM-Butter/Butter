@@ -135,4 +135,10 @@ public class ScheduleServiceImpl implements ScheduleService {
     public Schedule findById(Long id) {
         return scheduleRepository.findById(id).orElseThrow();
     }
+
+    @Override
+    public List<ScheduleResponseDTO> getLikedScheduleList(AuthInfoDTO currentUser) {
+        return scheduleRepository.getLikedScheduleList(currentUser.id()).stream()
+                .map(ScheduleResponseDTO::fromEntity).toList();
+    }
 }

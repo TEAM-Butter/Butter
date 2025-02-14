@@ -40,5 +40,7 @@ public interface CrewService {
 
     void createCrewGenre(AuthInfoDTO currentUser, Long id, CrewGenreRequestDTO crewGenreRequestDTO);
 
+    List<CrewResponseDTO> getFollowedCrewList(AuthInfoDTO currentUser);
+    
     CrewMember validateCrewAdmin(Crew crew, Member member);
 }

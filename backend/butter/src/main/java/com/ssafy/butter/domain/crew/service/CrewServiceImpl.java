@@ -249,6 +249,12 @@ public class  CrewServiceImpl implements CrewService {
     }
 
     @Override
+    public List<CrewResponseDTO> getFollowedCrewList(AuthInfoDTO currentUser) {
+        return crewRepository.getFollowedCrewList(currentUser.id()).stream()
+                .map(CrewResponseDTO::fromEntity).toList();
+    }
+
+    @Override
     public CrewMember validateCrewAdmin(Crew crew, Member member) {
         CrewMember crewMember = crewMemberRepository.findByCrewAndMember(crew, member).orElseThrow();
         if (crewMember.getIsCrewAdmin()) {
