@@ -100,4 +100,11 @@ public class ScheduleController {
         scheduleService.unlikeSchedule(currentUser, id);
         return ResponseEntity.noContent().build();
     }
+
+    @Operation(summary = "좋아요 버스킹 일정 목록", description = "좋아요한 버스킹 일정 목록을 조회합니다.")
+    @GetMapping("/like")
+    public ResponseEntity<List<ScheduleResponseDTO>> getLikedScheduleList(
+            @Parameter(hidden = true) @CurrentUser AuthInfoDTO currentUser) {
+        return ResponseEntity.ok(scheduleService.getLikedScheduleList(currentUser));
+    }
 }
