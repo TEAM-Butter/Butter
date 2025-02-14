@@ -10,16 +10,16 @@ import { webhookController } from "./controllers/webhook.controller.js";
 
 const app = express();
 
-app.use(cors());
+// app.use(cors());
 app.use(express.json());
 
 //특정 도메인만 허용
-// app.use(cors({
-//   origin: 'https://i12e204.p.ssafy.io', 
-//   methods: ['GET', 'POST', 'OPTIONS'],
-//   allowedHeaders: ['Content-Type', 'Authorization'],
-//   credentials: true
-// }));
+app.use(cors({
+  origin: 'https://i12e204.p.ssafy.io', 
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
+}));
 
 app.options('*', cors());
 

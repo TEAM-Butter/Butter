@@ -29,8 +29,28 @@ roomController.post("/", async (req, res) => {
         .json({ errorMessage: "Subscribers cannot create a new room" });
     }
 
-    if (!exists) {
-      await roomService.createRoom(roomName);
+    try {
+        // Create room if it doesn't exist
+        const exists = await roomService.exists(roomName);
+
+        if(!exists && role !== "crew"){
+            return res.status(403).json({ errorMessage: "Subscribers cannot create a new room" });
+        }
+
+        if (!exists) {
+            await roomService.createRoom(roomName);
+        }
+
+        const at = new AccessToken(LIVEKIT_API_KEY, LIVEKIT_API_SECRET, {
+            identity: participantName
+        });
+        at.addGrant({ room: roomName, roomJoin: true, roomRecord: true });
+        const token = await at.toJwt();
+
+        res.json({ token });
+    } catch (error) {
+        console.error("Error creating room.", error);
+        res.status(500).json({ errorMessage: "Error creating room" });
     }
 
     const at = new AccessToken(LIVEKIT_API_KEY, LIVEKIT_API_SECRET, {
