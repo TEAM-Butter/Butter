@@ -155,26 +155,40 @@ const CharacterContainer = ({
     }
   };
 
-  const handleMyEmotion = useCallback((emotionType: string, userId: number) => {
-    if (!canUserAct(userId)) {
-      console.log("쿨다운 중입니다");
-      return;
-    }
+  const handleMyEmotion = useCallback(
+    (emotionType: string, userId: number, emotion: string) => {
+      if (!canUserAct(userId)) {
+        console.log("쿨다운 중입니다");
+        return;
+      }
 
-    setMyEmotionState({
-      isEmoting: true,
-      currentEmotion: getEmotionImage(emotionType),
-    });
-
-    updateActionTime(userId);
-
-    setTimeout(() => {
+      console.log("확인용 emtoionType입니다!!!!!!!!!!!!", emotionType);
       setMyEmotionState({
-        isEmoting: false,
-        currentEmotion: heart,
+        isEmoting: true,
+        currentEmotion: getEmotionImage(emotionType),
       });
-    }, EMOTION_DURATION);
-  }, []);
+
+      updateActionTime(userId);
+
+      setTimeout(() => {
+        if (emotion === "heart") {
+          socket.emit("increaseEmotionCount", {
+            emotion: "heart",
+          });
+        }
+        if (emotion === "like") {
+          socket.emit("increaseEmotionCount", {
+            emotion: "like",
+          });
+        }
+        setMyEmotionState({
+          isEmoting: false,
+          currentEmotion: emotionType,
+        });
+      }, EMOTION_DURATION);
+    },
+    []
+  );
 
   const handleOtherEmotion = useCallback(
     (userId: number, emotionType: string) => {
@@ -217,7 +231,7 @@ const CharacterContainer = ({
           setHeartCount((prev) => prev + 1);
           if (id === MY_CHARACTER_INDEX) {
             console.log("여기입니다 3");
-            handleMyEmotion(heart, id);
+            handleMyEmotion(heart, id, "heart");
           } else {
             console.log("여기입니다4");
             handleOtherEmotion(id, "heart");
@@ -225,7 +239,7 @@ const CharacterContainer = ({
           break;
         case "clap":
           if (id === MY_CHARACTER_INDEX) {
-            handleMyEmotion(clap, id);
+            handleMyEmotion(clap, id, "clap");
           } else {
             handleOtherEmotion(id, "clap");
           }
@@ -233,14 +247,14 @@ const CharacterContainer = ({
         case "like":
           setLikeCount((prev) => prev + 1);
           if (id === MY_CHARACTER_INDEX) {
-            handleMyEmotion(like, id);
+            handleMyEmotion(like, id, "like");
           } else {
             handleOtherEmotion(id, "like");
           }
           break;
         case "thumb_index":
           if (id === MY_CHARACTER_INDEX) {
-            handleMyEmotion("mic", id);
+            handleMyEmotion(mic, id, "mic");
           } else {
             handleOtherEmotion(id, "mic");
           }
