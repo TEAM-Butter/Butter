@@ -456,7 +456,7 @@ const LivePage = () => {
     participantRole: string
   ) {
     try {
-      const response = await fetch(APPLICATION_SERVER_URL + "token", {
+      const response = await fetch(APPLICATION_SERVER_URL + "/token", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
