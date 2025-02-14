@@ -544,6 +544,7 @@ const LivePage = () => {
                 <CharacterContainer
                   socket={socket}
                   participantName={participantName}
+                  roomName={roomName}
                 />
               </CharacterBox>
             </Left>
@@ -622,6 +623,7 @@ const LivePage = () => {
               <CharacterContainer
                 socket={socket}
                 participantName={participantName}
+                roomName={roomName}
               />
             </CharacterBox>
           </Left>
