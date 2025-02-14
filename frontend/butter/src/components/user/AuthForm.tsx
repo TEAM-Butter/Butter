@@ -129,23 +129,6 @@ export const SignupForm = () => {
   const [gender, setGender] = useState<string>("");
   const [birthDate, setBirthDate] = useState<string>("");
 
-  const LoginHandler = () => {
-    const requestBody: LoginRequestDto = { loginId, password };
-    loginRequest(requestBody).then((responseBody: LoginResponseDto | null) => {
-      const { accessToken } = responseBody as LoginResponseDto;
-      setAccessToken(accessToken);
-      navigator(`/`);
-      setUser(
-        true,
-        "guest",
-        "profile.jpg",
-        "pet1",
-        String(responseBody?.authenticatedMemberInfo.memberType),
-        Boolean(responseBody?.authenticatedMemberInfo.isExtraInfoRegistered)
-      );
-    });
-  };
-
     const LoginHandler = () => {
         const requestBody: LoginRequestDto = { loginId, password };
         loginRequest(requestBody).then((responseBody: LoginResponseDto | null) => {
@@ -156,7 +139,8 @@ export const SignupForm = () => {
         })
     }
 
-    const handleSubmit = () => {
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault()
         const requestBody: SignUpRequestDto = { loginId, password, email, gender, birthDate };
         signupRequest(requestBody).then(() => {
             LoginHandler()
