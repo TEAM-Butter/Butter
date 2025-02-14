@@ -420,7 +420,7 @@ const LivePage = () => {
       // Connect to the room with the LiveKit URL and the token
 
       //방에 참가 할 때 본인이 publisher인지 subscriber인지 정보
-      socket.emit("join", { roomName, participantRole });
+      socket.emit("join", { roomName, role: participantRole });
 
       console.log("webRtc token :", token);
       await room.connect(LIVEKIT_URL, token);
@@ -539,7 +539,10 @@ const LivePage = () => {
                 />
               </LeftTop>
               <CharacterBox>
-                <CharacterContainer socket={socket} />
+                <CharacterContainer
+                  socket={socket}
+                  participantName={participantName}
+                />
               </CharacterBox>
             </Left>
 
@@ -614,7 +617,10 @@ const LivePage = () => {
               />
             </LeftTop>
             <CharacterBox>
-              <CharacterContainer socket={socket} />
+              <CharacterContainer
+                socket={socket}
+                participantName={participantName}
+              />
             </CharacterBox>
           </Left>
 

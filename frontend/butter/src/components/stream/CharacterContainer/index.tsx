@@ -10,7 +10,7 @@ import heart from "../../../assets/heart.png";
 import clap from "../../../assets/clap.png";
 import mic from "../../../assets/mic.png";
 import styled from "@emotion/styled";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { SocketContent } from "../../../types/socket";
 import { Socket } from "socket.io-client";
 
@@ -82,6 +82,7 @@ const TotalLikesInfo = styled.div`
 
 interface CharacterContainer {
   socket: Socket;
+  participantName: string;
 }
 
 interface CharacterData {
@@ -95,7 +96,10 @@ const EMOTION_DURATION = 2600; //2초
 const COOLDOWN_DURATION = 3000; // 3초
 const MY_CHARACTER_INDEX = 1; //내 캐릭터의 인덱스
 
-const CharacterContainer = ({ socket }: CharacterContainer) => {
+const CharacterContainer = ({
+  socket,
+  participantName,
+}: CharacterContainer) => {
   const [characters, setCharacters] = useState<CharacterData[]>(() =>
     Array.from({ length: 13 }, (_, index) => ({
       id: index,
@@ -115,6 +119,7 @@ const CharacterContainer = ({ socket }: CharacterContainer) => {
   // 사용자별 마지막 액션 시간 관리
   const lastActionTimeMap = useRef(new Map<number, number>());
 
+  console.log("하이욤!!!!!!!!!!!!!!!!!!!!!");
   const canUserAct = (userId: number) => {
     const currentTime = Date.now();
     const lastTime = lastActionTimeMap.current.get(userId) || 0;
@@ -150,7 +155,7 @@ const CharacterContainer = ({ socket }: CharacterContainer) => {
     }
   };
 
-  const handleMyEmotion = (emotionType: string, userId: number) => {
+  const handleMyEmotion = useCallback((emotionType: string, userId: number) => {
     if (!canUserAct(userId)) {
       console.log("쿨다운 중입니다");
       return;
@@ -169,81 +174,87 @@ const CharacterContainer = ({ socket }: CharacterContainer) => {
         currentEmotion: heart,
       });
     }, EMOTION_DURATION);
-  };
+  }, []);
 
-  const handleOtherEmotion = (userId: number, emotionType: string) => {
-    if (userId === MY_CHARACTER_INDEX || !canUserAct(userId)) return;
+  const handleOtherEmotion = useCallback(
+    (userId: number, emotionType: string) => {
+      if (userId === MY_CHARACTER_INDEX || !canUserAct(userId)) return;
 
-    setCharacters((prev) =>
-      prev.map((char, idx) =>
-        idx === userId
-          ? {
-              ...char,
-              isEmoting: true,
-              currentEmotion: getEmotionImage(emotionType),
-            }
-          : char
-      )
-    );
-
-    updateActionTime(userId);
-
-    setTimeout(() => {
       setCharacters((prev) =>
         prev.map((char, idx) =>
           idx === userId
-            ? { ...char, isEmoting: false, currentEmotion: heart }
+            ? {
+                ...char,
+                isEmoting: true,
+                currentEmotion: getEmotionImage(emotionType),
+              }
             : char
         )
       );
-    }, EMOTION_DURATION);
+
+      updateActionTime(userId);
+
+      setTimeout(() => {
+        setCharacters((prev) =>
+          prev.map((char, idx) =>
+            idx === userId
+              ? { ...char, isEmoting: false, currentEmotion: heart }
+              : char
+          )
+        );
+      }, EMOTION_DURATION);
+    },
+    []
+  );
+
+  const handleMessage = (content: SocketContent) => {
+    console.log("웹소켓에서 participantName을 불러옵니다!!", participantName);
+    const id = 1;
+    if (content.role === "publisher" && canUserAct(id)) {
+      switch (content.label) {
+        case "little_heart":
+          console.log("여기입니다 2");
+          setHeartCount((prev) => prev + 1);
+          if (id === MY_CHARACTER_INDEX) {
+            console.log("여기입니다 3");
+            handleMyEmotion(heart, id);
+          } else {
+            console.log("여기입니다4");
+            handleOtherEmotion(id, "heart");
+          }
+          break;
+        case "clap":
+          if (id === MY_CHARACTER_INDEX) {
+            handleMyEmotion(clap, id);
+          } else {
+            handleOtherEmotion(id, "clap");
+          }
+          break;
+        case "like":
+          setLikeCount((prev) => prev + 1);
+          if (id === MY_CHARACTER_INDEX) {
+            handleMyEmotion(like, id);
+          } else {
+            handleOtherEmotion(id, "like");
+          }
+          break;
+        case "thumb_index":
+          if (id === MY_CHARACTER_INDEX) {
+            handleMyEmotion("mic", id);
+          } else {
+            handleOtherEmotion(id, "mic");
+          }
+          break;
+      }
+    }
+  };
+  const handleSocketOn = () => {
+    socket.on("message", handleMessage);
   };
 
   useEffect(() => {
-    const handleMessage = (content: SocketContent) => {
-      // const id = content.idx || 1;
-      const id = 1;
-      if (content.role === "publisher" && canUserAct(id)) {
-        switch (content.label) {
-          case "little_heart":
-            console.log("여기입니다 2");
-            setHeartCount((prev) => prev + 1);
-            if (id === MY_CHARACTER_INDEX) {
-              console.log("여기입니다 3");
-              handleMyEmotion(heart, id);
-            } else {
-              console.log("여기입니다4");
-              handleOtherEmotion(id, "heart");
-            }
-            break;
-          case "clap":
-            if (id === MY_CHARACTER_INDEX) {
-              handleMyEmotion(clap, id);
-            } else {
-              handleOtherEmotion(id, "clap");
-            }
-            break;
-          case "like":
-            setLikeCount((prev) => prev + 1);
-            if (id === MY_CHARACTER_INDEX) {
-              handleMyEmotion(like, id);
-            } else {
-              handleOtherEmotion(id, "like");
-            }
-            break;
-          case "thumb_index":
-            if (id === MY_CHARACTER_INDEX) {
-              handleMyEmotion("mic", id);
-            } else {
-              handleOtherEmotion(id, "mic");
-            }
-            break;
-        }
-      }
-    };
-
-    socket.on("message", handleMessage);
-  }, [socket]);
+    handleSocketOn();
+  }, [participantName, handleMyEmotion, handleOtherEmotion]);
 
   return (
     <CharacterContainerWrapper>

@@ -41,6 +41,7 @@ const UserBox = ({
       canvas.toBlob(
         async (blob) => {
           if (blob) {
+            console.log("유저의 이미지를 서버로 보냅니다");
             const formData = new FormData();
             formData.append("file", blob);
             // 참가자 정보와 룸 정보도 함께 전송
