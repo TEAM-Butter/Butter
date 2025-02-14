@@ -98,7 +98,7 @@ public class LoginServiceImpl implements LoginService{
                 member.getAvatarType().getName(),
                 memberType,
                 genres,
-                false
+                member.isExtraInfoRegistered()
         );
 
         AuthInfoDTO authInfo = new AuthInfoDTO(member.getId(),member.getEmail().getValue(), member.getGender().name(), member.getBirthDate().getDate());
