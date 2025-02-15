@@ -15,14 +15,14 @@ import {
   RECORDING_FILE_PORTION_SIZE,
 } from "../config.js";
 import { S3Service } from "./s3.service.js";
+import { MySQLService } from "./mysql.service.js";
 import fs from "fs";
 import os from "os";
 import path from "path";
 import { exec } from "node:child_process";
-import { Stream, Readable } from 'stream';
-// import {insertClip} from "./mysql.service.js"
 
 const s3Service = new S3Service();
+const dbService = new MySQLService();
 
 export class RecordingService {
   static instance;
@@ -326,8 +326,8 @@ export class RecordingService {
 
   async clipRecording(recordingName, startTime, endTime, time) {
     console.log("Time "+startTime+", "+endTime);
-    const clipName = `clip-${result}-${time}`
     const result = recordingName.split('-')[0];
+    const clipName = `clip-${result}-${time}.mp4`;
     const inputKey = this.getRecordingKey(recordingName);
     const outputKey = this.getClipTmpKey(clipName);
 
@@ -384,9 +384,12 @@ export class RecordingService {
 
   async saveClipRecording(title, clipName) {
     try {
-      //Mysql에 저장
+      // INSERT 쿼리 실행: crewId, title, videoName (clipName으로 저장)
+      crewId = getCrewIdToClipName(clipName);
+      const sql = "INSERT INTO clip (crewId, title, videoName) VALUES (?, ?, ?)";
+      await this.query(sql, [crewId, title, clipName]);
 
-      // 성공적으로 완료되면 URL 반환
+      // 성공적으로 완료되면 clipName 반환
       return { success: true, clipName: clipName };
     } catch (error) {
       console.error("Error saving clip:", error);
