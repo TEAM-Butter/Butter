@@ -92,11 +92,22 @@ export class RecordingService {
     return this.filterAndSortRecordings(recordingKeys, roomName, roomId);
   }
 
+  extractRoomInfo = (filename) => {
+    const regex = /recordings\/(.+)-(\w+)-\d{4}-\d{2}-\d{2}T\d{6}\.mp4/;
+    const match = filename.match(regex);
+    
+    if (match) {
+        return { roomName: match[1], roomId: match[2] };
+    } else {
+        return null;
+    }
+  };
+
   filterAndSortRecordings(recordings, roomName, roomId) {
     let filteredRecordings = recordings;
 
     if (roomName || roomId) {
-      filteredRecordings = recordings.filter((recording) => {
+      filteredRecordings = recordings.extractRoomInfo((recording) => {
         return (
           (!roomName || recording.roomName === roomName) &&
           (!roomId || recording.roomId === roomId)
