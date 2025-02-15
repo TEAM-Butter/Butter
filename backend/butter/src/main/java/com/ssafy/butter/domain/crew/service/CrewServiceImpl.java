@@ -138,7 +138,7 @@ public class  CrewServiceImpl implements CrewService {
      */
     @Override
     public CrewResponseDTO getCrewDetail(AuthInfoDTO currentUser, Long id) {
-        Member member = memberService.findById(id);
+        Member member = memberService.findById(currentUser.id());
         Crew crew = crewRepository.findById(id).orElseThrow();
         return CrewResponseDTO.from(crew, isFollowing(member, crew));
     }
