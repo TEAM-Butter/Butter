@@ -40,9 +40,7 @@ public class ScheduleServiceImpl implements ScheduleService {
     public ScheduleResponseDTO createSchedule(AuthInfoDTO currentUser, ScheduleSaveRequestDTO scheduleSaveRequestDTO) {
         Member member = memberService.findById(currentUser.id());
         Crew crew = crewService.findById(scheduleSaveRequestDTO.crewId());
-        if (!crewMemberService.findByCrewAndMember(crew, member).getIsCrewAdmin()) {
-            throw new IllegalArgumentException("Current user is not crew admin");
-        }
+        crewService.validateCrewAdmin(crew, member);
         Schedule schedule = Schedule.builder()
                 .crew(crew)
                 .title(scheduleSaveRequestDTO.title())
@@ -80,9 +78,7 @@ public class ScheduleServiceImpl implements ScheduleService {
     public ScheduleResponseDTO updateSchedule(AuthInfoDTO currentUser, Long id, ScheduleSaveRequestDTO scheduleSaveRequestDTO) {
         Member member = memberService.findById(currentUser.id());
         Crew crew = crewService.findById(scheduleSaveRequestDTO.crewId());
-        if (!crewMemberService.findByCrewAndMember(crew, member).getIsCrewAdmin()) {
-            throw new IllegalArgumentException("Current user is not crew admin");
-        }
+        crewService.validateCrewAdmin(crew, member);
         Schedule schedule = scheduleRepository.findById(id).orElseThrow();
         schedule.update(scheduleSaveRequestDTO);
         return ScheduleResponseDTO.fromEntity(scheduleRepository.save(schedule));
@@ -93,9 +89,7 @@ public class ScheduleServiceImpl implements ScheduleService {
         Member member = memberService.findById(currentUser.id());
         Schedule schedule = scheduleRepository.findById(id).orElseThrow();
         Crew crew = schedule.getCrew();
-        if (!crewMemberService.findByCrewAndMember(crew, member).getIsCrewAdmin()) {
-            throw new IllegalArgumentException("Current user is not crew admin");
-        }
+        crewService.validateCrewAdmin(crew, member);
         scheduleRepository.delete(schedule);
         return ScheduleResponseDTO.fromEntity(schedule);
     }
