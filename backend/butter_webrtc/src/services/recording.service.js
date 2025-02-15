@@ -59,6 +59,7 @@ export class RecordingService {
   async stopRecording(recordingId) {
     // Stop the egress to finish the recording
     const egressInfo = await this.egressClient.stopEgress(recordingId);
+    await this.saveRecordingMetadata(egressInfo);
     return this.convertToRecordingInfo(egressInfo);
   }
 
@@ -75,6 +76,7 @@ export class RecordingService {
       RECORDINGS_PATH + RECORDINGS_METADATA_PATH,
       regex
     );
+
     const recordings = await Promise.all(
       metadataKeys.map((metadataKey) => s3Service.getObjectAsJson(metadataKey))
     );
@@ -219,11 +221,17 @@ export class RecordingService {
 
   async saveRecordingMetadata(egressInfo) {
     const recordingInfo = this.convertToRecordingInfo(egressInfo);
+    console.log("Saving metadata:", recordingInfo);
     const key = this.getMetadataKey(recordingInfo.name);
     await s3Service.uploadObject(key, recordingInfo);
   }
 
   convertToRecordingInfo(egressInfo) {
+    if (!egressInfo.fileResults || egressInfo.fileResults.length === 0) {
+        console.error("No file results found for egress:", egressInfo);
+        return null;
+    }
+
     const file = egressInfo.fileResults[0];
     return {
       id: egressInfo.egressId,
