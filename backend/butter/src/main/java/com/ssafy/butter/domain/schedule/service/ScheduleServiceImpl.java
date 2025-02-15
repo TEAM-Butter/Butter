@@ -8,7 +8,6 @@ import com.ssafy.butter.domain.member.entity.Member;
 import com.ssafy.butter.domain.member.service.member.MemberService;
 import com.ssafy.butter.domain.notification.enums.NotificationType;
 import com.ssafy.butter.domain.notification.service.NotificationService;
-import com.ssafy.butter.domain.schedule.dto.request.ScheduleCalendarRequestDTO;
 import com.ssafy.butter.domain.schedule.dto.request.ScheduleLikeRequestDTO;
 import com.ssafy.butter.domain.schedule.dto.request.ScheduleSaveRequestDTO;
 import com.ssafy.butter.domain.schedule.dto.request.ScheduleSearchRequestDTO;
@@ -33,7 +32,6 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     private final MemberService memberService;
     private final CrewService crewService;
-    private final CrewMemberService crewMemberService;
     private final NotificationService notificationService;
 
     @Override
@@ -56,22 +54,21 @@ public class ScheduleServiceImpl implements ScheduleService {
         String url = NotificationType.SCHEDULE.getPath() + schedule.getId();
         notificationService.sendNotificationToFollowers(schedule.getCrew(), content, notificationType, url);
 
-        return ScheduleResponseDTO.fromEntity(scheduleRepository.save(schedule));
+        return new ScheduleResponseDTO(scheduleRepository.save(schedule), false);
     }
 
     @Override
-    public List<ScheduleResponseDTO> searchSchedule(ScheduleSearchRequestDTO scheduleSearchRequestDTO) {
-        return scheduleRepository.getScheduleList(scheduleSearchRequestDTO).stream().map(ScheduleResponseDTO::fromEntity).toList();
+    public List<ScheduleResponseDTO> searchSchedule(AuthInfoDTO currentUser, ScheduleSearchRequestDTO scheduleSearchRequestDTO) {
+        Member member = memberService.findById(currentUser.id());
+        return scheduleRepository.getScheduleList(scheduleSearchRequestDTO).stream()
+                .map(schedule -> new ScheduleResponseDTO(schedule, isLiking(member, schedule))).toList();
     }
 
     @Override
-    public List<ScheduleResponseDTO> getScheduleCalendarList(ScheduleCalendarRequestDTO scheduleCalendarRequestDTO) {
-        return scheduleRepository.findAllByBuskingDate(scheduleCalendarRequestDTO.buskingDate()).stream().map(ScheduleResponseDTO::fromEntity).toList();
-    }
-
-    @Override
-    public ScheduleResponseDTO getScheduleDetail(Long id) {
-        return scheduleRepository.findById(id).map(ScheduleResponseDTO::fromEntity).orElseThrow();
+    public ScheduleResponseDTO getScheduleDetail(AuthInfoDTO currentUser, Long id) {
+        Member member = memberService.findById(currentUser.id());
+        Schedule schedule = scheduleRepository.findById(id).orElseThrow();
+        return new ScheduleResponseDTO(schedule, isLiking(member, schedule));
     }
 
     @Override
@@ -81,7 +78,7 @@ public class ScheduleServiceImpl implements ScheduleService {
         crewService.validateCrewAdmin(crew, member);
         Schedule schedule = scheduleRepository.findById(id).orElseThrow();
         schedule.update(scheduleSaveRequestDTO);
-        return ScheduleResponseDTO.fromEntity(scheduleRepository.save(schedule));
+        return new ScheduleResponseDTO(scheduleRepository.save(schedule), isLiking(member, schedule));
     }
 
     @Override
@@ -91,7 +88,7 @@ public class ScheduleServiceImpl implements ScheduleService {
         Crew crew = schedule.getCrew();
         crewService.validateCrewAdmin(crew, member);
         scheduleRepository.delete(schedule);
-        return ScheduleResponseDTO.fromEntity(schedule);
+        return new ScheduleResponseDTO(schedule, false);
     }
 
     @Override
@@ -132,7 +129,12 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @Override
     public List<ScheduleResponseDTO> getLikedScheduleList(AuthInfoDTO currentUser) {
+        Member member = memberService.findById(currentUser.id());
         return scheduleRepository.getLikedScheduleList(currentUser.id()).stream()
-                .map(ScheduleResponseDTO::fromEntity).toList();
+                .map(schedule -> new ScheduleResponseDTO(schedule, true)).toList();
+    }
+
+    private boolean isLiking(Member member, Schedule schedule) {
+        return schedule.getLikedSchedules().stream().anyMatch(likedSchedule -> likedSchedule.getMember().equals(member));
     }
 }

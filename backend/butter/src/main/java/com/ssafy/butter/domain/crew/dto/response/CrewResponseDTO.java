@@ -52,7 +52,8 @@ public record CrewResponseDTO(
 
         private ScheduleDTO(Schedule schedule) {
             super(schedule.getId(), schedule.getTitle(), schedule.getContent(), schedule.getPlace(),
-                    schedule.getBuskingDate(), schedule.getLatitude(), schedule.getLongitude());
+                    schedule.getBuskingDate(), schedule.getLatitude(), schedule.getLongitude(),
+                    schedule.getCreateDate(), schedule.getUpdateDate());
             this.live = schedule.getLive() == null ? null :
                     new BaseLiveDTO(schedule.getLive().getId(), schedule.getLive().getTitle(),
                     schedule.getLive().getStartDate(), schedule.getLive().getEndDate());
@@ -69,7 +70,8 @@ public record CrewResponseDTO(
             this.schedule = live.getSchedule() == null ? null :
                     new BaseScheduleDTO(live.getSchedule().getId(), live.getSchedule().getTitle(),
                     live.getSchedule().getContent(), live.getSchedule().getPlace(), live.getSchedule().getBuskingDate(),
-                    live.getSchedule().getLatitude(), live.getSchedule().getLongitude());
+                    live.getSchedule().getLatitude(), live.getSchedule().getLongitude(),
+                    live.getSchedule().getCreateDate(), live.getSchedule().getUpdateDate());
         }
     }
 }

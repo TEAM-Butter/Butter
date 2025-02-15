@@ -20,8 +20,6 @@ public interface ScheduleRepository {
 
     List<Schedule> findAllByIdLessThanOrderByIdDesc(Long id, Pageable pageable);
 
-    List<Schedule> findAllByBuskingDate(LocalDateTime buskingDate);
-
     List<Schedule> getScheduleList(ScheduleSearchRequestDTO scheduleSearchRequestDTO);
 
     List<Schedule> getLikedScheduleList(Long memberId);
