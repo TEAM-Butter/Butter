@@ -46,9 +46,10 @@ function StreamLiveVideo({
             formData.append("role", role);
             formData.append("room-id", roomName);
 
-            const serverUrl = `${
-              import.meta.env.VITE_FLASK_SERVER
-            }/ai/upload_frame`;
+            // const serverUrl = `${
+            //   import.meta.env.VITE_FLASK_SERVER
+            // }/ai/upload_frame`;
+            const serverUrl = "http://192.168.103.58:5000/ai/upload_frame";
 
             // const agent = new https.Agent({
             //   rejectUnauthorized: false,
