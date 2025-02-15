@@ -326,8 +326,8 @@ export class RecordingService {
 
   async clipRecording(recordingName, startTime, endTime, time) {
     console.log("Time "+startTime+", "+endTime);
-    const clipName = `clip-${result}-${time}`
     const result = recordingName.split('-')[0];
+    const clipName = `clip-${result}-${time}`;
     const inputKey = this.getRecordingKey(recordingName);
     const outputKey = this.getClipTmpKey(clipName);
 
