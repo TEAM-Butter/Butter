@@ -67,13 +67,13 @@ export class RecordingService {
     const regex = new RegExp(`^${keyStart}.*${keyEnd}$`);
 
     // List all egress metadata files in the recordings path that match the regex
-    const recordingKeys = await s3Service.listObjects(
+    const metadataKeys = await s3Service.listObjects(
       RECORDINGS_PATH + RECORDINGS_METADATA_PATH,
       regex
     );
 
     const recordings = await Promise.all(
-      recordingKeys.map((recordingKey) => s3Service.getObjectAsJson(recordingKey))
+      metadataKeys.map((metadataKey) => s3Service.getObjectAsJson(metadataKey))
     );
     // const recordings = await Promise.all(
     //   metadataKeys.map(async (metadataKey) => {
@@ -103,6 +103,7 @@ export class RecordingService {
       });
     }
 
+    console.log(recordings);
     return filteredRecordings.sort((a, b) => b.startedAt - a.startedAt);
   }
 
@@ -173,7 +174,7 @@ export class RecordingService {
         console.error("No file results found for egress:", egressInfo);
         return null;
     }
-    
+
     const file = egressInfo.fileResults[0];
     return {
       id: egressInfo.egressId,
