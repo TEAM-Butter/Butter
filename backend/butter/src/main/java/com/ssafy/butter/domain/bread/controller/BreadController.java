@@ -70,8 +70,8 @@ public class BreadController {
 
         try {
             ResponseEntity<String> response = restTemplate.postForEntity(tokenUrl, entity, String.class);
-
             JsonNode responseJson = objectMapper.readTree(response.getBody());
+            log.info(responseJson);
             return responseJson.path("response").path("access_token").asText();
         } catch (HttpClientErrorException | JsonProcessingException e) {
             throw new RuntimeException("액세스 토큰 발급 실패: " + e.getMessage());
