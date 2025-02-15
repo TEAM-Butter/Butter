@@ -60,21 +60,20 @@ export class RecordingService {
   async listRecordings(roomName, roomId) {
     const keyStart =
       RECORDINGS_PATH +
-      // RECORDINGS_METADATA_PATH +
+      RECORDINGS_METADATA_PATH +
       (roomName ? `${roomName}-` + (roomId ? roomId : "") : "");
     const keyEnd = ".mp4";
     const regex = new RegExp(`^${keyStart}.*${keyEnd}$`);
 
     // List all egress metadata files in the recordings path that match the regex
     const recordingKeys = await s3Service.listObjects(
-      // RECORDINGS_PATH + RECORDINGS_METADATA_PATH,
-      RECORDINGS_PATH,
+      RECORDINGS_PATH + RECORDINGS_METADATA_PATH,
       regex
     );
-    // const recordings = await Promise.all(
-    //   recordingKeys.map((recordingKey) => s3Service.getObjectAsJson(recordingKey))
-    // );
 
+    const recordings = await Promise.all(
+      recordingKeys.map((recordingKey) => s3Service.getObjectAsJson(recordingKey))
+    );
     // const recordings = await Promise.all(
     //   metadataKeys.map(async (metadataKey) => {
     //     const metadata = await s3Service.getObjectAsJson(metadataKey);
@@ -87,27 +86,15 @@ export class RecordingService {
     //   (recording) => recording !== null
     // );
 
-    console.log(recordingKeys)
     // return this.filterAndSortRecordings(validRecordings, roomName, roomId);
-    return this.filterAndSortRecordings(recordingKeys, roomName, roomId);
+    return this.filterAndSortRecordings(recordings, roomName, roomId);
   }
-
-  extractRoomInfo = (filename) => {
-    const regex = /recordings\/(.+)-(\w+)-\d{4}-\d{2}-\d{2}T\d{6}\.mp4/;
-    const match = filename.match(regex);
-    
-    if (match) {
-        return { roomName: match[1], roomId: match[2] };
-    } else {
-        return null;
-    }
-  };
 
   filterAndSortRecordings(recordings, roomName, roomId) {
     let filteredRecordings = recordings;
 
     if (roomName || roomId) {
-      filteredRecordings = recordings.extractRoomInfo((recording) => {
+      filteredRecordings = recordings.filter((recording) => {
         return (
           (!roomName || recording.roomName === roomName) &&
           (!roomId || recording.roomId === roomId)
@@ -175,6 +162,7 @@ export class RecordingService {
 
   async saveRecordingMetadata(egressInfo) {
     const recordingInfo = this.convertToRecordingInfo(egressInfo);
+    console.log("Saving metadata:", recordingInfo);
     const key = this.getMetadataKey(recordingInfo.name);
     await s3Service.uploadObject(key, recordingInfo);
   }
