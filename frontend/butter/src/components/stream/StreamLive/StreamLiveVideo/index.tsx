@@ -79,9 +79,9 @@ function StreamLiveVideo({
                 error.message === "Failed to fetch"
               ) {
                 console.error(
-                  "서버 연결 실패. 서버가 실행 중인지 확인해주세요.",
-                  error
+                  "서버 연결 실패. 서버가 실행 중인지 확인해주세요."
                 );
+                console.log(error);
               } else {
                 console.error("전송 오류:", error);
               }
