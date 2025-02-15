@@ -71,6 +71,7 @@ function StreamLiveVideo({
 
               const data = await response.json();
               console.log("서버 응답:", data);
+              console.log("ServerURl:", serverUrl);
             } catch (error) {
               if (
                 error instanceof TypeError &&
