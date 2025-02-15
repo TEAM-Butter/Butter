@@ -2,6 +2,7 @@ package com.ssafy.butter.domain.schedule.dto;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cglib.core.Local;
 
 import java.time.LocalDateTime;
 
@@ -16,4 +17,6 @@ public class BaseScheduleDTO {
     private final LocalDateTime buskingDate;
     private final Double latitude;
     private final Double longitude;
+    private final LocalDateTime createDate;
+    private final LocalDateTime updateDate;
 }

@@ -53,11 +53,6 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
     }
 
     @Override
-    public List<Schedule> findAllByBuskingDate(LocalDateTime buskingDate) {
-        return scheduleJpaRepository.findAllByBuskingDate(buskingDate);
-    }
-
-    @Override
     public List<Schedule> getScheduleList(ScheduleSearchRequestDTO scheduleSearchRequestDTO) {
         return jpaQueryFactory.selectFrom(qSchedule)
                 .where(createScheduleCondition(scheduleSearchRequestDTO))

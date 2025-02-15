@@ -12,6 +12,4 @@ public interface ScheduleJpaRepository extends JpaRepository<Schedule, Long> {
     List<Schedule> findAllByOrderByIdDesc(Pageable pageable);
 
     List<Schedule> findAllByIdLessThanOrderByIdDesc(Long id, Pageable pageable);
-
-    List<Schedule> findAllByBuskingDate(LocalDateTime buskingDate);
 }

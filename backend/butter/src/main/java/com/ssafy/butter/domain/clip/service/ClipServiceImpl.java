@@ -44,21 +44,26 @@ public class ClipServiceImpl implements ClipService {
                 .videoName(clipSaveRequestDTO.videoName())
                 .hitCount(0L)
                 .build();
-        return ClipResponseDTO.fromEntity(clipRepository.save(clip));
+        return ClipResponseDTO.from(clipRepository.save(clip), false);
     }
 
     @Override
-    public ClipResponseDTO getClipDetail(Long id) {
-        return ClipResponseDTO.fromEntity(clipRepository.findById(id).orElseThrow());
+    public ClipResponseDTO getClipDetail(AuthInfoDTO currentUser, Long id) {
+        Member member = memberService.findById(currentUser.id());
+        Clip clip = clipRepository.findById(id).orElseThrow();
+        return ClipResponseDTO.from(clip, isLiking(member, clip));
     }
 
     @Override
-    public List<ClipResponseDTO> getClipList(ClipListRequestDTO clipListRequestDTO) {
+    public List<ClipResponseDTO> getClipList(AuthInfoDTO currentUser, ClipListRequestDTO clipListRequestDTO) {
+        Member member = memberService.findById(currentUser.id());
         Pageable pageable = PageRequest.of(0, clipListRequestDTO.pageSize());
         if (clipListRequestDTO.clipId() == null) {
-            return clipRepository.findAllByOrderByIdDesc(pageable).stream().map(ClipResponseDTO::fromEntity).toList();
+            return clipRepository.findAllByOrderByIdDesc(pageable).stream()
+                    .map(clip -> ClipResponseDTO.from(clip, isLiking(member, clip))).toList();
         } else {
-            return clipRepository.findAllByIdLessThanOrderByIdDesc(clipListRequestDTO.clipId(), pageable).stream().map(ClipResponseDTO::fromEntity).toList();
+            return clipRepository.findAllByIdLessThanOrderByIdDesc(clipListRequestDTO.clipId(), pageable).stream()
+                    .map(clip -> ClipResponseDTO.from(clip, isLiking(member, clip))).toList();
         }
     }
 
@@ -70,7 +75,7 @@ public class ClipServiceImpl implements ClipService {
         crewService.validateCrewAdmin(crew, member);
 
         clipRepository.delete(clip);
-        return ClipResponseDTO.fromEntity(clip);
+        return ClipResponseDTO.from(clip, false);
     }
 
     @Override
@@ -107,6 +112,10 @@ public class ClipServiceImpl implements ClipService {
     @Override
     public List<ClipResponseDTO> getLikedClipList(AuthInfoDTO currentUser) {
         return clipRepository.getLikedClipList(currentUser.id()).stream()
-                .map(ClipResponseDTO::fromEntity).toList();
+                .map(clip -> ClipResponseDTO.from(clip, true)).toList();
+    }
+
+    private boolean isLiking(Member member, Clip clip) {
+        return clip.getLikedClips().stream().anyMatch(likedClip -> likedClip.getMember().equals(member));
     }
 }

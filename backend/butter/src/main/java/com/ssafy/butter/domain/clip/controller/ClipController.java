@@ -55,14 +55,17 @@ public class ClipController {
     @Operation(summary = "클립 목록 조회", description = "클립 목록을 조회합니다.")
     @GetMapping("/list")
     public ResponseEntity<List<ClipResponseDTO>> getClipList(
+            @Parameter(hidden = true) @CurrentUser AuthInfoDTO currentUser,
             @ParameterObject @ModelAttribute ClipListRequestDTO clipListRequestDTO) {
-        return ResponseEntity.ok(clipService.getClipList(clipListRequestDTO));
+        return ResponseEntity.ok(clipService.getClipList(currentUser, clipListRequestDTO));
     }
 
     @Operation(summary = "클립 상세 조회", description = "특정 클립의 상세 정보를 조회합니다.")
     @GetMapping("/detail/{id}")
-    public ResponseEntity<ClipResponseDTO> getClipDetail(@PathVariable Long id) {
-        return ResponseEntity.ok(clipService.getClipDetail(id));
+    public ResponseEntity<ClipResponseDTO> getClipDetail(
+            @Parameter(hidden = true) @CurrentUser AuthInfoDTO currentUser,
+            @PathVariable Long id) {
+        return ResponseEntity.ok(clipService.getClipDetail(currentUser, id));
     }
 
     @Operation(summary = "클립 삭제", description = "특정 클립을 삭제합니다.")
