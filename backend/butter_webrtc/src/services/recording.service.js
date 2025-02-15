@@ -41,7 +41,7 @@ export class RecordingService {
     const fileOutput = new EncodedFileOutput({
       fileType: EncodedFileType.MP4,
       filepath: `${RECORDINGS_PATH}{room_name}-{room_id}-{time}`,
-      //disableManifest: true,
+      disableManifest: true,
     });
     // Start a RoomCompositeEgress to record all participants in the room
     const egressInfo = await this.egressClient.startRoomCompositeEgress(
@@ -60,19 +60,21 @@ export class RecordingService {
   async listRecordings(roomName, roomId) {
     const keyStart =
       RECORDINGS_PATH +
-      RECORDINGS_METADATA_PATH +
+      // RECORDINGS_METADATA_PATH +
       (roomName ? `${roomName}-` + (roomId ? roomId : "") : "");
-    const keyEnd = ".json";
+    const keyEnd = ".mp4";
     const regex = new RegExp(`^${keyStart}.*${keyEnd}$`);
 
     // List all egress metadata files in the recordings path that match the regex
-    const metadataKeys = await s3Service.listObjects(
-      RECORDINGS_PATH + RECORDINGS_METADATA_PATH,
+    const recordingKeys = await s3Service.listObjects(
+      // RECORDINGS_PATH + RECORDINGS_METADATA_PATH,
+      RECORDINGS_PATH,
       regex
     );
-    const recordings = await Promise.all(
-      metadataKeys.map((metadataKey) => s3Service.getObjectAsJson(metadataKey))
-    );
+    // const recordings = await Promise.all(
+    //   recordingKeys.map((recordingKey) => s3Service.getObjectAsJson(recordingKey))
+    // );
+
     // const recordings = await Promise.all(
     //   metadataKeys.map(async (metadataKey) => {
     //     const metadata = await s3Service.getObjectAsJson(metadataKey);
@@ -86,7 +88,7 @@ export class RecordingService {
     // );
 
     // return this.filterAndSortRecordings(validRecordings, roomName, roomId);
-    return this.filterAndSortRecordings(recordings, roomName, roomId);
+    return this.filterAndSortRecordings(recordingKeys, roomName, roomId);
   }
 
   filterAndSortRecordings(recordings, roomName, roomId) {
