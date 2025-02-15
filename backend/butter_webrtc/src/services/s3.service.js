@@ -112,6 +112,12 @@ export class S3Service {
     }
 
     async run(command) {
-        return this.s3Client.send(command);
+        try {
+            return await this.s3Client.send(command);
+        } catch (error) {
+            // error.$response를 콘솔에 출력하여 원시 응답 내용을 확인
+            console.error("Raw error response:", error.$response);
+            throw error;
+        }
     }
 }
