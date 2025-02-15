@@ -5,6 +5,7 @@ import com.ssafy.butter.domain.member.dto.request.CheckLoginIdDTO;
 import com.ssafy.butter.domain.member.dto.request.ExtraInfoDTO;
 import com.ssafy.butter.domain.member.dto.request.MemberSearchRequestDTO;
 import com.ssafy.butter.domain.member.dto.request.PasswordUpdateRequestDTO;
+import com.ssafy.butter.domain.member.dto.response.BreadAmountResponseDTO;
 import com.ssafy.butter.domain.member.dto.response.CheckLoginIdResponseDTO;
 import com.ssafy.butter.domain.member.dto.response.PasswordUpdateResponseDTO;
 import com.ssafy.butter.domain.member.dto.response.ProfileUpdateResponseDTO;
@@ -39,4 +40,5 @@ public interface MemberService {
     boolean checkIfEmailExists(String email);
     CheckLoginIdResponseDTO checkIfLoginIdExists(String loginId);
     Page<SearchMemberResponseDTO> findByNicknameContainingIgnoreCase(MemberSearchRequestDTO memberSearchRequestDTO);
+    BreadAmountResponseDTO getBreadAmount(AuthInfoDTO authInfoDTO);
 }
