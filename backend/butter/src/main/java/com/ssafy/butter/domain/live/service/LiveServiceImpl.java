@@ -44,9 +44,7 @@ public class LiveServiceImpl implements LiveService {
     public LiveResponseDTO createLive(AuthInfoDTO currentUser, LiveSaveRequestDTO liveSaveRequestDTO) {
         Member member = memberService.findById(currentUser.id());
         Crew crew = crewService.findById(liveSaveRequestDTO.crewId());
-        if (!crewMemberService.findByCrewAndMember(crew, member).getIsCrewAdmin()) {
-            throw new IllegalArgumentException("Current user is not crew admin");
-        }
+        crewService.validateCrewAdmin(crew, member);
         Live live = Live.builder()
                 .crew(crew)
                 .title(liveSaveRequestDTO.title())
@@ -114,9 +112,7 @@ public class LiveServiceImpl implements LiveService {
         Live live = liveRepository.findById(id).orElseThrow();
         Crew crew = live.getCrew();
         Member member = memberService.findById(currentUser.id());
-        if (!crewMemberService.findByCrewAndMember(crew, member).getIsCrewAdmin()) {
-            throw new IllegalArgumentException("Current user is not crew admin");
-        }
+        crewService.validateCrewAdmin(crew, member);
         if (live.getEndDate() != null) {
             throw new IllegalArgumentException("Live is already finished");
         }

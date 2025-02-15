@@ -72,7 +72,7 @@ public class  CrewServiceImpl implements CrewService {
                 .isCrewAdmin(true)
                 .build());
 
-        return CrewResponseDTO.fromEntity(savedCrew);
+        return CrewResponseDTO.from(savedCrew, false);
     }
 
     /**
@@ -117,22 +117,30 @@ public class  CrewServiceImpl implements CrewService {
 
     /**
      * 크루 목록 조회 요청 정보를 담은 DTO를 받아 조건에 맞는 크루 목록을 조회하여 DTO 리스트로 반환한다.
+     *
+     * @param currentUser 현재 로그인한 유저 정보
      * @param crewListRequestDTO 크루 목록 조회 요청 정보를 담은 DTO
      * @return 크루 목록 조회 결과를 담은 DTO
      */
     @Override
-    public List<CrewResponseDTO> getCrewList(CrewListRequestDTO crewListRequestDTO) {
-        return crewRepository.getCrewList(crewListRequestDTO).stream().map(CrewResponseDTO::fromEntity).toList();
+    public List<CrewResponseDTO> getCrewList(AuthInfoDTO currentUser, CrewListRequestDTO crewListRequestDTO) {
+        Member member = memberService.findById(currentUser.id());
+        return crewRepository.getCrewList(crewListRequestDTO).stream()
+                .map(crew -> CrewResponseDTO.from(crew, isFollowing(member, crew))).toList();
     }
 
     /**
      * 크루 ID에 해당하는 크루 하나의 정보를 DB에서 조회 후 반환한다.
-     * @param id 조회하려는 크루를 가리키는 ID
+     *
+     * @param currentUser 현재 로그인한 유저 정보
+     * @param id          조회하려는 크루를 가리키는 ID
      * @return 크루 조회 정보를 담은 DTO
      */
     @Override
-    public CrewResponseDTO getCrewDetail(Long id) {
-        return CrewResponseDTO.fromEntity(crewRepository.findById(id).orElseThrow());
+    public CrewResponseDTO getCrewDetail(AuthInfoDTO currentUser, Long id) {
+        Member member = memberService.findById(id);
+        Crew crew = crewRepository.findById(id).orElseThrow();
+        return CrewResponseDTO.from(crew, isFollowing(member, crew));
     }
 
     /**
@@ -153,7 +161,7 @@ public class  CrewServiceImpl implements CrewService {
         }
 
         crew.update(crewSaveRequestDTO, imageUrl);
-        return CrewResponseDTO.fromEntity(crewRepository.save(crew));
+        return CrewResponseDTO.from(crewRepository.save(crew), isFollowing(currentMember, crew));
     }
 
     /**
@@ -168,7 +176,7 @@ public class  CrewServiceImpl implements CrewService {
         Crew crew = crewRepository.findById(id).orElseThrow();
         validateCrewAdmin(crew, currentMember);
         crewRepository.delete(crew);
-        return CrewResponseDTO.fromEntity(crew);
+        return CrewResponseDTO.from(crew, false);
     }
 
     /**
@@ -251,15 +259,19 @@ public class  CrewServiceImpl implements CrewService {
     @Override
     public List<CrewResponseDTO> getFollowedCrewList(AuthInfoDTO currentUser) {
         return crewRepository.getFollowedCrewList(currentUser.id()).stream()
-                .map(CrewResponseDTO::fromEntity).toList();
+                .map(crew -> CrewResponseDTO.from(crew, true)).toList();
     }
 
     @Override
     public CrewMember validateCrewAdmin(Crew crew, Member member) {
         CrewMember crewMember = crewMemberRepository.findByCrewAndMember(crew, member).orElseThrow();
-        if (crewMember.getIsCrewAdmin()) {
+        if (!crewMember.getIsCrewAdmin()) {
             throw new IllegalArgumentException("Current user is not crew admin");
         }
         return crewMember;
+    }
+
+    private boolean isFollowing(Member member, Crew crew) {
+        return crew.getFollows().stream().anyMatch(follow -> follow.getMember().equals(member));
     }
 }

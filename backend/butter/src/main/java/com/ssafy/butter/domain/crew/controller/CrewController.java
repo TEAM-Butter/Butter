@@ -78,14 +78,17 @@ public class CrewController {
                     "sortBy: followerCount, createDate 중 하나")
     @GetMapping("/list")
     public ResponseEntity<List<CrewResponseDTO>> getCrewList(
+            @Parameter(hidden = true) @CurrentUser AuthInfoDTO currentUser,
             @ParameterObject @ModelAttribute CrewListRequestDTO crewListRequestDTO) {
-        return ResponseEntity.ok(crewService.getCrewList(crewListRequestDTO));
+        return ResponseEntity.ok(crewService.getCrewList(currentUser, crewListRequestDTO));
     }
 
     @Operation(summary = "크루 상세 조회", description = "특정 크루의 상세 정보를 조회합니다.")
     @GetMapping("/detail/{id}")
-    public ResponseEntity<CrewResponseDTO> getCrewDetail(@PathVariable Long id) {
-        return ResponseEntity.ok(crewService.getCrewDetail(id));
+    public ResponseEntity<CrewResponseDTO> getCrewDetail(
+            @Parameter(hidden = true) @CurrentUser AuthInfoDTO currentUser,
+            @PathVariable Long id) {
+        return ResponseEntity.ok(crewService.getCrewDetail(currentUser, id));
     }
 
     @Operation(summary = "크루 수정", description = "기존 크루의 정보를 수정합니다.")

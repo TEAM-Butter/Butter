@@ -22,9 +22,9 @@ public interface CrewService {
 
     void deleteCrewMember(AuthInfoDTO currentUser, Long crewId, Long memberId);
 
-    List<CrewResponseDTO> getCrewList(CrewListRequestDTO crewListRequestDTO);
+    List<CrewResponseDTO> getCrewList(AuthInfoDTO currentUser, CrewListRequestDTO crewListRequestDTO);
 
-    CrewResponseDTO getCrewDetail(Long id);
+    CrewResponseDTO getCrewDetail(AuthInfoDTO currentUser, Long id);
 
     CrewResponseDTO updateCrew(AuthInfoDTO currentUser, Long id, CrewSaveRequestDTO crewSaveRequestDTO);
 

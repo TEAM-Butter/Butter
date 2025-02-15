@@ -36,9 +36,7 @@ public class ClipServiceImpl implements ClipService {
     public ClipResponseDTO createClip(AuthInfoDTO currentUser, ClipSaveRequestDTO clipSaveRequestDTO) {
         Member member = memberService.findById(currentUser.id());
         Crew crew = crewService.findById(clipSaveRequestDTO.crewId());
-        if (!crewMemberService.findByCrewAndMember(crew, member).getIsCrewAdmin()) {
-            throw new IllegalArgumentException("Current user is not crew admin");
-        }
+        crewService.validateCrewAdmin(crew, member);
 
         Clip clip = Clip.builder()
                 .crew(crew)
@@ -69,9 +67,7 @@ public class ClipServiceImpl implements ClipService {
         Member member = memberService.findById(currentUser.id());
         Clip clip = clipRepository.findById(id).orElseThrow();
         Crew crew = clip.getCrew();
-        if (!crewMemberService.findByCrewAndMember(crew, member).getIsCrewAdmin()) {
-            throw new IllegalArgumentException("Current user is not crew admin");
-        }
+        crewService.validateCrewAdmin(crew, member);
 
         clipRepository.delete(clip);
         return ClipResponseDTO.fromEntity(clip);
