@@ -87,6 +87,7 @@ export class RecordingService {
     //   (recording) => recording !== null
     // );
 
+    console.log(recordingKeys)
     // return this.filterAndSortRecordings(validRecordings, roomName, roomId);
     return this.filterAndSortRecordings(recordingKeys, roomName, roomId);
   }
