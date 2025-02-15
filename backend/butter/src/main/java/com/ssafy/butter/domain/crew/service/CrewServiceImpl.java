@@ -257,7 +257,7 @@ public class  CrewServiceImpl implements CrewService {
     @Override
     public CrewMember validateCrewAdmin(Crew crew, Member member) {
         CrewMember crewMember = crewMemberRepository.findByCrewAndMember(crew, member).orElseThrow();
-        if (crewMember.getIsCrewAdmin()) {
+        if (!crewMember.getIsCrewAdmin()) {
             throw new IllegalArgumentException("Current user is not crew admin");
         }
         return crewMember;
