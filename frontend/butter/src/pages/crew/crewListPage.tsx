@@ -220,8 +220,8 @@ function CrewListPage() {
                 // ✅ 헤더 추가: Authorization (JWT 토큰 포함)
                 setLoading(true);
                 const response = await axiosInstance.get(`/crew/list?pageSize=10&sortBy=followerCount`) // 크루 리스트 정보 받아옴
-                setCrewList(response.data);
                 console.log(response.data)
+                setCrewList(response.data);
             } catch (err: any) {
                 setError(err.message); //요청 놓치면 에러 메세지 띄우기
             } finally {

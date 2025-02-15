@@ -8,6 +8,7 @@ import com.ssafy.butter.domain.member.dto.request.MemberSearchRequestDTO;
 import com.ssafy.butter.domain.member.dto.request.PasswordUpdateRequestDTO;
 import com.ssafy.butter.domain.member.dto.request.ProfileUpdateRequestDTO;
 import com.ssafy.butter.domain.member.dto.request.SignUpDTO;
+import com.ssafy.butter.domain.member.dto.response.BreadAmountResponseDTO;
 import com.ssafy.butter.domain.member.dto.response.CheckLoginIdResponseDTO;
 import com.ssafy.butter.domain.member.dto.response.PasswordUpdateResponseDTO;
 import com.ssafy.butter.domain.member.dto.response.ProfileUpdateResponseDTO;
@@ -249,5 +250,10 @@ public class MemberServiceImpl implements MemberService{
     private AvatarType getAvatarType(String avatarTypeName) {
         return avatarTypeService.findByName(avatarTypeName)
                 .orElseThrow(() -> new IllegalArgumentException("ERR : "+ avatarTypeName+"은 존재하지 않는 장르입니다"));
+    }
+
+    @Override
+    public BreadAmountResponseDTO getBreadAmount(AuthInfoDTO authInfoDTO) {
+        return new BreadAmountResponseDTO(memberRepository.findById(authInfoDTO.id()).orElseThrow().getBreadAmount().getAmount());
     }
 }

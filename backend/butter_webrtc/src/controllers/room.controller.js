@@ -30,7 +30,7 @@ roomController.post("/", async (req, res) => {
     }
 
     if (!exists) {
-      await roomService.createRoom(roomName);
+        await roomService.createRoom(roomName);
     }
 
     const at = new AccessToken(LIVEKIT_API_KEY, LIVEKIT_API_SECRET, {

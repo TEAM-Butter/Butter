@@ -70,7 +70,6 @@ public class BreadController {
 
         try {
             ResponseEntity<String> response = restTemplate.postForEntity(tokenUrl, entity, String.class);
-
             JsonNode responseJson = objectMapper.readTree(response.getBody());
             return responseJson.path("response").path("access_token").asText();
         } catch (HttpClientErrorException | JsonProcessingException e) {

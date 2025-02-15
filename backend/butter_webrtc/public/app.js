@@ -1,6 +1,7 @@
 // When running OpenVidu locally, leave this variable empty
 // For other deployment type, configure it with correct URL depending on your deployment
 var LIVEKIT_URL = "";
+var BASE_URL = "https://i12e204.p.ssafy.io/test";
 configureLiveKitUrl();
 
 const LivekitClient = window.LivekitClient;
@@ -219,7 +220,7 @@ async function getToken(roomName, participantName, isPublisher) {
     const [error, body] = await httpRequest("POST", "/token", {
         roomName,
         participantName,
-        role: isPublisher ? "publisher" : "subscriber"
+        participantRole: isPublisher ? "publisher" : "subscriber"
     });
     //console.log(isPublisher ? "publisher" : "subscriber")
 
@@ -345,7 +346,7 @@ async function getRecordingUrl(recordingName) {
 
 async function httpRequest(method, url, body) {
     try {
-        const response = await fetch(url, {
+        const response = await fetch(BASE_URL+url, {
             method,
             headers: {
                 "Content-Type": "application/json"

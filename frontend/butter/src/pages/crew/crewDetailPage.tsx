@@ -280,7 +280,8 @@ function CrewDetailPage() {
         setcrewDetailSwitch(!crewDetailSwitch);  
     };
 
-
+    const [LiveOn, setLiveOn] = useState(false)
+  
     useEffect (() => {
         const fetchCrewDetail = async () => {
             try {
@@ -295,6 +296,12 @@ function CrewDetailPage() {
                 setCrewNoticeDetail([noticeResponse.data]);
                 console.log("noticeResponse.data : ", noticeResponse.data)
                 
+                if (crewDetail?.lives[0].endDate === null) {
+                    setLiveOn(true)
+                } else {
+                    setLiveOn(false)
+                }
+
             } catch (err:any) {
                 setError(err.message); //요청 놓치면 에러 메세지 띄우기
             } finally {
@@ -309,6 +316,28 @@ function CrewDetailPage() {
     
     if (loading) return <div>Loading...</div>;
     if (error) return <div>Error: {error}</div>;
+
+
+
+
+    const CrewFollow = async () => {
+
+        try {
+            const payload = {
+                crewId : id
+            }
+            const response = await axiosInstance.post(`crew/follow`, payload)
+
+          alert('팔로우 성공!')
+          console.log(response.data)
+        }
+        catch (err : any) {
+            console.error("에러 발생:", err)
+            setError(err.message);
+            alert("스케줄 등록 중 오류가 발생했습니다.");
+        }
+    }
+
 
     return (
        <PageContainer >
@@ -327,9 +356,9 @@ function CrewDetailPage() {
                     </CrewNameWrapper>
                     <Box1BottomWrapper>
                       <ImageMovingBox>
-                        {images.map((a, i)=>{return(<CrewMemberImage src={a} alt="CrewMemberImage2"></CrewMemberImage>)})}
+                        {crewDetail.members.map((a :any, i: any)=>{return(<CrewMemberImage src={images[i]} alt="CrewMemberImage2"></CrewMemberImage>)})}
                       </ImageMovingBox>  
-                        <FollowButton src={followButton} alt="followButton"></FollowButton>
+                        <FollowButton src={followButton} alt="followButton" onClick={()=>{CrewFollow()}}></FollowButton>
                     </Box1BottomWrapper>
                 </Box1>
                 
@@ -346,7 +375,8 @@ function CrewDetailPage() {
             {crewEditSwitch && <CrewEditComponent2 />}
            
             <Box3> <SnsText><div style={{ fontSize : "20px"}}>SNS</div><div>link</div></SnsText><UpArrowTag src={upArrow} alt="upArrow"></UpArrowTag></Box3>
-            <Box4 onClick={()=>{navigate(`/stream/live/${id}`)}}><LiveText1>Live</LiveText1><div>On</div> </Box4>
+            {LiveOn == true && <Box4 onClick={()=>{navigate(`/stream/live/${id}`)}}><LiveText1>Live</LiveText1><div>On</div> </Box4>}
+            {LiveOn == false && <Box4 onClick={()=>{alert("라이브 중이 아닙니다.")}} style={{backgroundColor : "gray"}}><LiveText1>Live</LiveText1><div>Off</div> </Box4>} 
         </LayOut3>       
                 </LayOut1>
                 <LayOut2>
@@ -508,6 +538,7 @@ const PlusButton = styled.img`
 
 
 
+
 function CrewEditComponent1({ crewDetail, handleEditClick }: { crewDetail: any; handleEditClick: () => void }) {
 
     const [crewMemberPlusModalOpen, setCrewMemberPlusModalOpen] = useState(false) // 크루 멤버 추가 모달 스위치
@@ -516,6 +547,187 @@ function CrewEditComponent1({ crewDetail, handleEditClick }: { crewDetail: any; 
        // 🔹 입력값 변경 시 상태 업데이트
        const handleTitleChange = (e : any) => setTitle(e.target.value);
        const handleContentChange = (e : any) => setContent(e.target.value);
+    
+
+       const [ loading, setLoading ] = useState(true) // 로딩 표시하는 변수
+       const [ error, setError] = useState(null) // 에러 상태
+       const {id} = useParams()
+       const [file, setFile] = useState<File | null>(null);
+       const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        if (event.target.files) {
+          setFile(event.target.files[0]); // ✅ 파일 저장
+        }
+      };
+      const [crewData, setCrewData] = useState({ name: "", description: "" });
+
+       const CrewInfoEdit = async() => {
+        // if (!file) {
+        //     alert("파일을 선택하세요.");
+        //     return;
+        //   }
+          const formData = new FormData();
+       
+          formData.append("name", Name); // ✅ 파일 추가
+          formData.append("description", content); // ✅ 파일 추가
+        //   formData.append("image", content); // ✅ 파일 추가
+        //   formData.append("promotionUrl", address); // ✅ 파일 추가
+               try {
+                   setLoading(true);
+                   console.log(id)
+                   const response = await axiosInstance.put(`/crew/${id}`, formData, // 크루 정보 수정 요청
+                   {headers: {
+                         "Content-Type": "multipart/form-data",
+                     }})
+                   console.log("수정 성공", response.data)
+                   alert("크루 정보 수정 성공!");
+                    // ✅ 새로운 데이터로 상태 업데이트 → 자동으로 재렌더링됨
+                    setCrewData({
+                        name: Name,
+                        description: content,
+                    });
+                    window.location.reload(); // ✅ 화면 새로고침 
+               
+               } catch (err: any) {
+                alert("업로드 중 오류가 발생했습니다.");
+               } finally {
+                setLoading(false)
+               }
+           }
+       
+    
+           const DeleteMember = async(memberId : any) => {
+                   try {
+                       setLoading(true);
+                       console.log(id)
+                       const response = await axiosInstance.delete(`/crew/${id}/member/${memberId}`) // 크루 정보 수정 요청
+                     
+                       console.log("삭제 성공", response.data)
+                       alert("멤버 삭제 성공!");
+                        // ✅ 새로운 데이터로 상태 업데이트 → 자동으로 재렌더링됨
+                        window.location.reload(); // ✅ 화면 새로고침 
+                   } catch (err: any) {
+                    alert("삭제 중 오류가 발생했습니다.");
+                   } finally {
+                    setLoading(false)
+                   }
+               }
+
+
+
+  const FlexCan = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+  `
+
+  const DeleteIcon2 = styled.img`
+    height: 19px;
+    width: 19px;
+    border-radius: 50px;
+    left: 48px;
+    top: -2px;
+  `
+
+  const DeleteGenre = async (i : any) => {
+    crewDetail.genres.splice(i, 1)
+    const copyList = {genreNames : crewDetail.genres}
+    console.log(copyList)
+    try {
+        console.log(copyList)
+        setLoading(true)
+        const res = await axiosInstance.put(`/crew/${id}/genre`, copyList)
+        console.log(res.data)
+        alert("장르삭제성공")
+    } catch (err: any) {
+        setError(err.message); //요청 놓치면 에러 메세지 띄우기
+    }finally {
+        setLoading(false) // 요청 끝나면 로딩끄기
+    }}
+
+    const genresList = [
+        { id: 1, name: "All" },
+        { id: 2, name: "Ballad" },
+        { id: 3, name: "Dance" },
+        { id: 4, name: "Pop" },
+        { id: 5, name: "K-Pop" },
+        { id: 6, name: "Acoustic" },
+        { id: 7, name: "Hip-Hop" },
+        { id: 8, name: "R&B" },
+        { id: 9, name: "Electronic" },
+        { id: 10, name: "Rock" },
+        { id: 11, name: "Jazz" },
+        { id: 12, name: "Indie" },
+        { id: 13, name: "Trot" },
+      ];
+
+    const [selectedGenres, setSelectedGenres] = useState<any>([]); // ✅ 선택된 장르 저장
+  
+    const handleMultiGenreChange = async (event : any) => {
+        const selectedValue = event.target.value; // ✅ 새로 선택한 값 가져오기
+        const copyList = {genreNames : crewDetail.genres}
+        if (copyList.genreNames.includes(selectedValue)) {
+            alert("이미 포함된 장르 입니다")
+            return
+        }else {
+            copyList.genreNames.push(selectedValue)
+            setSelectedGenres(copyList)
+        }
+        console.log("copyList :", copyList)
+        
+        try  { const res = await axiosInstance.put(`/crew/${id}/genre`, copyList)
+            console.log(res.data)
+            alert("장르 추가 완료")
+        } catch{
+
+        }
+    }
+    useEffect( ()=> {
+
+    }, [crewDetail])
+
+    // const PlusGenre = async () => {
+
+    //     try {
+    //         const res : any = axiosInstance.put(`/crew/${id}/genre`, copyList)
+    //         console.log(res.data)
+    //         alert("장르추가성공")
+    //     } catch (err: any) {
+    //         setError(err.message); //요청 놓치면 에러 메세지 띄우기
+    //     }finally {
+    //         setLoading(false) // 요청 끝나면 로딩끄기
+    //     }}
+
+    
+    
+      
+
+
+//   const PlusGenre = async () => {
+//     const copyList = {genreNames : crewDetail.genres}
+    
+//   }
+
+const PlusModal = styled.div`
+    position: relative;
+`
+const FlexCan2 = styled.div`
+    display: flex;
+    
+`
+  const GenreSelectBox = styled.div`
+      width: 170px;
+  padding: 8px;
+  font-size: 16px;
+  border-radius: 5px;
+  background-color: rgba(0, 0, 0, 0.5);
+  left: 350px;
+ position: absolute;
+ left: 10px;
+  `
+
+  const [GenreSelectBoxOn, setGenreSelectBoxOn] = useState(false)
+
     return (
     <div>
      
@@ -524,27 +736,40 @@ function CrewEditComponent1({ crewDetail, handleEditClick }: { crewDetail: any; 
             <ButtonWrapper>
                 <CancelButton src={cancelButton} alt="cancelButton" onClick={handleEditClick}>
                 </CancelButton>
-                <EditButton src={editButton} alt="editButton" onClick={handleEditClick}>
+                <EditButton src={editButton} alt="editButton" onClick={() =>{{handleEditClick(); CrewInfoEdit()}}}>
                 </EditButton>
             </ButtonWrapper>
             <CrewNameInputBox>
                 <CrewNameInput type="text" placeholder={crewDetail.name} value={Name} onChange={handleTitleChange}></CrewNameInput>
                 <Hr2 />
-            <CrewGenreBox >{crewDetail.genres.map((a : any, i: number) => {return (<CrewGenre>{a}</CrewGenre> )})}</CrewGenreBox>
+                <FlexCan2>
+            <CrewGenreBox >{crewDetail.genres.map((a : any, i: number) => {return (<FlexCan><CrewGenre>{a}</CrewGenre><DeleteIcon2 src={deleteIcon} alt="deleteIcon" onClick={() => DeleteGenre(i)}></DeleteIcon2></FlexCan> )})}</CrewGenreBox>
+                                  
+                                    <PlusButton src={plusButton} alt="plusButton" onClick={() =>{ setGenreSelectBoxOn(!GenreSelectBoxOn)}}></PlusButton>
+                                    { GenreSelectBoxOn &&   <PlusModal><GenreSelectBox>
+                                        <label htmlFor="multi-genre-select"></label>
+                                        <select id="multi-genre-select" multiple value={selectedGenres} onChange={handleMultiGenreChange} style={{width:"150px", backgroundColor : "rgba(0, 0, 0, 0.5)", color:"white" }}>
+                                        {genresList.map((genre) => (
+                                            <option key={genre.id} value={genre.name}>
+                                            {genre.name}
+                                            </option>
+                                        ))}
+                                        </select>
+                                        <p>선택된 장르: {selectedGenres.length > 0 ? selectedGenres.join(", ") : "없음"}</p>
+                                    </GenreSelectBox></PlusModal>}
+                                    
+                                    </FlexCan2>
             </CrewNameInputBox>
             <CrewDetailInputBox>
             <CrewDetailInput type="text" placeholder={crewDetail.description}  value={content} onChange={handleContentChange}></CrewDetailInput>
             </CrewDetailInputBox>
 
             <Box8>
-            <MemberEditWrapper>
-            <CrewMemberPicture src={sample1} alt="sample1"></CrewMemberPicture>
-            <DeleteIcon src={deleteIcon} alt="deleteIcon"></DeleteIcon>
-            </MemberEditWrapper>
-            <MemberEditWrapper>
-            <CrewMemberPicture src={sample1} alt="sample1"></CrewMemberPicture>
-            <DeleteIcon src={deleteIcon} alt="deleteIcon"></DeleteIcon>
-            </MemberEditWrapper>
+            {crewDetail.members.map((a : any, i : any) => {return <MemberEditWrapper>
+            <CrewMemberPicture src={a.profileImage} alt="sample1"></CrewMemberPicture>
+            <DeleteIcon src={deleteIcon} alt="deleteIcon" onClick={()=>DeleteMember(a.id)}></DeleteIcon>
+            </MemberEditWrapper>})}
+          
             <PlusButton src={plusButton} alt="plusButton" onClick={() =>setCrewMemberPlusModalOpen(true)}></PlusButton>
             </Box8>          
             
@@ -555,7 +780,7 @@ function CrewEditComponent1({ crewDetail, handleEditClick }: { crewDetail: any; 
                     <input type="text" placeholder="멤버 검색"/>
                     <button>검색하기</button>
                     <div><button>멤버 추가</button></div>
-                    <div><button onClick={() => setCrewMemberPlusModalOpen(false)}>닫기</button></div>
+                    <div><button onClick={() => {setCrewMemberPlusModalOpen(false);}}>닫기</button></div>
                 </CrewMemberEditModalContent>
             </CrewMemberEditModalOverlay>
          )}

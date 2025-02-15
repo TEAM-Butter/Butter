@@ -27,6 +27,7 @@ public class NoticeServiceImpl implements NoticeService {
 
     private final S3ImageUploader s3ImageUploader;
 
+    private final CrewService crewService;
     private final MemberService memberService;
     private final NotificationService notificationService;
 
@@ -44,9 +45,7 @@ public class NoticeServiceImpl implements NoticeService {
     public NoticeResponseDTO createCrewNotice(AuthInfoDTO currentUser, NoticeSaveRequestDTO noticeSaveRequestDTO) {
         Member member = memberService.findById(currentUser.id());
         Crew crew = crewRepository.findById(noticeSaveRequestDTO.crewId()).orElseThrow();
-        if (!crewMemberRepository.findByCrewAndMember(crew, member).orElseThrow().getIsCrewAdmin()) {
-            throw new IllegalArgumentException("Current user is not crew admin");
-        }
+        crewService.validateCrewAdmin(crew, member);
 
         String imageUrl = null;
         if (noticeSaveRequestDTO.image() != null) {
@@ -103,9 +102,7 @@ public class NoticeServiceImpl implements NoticeService {
     public NoticeResponseDTO updateCrewNotice(AuthInfoDTO currentUser, Long id, NoticeSaveRequestDTO noticeSaveRequestDTO) {
         Member member = memberService.findById(currentUser.id());
         Crew crew = crewRepository.findById(noticeSaveRequestDTO.crewId()).orElseThrow();
-        if (!crewMemberRepository.findByCrewAndMember(crew, member).orElseThrow().getIsCrewAdmin()) {
-            throw new IllegalArgumentException("Current user is not crew admin");
-        }
+        crewService.validateCrewAdmin(crew, member);
         Notice notice = noticeRepository.findById(id).orElseThrow();
         String imageUrl = null;
         if (noticeSaveRequestDTO.image() != null) {
@@ -126,9 +123,7 @@ public class NoticeServiceImpl implements NoticeService {
         Member member = memberService.findById(currentUser.id());
         Notice notice = noticeRepository.findById(id).orElseThrow();
         Crew crew = notice.getCrew();
-        if (!crewMemberRepository.findByCrewAndMember(crew, member).orElseThrow().getIsCrewAdmin()) {
-            throw new IllegalArgumentException("Current user is not crew admin");
-        }
+        crewService.validateCrewAdmin(crew, member);
         noticeRepository.delete(notice);
         return NoticeResponseDTO.fromEntity(notice);
     }
