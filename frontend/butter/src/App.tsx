@@ -12,6 +12,8 @@ import { CommonLayout } from "./layouts/CommonLayout";
 import "./styles/reset.css";
 import "./styles/index.css";
 import "./styles/stream.css";
+import "swiper/swiper-bundle.css";
+
 import LiveListPage from "./pages/stream/LiveListPage";
 import VideoEditPage from "./pages/video/VideoEditPage";
 import { videoRoutes } from "./routes/videoRoutes";
