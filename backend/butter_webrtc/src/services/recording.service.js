@@ -41,7 +41,7 @@ export class RecordingService {
     const fileOutput = new EncodedFileOutput({
       fileType: EncodedFileType.MP4,
       filepath: `${RECORDINGS_PATH}{room_name}-{room_id}-{time}`,
-      disableManifest: true,
+      //disableManifest: true,
     });
     // Start a RoomCompositeEgress to record all participants in the room
     const egressInfo = await this.egressClient.startRoomCompositeEgress(
