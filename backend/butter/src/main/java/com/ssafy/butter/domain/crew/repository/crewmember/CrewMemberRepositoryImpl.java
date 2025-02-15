@@ -30,7 +30,7 @@ public class CrewMemberRepositoryImpl implements CrewMemberRepository {
     }
 
     @Override
-    public CrewMember findByMember(Member member) {
+    public Optional<CrewMember> findByMember(Member member) {
         return crewMemberJpaRepository.findByMember(member);
     }
 }
