@@ -15,14 +15,14 @@ import {
   RECORDING_FILE_PORTION_SIZE,
 } from "../config.js";
 import { S3Service } from "./s3.service.js";
+import { MySQLService } from "./mysql.service.js";
 import fs from "fs";
 import os from "os";
 import path from "path";
 import { exec } from "node:child_process";
-import { Stream, Readable } from 'stream';
-// import {insertClip} from "./mysql.service.js"
 
 const s3Service = new S3Service();
+const dbService = new MySQLService();
 
 export class RecordingService {
   static instance;
