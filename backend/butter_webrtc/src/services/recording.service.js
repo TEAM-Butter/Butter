@@ -54,6 +54,7 @@ export class RecordingService {
   async stopRecording(recordingId) {
     // Stop the egress to finish the recording
     const egressInfo = await this.egressClient.stopEgress(recordingId);
+    await this.saveRecordingMetadata(egressInfo);
     return this.convertToRecordingInfo(egressInfo);
   }
 
@@ -168,6 +169,11 @@ export class RecordingService {
   }
 
   convertToRecordingInfo(egressInfo) {
+    if (!egressInfo.fileResults || egressInfo.fileResults.length === 0) {
+        console.error("No file results found for egress:", egressInfo);
+        return null;
+    }
+    
     const file = egressInfo.fileResults[0];
     return {
       id: egressInfo.egressId,
