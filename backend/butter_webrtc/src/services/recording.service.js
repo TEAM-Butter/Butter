@@ -63,7 +63,7 @@ export class RecordingService {
       RECORDINGS_PATH +
       RECORDINGS_METADATA_PATH +
       (roomName ? `${roomName}-` + (roomId ? roomId : "") : "");
-    const keyEnd = ".mp4";
+    const keyEnd = ".json";
     const regex = new RegExp(`^${keyStart}.*${keyEnd}$`);
 
     // List all egress metadata files in the recordings path that match the regex
@@ -87,6 +87,7 @@ export class RecordingService {
     //   (recording) => recording !== null
     // );
 
+    console.log(recordings);
     // return this.filterAndSortRecordings(validRecordings, roomName, roomId);
     return this.filterAndSortRecordings(recordings, roomName, roomId);
   }
@@ -103,7 +104,6 @@ export class RecordingService {
       });
     }
 
-    console.log(recordings);
     return filteredRecordings.sort((a, b) => b.startedAt - a.startedAt);
   }
 
