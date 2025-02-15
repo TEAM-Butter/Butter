@@ -7,6 +7,7 @@ import com.ssafy.butter.auth.dto.response.AuthenticatedMemberInfoDTO;
 import com.ssafy.butter.auth.dto.response.LoginResponseDTO;
 import com.ssafy.butter.auth.dto.response.ReissueResponseDTO;
 import com.ssafy.butter.auth.enums.MemberTypes;
+import com.ssafy.butter.domain.crew.dto.BaseCrewDTO;
 import com.ssafy.butter.domain.crew.entity.CrewMember;
 import com.ssafy.butter.domain.crew.service.CrewMemberService;
 import com.ssafy.butter.domain.member.entity.Member;
@@ -53,7 +54,8 @@ public class LoginServiceImpl implements LoginService{
                 member.getAvatarType().getName(),
                 memberType,
                 genres,
-                member.isExtraInfoRegistered()
+                member.isExtraInfoRegistered(),
+                new BaseCrewDTO(crewMemberService.findByMember(member).getCrew())
         );
 
         AuthInfoDTO authInfo = new AuthInfoDTO(member.getId(),member.getEmail().getValue(), member.getGender().name(), member.getBirthDate().getDate());
@@ -98,7 +100,8 @@ public class LoginServiceImpl implements LoginService{
                 member.getAvatarType().getName(),
                 memberType,
                 genres,
-                false
+                false,
+                new BaseCrewDTO(crewMemberService.findByMember(member).getCrew())
         );
 
         AuthInfoDTO authInfo = new AuthInfoDTO(member.getId(),member.getEmail().getValue(), member.getGender().name(), member.getBirthDate().getDate());
