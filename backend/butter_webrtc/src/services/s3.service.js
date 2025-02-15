@@ -113,6 +113,7 @@ export class S3Service {
 
     async run(command) {
         try {
+            console.log(command)
             return await this.s3Client.send(command);
         } catch (error) {
             // error.$response를 콘솔에 출력하여 원시 응답 내용을 확인
