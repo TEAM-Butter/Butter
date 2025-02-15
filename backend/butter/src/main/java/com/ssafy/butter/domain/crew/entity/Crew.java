@@ -7,16 +7,13 @@ import com.ssafy.butter.domain.live.entity.Live;
 import com.ssafy.butter.domain.schedule.entity.Schedule;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.springframework.data.annotation.CreatedDate;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -99,5 +96,9 @@ public class Crew extends TimestampedEntity {
     public void updateFileUrl(String imageUrl, String portfolioVideoUrl) {
         this.imageUrl = imageUrl;
         this.portfolioVideoUrl = portfolioVideoUrl;
+    }
+
+    public void updateDonationAmount(int donationAmount) {
+        this.donationAmount = donationAmount;
     }
 }

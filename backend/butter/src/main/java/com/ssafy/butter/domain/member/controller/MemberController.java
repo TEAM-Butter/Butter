@@ -6,6 +6,7 @@ import com.ssafy.butter.domain.member.dto.request.ExtraInfoDTO;
 import com.ssafy.butter.domain.member.dto.request.PasswordUpdateRequestDTO;
 import com.ssafy.butter.domain.member.dto.request.ProfileUpdateRequestDTO;
 import com.ssafy.butter.domain.member.dto.request.SignUpDTO;
+import com.ssafy.butter.domain.member.dto.response.BreadAmountResponseDTO;
 import com.ssafy.butter.domain.member.dto.response.CheckLoginIdResponseDTO;
 import com.ssafy.butter.domain.member.dto.response.PasswordUpdateResponseDTO;
 import com.ssafy.butter.domain.member.dto.response.ProfileUpdateResponseDTO;
@@ -93,5 +94,12 @@ public class MemberController {
             @RequestBody CheckLoginIdDTO loginIdDTO) {
         CheckLoginIdResponseDTO response = memberService.checkIfLoginIdExists(loginIdDTO.loginId());
         return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "빵 보유액 조회", description = "로그인한 사용자의 빵 보유액을 조회합니다.")
+    @GetMapping("/bread-amount")
+    public ResponseEntity<BreadAmountResponseDTO> getBreadAmount(
+            @Parameter(hidden = true) @CurrentUser AuthInfoDTO authInfoDTO) {
+        return ResponseEntity.ok(null);
     }
 }

@@ -2,7 +2,10 @@ package com.ssafy.butter.domain.schedule.repository;
 
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.ssafy.butter.domain.crew.entity.Crew;
+import com.ssafy.butter.domain.member.entity.QMember;
 import com.ssafy.butter.domain.schedule.dto.request.ScheduleSearchRequestDTO;
+import com.ssafy.butter.domain.schedule.entity.QLikedSchedule;
 import com.ssafy.butter.domain.schedule.entity.QSchedule;
 import com.ssafy.butter.domain.schedule.entity.Schedule;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +21,8 @@ import java.util.Optional;
 public class ScheduleRepositoryImpl implements ScheduleRepository {
 
     private final QSchedule qSchedule = QSchedule.schedule;
+    private final QLikedSchedule qLikedSchedule = QLikedSchedule.likedSchedule;
+    private final QMember qMember = QMember.member;
 
     private final ScheduleJpaRepository scheduleJpaRepository;
     private final JPAQueryFactory jpaQueryFactory;
@@ -72,5 +77,22 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
                     .and(qSchedule.buskingDate.lt(scheduleSearchRequestDTO.date().plusDays(1).atStartOfDay()));
         }
         return builder;
+    }
+
+    @Override
+    public List<Schedule> getLikedScheduleList(Long memberId) {
+        return jpaQueryFactory.selectDistinct(qSchedule)
+                .from(qSchedule)
+                .join(qSchedule.likedSchedules, qLikedSchedule).fetchJoin()
+                .join(qLikedSchedule.member, qMember).fetchJoin()
+                .where(createLikedScheduleListCondition(memberId))
+                .orderBy(qLikedSchedule.id.desc())
+                .fetch();
+    }
+
+    private BooleanBuilder createLikedScheduleListCondition(Long memberId) {
+        BooleanBuilder booleanBuilder = new BooleanBuilder();
+        booleanBuilder.and(qMember.id.eq(memberId));
+        return booleanBuilder;
     }
 }

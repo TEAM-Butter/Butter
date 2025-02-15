@@ -4,6 +4,7 @@ import com.ssafy.butter.auth.dto.AuthInfoDTO;
 import com.ssafy.butter.domain.member.dto.request.CheckLoginIdDTO;
 import com.ssafy.butter.domain.member.dto.request.ExtraInfoDTO;
 import com.ssafy.butter.domain.member.dto.request.PasswordUpdateRequestDTO;
+import com.ssafy.butter.domain.member.dto.response.BreadAmountResponseDTO;
 import com.ssafy.butter.domain.member.dto.response.CheckLoginIdResponseDTO;
 import com.ssafy.butter.domain.member.dto.response.PasswordUpdateResponseDTO;
 import com.ssafy.butter.domain.member.dto.response.ProfileUpdateResponseDTO;
@@ -34,5 +35,6 @@ public interface MemberService {
     RegisterExtraInfoResponseDTO saveExtraUserInfo(ExtraInfoDTO extraInfoDTO, Long memberId);
     boolean checkIfEmailExists(String email);
     CheckLoginIdResponseDTO checkIfLoginIdExists(String loginId);
+    BreadAmountResponseDTO getBreadAmount(AuthInfoDTO authInfoDTO);
 
 }

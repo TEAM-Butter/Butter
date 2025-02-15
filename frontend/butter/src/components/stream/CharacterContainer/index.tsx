@@ -13,6 +13,13 @@ import styled from "@emotion/styled";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { SocketContent } from "../../../types/socket";
 import { Socket } from "socket.io-client";
+import { RoomName } from "@livekit/components-react";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import ThumbUpAltOutlinedIcon from "@mui/icons-material/ThumbUpAltOutlined";
+import BakeryDiningOutlinedIcon from "@mui/icons-material/BakeryDiningOutlined";
+import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
+import { small } from "framer-motion/client";
 
 // const images = [pet1, pet2, pet3, pet4, pet5, pet6];
 
@@ -52,6 +59,30 @@ const Emotion = styled(motion.img)`
   opacity: 0;
 `;
 
+const EmotionClickBox = styled.div`
+  display: flex;
+  justify-content: space-evenly;
+  width: 250px;
+  height: 40px;
+  background-color: black;
+  position: absolute;
+  left: 35%;
+  left: 50%; // 부모 요소의 중앙을 기준점으로 설정
+  transform: translateX(-50%); // 자신의 너비의 절반만큼 왼쪽으로 이동
+  border-bottom-left-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-left: 30px;
+  padding-right: 30px;
+  border-bottom-right-radius: 18px;
+`;
+
+const BreadBox = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 5px;
+`;
 const Character = styled.img`
   width: 10vh;
   height: auto;
@@ -71,18 +102,28 @@ const TotalInfoBox = styled.div`
 `;
 
 const TotalUserInfo = styled.div`
+  display: flex;
+  align-items: center;
   color: black;
+  gap: 2px;
 `;
 const TotalHeartsInfo = styled.div`
+  display: flex;
+  align-items: center;
   color: black;
+  gap: 2px;
 `;
 const TotalLikesInfo = styled.div`
+  display: flex;
+  align-items: center;
   color: black;
+  gap: 2px;
 `;
 
 interface CharacterContainer {
   socket: Socket;
   participantName: string;
+  roomName: string;
 }
 
 interface CharacterData {
@@ -99,6 +140,7 @@ const MY_CHARACTER_INDEX = 1; //내 캐릭터의 인덱스
 const CharacterContainer = ({
   socket,
   participantName,
+  roomName,
 }: CharacterContainer) => {
   const [characters, setCharacters] = useState<CharacterData[]>(() =>
     Array.from({ length: 13 }, (_, index) => ({
@@ -155,26 +197,42 @@ const CharacterContainer = ({
     }
   };
 
-  const handleMyEmotion = useCallback((emotionType: string, userId: number) => {
-    if (!canUserAct(userId)) {
-      console.log("쿨다운 중입니다");
-      return;
-    }
+  const handleMyEmotion = useCallback(
+    (emotionType: string, userId: number, emotion: string) => {
+      if (!canUserAct(userId)) {
+        console.log("쿨다운 중입니다");
+        return;
+      }
 
-    setMyEmotionState({
-      isEmoting: true,
-      currentEmotion: getEmotionImage(emotionType),
-    });
-
-    updateActionTime(userId);
-
-    setTimeout(() => {
+      console.log("확인용 emtoionType입니다!!!!!!!!!!!!", emotionType);
       setMyEmotionState({
-        isEmoting: false,
-        currentEmotion: heart,
+        isEmoting: true,
+        currentEmotion: getEmotionImage(emotionType),
       });
-    }, EMOTION_DURATION);
-  }, []);
+
+      updateActionTime(userId);
+
+      setTimeout(() => {
+        if (emotion === "heart" && !myEmotionState.isEmoting) {
+          socket.emit("increaseEmotionCount", {
+            roomName,
+            emotion: "heart",
+          });
+        }
+        if (emotion === "like" && !myEmotionState.isEmoting) {
+          socket.emit("increaseEmotionCount", {
+            roomName,
+            emotion: "like",
+          });
+        }
+        setMyEmotionState({
+          isEmoting: false,
+          currentEmotion: emotionType,
+        });
+      }, EMOTION_DURATION);
+    },
+    [myEmotionState.isEmoting]
+  );
 
   const handleOtherEmotion = useCallback(
     (userId: number, emotionType: string) => {
@@ -210,14 +268,13 @@ const CharacterContainer = ({
   const handleMessage = (content: SocketContent) => {
     console.log("웹소켓에서 participantName을 불러옵니다!!", participantName);
     const id = 1;
-    if (content.role === "publisher" && canUserAct(id)) {
+    if (content.role === "subscriber" && canUserAct(id)) {
       switch (content.label) {
         case "little_heart":
           console.log("여기입니다 2");
-          setHeartCount((prev) => prev + 1);
           if (id === MY_CHARACTER_INDEX) {
             console.log("여기입니다 3");
-            handleMyEmotion(heart, id);
+            handleMyEmotion(heart, id, "heart");
           } else {
             console.log("여기입니다4");
             handleOtherEmotion(id, "heart");
@@ -225,22 +282,21 @@ const CharacterContainer = ({
           break;
         case "clap":
           if (id === MY_CHARACTER_INDEX) {
-            handleMyEmotion(clap, id);
+            handleMyEmotion(clap, id, "clap");
           } else {
             handleOtherEmotion(id, "clap");
           }
           break;
         case "like":
-          setLikeCount((prev) => prev + 1);
           if (id === MY_CHARACTER_INDEX) {
-            handleMyEmotion(like, id);
+            handleMyEmotion(like, id, "like");
           } else {
             handleOtherEmotion(id, "like");
           }
           break;
         case "thumb_index":
           if (id === MY_CHARACTER_INDEX) {
-            handleMyEmotion("mic", id);
+            handleMyEmotion(mic, id, "mic");
           } else {
             handleOtherEmotion(id, "mic");
           }
@@ -250,6 +306,10 @@ const CharacterContainer = ({
   };
   const handleSocketOn = () => {
     socket.on("message", handleMessage);
+    socket.on("increaseEmotionCount", (content) => {
+      setHeartCount(content.heart);
+      setLikeCount(content.like);
+    });
   };
 
   useEffect(() => {
@@ -258,10 +318,44 @@ const CharacterContainer = ({
 
   return (
     <CharacterContainerWrapper>
+      <EmotionClickBox>
+        <div style={{ gap: "10px", display: "flex" }}>
+          <FavoriteBorderIcon
+            onClick={() => {
+              socket.emit("increaseEmotionCount", {
+                roomName,
+                emotion: "heart",
+              });
+            }}
+            fontSize="small"
+          />
+          <ThumbUpAltOutlinedIcon
+            onClick={() => {
+              socket.emit("increaseEmotionCount", {
+                roomName,
+                emotion: "like",
+              });
+            }}
+            fontSize="small"
+          />
+        </div>
+        <BreadBox>
+          <BakeryDiningOutlinedIcon /> Charge
+        </BreadBox>
+      </EmotionClickBox>
       <TotalInfoBox>
-        <TotalUserInfo>16</TotalUserInfo>
-        <TotalHeartsInfo>{heartCount}</TotalHeartsInfo>
-        <TotalLikesInfo>{likeCount}</TotalLikesInfo>
+        <TotalUserInfo>
+          <PersonOutlineOutlinedIcon fontSize="small" />
+          16
+        </TotalUserInfo>
+        <TotalHeartsInfo>
+          <FavoriteIcon fontSize="small" />
+          {heartCount}
+        </TotalHeartsInfo>
+        <TotalLikesInfo>
+          <ThumbUpAltOutlinedIcon fontSize="small" />
+          {likeCount}
+        </TotalLikesInfo>
       </TotalInfoBox>
       {characters.map((char) => (
         <CharacterBox

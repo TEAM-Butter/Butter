@@ -29,4 +29,6 @@ public interface ScheduleService {
     void unlikeSchedule(AuthInfoDTO currentUser, Long scheduleId);
 
     Schedule findById(Long id);
+
+    List<ScheduleResponseDTO> getLikedScheduleList(AuthInfoDTO currentUser);
 }

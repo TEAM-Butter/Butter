@@ -54,7 +54,9 @@ const UserBox = ({
             // 디버깅을 위한 로그 추가
             console.log("Sending request to:", "/ai/upload_frame");
 
-            const serverUrl = "http://localhost:5000/ai/upload_frame";
+            const serverUrl = `${
+              import.meta.env.VITE_FLASK_SERVER
+            }/ai/upload_frame`;
 
             try {
               const response = await fetch(serverUrl, {

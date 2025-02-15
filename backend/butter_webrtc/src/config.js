@@ -15,6 +15,7 @@ export const AWS_REGION = process.env.AWS_REGION || "us-east-1";
 export const S3_BUCKET = process.env.S3_BUCKET || "openvidu";
 
 export const RECORDINGS_PATH = process.env.RECORDINGS_PATH ?? "recordings/";
+export const CLIPS_TMP_PATH = process.env.CLIPS_PATH ?? "recordings/tmp/";
 export const CLIPS_PATH = process.env.CLIPS_PATH ?? "clips/";
 export const RECORDINGS_METADATA_PATH = ".metadata/";
 export const RECORDING_PLAYBACK_STRATEGY =

@@ -95,4 +95,11 @@ public class ClipController {
         clipService.unlikeClip(currentUser, id);
         return ResponseEntity.noContent().build();
     }
+
+    @Operation(summary = "좋아요 클립 목록 조회", description = "좋아요한 클립 목록을 조회합니다")
+    @GetMapping("/like")
+    public ResponseEntity<List<ClipResponseDTO>> getLikedClipList(
+            @Parameter(hidden = true) @CurrentUser AuthInfoDTO currentUser) {
+        return ResponseEntity.ok(clipService.getLikedClipList(currentUser));
+    }
 }

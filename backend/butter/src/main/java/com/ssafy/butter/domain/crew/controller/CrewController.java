@@ -148,4 +148,11 @@ public class CrewController {
         log.info("getRecommendedCrewList");
         return ResponseEntity.ok(null);
     }
+
+    @Operation(summary = "팔로우 크루 목록 조회", description = "팔로우한 크루 목록을 조회합니다.")
+    @GetMapping("/follow")
+    public ResponseEntity<List<CrewResponseDTO>> getFollowedCrewList(
+            @Parameter(hidden = true) @CurrentUser AuthInfoDTO currentUser) {
+        return ResponseEntity.ok(crewService.getFollowedCrewList(currentUser));
+    }
 }
