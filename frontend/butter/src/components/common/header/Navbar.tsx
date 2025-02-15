@@ -195,7 +195,7 @@ function Navbar() {
                   <Link to="/">
                     <SubItem>마이 크루</SubItem>
                   </Link>
-                  <Link to="/bread/recharge">
+                  <Link to="/bread/charge">
                     <SubItem>브레드 충전</SubItem>
                   </Link>
                   <SubItem
