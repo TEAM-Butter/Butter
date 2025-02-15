@@ -9,16 +9,24 @@ import {
 import mysql from "mysql2/promise";
 
 // MySQL 연결 설정
-// const db = mysql.createConnection({
-//   host: MYSQL_ENDPOINT,   // MySQL 서버 호스트
-//   user: MYSQL_USER,   // MySQL 사용자
-//   password: MYSQL_PASSWORD, // MySQL 비밀번호
-//   database: MYSQL_DATABASE,
-//   port: 3306, // MySQL 기본 포트
-//   waitForConnections: true,
-//   connectionLimit: 10,
-//   queueLimit: 0  // 데이터베이스 이름
-// });
+const db = mysql.createConnection({
+  host: MYSQL_ENDPOINT,  
+  user: MYSQL_USER, 
+  password: MYSQL_PASSWORD, 
+  database: MYSQL_DATABASE,
+  port: 3306, 
+  timezone: 'Asia/Seoul', 
+  ssl: false, 
+  allowPublicKeyRetrieval: true, 
+});
+
+db.connect((err) => {
+  if (err) {
+    console.error('데이터베이스 연결 실패:', err.stack);
+    return;
+  }
+  console.log('데이터베이스에 연결되었습니다.');
+});
 
 // 데이터 삽입 함수
 // export async function insertClip(crewId, title, videoName) {
