@@ -1,9 +1,10 @@
 package com.ssafy.butter.domain.member.repository.member;
 
 import com.ssafy.butter.domain.member.entity.Member;
-import com.ssafy.butter.domain.member.vo.Email;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -11,7 +12,6 @@ import org.springframework.stereotype.Repository;
 public class MemberRepositoryImpl implements MemberRepository{
     private final MemberJpaRepository memberJpaRepository;
 
-    @Override
     public Member save(Member member) {
         return memberJpaRepository.save(member);
     }
@@ -34,5 +34,10 @@ public class MemberRepositoryImpl implements MemberRepository{
     @Override
     public Optional<Member> findByLoginId(String loginId) {
         return memberJpaRepository.findByLoginId(loginId);
+    }
+
+    @Override
+    public Page<Member> searchByNickname(String keyword, Pageable pageable) {
+        return memberJpaRepository.searchByNickname(keyword, pageable);
     }
 }
