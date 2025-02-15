@@ -21,9 +21,8 @@ export class MySQLService {
       password: MYSQL_PASSWORD,
       database: MYSQL_DATABASE,
       port: 3306,
-      timezone: 'Asia/Seoul',
+      timezone: 'local',
       ssl: false,
-      allowPublicKeyRetrieval: true,
     });
 
     MySQLService.instance = this;
