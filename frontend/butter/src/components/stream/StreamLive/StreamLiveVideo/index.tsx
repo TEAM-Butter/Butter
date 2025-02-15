@@ -56,6 +56,7 @@ function StreamLiveVideo({
 
             try {
               // fetch API 사용
+              console.log("serverUrl", serverUrl);
               const response = await fetch(serverUrl, {
                 method: "POST",
                 body: formData,
