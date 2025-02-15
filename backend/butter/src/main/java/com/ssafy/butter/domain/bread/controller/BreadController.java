@@ -48,6 +48,8 @@ public class BreadController {
     public ResponseEntity<PaymentVerificationResponseDTO> verifyPayment(
             @Parameter(hidden = true) @CurrentUser AuthInfoDTO authInfoDTO,
             @RequestBody BreadRechargeRequestDTO breadRechargeRequestDTO) {
+                String token = getAccessToken();
+                log.info("token "+token);
         JsonNode responseJson = getPaymentInfo(breadRechargeRequestDTO.impUid(), getAccessToken());
         if (!"paid".equals(responseJson.get("response").get("status").asText())) {
             return ResponseEntity.ok().body(new PaymentVerificationResponseDTO(false, "결제 실패 또는 미결제 상태"));
@@ -71,7 +73,7 @@ public class BreadController {
         try {
             ResponseEntity<String> response = restTemplate.postForEntity(tokenUrl, entity, String.class);
             JsonNode responseJson = objectMapper.readTree(response.getBody());
-            log.info("token: "+responseJson+", "+responseJson.path("response").path("access_token").asText());
+            log.info("gettoken: "+responseJson.asText()+", "+responseJson.path("response").path("access_token").asText());
             return responseJson.path("response").path("access_token").asText();
         } catch (HttpClientErrorException | JsonProcessingException e) {
             throw new RuntimeException("액세스 토큰 발급 실패: " + e.getMessage());
