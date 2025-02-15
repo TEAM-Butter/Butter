@@ -14,9 +14,14 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(indexes = {
+        @Index(name = "idx_nickname", columnList = "nickname"),
+        @Index(name = "idx_email", columnList = "email"),
+        @Index(name = "idx_member_id", columnList = "member_id")
+})
+@Entity
 public class Member {
 
     @Id
@@ -38,6 +43,7 @@ public class Member {
     private String loginId;
 
     @Embedded
+    
     private Nickname nickname;
 
     @Embedded

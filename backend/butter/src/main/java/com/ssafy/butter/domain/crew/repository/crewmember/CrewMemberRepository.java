@@ -14,5 +14,5 @@ public interface CrewMemberRepository {
 
     Optional<CrewMember> findByCrewAndMember(Crew crew, Member member);
 
-    CrewMember findByMember(Member member);
+    Optional<CrewMember> findByMember(Member member);
 }
