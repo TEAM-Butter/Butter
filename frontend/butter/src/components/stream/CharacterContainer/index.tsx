@@ -268,7 +268,7 @@ const CharacterContainer = ({
   const handleMessage = (content: SocketContent) => {
     console.log("웹소켓에서 participantName을 불러옵니다!!", participantName);
     const id = 1;
-    if (content.role === "publisher" && canUserAct(id)) {
+    if (content.role === "subscriber" && canUserAct(id)) {
       switch (content.label) {
         case "little_heart":
           console.log("여기입니다 2");
