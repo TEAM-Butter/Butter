@@ -411,27 +411,29 @@ const LivePage = () => {
 
     try {
       //이거는 방 만드는 사람 로직 추가할 때 수정해야합니다다
+      const participant = role === "crew" ? "publisher" : "subscriber";
+
       if (role === "crew") {
         setParticipantRole("publisher");
       }
       console.log(
-        `확인용 입니다!!!!!!!!${roomName}, ${participantName}, ${participantRole}`
+        `확인용 입니다!!!!!!!!${roomName}, ${participantName}, ${participant}`
       );
       // Get a token from your application server with the room name and participant name
-      const token = await getToken(roomName, participantName, participantRole);
+      const token = await getToken(roomName, participantName, participant);
       // Connect to the room with the LiveKit URL and the token
 
       //방에 참가 할 때 본인이 publisher인지 subscriber인지 정보
-      socket.emit("join", { roomName, role: participantRole });
+      socket.emit("join", { roomName, role: participant });
 
       console.log("webRtc token :", token);
       await room.connect(LIVEKIT_URL, token);
 
       console.log("webRtc 접속성공");
       console.log("webRTCroom 정보입니다!!:", room);
-      console.log("Participantrole 입니다!!", participantRole);
+      console.log("participant 입니다!!", participant);
 
-      if (participantRole === "publisher") {
+      if (participant === "publisher") {
         // Publish your camera and microphone
         await room.localParticipant.enableCameraAndMicrophone();
         console.log("enableCameraAndMicrophone");
