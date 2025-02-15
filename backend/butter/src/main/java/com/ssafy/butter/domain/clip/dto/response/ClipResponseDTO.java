@@ -5,15 +5,24 @@ import com.ssafy.butter.domain.crew.entity.Crew;
 
 import java.util.List;
 
-public record ClipResponseDTO(Long id, CrewDTO crew, String title, String videoName, Long hitCount) {
+public record ClipResponseDTO(
 
-    public static ClipResponseDTO fromEntity(Clip clip) {
+        Long id,
+        CrewDTO crew,
+        String title,
+        String videoName,
+        Long hitCount,
+        Boolean isLiked
+) {
+
+    public static ClipResponseDTO from(Clip clip, Boolean isLiked) {
         return new ClipResponseDTO(
                 clip.getId(),
                 CrewDTO.fromEntity(clip.getCrew()),
                 clip.getTitle(),
                 clip.getVideoName(),
-                clip.getHitCount()
+                clip.getHitCount(),
+                isLiked
         );
     }
 
