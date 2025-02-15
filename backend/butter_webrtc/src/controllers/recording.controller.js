@@ -161,7 +161,7 @@ recordingController.get("/:title/:clipName", async (req, res) => {
     }
 
     try {
-        const result = await recordingService.saveClipRecording(clipName);
+        const result = await recordingService.saveClipRecording(title, clipName);
         if (result.success) {
             res.json({ message: "Clip save successfully", clipName: result.clipName});
         } else {
