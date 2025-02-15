@@ -94,7 +94,7 @@ public class  CrewServiceImpl implements CrewService {
         CrewMember crewMember = CrewMember.builder()
                 .crew(crew)
                 .member(member)
-                .isCrewAdmin(true)
+                .isCrewAdmin(false)
                 .build();
         return CrewMemberResponseDTO.from(crewMemberRepository.save(crewMember).getMember());
     }
