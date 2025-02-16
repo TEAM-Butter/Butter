@@ -20,7 +20,7 @@ public class ScheduleResponseDTO extends BaseScheduleDTO {
                 schedule.getBuskingDate(), schedule.getLatitude(), schedule.getLongitude(), schedule.getCreateDate(),
                 schedule.getUpdateDate());
         this.crew = CrewDTO.fromEntity(schedule.getCrew());
-        this.live = LiveDTO.fromEntity(schedule.getLive());
+        this.live = schedule.getLikedSchedules() == null ? null : LiveDTO.fromEntity(schedule.getLive());
         this.isLiked = isLiked;
     }
 
