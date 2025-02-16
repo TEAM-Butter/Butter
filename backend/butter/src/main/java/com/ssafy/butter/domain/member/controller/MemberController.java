@@ -2,12 +2,14 @@ package com.ssafy.butter.domain.member.controller;
 
 import com.ssafy.butter.auth.dto.AuthInfoDTO;
 import com.ssafy.butter.domain.member.dto.request.CheckLoginIdDTO;
+import com.ssafy.butter.domain.member.dto.request.CheckNicknameDuplicationRequestDTO;
 import com.ssafy.butter.domain.member.dto.request.ExtraInfoDTO;
 import com.ssafy.butter.domain.member.dto.request.MemberSearchRequestDTO;
 import com.ssafy.butter.domain.member.dto.request.PasswordUpdateRequestDTO;
 import com.ssafy.butter.domain.member.dto.request.ProfileUpdateRequestDTO;
 import com.ssafy.butter.domain.member.dto.request.SignUpDTO;
 import com.ssafy.butter.domain.member.dto.response.CheckLoginIdResponseDTO;
+import com.ssafy.butter.domain.member.dto.response.CheckNickNameDuplicationResponseDTO;
 import com.ssafy.butter.domain.member.dto.response.PasswordUpdateResponseDTO;
 import com.ssafy.butter.domain.member.dto.response.ProfileUpdateResponseDTO;
 import com.ssafy.butter.domain.member.dto.response.RegisterExtraInfoResponseDTO;
@@ -96,6 +98,14 @@ public class MemberController {
     public ResponseEntity<CheckLoginIdResponseDTO> checkEmailExists(
             @RequestBody CheckLoginIdDTO loginIdDTO) {
         CheckLoginIdResponseDTO response = memberService.checkIfLoginIdExists(loginIdDTO.loginId());
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "닉네임 중복 체크", description = "닉네임 중복 여부를 확인합니다.")
+    @PostMapping("/check-nickname")
+    public ResponseEntity<CheckNickNameDuplicationResponseDTO> checkNicknameExists(
+            @RequestBody CheckNicknameDuplicationRequestDTO nicknameDTO) {
+        CheckNickNameDuplicationResponseDTO response = memberService.checkIfNicknameExists(nicknameDTO.nickname());
         return ResponseEntity.ok(response);
     }
 
