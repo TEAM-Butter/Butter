@@ -127,9 +127,7 @@ export class ClipService {
                 );
             });
 
-            // 썸네일 저장
-            const imageBuffer = fs.readFileSync(tempThumbnailPath);
-            await this.saveClipThumbnail(recordingName, imageBuffer);
+            await this.saveClipThumbnail(recordingName, tempThumbnailPath);
 
             // 잘린 영상 S3에 업로드
             await s3Service.uploadVideo(outputKey, fs.createReadStream(tempOutputPath));
@@ -161,19 +159,17 @@ export class ClipService {
         }
     }
 
-    async saveClipThumbnail(recordingName, imageBuffer) {
+    async saveClipThumbnail(recordingName, tempThumbnailPath) {
         const thumbnailName = recordingName.replace(".mp4", ".jpg")
         const thumbnailKey = this.getClipThumbnailKey(thumbnailName);
 
         try {
-            // 이미지 파일을 임시 파일로 저장
-            const tempThumbnailPath = `/tmp/${thumbnailName}`;
-            fs.writeFileSync(tempThumbnailPath, imageBuffer);
+            const imageBuffer = fs.readFileSync(tempThumbnailPath);
 
             // S3에 업로드
-            await s3Service.uploadObject(
+            await s3Service.uploadImage(
                 thumbnailKey,
-                fs.createReadStream(tempThumbnailPath)
+                imageBuffer
             );
 
             // 임시 파일 삭제
