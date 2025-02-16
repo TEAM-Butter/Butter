@@ -32,6 +32,21 @@ clipController.post("/", async (req, res) => {
     }
 });
 
+clipController.get("/:crewId", async (req, res) => {
+    const { crewId } = req.params;
+    try {
+        const result = await clipService.listClips(crewId);
+        if (result.success) {
+            res.json({ message: "Get List successfully", result: result});
+        } else {
+            res.status(500).json({ errorMessage: "Error get clip list", details: result.error });
+        }
+    } catch (error) {
+        console.error("Error get clips.", error);
+        res.status(500).json({ errorMessage: "Error get clips" });
+    }
+});
+
 clipController.get("/:title/:clipName", async (req, res) => {
     const { title, clipName } = req.params;
     const exists = await clipService.existsClip(clipName);

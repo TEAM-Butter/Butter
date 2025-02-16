@@ -32,6 +32,11 @@ export class ClipService {
         return s3Service.getObjectUrl(key);
     }
 
+    async getClipThumbnailUrl(clipThumbnailName) {
+        const key = this.getClipThumbnailKey(clipThumbnailName);
+        return s3Service.getObjectUrl(key);
+    }
+
     async getCrewIdToClipName(clipName) {
         const crewName = clipName.split('-')[1];
         return crewName;
@@ -165,28 +170,29 @@ export class ClipService {
     }
 
     async listClips(crewId) {
-        const keyStart =
-            CLIPS_PATH + "clip-" + (crewId ? `${crewId}` : "");
-        const keyEnd = ".mp4";
-        const regex = new RegExp(`^${keyStart}.*${keyEnd}$`);
+        try {
+            // crewId에 해당하는 clip 데이터를 조회하는 SQL 쿼리 실행
+            const sql = (crewId) ? "SELECT * FROM clip WHERE crewId = ?" : "SELECT * FROM clip";
+            const rows = await this.query(sql, [crewId]);
 
-        // List all egress metadata files in the recordings path that match the regex
-        const clipKeys = await s3Service.listObjects(
-            CLIPS_PATH,
-            regex
-        );
+            const clipNames = rows.map(row => row.clipName);
+            const clips = clipNames.map((clipName) => {
+                const timestamp = clipName.split('-').pop().replace('.mp4', '');
+                const clipKey = this.getClipKey(clipName);
+                const thumbnailUrl = this.getClipThumbnailUrl(clipName.replace('.mp4', '.jpg'));
 
-        const clips = clipKeys.map((clipKey) => {
-            // Extract the timestamp from the clip name (assuming the name contains a timestamp)
-            const timestamp = clipKey.split('-').pop().replace('.mp4', '');
-            const clipName = clipKey.split('/').pop();
-            return { clipKey, clipName, timestamp: parseInt(timestamp) };
-        });
+                return { clipKey, clipName, timestamp: parseInt(timestamp), thumbnailUrl }
+            })
 
-        // Sort clips by timestamp in descending order
-        sortedClips = clips.sort((a, b) => b.timestamp - a.timestamp);
+            // Sort clips by timestamp in descending order
+            sortedClips = clips.sort((a, b) => b.timestamp - a.timestamp);
 
-        return sortedClips.map((clip) => clip.clipName);
+            return sortedClips.map((clip) => clip.clipName);
+        } catch (error) {
+            console.error("Error retrieving clip list:", error);
+            return { success: false, error: error.message };
+        }
+
     }
 
 }
