@@ -15,14 +15,16 @@ const app = express();
 app.use(express.json());
 
 //특정 도메인만 허용
-app.use(cors({
-  origin: 'https://i12e204.p.ssafy.io', 
-  methods: ['GET', 'POST', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true
-}));
+app.use(
+  cors({
+    origin: ["https://i12e204.p.ssafy.io", "http://localhost:5080"],
+    methods: ["GET", "POST", "OPTIONS", "DELETE", "PUT"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+  })
+);
 
-app.options('*', cors());
+app.options("*", cors());
 
 // Set the static files location
 const __filename = fileURLToPath(import.meta.url);
