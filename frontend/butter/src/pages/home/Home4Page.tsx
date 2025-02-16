@@ -50,7 +50,7 @@ const InfoWrapper = styled.div`
     gap: 15px;
     
     #LgText {
-        color: var(--bgColor)
+        color: var(--bgColor);
         font-weight: 500;
         font-size: 80px;
     }
@@ -65,7 +65,8 @@ const InfoWrapper = styled.div`
         letter-spacing: 2px;
         line-height: 1.1;
     }
-    `
+`
+
 const LinkBtnBox = styled.div`
     display: flex;
     margin-top: 20px;
