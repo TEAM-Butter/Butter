@@ -57,7 +57,14 @@ def on_join(data):
     role = data["role"]
 
     join_room(room_id)
-    sock.emit("message", f"User {request.sid}({role}) joined room {room_id}", room=room_id)
+    join_response = {}
+    join_response["motions"] = websocket_room_service.room_motions[room_id]
+    room_nicknames = websocket_room_service.room_nicknames[room_id]
+    if room_nicknames.size < 20:
+        join_response["nicknames"] = room_nicknames
+    else:
+        join_response["nicknames"] = room_nicknames[:20]
+    sock.emit("join", join_response, room=room_id)
 
 
 @sock.on("leave")
@@ -69,10 +76,11 @@ def on_leave(data):
         return
 
     leave_room(room_id)
+    websocket_room_service.remove_nickname(room_id, data["nickname"])
     if get_room_size(room_id) == 0:
         print(f"Room {room_id} is empty")
         websocket_room_service.remove_room(room_id)
-    sock.emit("message", f"User {request.sid} left room {room_id}", room=room_id)
+    sock.emit("leave", f"User {request.sid} left room {room_id}", room=room_id)
 
 
 @sock.on("increaseEmotionCount")
