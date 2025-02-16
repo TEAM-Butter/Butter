@@ -128,50 +128,6 @@ recordingController.get("/:recordingName/url", async (req, res) => {
     }
 });
 
-recordingController.post("/clip", async (req, res) => {
-    const { recordingName, startTime, endTime, time } = req.body;
-
-    if (!recordingName || !startTime || !endTime || !time) {
-        res.status(400).json({ errorMessage: "recordingName, startTime, endTime and time are required" });
-        return;
-    }
-
-    try {
-        // clipRecording 서비스 호출
-        const result = await recordingService.clipRecording(recordingName, startTime, endTime, time);
-
-        if (result.success) {
-            res.json({ message: "Recording clipped successfully", clipUrl: result.clipUrl, clipName: result.clipName});
-        } else {
-            res.status(500).json({ errorMessage: "Error clipping recording", details: result.error });
-        }
-    } catch (error) {
-        console.error("Error clipping recording.", error);
-        res.status(500).json({ errorMessage: "Error clipping recording" });
-    }
-});
-
-recordingController.get("/:title/:clipName", async (req, res) => {
-    const { title, clipName } = req.params;
-    const exists = await recordingService.existsClipTmp(clipName);
-
-    if (!exists) {
-        res.status(404).json({ errorMessage: "Clip not found" });
-        return;
-    }
-
-    try {
-        const result = await recordingService.saveClipRecording(title, clipName);
-        if (result.success) {
-            res.json({ message: "Clip save successfully", clipName: result.clipName});
-        } else {
-            res.status(500).json({ errorMessage: "Error clipping saving", details: result.error });
-        }
-    } catch (error) {
-        console.error("Error save clips.", error);
-        res.status(500).json({ errorMessage: "Error save clips" });
-    }
-});
 
 recordingController.post("/thumnail", upload.single("image"), async (req, res) => {
     const { recordingName } = req.body;

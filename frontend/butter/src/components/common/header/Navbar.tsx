@@ -137,6 +137,7 @@ function Navbar() {
   const buskingMatch = useMatch("busking");
   const streamMatch = useMatch("stream-list");
   const crewMatch = useMatch("crew/list");
+  const clipMatch = useMatch("video/clip");
   const loginMatch = useMatch("auth/login");
   // isLogin이 true일 경우 profile dropdown 적용, false일 경우 login link만 렌더링링
   const [isHovered, setIsHovered] = useState(false);
@@ -171,6 +172,9 @@ function Navbar() {
             </Link>
             <Link to="/crew/list">
               <Item>CREW {crewMatch && <Bar layoutId="bar" />}</Item>
+            </Link>
+            <Link to="/video/clip">
+              <Item>Clip {clipMatch && <Bar layoutId="bar" />}</Item>
             </Link>
           </Items>
           <Items>

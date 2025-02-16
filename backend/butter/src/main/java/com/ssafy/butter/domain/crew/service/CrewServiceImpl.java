@@ -94,7 +94,7 @@ public class  CrewServiceImpl implements CrewService {
         CrewMember crewMember = CrewMember.builder()
                 .crew(crew)
                 .member(member)
-                .isCrewAdmin(true)
+                .isCrewAdmin(false)
                 .build();
         return CrewMemberResponseDTO.from(crewMemberRepository.save(crewMember).getMember());
     }
@@ -112,6 +112,9 @@ public class  CrewServiceImpl implements CrewService {
         validateCrewAdmin(crew, currentMember);
         Member member = memberService.findById(memberId);
         CrewMember crewMember = crewMemberRepository.findByCrewAndMember(crew, member).orElseThrow();
+        if (crewMember.getIsCrewAdmin()) {
+            throw new IllegalArgumentException("Cannot delete crew admin");
+        }
         crewMemberRepository.delete(crewMember);
     }
 
@@ -138,7 +141,7 @@ public class  CrewServiceImpl implements CrewService {
      */
     @Override
     public CrewResponseDTO getCrewDetail(AuthInfoDTO currentUser, Long id) {
-        Member member = memberService.findById(id);
+        Member member = memberService.findById(currentUser.id());
         Crew crew = crewRepository.findById(id).orElseThrow();
         return CrewResponseDTO.from(crew, isFollowing(member, crew));
     }
@@ -272,6 +275,7 @@ public class  CrewServiceImpl implements CrewService {
     }
 
     private boolean isFollowing(Member member, Crew crew) {
-        return crew.getFollows().stream().anyMatch(follow -> follow.getMember().equals(member));
+        return crew.getFollows().stream()
+                .anyMatch(follow -> follow.getMember().equals(member) && follow.getIsFollowed());
     }
 }

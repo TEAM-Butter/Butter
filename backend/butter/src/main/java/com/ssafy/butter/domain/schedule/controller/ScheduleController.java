@@ -2,7 +2,6 @@ package com.ssafy.butter.domain.schedule.controller;
 
 import com.ssafy.butter.auth.dto.AuthInfoDTO;
 import com.ssafy.butter.domain.schedule.dto.request.ScheduleLikeRequestDTO;
-import com.ssafy.butter.domain.schedule.dto.request.ScheduleCalendarRequestDTO;
 import com.ssafy.butter.domain.schedule.dto.request.ScheduleSaveRequestDTO;
 import com.ssafy.butter.domain.schedule.dto.request.ScheduleSearchRequestDTO;
 import com.ssafy.butter.domain.schedule.dto.response.ScheduleResponseDTO;
@@ -40,27 +39,24 @@ public class ScheduleController {
             @Parameter(hidden = true) @CurrentUser AuthInfoDTO currentUser,
             @RequestBody ScheduleSaveRequestDTO scheduleSaveRequestDTO) {
         ScheduleResponseDTO scheduleResponseDTO = scheduleService.createSchedule(currentUser, scheduleSaveRequestDTO);
-        return ResponseEntity.created(URI.create("/api/v1/schedule/detail/" + scheduleResponseDTO.id())).body(scheduleResponseDTO);
+        return ResponseEntity.created(URI.create("/api/v1/schedule/detail/" + scheduleResponseDTO.getId()))
+                .body(scheduleResponseDTO);
     }
 
     @Operation(summary = "버스킹 일정 검색", description = "버스킹 일정을 검색합니다.")
     @GetMapping
     public ResponseEntity<List<ScheduleResponseDTO>> searchSchedule(
+            @Parameter(hidden = true) @CurrentUser AuthInfoDTO currentUser,
             @ParameterObject @ModelAttribute ScheduleSearchRequestDTO scheduleSearchRequestDTO) {
-        return ResponseEntity.ok(scheduleService.searchSchedule(scheduleSearchRequestDTO));
-    }
-
-    @Operation(summary = "달력 버스킹 일정 조회", description = "달력의 버스킹 일정을 조회합니다.")
-    @GetMapping("/calendar-list")
-    public ResponseEntity<List<ScheduleResponseDTO>> getScheduleCalendarList(
-            @ParameterObject @ModelAttribute ScheduleCalendarRequestDTO scheduleCalendarRequestDTO) {
-        return ResponseEntity.ok(scheduleService.getScheduleCalendarList(scheduleCalendarRequestDTO));
+        return ResponseEntity.ok(scheduleService.searchSchedule(currentUser, scheduleSearchRequestDTO));
     }
 
     @Operation(summary = "버스킹 일정 상세 조회", description = "특정 버스킹 일정의 상세 정보를 조회합니다.")
     @GetMapping("/detail/{id}")
-    public ResponseEntity<ScheduleResponseDTO> getScheduleDetail(@PathVariable Long id) {
-        return ResponseEntity.ok(scheduleService.getScheduleDetail(id));
+    public ResponseEntity<ScheduleResponseDTO> getScheduleDetail(
+            @Parameter(hidden = true) @CurrentUser AuthInfoDTO currentUser,
+            @PathVariable Long id) {
+        return ResponseEntity.ok(scheduleService.getScheduleDetail(currentUser, id));
     }
 
     @Operation(summary = "버스킹 일정 수정", description = "기존 버스킹 일정의 정보를 수정합니다.")

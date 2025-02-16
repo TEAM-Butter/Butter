@@ -50,8 +50,18 @@ export class S3Service {
         };
         const command = new PutObjectCommand(params);
         return this.run(command);
-      }
+    }
 
+    async uploadImage(key, imageBuffer) {
+        const params = {
+            Bucket: S3_BUCKET,
+            Key: key,
+            Body: imageBuffer,           // 바이너리 데이터 그대로 전달
+            ContentType: 'image/jpeg'    // 콘텐츠 타입 명시 (필요에 따라 'image/png' 등 변경)
+        };
+        const command = new PutObjectCommand(params);
+        return this.run(command);
+    }
       
     async exists(key) {
         try {
