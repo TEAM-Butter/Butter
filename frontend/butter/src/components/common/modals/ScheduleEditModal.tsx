@@ -121,7 +121,7 @@ const SelectText = styled.div`
 
 
 
-export const SchedulePlusModal = ({ setModalType, width, height, id }: any) => {
+export const ScheduleEditModal = ({ setModalType, width, height, id }: any) => {
       const [state, setState] = useState<any>({
         center: {
           lat: 36.350701,
@@ -364,7 +364,7 @@ const [selectDate, setSelectDate] = useState<any>("")
           longitude: position.lng,
         };
         console.log(payload)
-        const res = await axiosInstance.post("/schedule", payload);
+        const res = await axiosInstance.put("/schedule", payload);
   
         setResponse(res.data);
         alert("스케줄이 성공적으로 등록되었습니다!");
@@ -497,7 +497,7 @@ return (
 
                             <MC.ModalHeader3>
                             <div> {selectDate}날짜로, {address}에서 버스킹 하시는게 맞으실까요?</div>
-                            <MC.FilledBtn width="70px" height="30px" color="var(--yellow)" textColor="black" onClick={() => {SchedulePost()}}>생성</MC.FilledBtn>
+                            <MC.FilledBtn width="70px" height="30px" color="var(--yellow)" textColor="black" onClick={() => {SchedulePost()}}>수정</MC.FilledBtn>
                             </MC.ModalHeader3>
                             <Map // 지도를 표시할 Container
                                     center={state.center}
