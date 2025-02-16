@@ -129,7 +129,7 @@ export class ClipService {
 
             // 썸네일 저장
             const imageBuffer = fs.readFileSync(tempThumbnailPath);
-            await this.saveThumbnail(recordingName, imageBuffer);
+            await this.saveClipThumbnail(recordingName, imageBuffer);
 
             // 잘린 영상 S3에 업로드
             await s3Service.uploadVideo(outputKey, fs.createReadStream(tempOutputPath));
@@ -139,7 +139,7 @@ export class ClipService {
             fs.unlinkSync(tempOutputPath);
             fs.unlinkSync(tempThumbnailPath);
 
-            return { success: true, clipUrl: await this.getClipTmpUrl(clipName), clipName: clipName };
+            return { success: true, clipUrl: await this.getClipUrl(clipName), clipName: clipName };
         } catch (error) {
             console.error("Error clipping recording:", error);
             return { success: false, error: error.message };
@@ -157,6 +157,31 @@ export class ClipService {
             return { success: true, clipName: clipName };
         } catch (error) {
             console.error("Error saving clip:", error);
+            return { success: false, error: error.message };
+        }
+    }
+
+    async saveClipThumbnail(recordingName, imageBuffer) {
+        const thumbnailName = recordingName.replace(".mp4", ".jpg")
+        const thumbnailKey = this.getClipThumbnailKey(thumbnailName);
+
+        try {
+            // 이미지 파일을 임시 파일로 저장
+            const tempThumbnailPath = `/tmp/${thumbnailName}`;
+            fs.writeFileSync(tempThumbnailPath, imageBuffer);
+
+            // S3에 업로드
+            await s3Service.uploadObject(
+                thumbnailKey,
+                fs.createReadStream(tempThumbnailPath)
+            );
+
+            // 임시 파일 삭제
+            fs.unlinkSync(tempThumbnailPath);
+
+            return { success: true, thumbnailKey };
+        } catch (error) {
+            console.error("Error saving thumbnail:", error);
             return { success: false, error: error.message };
         }
     }
