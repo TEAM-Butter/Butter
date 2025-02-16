@@ -115,7 +115,7 @@ export class ClipService {
             // 첫 번째 프레임으로 썸네일 생성
             await new Promise((resolve, reject) => {
                 exec(
-                    `ffmpeg -i "${tempOutputPath}" -vf "select=eq(n\,0)" -q:v 3 "${tempThumbnailPath}"`,
+                    `ffmpeg -i "${tempOutputPath}" -frames:v 1 -q:v 3 "${tempThumbnailPath}"`,
                     (error, stdout, stderr) => {
                         if (error) {
                             console.error("FFmpeg thumbnail error:", error, stderr);
