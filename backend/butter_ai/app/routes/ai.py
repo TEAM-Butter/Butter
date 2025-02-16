@@ -57,7 +57,10 @@ def on_join(data):
     role = data["role"]
 
     join_room(room_id)
-    sock.emit("message", f"User {request.sid}({role}) joined room {room_id}", room=room_id)
+    join_response = {}
+    join_response["motions"] = websocket_room_service.room_motions[room_id]
+    join_response["nicknames"] = websocket_room_service.room_nicknames[room_id]
+    sock.emit("join", join_response, room=room_id)
 
 
 @sock.on("leave")
