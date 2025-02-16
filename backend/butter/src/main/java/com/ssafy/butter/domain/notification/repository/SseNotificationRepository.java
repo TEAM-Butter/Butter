@@ -30,7 +30,7 @@ public class SseNotificationRepository implements NotificationRepository {
                 result.put(key, emitters);
             }
         });
-        return emitters;
+        return result;
     }
 
     @Override
@@ -41,7 +41,7 @@ public class SseNotificationRepository implements NotificationRepository {
                 result.put(key, event);
             }
         });
-        return eventCache;
+        return result;
     }
 
     @Override
