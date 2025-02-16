@@ -356,6 +356,16 @@ export class RecordingService {
     }
   }
 
+  async deleteClip(clipName) {
+    const recordingKey = this.getClipKey(clipName);
+    const thumbnailKey = this.getClipThumbnailKey(clipName.replace('.mp4', '.jpg'));
+    // Delete the recording file and metadata file from S3
+    await Promise.all([
+      s3Service.deleteObject(recordingKey),
+      s3Service.deleteObject(thumbnailKey),
+    ]);
+  }
+
   async listClips(crewId) {
     const keyStart =
       CLIPS_PATH + "clip-" + (crewId ? `${crewId}` : "");
