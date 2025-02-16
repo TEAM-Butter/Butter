@@ -135,6 +135,7 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     private boolean isLiking(Member member, Schedule schedule) {
-        return schedule.getLikedSchedules().stream().anyMatch(likedSchedule -> likedSchedule.getMember().equals(member));
+        return schedule.getLikedSchedules().stream()
+                .anyMatch(likedSchedule -> likedSchedule.getMember().equals(member) && likedSchedule.getIsLiked());
     }
 }

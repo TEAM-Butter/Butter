@@ -275,6 +275,7 @@ public class  CrewServiceImpl implements CrewService {
     }
 
     private boolean isFollowing(Member member, Crew crew) {
-        return crew.getFollows().stream().anyMatch(follow -> follow.getMember().equals(member));
+        return crew.getFollows().stream()
+                .anyMatch(follow -> follow.getMember().equals(member) && follow.getIsFollowed());
     }
 }
