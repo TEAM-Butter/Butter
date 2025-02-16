@@ -86,19 +86,48 @@ interface ClipModalProps {
   isOpen: boolean;
   onClose: () => void;
   videoUrl: string;
+  recordingName: string;
 }
 
 export const ClipModal: React.FC<ClipModalProps> = ({
   isOpen,
   onClose,
   videoUrl,
+  recordingName,
 }) => {
-  const [videoTitle, setVideoTitle] = useState("");
-  const handleSave = () => {
-    console.log("저장된 제목:", videoTitle);
-    alert(`영상 제목이 "${videoTitle}"로 저장되었습니다.`);
-    onClose();
+  const [title, setTitle] = useState("");
+
+  const handleSave = async () => {
+    if (!title.trim()) {
+      alert("제목을 입력해 주세요!");
+      return;
+    }
+
+    const SERVER_URL = import.meta.env.VITE_NODE_JS_SERVER || ""; // NodeJS 서버 URL
+
+    try {
+      const response = await fetch(`${SERVER_URL}/clip/${title}/${recordingName}`, {
+        method: "GET", // 클립 저장을 위해 GET 요청
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert(`✅ 클립 저장 성공: ${data.recordingName}`);
+        onClose(); // 모달 닫기
+      } else {
+        console.error("❌ 클립 저장 실패:", data.errorMessage);
+        alert(`클립 저장 실패: ${data.errorMessage}`);
+      }
+    } catch (error) {
+      console.error("🚨 서버 오류 발생:", error);
+      alert("서버 오류 발생");
+    }
   };
+
 
   if (!isOpen) return null;
 
@@ -143,14 +172,14 @@ export const ClipModal: React.FC<ClipModalProps> = ({
         <Input
           type="text"
           placeholder="영상 제목을 입력하세요"
-          value={videoTitle}
-          onChange={(e) => setVideoTitle(e.target.value)}
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
         />
         <ButtonContainer>
           <SaveButton onClick={handleSave}>저장</SaveButton>
           <CancelButton onClick={onClose}>취소</CancelButton>
+          <DownLoadButton onClick={handleDownload}>Download Video</DownLoadButton>
         </ButtonContainer>
-        <DownLoadButton onClick={handleDownload}>Download Video</DownLoadButton>
       </ModalContent>
     </ModalOverlay>
   );

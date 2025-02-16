@@ -541,6 +541,7 @@ const VideoTrimmer = ({
               isOpen={isModalOpen}
               onClose={() => setIsModalOpen(false)}
               videoUrl={trimmedVideoUrl}
+              recordingName={recordingName}
             />
           </div>
         ) : (
