@@ -22,5 +22,7 @@ public interface ClipService {
 
     void unlikeClip(AuthInfoDTO currentUser, Long clipId);
 
+    long getLikeCount(Long clipId);
+
     List<ClipResponseDTO> getLikedClipList(AuthInfoDTO currentUser);
 }
