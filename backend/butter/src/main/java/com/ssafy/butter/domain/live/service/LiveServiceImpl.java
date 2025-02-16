@@ -45,6 +45,9 @@ public class LiveServiceImpl implements LiveService {
         Member member = memberService.findById(currentUser.id());
         Crew crew = crewService.findById(liveSaveRequestDTO.crewId());
         crewService.validateCrewAdmin(crew, member);
+        if (crew.getLives().stream().anyMatch(live -> live.getEndDate() == null)) {
+            throw new IllegalArgumentException("Crew already has active live");
+        }
         Live live = Live.builder()
                 .crew(crew)
                 .title(liveSaveRequestDTO.title())
