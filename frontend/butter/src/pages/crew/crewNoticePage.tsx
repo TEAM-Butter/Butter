@@ -7,7 +7,7 @@ import rightRightArrowBlack from "../../assets/rightRightArrowBlack.png"
 import editButton from "../../assets/editButton.png"
 import deleteButton from "../../assets/deleteButton.png"
 import styled from "@emotion/styled";
-
+import { format } from "date-fns";
 
 const images = [sample1,sample2,sample3,sample4,sample5]
 
@@ -187,6 +187,98 @@ function CrewNoticePage() {
     const [noticeEditSwitch, setNoticeEditSwitch ] = useState(false)
     const [basicNum , setBasicNum] = useState<number>(noticeId)
 
+    
+
+
+    const [image, setImage] = useState<any>(null); // 선택한 파일 저장
+    const [preview, setPreview] = useState<string | null>(null); // 미리보기 이미지
+  
+     // 파일 선택 시 실행되는 함수
+    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files[0]) {
+        const file = e.target.files[0];
+        setImage(file); // 선택한 파일 저장
+        setPreview(URL.createObjectURL(file)); // 미리보기 URL 생성
+        }
+    }
+    const [Name, setTitle] = useState("");
+    const [content, setContent] = useState("");
+    const handleTitleChange = (e : any) => setTitle(e.target.value);
+    const handleContentChange = (e : any) => setContent(e.target.value);
+
+
+    
+    const [Name2, setTitle2] = useState("");
+    const [content2, setContent2] = useState("");
+    const handleTitleChange2 = (e : any) => setTitle2(e.target.value);
+    const handleContentChange2 = (e : any) => setContent2(e.target.value);
+
+
+    const NoticePost = async() => {
+        // if (!file) {
+        //     alert("파일을 선택하세요.");
+        //     return;
+        //   }
+          const formData = new FormData();
+          formData.append("crewId",id)
+          formData.append("title", Name2); // ✅ 파일 추가
+          formData.append("content", content2); // ✅ 파일 추가
+          if(image){
+          formData.append("image", image)} // ✅ 파일 추가
+               try {
+                   setLoading(true);
+                 
+                   const response = await axiosInstance.post(`/crew/notice`, formData, // 크루 정보 수정 요청
+                   {headers: {
+                         "Content-Type": "multipart/form-data",
+                     }})
+                   console.log("생성 성공", response.data)
+                   alert("크루 공지사항 생성 성공!");
+                    // ✅ 새로운 데이터로 상태 업데이트 → 자동으로 재렌더링됨
+                    window.location.reload(); // ✅ 화면 새로고침 
+               
+               } catch (err: any) {
+                alert("업로드 중 오류가 발생했습니다.");
+               } finally {
+                setLoading(false)
+               }
+           }
+
+
+
+           const NoticeEdit = async() => {
+            // if (!file) {
+            //     alert("파일을 선택하세요.");
+            //     return;
+            //   }
+              const formData = new FormData();
+              formData.append("crewId",id)
+              formData.append("title", Name); // ✅ 파일 추가
+              formData.append("content", content); // ✅ 파일 추가
+              if(image){
+              formData.append("image", image)} // ✅ 파일 추가
+                   try {
+                       setLoading(true);
+                     
+                       const response = await axiosInstance.put(`/crew/notice/${selectedNotice}`, formData, // 크루 정보 수정 요청
+                       {headers: {
+                             "Content-Type": "multipart/form-data",
+                         }})
+                       console.log("수정 성공", response.data)
+                       alert("크루 공지사항 수정 성공!");
+                        // ✅ 새로운 데이터로 상태 업데이트 → 자동으로 재렌더링됨
+                        window.location.reload(); // ✅ 화면 새로고침 
+                   
+                   } catch (err: any) {
+                    alert("업로드 중 오류가 발생했습니다.");
+                   } finally {
+                    setLoading(false)
+                   }
+               }
+
+
+  
+
 
     const plusHandlerOn = () => {
         setNoticeSwitch(false)
@@ -209,16 +301,16 @@ function CrewNoticePage() {
         setNoticeSwitch(true)
         setNoticeEditSwitch(false)
     }
+    const [selectedNotice ,setSelectedNotice] = useState(1)
 
     useEffect (() => {
         const fetchCrewDetail = async () => {
             try {
-                const noticeResponse = await axiosInstance.get(`/crew/notice/detail/${id}`) // 크루 공지사항 정보 받아옴
-                setCrewNoticeDetail([noticeResponse.data]);
-                console.log("noticeResponse.data : ",noticeResponse.data)
                 const response = await axiosInstance.get(`/crew/detail/${id}`) // 크루 디테일 정보 받아옴
                 setCrewDetail(response.data);
                 console.log("response.data : ", response.data)
+                if(response.data.notices.length > 0) {setSelectedNotice(response.data.notices[basicNum].id)}
+                console.log(response.data.notices[basicNum].imageUrl)
             } catch (err:any) {
                 setError(err.message); //요청 놓치면 에러 메세지 띄우기
             } finally {
@@ -228,11 +320,16 @@ function CrewNoticePage() {
 
         if (id) {
             fetchCrewDetail();
+            
         }
     }, [id])
 
     if (loading) return <div>Loading...</div>;
     if (error) return <div>Error: {error}</div>;
+
+    
+  
+
 
     return (
     <PageContainer>
@@ -243,8 +340,8 @@ function CrewNoticePage() {
             </Box1>
             <Box2>
             <div>{
-                crewNoticeDetail.map((a:any, i:any) => {
-                    return ( <NoticeWrapper> <NoticeImage src={images[i]} alt="noticeImg"></NoticeImage><NoticeText><div style={{fontSize: "20px"}}>{a.title}</div>  <div>{a.content}</div></NoticeText> <RightRightArrow onClick={() => {setBasicNum(i)}} src={rightRightArrow} alt='rightRightArrow'></RightRightArrow></NoticeWrapper> )
+                crewDetail.notices.map((a:any, i:any) => {
+                    return ( <NoticeWrapper> <NoticeImage src={a.imageUrl} alt="noticeImg"></NoticeImage><NoticeText><div style={{fontSize: "20px"}}>{a.title}</div>  <div>{a.content}</div></NoticeText> <RightRightArrow onClick={() => {{setBasicNum(i); setSelectedNotice(crewDetail.notices[i].id)}}} src={rightRightArrow} alt='rightRightArrow'></RightRightArrow></NoticeWrapper> )
                 })
             }
             </div>
@@ -258,28 +355,30 @@ function CrewNoticePage() {
             {noticeSwitch && 
                 <div>
                     <Box4>
-                    <div>  {crewNoticeDetail.length > 0 ? crewNoticeDetail[basicNum].title : '등록한 공지사항이 없습니다.'} </div>
+                    <div>  {crewDetail.notices.length > 0 ? crewDetail.notices[basicNum].title : '등록한 공지사항이 없습니다.'} </div>
                     </Box4>
                     <Box5>
-                    <div> {crewNoticeDetail[basicNum].content}  </div>
+                    <div> {crewDetail.notices.length  > 0 ? crewDetail.notices[basicNum].content : ""}  </div>
                     <EditAndDelBtn>
-                    <NoticeImage2 src={images[basicNum]} alt="NoticeImage"></NoticeImage2>
+                    <NoticeImage2 src={crewDetail.notices[basicNum].imageUrl} alt="NoticeImage"></NoticeImage2>
                         <EditButton src={editButton} alt="editButton" onClick={()=> editHandlerOn()}></EditButton>
-                        <DeleteButton src={deleteButton} alt="deleteButton" onClick={()=> axios.delete(``)}></DeleteButton>
+                        <DeleteButton src={deleteButton} alt="deleteButton" onClick={()=> {axiosInstance.delete(`crew/notice/${selectedNotice}`); alert("삭제성공!");  window.location.reload(); }}></DeleteButton>
                     </EditAndDelBtn>
                     </Box5>
             </div>}
 
             {noticeEditSwitch && <div>
                 <Box4>
-                <div><input type="text" placeholder="type your notice title" /></div>
+                <div>Edit Notice</div>
                 </Box4>
                 <Box5>
-                <div><input type="text" placeholder="type your notice content" /></div>
-                <button>이미지로드</button>   
-                <div><button onClick={() => editHandlerOff()}>취소</button>
+                <div><input type="text" placeholder={crewDetail.notices[basicNum].title} value={Name} onChange={handleTitleChange} /></div>
+                <div><input type="text" placeholder={crewDetail.notices[basicNum].content} value={content} onChange={handleContentChange} /></div>
+                <div><input type="file"  accept="image/*" onChange={handleImageChange}/></div>  <div onClick={()=>{{setPreview(null); setImage(null) }}}>x</div>
+                {preview && <img src={preview} alt="Preview" width="200" />}
+                <div><button onClick={() => {editHandlerOff(); setPreview(null); setImage(null)  }}>취소</button>
                 <button onClick={() => {
-                    axios.put(``)
+                    NoticeEdit()
                     .then(() => editHandlerOff())
                 }}>편집 완료</button>
                 </div>
@@ -290,19 +389,20 @@ function CrewNoticePage() {
 
             {noticePlusSwitch && <div>
                 <Box4>
-                <div><input type="text" placeholder="type your notice title" /></div>
+                <div>Post Notice</div>
                 </Box4>
                 <Box5>
-                <div><input type="text" placeholder="type your notice content" /></div>
-                <button>이미지로드</button>   
-                <div><button onClick={() => plusHandlerOff()}>취소</button>
+                <div><input type="text" placeholder="type your notice content" value={Name2} onChange={handleTitleChange2} /></div>
+                <div><input type="text" placeholder="type your notice content" value={content2} onChange={handleContentChange2} /></div>
+                <div><input type="file"  accept="image/*" onChange={handleImageChange}/></div>  <div onClick={()=>{{setPreview(null); setImage(null) }}}>x</div>
+                {preview && <img src={preview} alt="Preview" width="200" />}
+                <div><button onClick={() => { plusHandlerOff(); setPreview(null); setImage(null)  }}>취소</button>
                 <button onClick={() => {
-                    axios.post(``)
-                    .then(() => plusHandlerOff())
+                    NoticePost()
+                    .then(() => editHandlerOff())
                 }}>생성</button>
                 </div>
-                </Box5>
-               
+                </Box5>            
             </div>}
 
             </LayOut2>
