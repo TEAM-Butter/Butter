@@ -31,7 +31,7 @@ app.use(express.static(path.join(__dirname, "../public")));
 
 app.use("/token", roomController);
 app.use("/recordings", recordingController);
-app.use("/clips", clipController);
+app.use("/clip", clipController);
 app.use("/livekit/webhook", webhookController);
 
 app.listen(SERVER_PORT, () => {
