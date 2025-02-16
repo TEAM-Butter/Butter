@@ -58,6 +58,9 @@ public class LiveController {
     }
 
     @Operation(summary = "라이브 종료", description = "라이브를 종료합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "라이브 종료 성공")
+    })
     @PatchMapping("/{id}")
     public ResponseEntity<List<LiveResponseDTO>> finishLive(
             @Parameter(hidden = true) @CurrentUser AuthInfoDTO currentUser,
