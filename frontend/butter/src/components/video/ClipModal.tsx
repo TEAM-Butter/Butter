@@ -86,14 +86,14 @@ interface ClipModalProps {
   isOpen: boolean;
   onClose: () => void;
   videoUrl: string;
-  recordingName: string;
+  clipName: string;
 }
 
 export const ClipModal: React.FC<ClipModalProps> = ({
   isOpen,
   onClose,
   videoUrl,
-  recordingName,
+  clipName,
 }) => {
   const [title, setTitle] = useState("");
 
@@ -106,7 +106,7 @@ export const ClipModal: React.FC<ClipModalProps> = ({
     const SERVER_URL = import.meta.env.VITE_NODE_JS_SERVER || ""; // NodeJS 서버 URL
 
     try {
-      const response = await fetch(`${SERVER_URL}/clip/save/${title}/${recordingName}`, {
+      const response = await fetch(`${SERVER_URL}/clip/${title}/${clipName}`, {
         method: "GET", // 클립 저장을 위해 GET 요청
         headers: {
           "Content-Type": "application/json",
@@ -116,7 +116,7 @@ export const ClipModal: React.FC<ClipModalProps> = ({
       const data = await response.json();
 
       if (response.ok) {
-        alert(`✅ 클립 저장 성공: ${data.recordingName}`);
+        alert(`✅ 클립 저장 성공: ${data.clipName}`);
         onClose(); // 모달 닫기
       } else {
         console.error("❌ 클립 저장 실패:", data.errorMessage);
