@@ -148,7 +148,7 @@ export class ClipService {
         try {
             // INSERT 쿼리 실행: crewId, title, videoName (clipName으로 저장)
             const crewId = this.getCrewIdToClipName(clipName);
-            const sql = "INSERT INTO clip (crew_id, title, videoName) VALUES (?, ?, ?)";
+            const sql = "INSERT INTO clip (crew_id, title, video_name) VALUES (?, ?, ?)";
             await dbService.query(sql, [crewId, title, clipName]);
 
             // 성공적으로 완료되면 clipName 반환
