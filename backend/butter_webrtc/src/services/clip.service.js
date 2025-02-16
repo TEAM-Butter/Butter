@@ -39,11 +39,6 @@ export class ClipService {
         return s3Service.getObjectUrl(key);
     }
 
-    async getCrewIdToClipName(clipName) {
-        const crewName = clipName.split('-')[1];
-        return crewName;
-    }
-
     async existsClipTmp(clipTmpName) {
         const key = this.getClipTmpKey(clipTmpName);
         return s3Service.exists(key);
@@ -52,6 +47,11 @@ export class ClipService {
     async existsClip(clipName) {
         const key = this.getClipKey(clipName);
         return s3Service.exists(key);
+    }
+
+    getCrewIdToClipName(clipName) {
+        const crewName = clipName.split('-')[1];
+        return crewName;
     }
 
     getClipTmpKey(clippedRecordingName) {
