@@ -282,7 +282,7 @@ const VideoTrimmer = ({
       console.log("📡 서버 요청 중...");
       console.log(recordingName, title, startSeconds, endSeconds);
       const response = await fetch(
-        `${SEVER_URL}/recordings/clip`,
+        `${SEVER_URL}/clip`,
         {
           method: "POST",
           headers: {

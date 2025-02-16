@@ -6,6 +6,7 @@ import { fileURLToPath } from "url";
 import { SERVER_PORT } from "./config.js";
 import { roomController } from "./controllers/room.controller.js";
 import { recordingController } from "./controllers/recording.controller.js";
+import { clipController } from "./controllers/clip.controller.js";
 import { webhookController } from "./controllers/webhook.controller.js";
 
 const app = express();
@@ -30,6 +31,7 @@ app.use(express.static(path.join(__dirname, "../public")));
 
 app.use("/token", roomController);
 app.use("/recordings", recordingController);
+app.use("/clips", clipController);
 app.use("/livekit/webhook", webhookController);
 
 app.listen(SERVER_PORT, () => {
