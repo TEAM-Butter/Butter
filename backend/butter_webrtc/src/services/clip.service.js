@@ -172,9 +172,6 @@ export class ClipService {
                 imageBuffer
             );
 
-            // 임시 파일 삭제
-            fs.unlinkSync(tempThumbnailPath);
-
             return { success: true, thumbnailKey };
         } catch (error) {
             console.error("Error saving thumbnail:", error);
