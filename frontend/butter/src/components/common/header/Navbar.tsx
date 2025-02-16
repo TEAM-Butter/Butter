@@ -66,6 +66,14 @@ const Profile = styled.li`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  
+  #profileImg {
+    justify-content: flex-end;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    margin-left: 40px;
+  }
 `;
 
 const SubProfile = styled(motion.ul)`
@@ -130,6 +138,8 @@ const subProfileVariants = {
 function Navbar() {
   //useUserStore
   const memberType = useUserStore((state) => state.memberType);
+  const profileImg = useUserStore((state) => state.profileImage);
+  const nickname = useUserStore((state) => state.nickname);
   const isLogin = useUserStore((state) => state.isLogin);
   const logout = useUserStore((state) => state.logout);
 
@@ -179,7 +189,11 @@ function Navbar() {
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
               >
-                PROFILE
+                {profileImg === "" ?
+                  `PROFILE`
+                  :
+                  <img id="profileImg" src={profileImg || ""} alt="profileImg" />
+                }
                 <SubProfile
                   variants={subProfileVariants}
                   initial="normal"
@@ -187,7 +201,7 @@ function Navbar() {
                 >
                   <SubItemComment>
                     안녕하세요,
-                    <br /> Username님!
+                    <br /> {nickname || "guest"}님!
                   </SubItemComment>
                   <Link to="/">
                     <SubItem>마이 캘린더</SubItem>
