@@ -80,48 +80,8 @@ export class RecordingService {
     const recordings = await Promise.all(
       metadataKeys.map((metadataKey) => s3Service.getObjectAsJson(metadataKey))
     );
-    
+
     return this.filterAndSortRecordings(recordings, roomName, roomId);
-  }
-
-  async listClips(crewId) {
-    const keyStart =
-      CLIPS_PATH + "clip-" + (crewId ? `${crewId}` : "");
-    const keyEnd = ".mp4";
-    const regex = new RegExp(`^${keyStart}.*${keyEnd}$`);
-
-    // List all egress metadata files in the recordings path that match the regex
-    const clipKeys = await s3Service.listObjects(
-      CLIPS_PATH,
-      regex
-    );
-
-    const clips = clipKeys.map((clipKey) => {
-      // Extract the timestamp from the clip name (assuming the name contains a timestamp)
-      const timestamp = clipKey.split('-').pop().replace('.mp4', '');
-      const clipName = clipKey.split('/').pop();
-      return { clipKey, clipName, timestamp: parseInt(timestamp) };
-    });
-
-    // Sort clips by timestamp in descending order
-    sortedClips = clips.sort((a, b) => b.timestamp - a.timestamp);
-    
-    return sortedClips.map((clip) => clip.clipName);
-  }
-
-  filterAndSortRecordings(recordings, roomName, roomId) {
-    let filteredRecordings = recordings;
-
-    if (roomName || roomId) {
-      filteredRecordings = recordings.filter((recording) => {
-        return (
-          (!roomName || recording.roomName === roomName) &&
-          (!roomId || recording.roomId === roomId)
-        );
-      });
-    }
-
-    return filteredRecordings.sort((a, b) => b.startedAt - a.startedAt);
   }
 
   filterAndSortRecordings(recordings, roomName, roomId) {
@@ -179,33 +139,8 @@ export class RecordingService {
     return s3Service.getObjectUrl(key);
   }
 
-  async getClipUrl(clipName) {
-    const key = this.getClipKey(clipName);
-    return s3Service.getObjectUrl(key);
-  }
-
-  async getClipTmpUrl(clipTmpName) {
-    const key = this.getClipTmpKey(clipTmpName);
-    return s3Service.getObjectUrl(key);
-  }
-
-  async getCrewIdToClipName(clipName) {
-    const crewName = clipName.split('-')[1];
-    return crewName;
-  }
-
   async existsRecording(recordingName) {
     const key = this.getRecordingKey(recordingName);
-    return s3Service.exists(key);
-  }
-
-  async existsClipTmp(clipTmpName) {
-    const key = this.getClipTmpKey(clipTmpName);
-    return s3Service.exists(key);
-  }
-
-  async existsClip(clipName) {
-    const key = this.getClipKey(clipName);
     return s3Service.exists(key);
   }
 
@@ -228,8 +163,8 @@ export class RecordingService {
 
   convertToRecordingInfo(egressInfo) {
     if (!egressInfo.fileResults || egressInfo.fileResults.length === 0) {
-        console.error("No file results found for egress:", egressInfo);
-        return null;
+      console.error("No file results found for egress:", egressInfo);
+      return null;
     }
 
     const file = egressInfo.fileResults[0];
@@ -271,8 +206,8 @@ export class RecordingService {
     );
   }
 
-  getThumbnailKey(recordingName) {
-    return RECORDINGS_PATH + recordingName.replace(".mp4", ".jpg");
+  getThumbnailKey(thumbnailName) {
+    return RECORDINGS_PATH + thumbnailName;
   }
 
   getClipTmpKey(clippedRecordingName) {
@@ -283,16 +218,17 @@ export class RecordingService {
     return CLIPS_PATH + clippedRecordingName;
   }
 
-  getClipThumbnailKey(clippedRecordingName) {
-    return CLIPS_PATH + clippedRecordingName.replace(".mp4", ".jpg");
+  getClipThumbnailKey(clippedThumbnailName) {
+    return CLIPS_PATH + clippedThumbnailName;
   }
 
   async saveThumbnail(recordingName, imageBuffer) {
-    const thumbnailKey = this.getThumbnailKey(recordingName);
+    const thumbnailName = recordingName.replace(".mp4", ".jpg")
+    const thumbnailKey = this.getThumbnailKey(thumbnailName);
 
     try {
       // 이미지 파일을 임시 파일로 저장
-      const tempThumbnailPath = `/tmp/${recordingName.replace(".mp4", ".jpg")}`;
+      const tempThumbnailPath = `/tmp/${thumbnailName}`;
       fs.writeFileSync(tempThumbnailPath, imageBuffer);
 
       // S3에 업로드
@@ -313,7 +249,8 @@ export class RecordingService {
 
   // 썸네일 URL 가져오기
   async getThumbnailUrl(recordingName) {
-    const key = this.getThumbnailKey(recordingName);
+    const thumbnailName = recordingName.replace(".mp4", ".jpg")
+    const key = this.getThumbnailKey(thumbnailName);
 
     // 썸네일 존재 여부 확인
     const exists = await s3Service.exists(key);
@@ -325,7 +262,7 @@ export class RecordingService {
   }
 
   async clipRecording(recordingName, startTime, endTime, time) {
-    console.log("Time "+startTime+", "+endTime);
+    console.log("Time " + startTime + ", " + endTime);
     const result = recordingName.split('-')[0];
     const clipName = `clip-${result}-${time}.mp4`;
     const inputKey = this.getRecordingKey(recordingName);
@@ -335,6 +272,8 @@ export class RecordingService {
     console.log('os.tmpdir(): ', os.tmpdir());
     const tempInputPath = path.join(tempDir, `/${recordingName}`);
     const tempOutputPath = path.join(tempDir, `/${clipName}`);
+    const tempThumbnailPath = path.join(tempDir, `/${recordingName.replace('.mp4', '.jpg')}`);
+
 
     const duration = endTime - startTime;
 
@@ -368,14 +307,34 @@ export class RecordingService {
         );
       });
 
+      // 첫 번째 프레임으로 썸네일 생성
+      await new Promise((resolve, reject) => {
+        exec(
+          `ffmpeg -i "${tempOutputPath}" -vf "select=eq(n\,0)" -q:v 3 "${tempThumbnailPath}"`,
+          (error, stdout, stderr) => {
+            if (error) {
+              console.error("FFmpeg thumbnail error:", error, stderr);
+              reject(error);
+            } else {
+              resolve();
+            }
+          }
+        );
+      });
+
+      // 썸네일 저장
+      const imageBuffer = fs.readFileSync(tempThumbnailPath);
+      await this.saveThumbnail(recordingName, imageBuffer);
+
       // 잘린 영상 S3에 업로드
       await s3Service.uploadVideo(outputKey, fs.createReadStream(tempOutputPath));
 
       // 로컬 파일 삭제
       fs.unlinkSync(tempInputPath);
       fs.unlinkSync(tempOutputPath);
+      fs.unlinkSync(tempThumbnailPath);
 
-      return { success: true, clipUrl: await this.getClipTmpUrl(clipName), clipName: clipName};
+      return { success: true, clipUrl: await this.getClipTmpUrl(clipName), clipName: clipName };
     } catch (error) {
       console.error("Error clipping recording:", error);
       return { success: false, error: error.message };
@@ -395,5 +354,50 @@ export class RecordingService {
       console.error("Error saving clip:", error);
       return { success: false, error: error.message };
     }
+  }
+
+  async listClips(crewId) {
+    const keyStart =
+      CLIPS_PATH + "clip-" + (crewId ? `${crewId}` : "");
+    const keyEnd = ".mp4";
+    const regex = new RegExp(`^${keyStart}.*${keyEnd}$`);
+
+    // List all egress metadata files in the recordings path that match the regex
+    const clipKeys = await s3Service.listObjects(
+      CLIPS_PATH,
+      regex
+    );
+
+    const clips = clipKeys.map((clipKey) => {
+      // Extract the timestamp from the clip name (assuming the name contains a timestamp)
+      const timestamp = clipKey.split('-').pop().replace('.mp4', '');
+      const clipName = clipKey.split('/').pop();
+      return { clipKey, clipName, timestamp: parseInt(timestamp) };
+    });
+
+    // Sort clips by timestamp in descending order
+    sortedClips = clips.sort((a, b) => b.timestamp - a.timestamp);
+
+    return sortedClips.map((clip) => clip.clipName);
+  }
+
+  async getClipUrl(clipName) {
+    const key = this.getClipKey(clipName);
+    return s3Service.getObjectUrl(key);
+  }
+
+  async getCrewIdToClipName(clipName) {
+    const crewName = clipName.split('-')[1];
+    return crewName;
+  }
+
+  async existsClipTmp(clipTmpName) {
+    const key = this.getClipTmpKey(clipTmpName);
+    return s3Service.exists(key);
+  }
+
+  async existsClip(clipName) {
+    const key = this.getClipKey(clipName);
+    return s3Service.exists(key);
   }
 }
