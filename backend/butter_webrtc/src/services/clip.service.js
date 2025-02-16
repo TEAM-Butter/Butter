@@ -7,6 +7,7 @@ import {
 } from "../config.js";
 import { S3Service } from "./s3.service.js";
 import { MySQLService } from "./mysql.service.js";
+import { RecordingService } from "./recording.service.js";
 import fs from "fs";
 import os from "os";
 import path from "path";
@@ -14,6 +15,7 @@ import { exec } from "node:child_process";
 
 const s3Service = new S3Service();
 const dbService = new MySQLService();
+const recoredingService = new RecordingService();
 
 export class ClipService {
     static instance;
@@ -68,7 +70,7 @@ export class ClipService {
         console.log("Time " + startTime + ", " + endTime);
         const result = recordingName.split('-')[0];
         const clipName = `clip-${result}-${time}.mp4`;
-        const inputKey = this.getRecordingKey(recordingName);
+        const inputKey = recoredingService.getRecordingKey(recordingName);
         const outputKey = this.getClipTmpKey(clipName);
 
         const tempDir = os.tmpdir();
