@@ -58,19 +58,19 @@ export const CheckLoginIdRequest = async (requestBody: CheckLoginIdRequestDto) =
             console.log("CheckLoginIdRequest api error:", error)
             return null
         })
-        
-        return result
-    }
-    
-    export const PasswordUpdateRequest = async (requestBody: PasswordUpdateRequestDTO) => {
-        const result = await axiosInstance.put('/members/password', requestBody)
-            .then(response => {
-                const responseBody: PasswordUpdateResponseDto = response.data;
-                return responseBody
-            })
-            .catch(error => {
-                console.log("PasswordUpdateRequest api error:", error)
-                return null
-            })
-        return result
+
+    return result
+}
+
+export const PasswordUpdateRequest = async (requestBody: PasswordUpdateRequestDTO) => {
+    const result = await axiosInstance.put('/members/password', requestBody)
+        .then(response => {
+            const responseBody: PasswordUpdateResponseDto = response.data;
+            return responseBody
+        })
+        .catch(error => {
+            console.log("PasswordUpdateRequest api error:", error)
+            return null
+        })
+    return result
 }

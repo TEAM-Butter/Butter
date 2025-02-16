@@ -23,6 +23,7 @@ const Header = styled.div`
   `
 
 const Main = styled.div`
+  position: relative;
   overflow-y: auto;
   color: white;
   z-index: 0;
