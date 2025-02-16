@@ -231,6 +231,7 @@ const VideoTrimmer = ({
   const [isEditing, setIsEditing] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [trimmedVideoUrl, setTrimmedVideoUrl] = useState("");
+  const [clipName, setClipName] = useState("");
   const SEVER_URL = import.meta.env.VITE_NODE_JS_SERVER || "";
 
   const {
@@ -305,7 +306,7 @@ const VideoTrimmer = ({
 
       if (response.ok) {
         console.log("✅ 서버 응답:", data);
-        console.log(data.clipUrl)
+        setClipName(data.clipName);
         setTrimmedVideoUrl(data.clipUrl);
         setIsModalOpen(true);
         alert(`녹화 클립 생성 완료`);
@@ -541,7 +542,7 @@ const VideoTrimmer = ({
               isOpen={isModalOpen}
               onClose={() => setIsModalOpen(false)}
               videoUrl={trimmedVideoUrl}
-              recordingName={recordingName}
+              clipName={clipName}
             />
           </div>
         ) : (
