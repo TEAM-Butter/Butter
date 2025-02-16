@@ -71,7 +71,7 @@ public class MemberController {
     }
 
     @Operation(summary = "비밀번호 변경", description = "현재 로그인한 사용자의 비밀번호를 변경합니다.")
-    @PutMapping(value = "/password", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PutMapping(value = "/password")
     public ResponseEntity<PasswordUpdateResponseDTO> updatePassword(
             @CurrentUser AuthInfoDTO authInfoDTO,
             @RequestBody PasswordUpdateRequestDTO passwordUpdateRequestDTO) {
