@@ -10,6 +10,7 @@ import com.ssafy.butter.domain.member.dto.request.ProfileUpdateRequestDTO;
 import com.ssafy.butter.domain.member.dto.request.SignUpDTO;
 import com.ssafy.butter.domain.member.dto.response.BreadAmountResponseDTO;
 import com.ssafy.butter.domain.member.dto.response.CheckLoginIdResponseDTO;
+import com.ssafy.butter.domain.member.dto.response.CheckNickNameDuplicationResponseDTO;
 import com.ssafy.butter.domain.member.dto.response.PasswordUpdateResponseDTO;
 import com.ssafy.butter.domain.member.dto.response.ProfileUpdateResponseDTO;
 import com.ssafy.butter.domain.member.dto.response.RegisterExtraInfoResponseDTO;
@@ -190,6 +191,13 @@ public class MemberServiceImpl implements MemberService{
         boolean exists = findMember.isPresent();
         String message = exists ? "요청 ID 회원이 확인 되었습니다" : "요청 ID 회원이 존재하지 않습니다";
         return new CheckLoginIdResponseDTO(exists, message);
+    }
+    
+    public CheckNickNameDuplicationResponseDTO checkIfNicknameExists(String nickname){
+        Optional<Member> findMember = memberRepository.findByNickname(nickname);
+        boolean exists = findMember.isPresent();
+        String message = exists ? "중복 닉네임입니다" : "닉네임 사용이 가능합니다";
+        return new CheckNickNameDuplicationResponseDTO(exists, message);
     }
 
     @Override

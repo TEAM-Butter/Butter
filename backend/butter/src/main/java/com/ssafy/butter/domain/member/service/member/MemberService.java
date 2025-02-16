@@ -7,6 +7,7 @@ import com.ssafy.butter.domain.member.dto.request.MemberSearchRequestDTO;
 import com.ssafy.butter.domain.member.dto.request.PasswordUpdateRequestDTO;
 import com.ssafy.butter.domain.member.dto.response.BreadAmountResponseDTO;
 import com.ssafy.butter.domain.member.dto.response.CheckLoginIdResponseDTO;
+import com.ssafy.butter.domain.member.dto.response.CheckNickNameDuplicationResponseDTO;
 import com.ssafy.butter.domain.member.dto.response.PasswordUpdateResponseDTO;
 import com.ssafy.butter.domain.member.dto.response.ProfileUpdateResponseDTO;
 import com.ssafy.butter.domain.member.dto.request.ProfileUpdateRequestDTO;
@@ -41,4 +42,5 @@ public interface MemberService {
     CheckLoginIdResponseDTO checkIfLoginIdExists(String loginId);
     Page<SearchMemberResponseDTO> findByNicknameContainingIgnoreCase(MemberSearchRequestDTO memberSearchRequestDTO);
     BreadAmountResponseDTO getBreadAmount(AuthInfoDTO authInfoDTO);
+    CheckNickNameDuplicationResponseDTO checkIfNicknameExists(String nickname);
 }
