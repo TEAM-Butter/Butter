@@ -1,6 +1,6 @@
 import axios from "axios"
 import { useParams, useNavigate } from "react-router-dom"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import "./CrewCss.css";
 import rightArrow from "../../assets/rightArrow.png"
 import leftArrow from "../../assets/leftArrow.png"
@@ -15,13 +15,20 @@ import sample2 from "../../assets/sample2.jpg";
 import sample3 from "../../assets/sample3.jpg";
 import sample4 from "../../assets/sample4.jpg";
 import sample5 from "../../assets/sample5.png";
+import sample6 from "../../assets/sample5.png";
+import sample7 from "../../assets/sample5.png";
+import sample8 from "../../assets/sample5.png";
+import sample9 from "../../assets/sample5.png";
+import sample10 from "../../assets/sample5.png";
 import styled from "@emotion/styled";
 import { axiosInstance } from "../../apis/axiosInstance"
 import { SchedulePlusModal } from "../../components/common/modals/SchedulePlusModal.tsx";
 import { div } from "framer-motion/client";
-
-
-const images = [sample1,sample2,sample3,sample4,sample5]
+import { StreamingModal } from "../../components/common/modals/StreamingModal.tsx";
+import { CustomOverlayMap, Map, MapMarker, MarkerClusterer} from "react-kakao-maps-sdk";
+import { StatementSync } from "node:sqlite";
+import { MyLocation } from "@mui/icons-material";
+const images = [sample1,sample2,sample3,sample4,sample5,sample6,sample5,sample5,sample5,sample5]
 
 
 const PageContainer=styled.div`
@@ -202,6 +209,14 @@ const FollowButton = styled.img`
     margin-top: 10px;
     margin-right: 5px;
 `
+
+const UnFollowButton = styled.div`
+    height: 35px;
+    margin-top: 10px;
+    margin-right: 5px;
+`
+
+
 const CrewPicture = styled.img`
     height: 180px;
     width: 180px;
@@ -274,7 +289,12 @@ function CrewDetailPage() {
  
     const [crewEditSwitch , setCrewEditSwitch] =  useState(false)
     const [crewDetailSwitch, setcrewDetailSwitch] = useState(true)
+    const [isFollowed, setIsFollowed] = useState(false)
 
+
+
+
+    
     const handleEditClick = () => {                        //수정하기 버튼 누르면 컴포넌트 바뀜
         setCrewEditSwitch(!crewEditSwitch);  
         setcrewDetailSwitch(!crewDetailSwitch);  
@@ -289,18 +309,18 @@ function CrewDetailPage() {
                 const response = await axiosInstance.get(`/crew/detail/${id}`) // 크루 디테일 정보 받아옴
                 setCrewDetail(response.data);
                 console.log("response.data : ", response.data)
-                const scheduleResponse = await axiosInstance.get(`/schedule/detail/${id}`) // 크루 스케쥴 정보 받아옴 
-                setCrewScheduleDetail([scheduleResponse.data]);
-                console.log("scheduleResponse.data : ", scheduleResponse.data)
-                const noticeResponse = await axiosInstance.get(`/crew/notice/detail/${id}`) // 크루 공지사항 정보 받아옴
-                setCrewNoticeDetail([noticeResponse.data]);
-                console.log("noticeResponse.data : ", noticeResponse.data)
                 
                 if (crewDetail?.lives[0].endDate === null) {
                     setLiveOn(true)
                 } else {
                     setLiveOn(false)
                 }
+
+                if (response.data.isFollowed == true) {
+                    setIsFollowed(false) }
+                   else {
+                    setIsFollowed(true)
+                   }
 
             } catch (err:any) {
                 setError(err.message); //요청 놓치면 에러 메세지 띄우기
@@ -339,6 +359,31 @@ function CrewDetailPage() {
     }
 
 
+    
+    const CrewUnFollow = async () => {
+
+        try {
+
+            const response = await axiosInstance.delete(`crew/${id}/follow`)
+
+          alert('언팔로우 성공!')
+          console.log(response.data)
+          window.location.reload(); // ✅ 화면 새로고침 
+        }
+        catch (err : any) {
+            console.error("에러 발생:", err)
+            setError(err.message);
+            alert("스케줄 등록 중 오류가 발생했습니다.");
+        }
+    }
+
+
+
+
+
+
+
+
     return (
        <PageContainer >
             <LayOut1 >
@@ -358,7 +403,8 @@ function CrewDetailPage() {
                       <ImageMovingBox>
                         {crewDetail.members.map((a :any, i: any)=>{return(<CrewMemberImage src={images[i]} alt="CrewMemberImage2"></CrewMemberImage>)})}
                       </ImageMovingBox>  
-                        <FollowButton src={followButton} alt="followButton" onClick={()=>{CrewFollow()}}></FollowButton>
+                        {isFollowed && <FollowButton src={followButton} alt="followButton" onClick={()=>{CrewFollow()}}></FollowButton>}
+                        {!isFollowed && <UnFollowButton onClick={()=>{CrewUnFollow()}}>unfollow</UnFollowButton>}
                     </Box1BottomWrapper>
                 </Box1>
                 
@@ -382,7 +428,7 @@ function CrewDetailPage() {
                 <LayOut2>
                 <ScheduleEditComponent crewScheduleDetail={crewScheduleDetail} crewDetail={crewDetail} />
                 
-                <Box6><div>Notice</div><PlusBtn>+</PlusBtn></Box6>
+                <Box6><div>Notice</div><PlusBtn onClick={()=>{navigate(`/crew/notice/detail/${id}/${0}`)}}>Move to Notice Page</PlusBtn></Box6>
                 <Box7 id="scroll-area"> {crewDetail.notices.map((a : any, i : any)=>
                                 {return(<NoticeBox key={i}>
                                             <NoticeImg src={images[i+1]}></NoticeImg>
@@ -412,17 +458,19 @@ const CrewMemberEditModalOverlay = styled.div`
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.5);
+    
     display: flex;
     justify-content: center;
     align-items: center;
+ 
 `;
 
 const CrewMemberEditModalContent = styled.div`
-    background: white;
+    background-color: rgba(0, 0, 0, 0.8);
     padding: 20px;
     border-radius: 10px;
     width: 300px;
+    height: 300px;
     text-align: center;
 `;
 
@@ -547,7 +595,8 @@ function CrewEditComponent1({ crewDetail, handleEditClick }: { crewDetail: any; 
        // 🔹 입력값 변경 시 상태 업데이트
        const handleTitleChange = (e : any) => setTitle(e.target.value);
        const handleContentChange = (e : any) => setContent(e.target.value);
-    
+
+
 
        const [ loading, setLoading ] = useState(true) // 로딩 표시하는 변수
        const [ error, setError] = useState(null) // 에러 상태
@@ -725,8 +774,65 @@ const FlexCan2 = styled.div`
  position: absolute;
  left: 10px;
   `
-
+  const [searchMember, setsearchMember] = useState("")
   const [GenreSelectBoxOn, setGenreSelectBoxOn] = useState(false)
+  const [memberResult, setMemberResult] = useState<any>([])
+
+  const handleSearch = async () => {
+    if (!searchMember.trim()) return;
+    console.log("검색어:", searchMember);
+  
+    try {
+      // ✅ 백엔드 API 호출
+      const response = await axiosInstance.get(`/members?keyword=${searchMember}&&page=0&&size=10`);
+      console.log(response.data)
+      setMemberResult(response.data)
+      } 
+     catch (error) {
+      console.error("❌ 백엔드 검색 요청 실패:", error);
+  
+    }
+  };
+
+
+const SearchBox = styled.div`
+    display: flex;
+   background-color: gray;
+    border-radius: 5px;
+    justify-content: center;
+    gap: 5px;
+    align-items: center;
+`
+
+
+const PlusMember = async (memId : any) => {
+
+    try {
+        console.log(id, memId)
+        const payload = {crewId : id, memberId: memId}
+        const res = await axiosInstance.post(`crew/member`, payload)
+
+        console.log(res)
+        alert("멤버 추가성공~")
+
+    } catch (error : any) {
+     console.error("❌ 멤버 추가 실패:", error);
+     if (error.response) {
+        console.error("🚨 서버 응답 오류:", error.response.data);
+        alert(`멤버 추가 실패: ${error.response.data.message || "서버 오류 발생"}`);
+      } else if (error.request) {
+        console.error("🚨 요청을 보냈지만 응답 없음:", error.request);
+        alert("서버가 응답하지 않습니다. 네트워크 상태를 확인하세요.");
+      } else {
+        console.error("🚨 요청 설정 오류:", error.message);
+        alert("요청 중 오류 발생: " + error.message);
+      }
+    
+   }
+ };
+
+
+
 
     return (
     <div>
@@ -777,9 +883,12 @@ const FlexCan2 = styled.div`
         {crewMemberPlusModalOpen && (
             <CrewMemberEditModalOverlay>
                 <CrewMemberEditModalContent>
-                    <input type="text" placeholder="멤버 검색"/>
-                    <button>검색하기</button>
-                    <div><button>멤버 추가</button></div>
+                    <input type="text" placeholder="멤버 검색" value={searchMember} onChange={(e)=>{setsearchMember(e.target.value)}} onKeyDown={(e) => {
+        if (e.key === "Enter") handleSearch();
+      }}  />
+                    <button onClick={handleSearch}>검색하기</button>
+                    {memberResult.content && memberResult.content.map((a : any,i:any)=> <SearchBox><div style={{color:"black"}}>{a.nickname}</div><button onClick={()=>{PlusMember(a.id)}}>멤버 추가</button></SearchBox> )}
+                
                     <div><button onClick={() => {setCrewMemberPlusModalOpen(false);}}>닫기</button></div>
                 </CrewMemberEditModalContent>
             </CrewMemberEditModalOverlay>
@@ -839,13 +948,26 @@ const ScheduleDetailModalOverlay = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-direction: column;
 `;
 
 const ScheduleDetailModalContent = styled.div`
-    background: white;
+    background: black;
+    color: white;
     padding: 20px;
     border-radius: 10px;
     width: 300px;
+    text-align: center;
+`;
+
+const ScheduleDetailModalContent2 = styled.div`
+    background: black;
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    width: 300px;
+    background-color:rgba(0, 0, 0, 0.5);
+    height: 400px;
     text-align: center;
 `;
 
@@ -933,13 +1055,31 @@ const SchedulPlusWrapper = styled.div`
   border: 2px solid white;
 `
 
+const ScheduleTitleBox = styled.div`
+    display: flex;
+`
+const GenreFlexBox = styled.div`
+    display: flex;
+`
+const ModalCollumBox = styled.div`
+    display: flex;
+    flex-direction: column;
+`
+const FlexCan = styled.div`
+    display: flex;
+`
+
 function ScheduleEditComponent({crewScheduleDetail,crewDetail}:any) {
     const [isSchedulePlusModalOpen, setisSchedulePlusModalOpen] = useState(false) // 스케쥴 추가 스위치
     const [isScheduleDetailModalOpen, setisScheduleDetailModalOpen] = useState(false) // 스케쥴 디테일 스위치
     const [isScheduleEditModalOpen, setisScheduleEditModalOpen] = useState(false) // 스케쥴 디테일 스위치
-    const [selectedScheduleIndex, setSelectedScheduleIndex] = useState<any>(null); // 선택된 스케줄 인덱스
+    const [selectedScheduleIndex, setSelectedScheduleIndex] = useState<any>(1); // 선택된 스케줄 인덱스
     const [modalType, setModalType] = useState("")
     const { id} = useParams()
+    const [map, setMap] = useState<kakao.maps.Map | null>(null);    
+    const mapRef = useRef<kakao.maps.Map>(null)     
+
+
 
 
     const openModal = () => {
@@ -967,40 +1107,55 @@ function ScheduleEditComponent({crewScheduleDetail,crewDetail}:any) {
         <ScheduleList id="scroll-area"> 
             {
             crewDetail.schedules.map((a:any, i:any) => {
-                return ( <ScheduleWrapper key={i} > <ScheduleImg src={images[i+1]} alt="ScheduleImg"></ScheduleImg> <ScheduleTitle><ScheduleTitleComponent1>{i+1}번 스케쥴 Title Section</ScheduleTitleComponent1><div>{a.content}</div></ScheduleTitle><LeftArrowTag onClick={()=> {setisScheduleDetailModalOpen(true); setSelectedScheduleIndex(i+1)}} src={leftArrow} alt="leftArrow"></LeftArrowTag></ScheduleWrapper>)
+                return ( <ScheduleWrapper key={i} > <ScheduleImg src={images[i+1]} alt="ScheduleImg"></ScheduleImg> <ScheduleTitle><ScheduleTitleComponent1>{i+1}번 스케쥴 Title Section</ScheduleTitleComponent1><div>{a.content}</div></ScheduleTitle><LeftArrowTag onClick={()=> {setisScheduleDetailModalOpen(true); setSelectedScheduleIndex(i+1);}} src={leftArrow} alt="leftArrow"></LeftArrowTag></ScheduleWrapper>)
             })
             }
         </ScheduleList>
         </Box10>
-               {/* 스케쥴 추가 모달 */}
-               {isSchedulePlusModalOpen && (
-                <SchedulePlusModalOverlay>
-                    <SchedulePlusModalContent>
-                        <div><button onClick={() => setisSchedulePlusModalOpen(false)}>닫기</button></div>
-                        <input type="text" placeholder="장소 검색" />
-                        <div>장소 검색 결과</div>
-                        <input type="text" placeholder="Type your schedule title" />
-                        <input type="text" placeholder="This is the busking content section" />
-                        <div>날짜 선택 콤보 상자</div>
-                        <div>시간대 선택 콤보 상자</div>
-                        <div>지도</div>
-                        <button>생성</button>
-                    </SchedulePlusModalContent>
-                </SchedulePlusModalOverlay>
-                )}
-
-
                    {/* 스케쥴 상세 정보 모달 */}
-                   {isScheduleDetailModalOpen && 
+                   {isScheduleDetailModalOpen &&
+            <ModalCollumBox>
                 <ScheduleDetailModalOverlay>
                     <ScheduleDetailModalContent>
-                        <div> 크루 이름 {crewDetail.name} | 크루 정보 <button onClick={() => { setisScheduleDetailModalOpen(false) }}>닫기</button></div>
-                        <div> 스케쥴 제목 : {crewScheduleDetail[selectedScheduleIndex-1].title}</div>
-                        <button>북마크 버튼</button><button>삭제</button><button onClick={()=> {setisScheduleEditModalOpen(true); setisScheduleDetailModalOpen(false)}}>수정</button>
-                        
+                        <ScheduleTitleBox><div>{crewDetail.name}</div> <GenreFlexBox>{crewDetail.genres.map((a:any,i:any)=>{return (<div>{a}</div>)})}</GenreFlexBox>   <button onClick={() => { setisScheduleDetailModalOpen(false) }}>닫기</button> </ScheduleTitleBox>
+                      
+                                
                     </ScheduleDetailModalContent>
+                    <ScheduleDetailModalContent2>
+                        
+                        <div> {crewDetail.schedules[selectedScheduleIndex-1].title}</div>
+                        <div> {crewDetail.schedules[selectedScheduleIndex-1].content}</div>
+                        <FlexCan>
+                        <div>{crewDetail.schedules[selectedScheduleIndex-1].buskingDate[0]}년 {crewDetail.schedules[selectedScheduleIndex-1].buskingDate[1]}월 {crewDetail.schedules[selectedScheduleIndex-1].buskingDate[2]}일 {crewDetail.schedules[selectedScheduleIndex-1].buskingDate[3]}시 일자로, {crewDetail.schedules[selectedScheduleIndex-1].place}에서 버스킹합니다! </div>
+                        <div>북마크 버튼</div>
+                        </FlexCan>
+                       <Map // 지도를 표시할 Container
+                            center={{lat : crewDetail.schedules[selectedScheduleIndex-1].latitude, lng: crewDetail.schedules[selectedScheduleIndex-1].longitude}}
+                            style={{
+                            // 지도의 크기
+                            width: "300px",
+                            height: "200px",
+                            }}
+                            id="map"
+                            onCreate={setMap}
+                            level= {7} // 지도의 확대 레벨    
+                            zoomable={true}
+                            ref={mapRef}
+                        >
+                        <MapMarker position={{lat : crewDetail.schedules[selectedScheduleIndex-1].latitude, lng: crewDetail.schedules[selectedScheduleIndex-1].longitude}}>
+                            <div style={{ padding: "5px", color: "#000", }}>
+                            "내 위치"
+                            </div>
+                         </MapMarker>
+                       </Map>
+                        <div>삭제</div>
+                        <div onClick={()=> {setisScheduleEditModalOpen(true); setisScheduleDetailModalOpen(false)}}>수정</div>
+               
+                    </ScheduleDetailModalContent2>
                 </ScheduleDetailModalOverlay>
+            </ModalCollumBox>
                 }
+                
 
                 {/* 스케쥴 수정 모달 */}
                {isScheduleEditModalOpen && (
