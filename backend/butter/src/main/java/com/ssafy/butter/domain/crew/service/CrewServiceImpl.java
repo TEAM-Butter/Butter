@@ -112,6 +112,9 @@ public class  CrewServiceImpl implements CrewService {
         validateCrewAdmin(crew, currentMember);
         Member member = memberService.findById(memberId);
         CrewMember crewMember = crewMemberRepository.findByCrewAndMember(crew, member).orElseThrow();
+        if (crewMember.getIsCrewAdmin()) {
+            throw new IllegalArgumentException("Cannot delete crew admin");
+        }
         crewMemberRepository.delete(crewMember);
     }
 
