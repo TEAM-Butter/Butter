@@ -172,7 +172,7 @@ export class ClipService {
     async listClips(crewId) {
         try {
             // crewId에 해당하는 clip 데이터를 조회하는 SQL 쿼리 실행
-            const sql = "SELECT * FROM clip WHERE crewId = ?";
+            const sql = (crewId) ? "SELECT * FROM clip WHERE crewId = ?" : "SELECT * FROM clip";
             const rows = await this.query(sql, [crewId]);
 
             const clipNames = rows.map(row => row.clipName);
