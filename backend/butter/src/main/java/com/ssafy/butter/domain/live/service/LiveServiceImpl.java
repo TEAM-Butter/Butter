@@ -51,7 +51,7 @@ public class LiveServiceImpl implements LiveService {
         Live live = Live.builder()
                 .crew(crew)
                 .title(liveSaveRequestDTO.title())
-                .startDate(liveSaveRequestDTO.startDate())
+                .startDate(LocalDateTime.now())
                 .schedule(liveSaveRequestDTO.scheduleId() == null ? null : scheduleService.findById(liveSaveRequestDTO.scheduleId()))
                 .build();
 

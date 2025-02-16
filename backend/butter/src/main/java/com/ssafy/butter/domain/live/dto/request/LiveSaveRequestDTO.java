@@ -11,9 +11,6 @@ public record LiveSaveRequestDTO(
 
         @NotNull
         String title,
-
-        @NotNull
-        LocalDateTime startDate,
         Long scheduleId
 ) {
 }
