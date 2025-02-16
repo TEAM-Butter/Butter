@@ -116,6 +116,7 @@ public class ClipServiceImpl implements ClipService {
     }
 
     private boolean isLiking(Member member, Clip clip) {
-        return clip.getLikedClips().stream().anyMatch(likedClip -> likedClip.getMember().equals(member));
+        return clip.getLikedClips().stream()
+                .anyMatch(likedClip -> likedClip.getMember().equals(member) && likedClip.getIsLiked());
     }
 }
