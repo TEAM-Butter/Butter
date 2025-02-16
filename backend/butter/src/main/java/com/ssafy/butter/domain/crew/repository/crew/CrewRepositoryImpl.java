@@ -143,7 +143,8 @@ public class CrewRepositoryImpl implements CrewRepository {
 
     private BooleanBuilder createFollowedCrewListCondition(Long memberId) {
         BooleanBuilder booleanBuilder = new BooleanBuilder();
-        booleanBuilder.and(qMember.id.eq(memberId));
+        booleanBuilder.and(qMember.id.eq(memberId))
+                .and(qFollow.isFollowed);
         return booleanBuilder;
     }
 }
