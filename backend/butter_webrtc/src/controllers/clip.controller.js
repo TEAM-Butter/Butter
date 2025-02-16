@@ -47,7 +47,7 @@ clipController.get("/:crewId", async (req, res) => {
     }
 });
 
-clipController.get("/:title/:clipName", async (req, res) => {
+clipController.get("/save/:title/:clipName", async (req, res) => {
     const { title, clipName } = req.params;
     const exists = await clipService.existsClip(clipName);
 
