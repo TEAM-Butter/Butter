@@ -106,7 +106,7 @@ export const ClipModal: React.FC<ClipModalProps> = ({
     const SERVER_URL = import.meta.env.VITE_NODE_JS_SERVER || ""; // NodeJS 서버 URL
 
     try {
-      const response = await fetch(`${SERVER_URL}/clip/${title}/${recordingName}`, {
+      const response = await fetch(`${SERVER_URL}/clip/save/${title}/${recordingName}`, {
         method: "GET", // 클립 저장을 위해 GET 요청
         headers: {
           "Content-Type": "application/json",
