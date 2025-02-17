@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import StreamChat from "../../components/stream/StreamChat";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   LocalVideoTrack,
   RemoteParticipant,
@@ -459,7 +459,7 @@ const LivePage = () => {
       setToken(token);
 
       socket.emit("join", { roomName, role: participantRole }); // 아바타
-
+      console.log("join이요❤️❤️❤️❤️❤️❤️❤️❤️");
       await room.connect(LIVEKIT_URL, token);
 
       if (participantRole === "publisher") {

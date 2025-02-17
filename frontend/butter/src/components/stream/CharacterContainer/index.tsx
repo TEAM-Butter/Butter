@@ -19,7 +19,6 @@ import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import ThumbUpAltOutlinedIcon from "@mui/icons-material/ThumbUpAltOutlined";
 import BakeryDiningOutlinedIcon from "@mui/icons-material/BakeryDiningOutlined";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
-
 // const images = [pet1, pet2, pet3, pet4, pet5, pet6];
 
 const CharacterContainerWrapper = styled.div`
@@ -305,6 +304,9 @@ const CharacterContainer = ({
   };
   const handleSocketOn = () => {
     socket.on("message", handleMessage);
+    socket.on("connect", () =>
+      console.log("웹소켓에 연결은 성공했음❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️")
+    );
     socket.on("message", () => {
       console.log("❤️❤️❤️");
       console.log("❤️❤️❤️");
