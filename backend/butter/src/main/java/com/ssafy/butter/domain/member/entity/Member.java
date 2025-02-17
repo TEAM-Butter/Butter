@@ -74,10 +74,10 @@ public class Member {
     public Member(Long id, MemberType memberType, AvatarType avatarType, List<MemberGenre> memberGenres, String loginId, Nickname nickname, Email email, BirthDate birthDate, BreadAmount breadAmount, Password password, String profileImage, Gender gender, LocalDate createDate, boolean isExtraInfoRegistered) {
         this.id = id;
         this.memberType = memberType;
-        this.avatarType = avatarType;
+        this.avatarType = (avatarType == null) ? new AvatarType("DEFAULT_AVATARTYPE"):avatarType;
         this.memberGenres = memberGenres;
         this.loginId = loginId;
-        this.nickname = nickname;
+        this.nickname = (nickname == null) ? new Nickname("DEFAULT_NICKNAME") : nickname;
         this.email = email;
         this.birthDate = birthDate;
         this.breadAmount = breadAmount;
