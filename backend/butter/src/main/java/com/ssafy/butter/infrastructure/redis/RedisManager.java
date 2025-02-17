@@ -28,4 +28,8 @@ public class RedisManager {
     public void deleteData(String key) {
         redisTemplate.delete(key);
     }
+
+    public Long incrementValue(String key, long delta){
+        return redisTemplate.opsForValue().increment(key, delta);
+    }
 }

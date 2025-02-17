@@ -23,4 +23,9 @@ public class LikedClipRepositoryImpl implements LikedClipRepository {
     public Optional<LikedClip> findByMemberAndClip(Member member, Clip clip) {
         return likedClipJpaRepository.findByMemberAndClip(member, clip);
     }
+
+    @Override
+    public long countLikedClipByIdAndIsLiked(Long id, Boolean isLiked) {
+        return likedClipJpaRepository.countLikedClipByIdAndIsLiked(id, isLiked);
+    }
 }

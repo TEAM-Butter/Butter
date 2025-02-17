@@ -43,7 +43,6 @@ public class Member {
     private String loginId;
 
     @Embedded
-    
     private Nickname nickname;
 
     @Embedded
@@ -72,14 +71,13 @@ public class Member {
     private boolean isExtraInfoRegistered;
 
     @Builder
-    public Member(MemberType memberType, AvatarType avatarType, List<MemberGenre> memberGenres, String loginId,
-                  Nickname nickname, Email email, BirthDate birthDate, BreadAmount breadAmount, Password password,
-                  String profileImage, Gender gender, LocalDate createDate, boolean isExtraInfoRegistered) {
+    public Member(Long id, MemberType memberType, AvatarType avatarType, List<MemberGenre> memberGenres, String loginId, Nickname nickname, Email email, BirthDate birthDate, BreadAmount breadAmount, Password password, String profileImage, Gender gender, LocalDate createDate, boolean isExtraInfoRegistered) {
+        this.id = id;
         this.memberType = memberType;
-        this.avatarType = (avatarType == null) ? new AvatarType("DEFAULT_AVATARTYPE"):avatarType;
+        this.avatarType = avatarType;
         this.memberGenres = memberGenres;
         this.loginId = loginId;
-        this.nickname = (nickname == null) ? new Nickname("DEFAULT_NICKNAME") : nickname;
+        this.nickname = nickname;
         this.email = email;
         this.birthDate = birthDate;
         this.breadAmount = breadAmount;
