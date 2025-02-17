@@ -267,10 +267,6 @@ export const ClipModal: React.FC<ClipModalProps> = ({
             <CancelButton onClick={onClose}>취소</CancelButton>
           </RightButtonGroup>
         </ButtonContainer>
-        <ButtonContainer>
-          <ListButton onClick={listClip}>리스트</ListButton>
-          <DeleteButton onClick={deleteClip}>삭제</DeleteButton>
-        </ButtonContainer>
       </ModalContent>
     </ModalOverlay>
   );
