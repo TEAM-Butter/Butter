@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { ForgotAuthModal } from "../../components/common/modals/ForgotAuthModal";
 import { useState } from "react";
 import { ForgotAuthInfoModal } from "../../components/common/modals/ForgotAuthInfoModal";
+import DinoGame from "../../components/user/AuthBanner";
 
 const LoginPageWrapper = styled.div`
   width: 100%;
@@ -11,6 +12,7 @@ const LoginPageWrapper = styled.div`
   padding: 10px 20px;
   display: grid;
   grid-template-columns: 1fr 2.5fr;
+  gap: 15px;
 `;
 
 const LtContainer = styled.div`
@@ -18,7 +20,9 @@ const LtContainer = styled.div`
   display: grid;
   gap: 15px;
 `;
-const RtContainer = styled.div``;
+const RtContainer = styled.div`
+  height: 100%; 
+`;
 
 const LoginFormWrapper = styled.div`
   display: flex;
@@ -67,7 +71,9 @@ const LoginPage = () => {
             </SignupLink>
           </Link>
         </LtContainer>
-        <RtContainer></RtContainer>
+        <RtContainer>
+          <DinoGame />
+        </RtContainer>
       </LoginPageWrapper>
       {modalType === "forgotAuth" && (
         <ForgotAuthModal
@@ -85,8 +91,8 @@ const LoginPage = () => {
           setModalType={setModalType}
           type={type}
           forgotInfo={forgotInfo}
-          >
-          
+        >
+
         </ForgotAuthInfoModal>
       )}
     </>

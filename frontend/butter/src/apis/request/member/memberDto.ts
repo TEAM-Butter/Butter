@@ -17,8 +17,14 @@ interface CheckLoginIdRequestDto {
     loginId: string
 }
 
+interface PasswordUpdateRequestDTO {
+    currentPassword: string;
+    newPassword: string;
+}
+
 export type {
     SignUpRequestDto,
     MemberExtraInfoRequestDto,
     CheckLoginIdRequestDto,
+    PasswordUpdateRequestDTO,
 }

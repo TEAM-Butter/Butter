@@ -10,6 +10,7 @@ const HomePageWrapper = styled(motion.div)`
   display: flex;
   justify-content: center;
   align-items: center;
+  position: absolute;
   width: 100%;
   height: 100%;
   `;
@@ -34,7 +35,6 @@ const LogoText = styled(motion.div)`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  color: var(--butter);
 
   span {
     font-size: 23px;
@@ -42,6 +42,12 @@ const LogoText = styled(motion.div)`
   `
 
 const Logo = styled.div`
+  background: var(--liner);
+  color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  
   font-size: 110px;
   font-weight: 600;
 `
@@ -113,12 +119,19 @@ const LpImgBox = styled.div`
 const Home1Page = () => {
 
   return (<>
-    <HomePageWrapper 
+    <HomePageWrapper
+      key="home1"
+      initial={{ y: "100%" }}
+      animate={{ y: 0 }}
+      exit={{ y: "-100%" }}
+      transition={{ duration: 0.5 }}
     >
       <Container>
         <LogoText
+          key="logoText"
           initial={{ y: 50, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
+          exit={{ opacity: 0, y: -50, transition: { duration: 0.3 } }}
           transition={{ type: "spring", duration: 1 }}
         >
           <Logo>BUTTER</Logo>
@@ -135,7 +148,7 @@ const Home1Page = () => {
           </TodayInfo>
         </BottomWrapper>
       </Container>
-    </HomePageWrapper >
+    </HomePageWrapper>
   </>);
 };
 

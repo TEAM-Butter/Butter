@@ -117,7 +117,7 @@ public class LoginServiceImpl implements LoginService{
                 member.getAvatarType().getName(),
                 memberType,
                 genres,
-                false,
+                member.isExtraInfoRegistered(),
                 getCrewInfo(member)
         );
 
