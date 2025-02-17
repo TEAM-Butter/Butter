@@ -63,6 +63,88 @@ VALUES
     (2000,'2024-03-28 17:51:27.000000',2,'2025-02-12 09:42:34.000000','Jazz Ensemble','A jazz music crew','https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/a77e3349-0888-4a7a-afc3-0cd2345eb708.jpg','http://video.url/crew2','http://promo.url/crew2'),
     (2200,'2024-02-23 16:52:47.000000',5,'2025-02-12 09:42:34.000000','Classical Orchestra','A classical music crew','https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/4dd3ea96-ffc5-4136-9a01-e392ad63795c.jpg','http://video.url/crew5','http://promo.url/crew5');
 
+INSERT INTO `crew` (`donation_amount`,`create_date`,`update_date`,`name`,`description`,`image_url`,`portfolio_video_url`,`promotion_url`)
+VALUES
+    -- 발라드 크루 8개
+    (15000,'2025-02-02 21:59:16.000000','2025-02-12 09:42:34.000000','감성버스','Advancing biotech solutions.','','http://video.url/crew10','http://promo.url/crew10'),
+    (7500,'2024-12-28 14:01:04.000000','2025-02-12 09:42:34.000000','노을빛 멜로디','Leading robotics innovation.','','http://video.url/crew8','http://promo.url/crew8'),
+    (1500,'2024-11-29 19:46:27.000000','2025-02-12 09:42:34.000000','담담한 노래들','A pop music group','','http://video.url/crew3','http://promo.url/crew3'),
+    (1800,'2024-11-24 22:07:29.000000','2025-02-12 09:42:34.000000','여운','A hip-hop music crew','','http://video.url/crew4','http://promo.url/crew4'),
+    (12000,'2024-10-09 03:44:24.000000','2025-02-12 09:42:34.000000','깊은 밤, 노래 한 곡','Specialized in AI development.','','http://video.url/crew7','http://promo.url/crew7'),
+    (1000,'2024-05-01 16:31:43.000000','2025-02-12 09:42:34.000000','시간의 흔적','A rock music crew','','http://video.url/crew1','http://promo.url/crew1'),
+    (5000,'2024-04-10 22:42:05.000000','2025-02-12 09:42:34.000000','목소리로 그리는 그림','Innovative space explorers.','','http://video.url/crew6','http://promo.url/crew6'),
+    (9800,'2024-04-02 12:02:22.000000','2025-02-12 09:42:34.000000','하모니, 그 순간','Experts in cybersecurity.','','http://video.url/crew9','http://promo.url/crew9'),
+
+    -- 알앤비 크루 8개
+    (15000,'2025-02-02 21:59:16.000000','2025-02-12 09:42:34.000000','소울파이어','Advancing biotech solutions.','','http://video.url/crew10','http://promo.url/crew10'),
+    (7500,'2024-12-28 14:01:04.000000','2025-02-12 09:42:34.000000','감성코드','Leading robotics innovation.','','http://video.url/crew8','http://promo.url/crew8'),
+    (1500,'2024-11-29 19:46:27.000000','2025-02-12 09:42:34.000000','네온소울','A pop music group','','http://video.url/crew3','http://promo.url/crew3'),
+    (1800,'2024-11-24 22:07:29.000000','2025-02-12 09:42:34.000000','비트앤소울','A hip-hop music crew','','http://video.url/crew4','http://promo.url/crew4'),
+    (12000,'2024-10-09 03:44:24.000000','2025-02-12 09:42:34.000000','무드바이브','Specialized in AI development.','','http://video.url/crew7','http://promo.url/crew7'),
+    (1000,'2024-05-01 16:31:43.000000','2025-02-12 09:42:34.000000','블루스웨이브','A rock music crew','','http://video.url/crew1','http://promo.url/crew1'),
+    (5000,'2024-04-10 22:42:05.000000','2025-02-12 09:42:34.000000','루프탑그루브','Innovative space explorers.','','http://video.url/crew6','http://promo.url/crew6'),
+    (9800,'2024-04-02 12:02:22.000000','2025-02-12 09:42:34.000000','미드나잇스웨이','Experts in cybersecurity.','','http://video.url/crew9','http://promo.url/crew9'),
+
+    -- 어쿠스틱 크루 8개
+    (15000,'2025-02-02 21:59:16.000000','2025-02-12 09:42:34.000000','나무 위의 노래','Advancing biotech solutions.','','http://video.url/crew10','http://promo.url/crew10'),
+    (7500,'2024-12-28 14:01:04.000000','2025-02-12 09:42:34.000000','스트링하모니','Leading robotics innovation.','','http://video.url/crew8','http://promo.url/crew8'),
+    (1500,'2024-11-29 19:46:27.000000','2025-02-12 09:42:34.000000','맑은날 기타','A pop music group','','http://video.url/crew3','http://promo.url/crew3'),
+    (1800,'2024-11-24 22:07:29.000000','2025-02-12 09:42:34.000000','소리바람','A hip-hop music crew','','http://video.url/crew4','http://promo.url/crew4'),
+    (12000,'2024-10-09 03:44:24.000000','2025-02-12 09:42:34.000000','숲속 멜로디','Specialized in AI development.','','http://video.url/crew7','http://promo.url/crew7'),
+    (1000,'2024-05-01 16:31:43.000000','2025-02-12 09:42:34.000000','작은 방의 음악회','A rock music crew','','http://video.url/crew1','http://promo.url/crew1'),
+    (5000,'2024-04-10 22:42:05.000000','2025-02-12 09:42:34.000000','우드소울','Innovative space explorers.','','http://video.url/crew6','http://promo.url/crew6'),
+    (9800,'2024-04-02 12:02:22.000000','2025-02-12 09:42:34.000000','통기타 이야기','Experts in cybersecurity.','','http://video.url/crew9','http://promo.url/crew9'),
+
+    -- 인디밴드 크루 8개
+    (15000,'2025-02-02 21:59:16.000000','2025-02-12 09:42:34.000000','바람의 여정','Advancing biotech solutions.','','http://video.url/crew10','http://promo.url/crew10'),
+    (7500,'2024-12-28 14:01:04.000000','2025-02-12 09:42:34.000000','밤하늘 유랑단','Leading robotics innovation.','','http://video.url/crew8','http://promo.url/crew8'),
+    (1500,'2024-11-29 19:46:27.000000','2025-02-12 09:42:34.000000','무명은 아름다워','A pop music group','','http://video.url/crew3','http://promo.url/crew3'),
+    (1800,'2024-11-24 22:07:29.000000','2025-02-12 09:42:34.000000','도로 위 선율','A hip-hop music crew','','http://video.url/crew4','http://promo.url/crew4'),
+    (12000,'2024-10-09 03:44:24.000000','2025-02-12 09:42:34.000000','길거리 시인들','Specialized in AI development.','','http://video.url/crew7','http://promo.url/crew7'),
+    (1000,'2024-05-01 16:31:43.000000','2025-02-12 09:42:34.000000','인디그라운드','A rock music crew','','http://video.url/crew1','http://promo.url/crew1'),
+    (5000,'2024-04-10 22:42:05.000000','2025-02-12 09:42:34.000000','색깔있는 소리','Innovative space explorers.','','http://video.url/crew6','http://promo.url/crew6'),
+    (9800,'2024-04-02 12:02:22.000000','2025-02-12 09:42:34.000000','자유음악단','Experts in cybersecurity.','','http://video.url/crew9','http://promo.url/crew9'),
+
+    -- 케이팝 크루 8개
+    (15000,'2025-02-02 21:59:16.000000','2025-02-12 09:42:34.000000','빛나는 하루','Advancing biotech solutions.','','http://video.url/crew10','http://promo.url/crew10'),
+    (7500,'2024-12-28 14:01:04.000000','2025-02-12 09:42:34.000000','하이라이트 크루','Leading robotics innovation.','','http://video.url/crew8','http://promo.url/crew8'),
+    (1500,'2024-11-29 19:46:27.000000','2025-02-12 09:42:34.000000','퍼플스테이지','A pop music group','','http://video.url/crew3','http://promo.url/crew3'),
+    (1800,'2024-11-24 22:07:29.000000','2025-02-12 09:42:34.000000','스포트라이트','A hip-hop music crew','','http://video.url/crew4','http://promo.url/crew4'),
+    (12000,'2024-10-09 03:44:24.000000','2025-02-12 09:42:34.000000','하트비트','Specialized in AI development.','','http://video.url/crew7','http://promo.url/crew7'),
+    (1000,'2024-05-01 16:31:43.000000','2025-02-12 09:42:34.000000','블링버스','A rock music crew','','http://video.url/crew1','http://promo.url/crew1'),
+    (5000,'2024-04-10 22:42:05.000000','2025-02-12 09:42:34.000000','에너제틱','Innovative space explorers.','','http://video.url/crew6','http://promo.url/crew6'),
+    (9800,'2024-04-02 12:02:22.000000','2025-02-12 09:42:34.000000','윙스온더로드','Experts in cybersecurity.','','http://video.url/crew9','http://promo.url/crew9'),
+
+    -- 트로트 크루 8개
+    (15000,'2025-02-02 21:59:16.000000','2025-02-12 09:42:34.000000','한잔 멜로디','Advancing biotech solutions.','','http://video.url/crew10','http://promo.url/crew10'),
+    (7500,'2024-12-28 14:01:04.000000','2025-02-12 09:42:34.000000','복고소울','Leading robotics innovation.','','http://video.url/crew8','http://promo.url/crew8'),
+    (1500,'2024-11-29 19:46:27.000000','2025-02-12 09:42:34.000000','가락의 향기','A pop music group','','http://video.url/crew3','http://promo.url/crew3'),
+    (1800,'2024-11-24 22:07:29.000000','2025-02-12 09:42:34.000000','트롯로드','A hip-hop music crew','','http://video.url/crew4','http://promo.url/crew4'),
+    (12000,'2024-10-09 03:44:24.000000','2025-02-12 09:42:34.000000','감성트롯','Specialized in AI development.','','http://video.url/crew7','http://promo.url/crew7'),
+    (1000,'2024-05-01 16:31:43.000000','2025-02-12 09:42:34.000000','어게인7080','A rock music crew','','http://video.url/crew1','http://promo.url/crew1'),
+    (5000,'2024-04-10 22:42:05.000000','2025-02-12 09:42:34.000000','한밤의 트롯','Innovative space explorers.','','http://video.url/crew6','http://promo.url/crew6'),
+    (9800,'2024-04-02 12:02:22.000000','2025-02-12 09:42:34.000000','신바람버스킹','Experts in cybersecurity.','','http://video.url/crew9','http://promo.url/crew9'),
+
+    -- 팝 크루 8개
+    (15000,'2025-02-02 21:59:16.000000','2025-02-12 09:42:34.000000','스테리나잇','Advancing biotech solutions.','','http://video.url/crew10','http://promo.url/crew10'),
+    (7500,'2024-12-28 14:01:04.000000','2025-02-12 09:42:34.000000','팝코어','Leading robotics innovation.','','http://video.url/crew8','http://promo.url/crew8'),
+    (1500,'2024-11-29 19:46:27.000000','2025-02-12 09:42:34.000000','스트릿팝','A pop music group','','http://video.url/crew3','http://promo.url/crew3'),
+    (1800,'2024-11-24 22:07:29.000000','2025-02-12 09:42:34.000000','크리스탈비트','A hip-hop music crew','','http://video.url/crew4','http://promo.url/crew4'),
+    (12000,'2024-10-09 03:44:24.000000','2025-02-12 09:42:34.000000','메이저노트','Specialized in AI development.','','http://video.url/crew7','http://promo.url/crew7'),
+    (1000,'2024-05-01 16:31:43.000000','2025-02-12 09:42:34.000000','오픈마이크팝','A rock music crew','','http://video.url/crew1','http://promo.url/crew1'),
+    (5000,'2024-04-10 22:42:05.000000','2025-02-12 09:42:34.000000','빅웨이브','Innovative space explorers.','','http://video.url/crew6','http://promo.url/crew6'),
+    (9800,'2024-04-02 12:02:22.000000','2025-02-12 09:42:34.000000','업비트크루','Experts in cybersecurity.','','http://video.url/crew9','http://promo.url/crew9'),
+
+    -- 힙합 크루 8개
+    (15000,'2025-02-02 21:59:16.000000','2025-02-12 09:42:34.000000','리듬시티','Advancing biotech solutions.','','http://video.url/crew10','http://promo.url/crew10'),
+    (7500,'2024-12-28 14:01:04.000000','2025-02-12 09:42:34.000000','언더비트','Leading robotics innovation.','','http://video.url/crew8','http://promo.url/crew8'),
+    (1500,'2024-11-29 19:46:27.000000','2025-02-12 09:42:34.000000','플로우킹즈','A pop music group','','http://video.url/crew3','http://promo.url/crew3'),
+    (1800,'2024-11-24 22:07:29.000000','2025-02-12 09:42:34.000000','사이퍼스쿼드','A hip-hop music crew','','http://video.url/crew4','http://promo.url/crew4'),
+    (12000,'2024-10-09 03:44:24.000000','2025-02-12 09:42:34.000000','버스킹헤드','Specialized in AI development.','','http://video.url/crew7','http://promo.url/crew7'),
+    (1000,'2024-05-01 16:31:43.000000','2025-02-12 09:42:34.000000','스트릿라임즈','A rock music crew','','http://video.url/crew1','http://promo.url/crew1'),
+    (5000,'2024-04-10 22:42:05.000000','2025-02-12 09:42:34.000000','베이스클랜','Innovative space explorers.','','http://video.url/crew6','http://promo.url/crew6'),
+    (9800,'2024-04-02 12:02:22.000000','2025-02-12 09:42:34.000000','킹오브더스트릿','Experts in cybersecurity.','','http://video.url/crew9','http://promo.url/crew9');
+
 -- CrewMember 더미 데이터 INSERT
 INSERT INTO crew_member (crew_id, member_id, is_crew_admin) VALUES
                                                                 (8, 3, TRUE),     -- butter123을 크루장(admin)으로 지정
