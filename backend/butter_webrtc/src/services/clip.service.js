@@ -220,7 +220,7 @@ export class ClipService {
       console.log("sql: " + sql);
       console.log("row: " + rows);
 
-      const clipNames = rows.map((row) => row.clipName);
+      const clipNames = rows.map((row) => row.videoName);
       console.log("clipNames: " + clipNames);
       const clips = clipNames.map((clipName) => {
         const timestamp = clipName.split("-").pop().replace(".mp4", "");
