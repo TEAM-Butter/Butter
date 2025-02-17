@@ -282,25 +282,25 @@ const VideoTrimmer = ({
       `✅ ${formValues.startTime} ~ ${formValues.endTime} 구간을 자릅니다.`
     );
 
+    setTrimmedVideoUrl("");
+    setIsModalOpen(true);
+
     try {
       console.log("📡 서버 요청 중...");
       console.log(recordingName, title, startSeconds, endSeconds);
-      const response = await fetch(
-        `${SEVER_URL}/clip`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            recordingName,
-            title,
-            startTime: startSeconds,
-            endTime: endSeconds,
-            time: new Date()
-          }),
-        }
-      );
+      const response = await fetch(`${SEVER_URL}/clip`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          recordingName,
+          title,
+          startTime: startSeconds,
+          endTime: endSeconds,
+          time: new Date(),
+        }),
+      });
 
       const data = await response.json();
 
