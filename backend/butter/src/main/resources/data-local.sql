@@ -52,16 +52,16 @@ VALUES (1, 1, 'straw999', '딸기', 'user5@example.com', '1992-12-10', 180, '$2a
 -- crew 테이블
 INSERT INTO `crew` (`donation_amount`,`create_date`,`crew_id`,`update_date`,`name`,`description`,`image_url`,`portfolio_video_url`,`promotion_url`)
 VALUES
-    (15000,'2025-02-02 21:59:16.000000',10,'2025-02-12 09:42:34.000000','Epsilon Group','Advancing biotech solutions.','http://image.url/crew10','http://video.url/crew10','http://promo.url/crew10'),
-    (7500,'2024-12-28 14:01:04.000000',8,'2025-02-12 09:42:34.000000','Gamma Pioneers','Leading robotics innovation.','http://image.url/crew8','http://video.url/crew8','http://promo.url/crew8'),
-    (1500,'2024-11-29 19:46:27.000000',3,'2025-02-12 09:42:34.000000','Pop Group','A pop music group','http://image.url/crew3','http://video.url/crew3','http://promo.url/crew3'),
-    (1800,'2024-11-24 22:07:29.000000',4,'2025-02-12 09:42:34.000000','Hip-Hop Squad','A hip-hop music crew','http://image.url/crew4','http://video.url/crew4','http://promo.url/crew4'),
-    (12000,'2024-10-09 03:44:24.000000',7,'2025-02-12 09:42:34.000000','Beta Crew','Specialized in AI development.','http://image.url/crew7','http://video.url/crew7','http://promo.url/crew7'),
-    (1000,'2024-05-01 16:31:43.000000',1,'2025-02-12 09:42:34.000000','Rock Band','A rock music crew','http://image.url/crew1','http://video.url/crew1','http://promo.url/crew1'),
-    (5000,'2024-04-10 22:42:05.000000',6,'2025-02-12 09:42:34.000000','Alpha Team','Innovative space explorers.','http://image.url/crew6','http://video.url/crew6','http://promo.url/crew6'),
-    (9800,'2024-04-02 12:02:22.000000',9,'2025-02-12 09:42:34.000000','Delta Force','Experts in cybersecurity.','http://image.url/crew9','http://video.url/crew9','http://promo.url/crew9'),
-    (2000,'2024-03-28 17:51:27.000000',2,'2025-02-12 09:42:34.000000','Jazz Ensemble','A jazz music crew','http://image.url/crew2','http://video.url/crew2','http://promo.url/crew2'),
-    (2200,'2024-02-23 16:52:47.000000',5,'2025-02-12 09:42:34.000000','Classical Orchestra','A classical music crew','http://image.url/crew5','http://video.url/crew5','http://promo.url/crew5');
+    (15000,'2025-02-02 21:59:16.000000',10,'2025-02-12 09:42:34.000000','Epsilon Group','Advancing biotech solutions.','https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/21fc03d3-3c3a-4c65-91c5-8998468c9606.jpg','http://video.url/crew10','http://promo.url/crew10'),
+    (7500,'2024-12-28 14:01:04.000000',8,'2025-02-12 09:42:34.000000','Gamma Pioneers','Leading robotics innovation.','https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/a35a4b25-de46-4531-ba44-d28602a2d4f5.jpg','http://video.url/crew8','http://promo.url/crew8'),
+    (1500,'2024-11-29 19:46:27.000000',3,'2025-02-12 09:42:34.000000','Pop Group','A pop music group','https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/55c17e5b-0278-4119-aef7-78203bb338fe.jpg','http://video.url/crew3','http://promo.url/crew3'),
+    (1800,'2024-11-24 22:07:29.000000',4,'2025-02-12 09:42:34.000000','Hip-Hop Squad','A hip-hop music crew','https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/79d0211c-3eba-4584-b3c0-69030e50ed95.jpg','http://video.url/crew4','http://promo.url/crew4'),
+    (12000,'2024-10-09 03:44:24.000000',7,'2025-02-12 09:42:34.000000','Beta Crew','Specialized in AI development.','https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/6f5b9177-3011-4730-89ee-30da2e68f904.jpg','http://video.url/crew7','http://promo.url/crew7'),
+    (1000,'2024-05-01 16:31:43.000000',1,'2025-02-12 09:42:34.000000','Rock Band','A rock music crew','https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/4067094e-6364-44ba-80ca-756043c73cc3.jpg','http://video.url/crew1','http://promo.url/crew1'),
+    (5000,'2024-04-10 22:42:05.000000',6,'2025-02-12 09:42:34.000000','Alpha Team','Innovative space explorers.','https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/21fc03d3-3c3a-4c65-91c5-8998468c9606.jpg','http://video.url/crew6','http://promo.url/crew6'),
+    (9800,'2024-04-02 12:02:22.000000',9,'2025-02-12 09:42:34.000000','Delta Force','Experts in cybersecurity.','https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/a35a4b25-de46-4531-ba44-d28602a2d4f5.jpg','http://video.url/crew9','http://promo.url/crew9'),
+    (2000,'2024-03-28 17:51:27.000000',2,'2025-02-12 09:42:34.000000','Jazz Ensemble','A jazz music crew','https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/55c17e5b-0278-4119-aef7-78203bb338fe.jpg','http://video.url/crew2','http://promo.url/crew2'),
+    (2200,'2024-02-23 16:52:47.000000',5,'2025-02-12 09:42:34.000000','Classical Orchestra','A classical music crew','https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/79d0211c-3eba-4584-b3c0-69030e50ed95.jpg','http://video.url/crew5','http://promo.url/crew5');
 
 -- CrewMember 더미 데이터 INSERT
 INSERT INTO crew_member (crew_id, member_id, is_crew_admin) VALUES
