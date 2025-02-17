@@ -5,6 +5,7 @@ import com.ssafy.butter.domain.clip.dto.request.ClipLikeRequestDTO;
 import com.ssafy.butter.domain.clip.dto.request.ClipListRequestDTO;
 import com.ssafy.butter.domain.clip.dto.request.ClipSaveRequestDTO;
 import com.ssafy.butter.domain.clip.dto.response.ClipResponseDTO;
+import com.ssafy.butter.domain.clip.entity.Clip;
 
 import java.util.List;
 
@@ -22,7 +23,7 @@ public interface ClipService {
 
     void unlikeClip(AuthInfoDTO currentUser, Long clipId);
 
-    long getLikeCount(Long clipId);
+    long getLikeCount(Clip clip);
 
     List<ClipResponseDTO> getLikedClipList(AuthInfoDTO currentUser);
 }

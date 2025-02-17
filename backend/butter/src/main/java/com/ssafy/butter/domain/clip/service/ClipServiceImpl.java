@@ -46,7 +46,7 @@ public class ClipServiceImpl implements ClipService {
                 .videoName(clipSaveRequestDTO.videoName())
                 .hitCount(0L)
                 .build();
-        return ClipResponseDTO.from(clipRepository.save(clip), false, getLikeCount(clip.getId()));
+        return ClipResponseDTO.from(clipRepository.save(clip), false, getLikeCount(clip));
     }
 
     @Override
@@ -62,10 +62,10 @@ public class ClipServiceImpl implements ClipService {
         Pageable pageable = PageRequest.of(0, clipListRequestDTO.pageSize());
         if (clipListRequestDTO.clipId() == null) {
             return clipRepository.findAllByOrderByIdDesc(pageable).stream()
-                    .map(clip -> ClipResponseDTO.from(clip, isLiking(member, clip), getLikeCount(clip.getId()))).toList();
+                    .map(clip -> ClipResponseDTO.from(clip, isLiking(member, clip), getLikeCount(clip))).toList();
         } else {
             return clipRepository.findAllByIdLessThanOrderByIdDesc(clipListRequestDTO.clipId(), pageable).stream()
-                    .map(clip -> ClipResponseDTO.from(clip, isLiking(member, clip), getLikeCount(clip.getId()))).toList();
+                    .map(clip -> ClipResponseDTO.from(clip, isLiking(member, clip), getLikeCount(clip))).toList();
         }
     }
 
@@ -100,7 +100,7 @@ public class ClipServiceImpl implements ClipService {
             Optional.ofNullable(redisManager.getData(String.valueOf(clipLikeRequestDTO.clipId())))
                     .ifPresentOrElse(
                             ignored  -> redisManager.incrementValue(String.valueOf(clipLikeRequestDTO.clipId()), 1),
-                            () -> updateLikeCountFromRedis(clipLikeRequestDTO.clipId())
+                            () -> updateLikeCountFromRedis(clip)
                     );
         });
     }
@@ -118,10 +118,10 @@ public class ClipServiceImpl implements ClipService {
     }
 
     @Override
-    public long getLikeCount(Long clipId) {
-        return Optional.ofNullable(redisManager.getData(String.valueOf(clipId)))
+    public long getLikeCount(Clip clip) {
+        return Optional.ofNullable(redisManager.getData(String.valueOf(clip.getId())))
                 .map(Long::parseLong)
-                .orElseGet(() -> likedClipRepository.countLikedClipByIdAndIsLiked(clipId, true));
+                .orElseGet(() -> likedClipRepository.countLikedClipByClipAndIsLiked(clip, true));
     }
 
     @Override
@@ -135,8 +135,8 @@ public class ClipServiceImpl implements ClipService {
                 .anyMatch(likedClip -> likedClip.getMember().equals(member) && likedClip.getIsLiked());
     }
 
-    private void updateLikeCountFromRedis(Long clipId){
-        Long likeCount = likedClipRepository.countLikedClipByIdAndIsLiked(clipId, true);
-        redisManager.setDataExpire(String.valueOf(clipId), String.valueOf(likeCount), LIKE_COUNT_TTL);
+    private void updateLikeCountFromRedis(Clip clip){
+        Long likeCount = likedClipRepository.countLikedClipByClipAndIsLiked(clip, true);
+        redisManager.setDataExpire(String.valueOf(clip.getId()), String.valueOf(likeCount), LIKE_COUNT_TTL);
     }
 }
