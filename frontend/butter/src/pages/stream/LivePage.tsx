@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import StreamChat from "../../components/stream/StreamChat";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   LocalVideoTrack,
   RemoteParticipant,
@@ -25,6 +25,8 @@ import CharacterContainer from "../../components/stream/CharacterContainer";
 import { io } from "socket.io-client";
 
 import { useUserStore } from "../../stores/UserStore";
+import { useCrewStore } from "../../stores/UserStore";
+import { axiosInstance } from "../../apis/axiosInstance";
 
 const LivePageWrapper = styled.div`
   display: flex;
@@ -237,6 +239,9 @@ const LivePage = () => {
   const [currentVideoUrl, setCurrentVideoUrl] = useState("");
   const [token, setToken] = useState<string | null>(null);
 
+  const crewId = useCrewStore((state) => state.id);
+  console.log("crewStore crewName : ", crewId);
+
   const navigate = useNavigate();
 
   const socket = useMemo(
@@ -250,8 +255,9 @@ const LivePage = () => {
   // export const SocketContext = React.createContext<socketType>(socket);
 
   // 크루ID 로 roomName을 설정 //해쉬!!!
+  const fakeTitle = state.roomName;
+  const roomName = `${crewId}`;
 
-  const roomName = state.roomName;
   const user = useUserStore((state) => state);
 
   const role = user.memberType ?? "user"; // useMemberType이 crew 없으면 user
@@ -298,10 +304,8 @@ const LivePage = () => {
   // 실제 종료 처리 함수
   const handleRealLiveOffBtnClick = async () => {
     try {
-      socket.emit("leave", { roomName });
       leaveRoom();
       setIsLiveOffModalOpen(false);
-      navigate("/");
 
       // 필요한 경우 추가 정리 작업 수행
     } catch (error) {
@@ -346,8 +350,32 @@ const LivePage = () => {
 
   const leaveRoom = useCallback(() => {
     if (room) {
+      socket.emit("leave", { roomName });
       room.disconnect();
       console.log("BYE");
+      navigate("/");
+
+      if (participantRole === "publisher") {
+        alert("라이브를 종료합니다");
+        const endLive = async (roomName: string) => {
+          try {
+            const response = await axiosInstance.patch(
+              `/live/${roomName}`,
+              {},
+              {
+                headers: {
+                  "Content-Type": "application/json",
+                },
+              }
+            );
+
+            console.log("라이브 종료 성공!", response.data);
+          } catch (err) {
+            console.error("라이브 종료 실패", err);
+          }
+        };
+        endLive(roomName);
+      }
     }
   }, [room]);
 
@@ -442,6 +470,31 @@ const LivePage = () => {
             ?.videoTrack
         );
 
+        //spring서버에 방 생성을 알려줍니다
+        const createRoomPost = async () => {
+          const requestData = {
+            crewId: roomName, // number 또는 string 값
+            title: fakeTitle,
+          };
+
+          //scheduleId가 존재하면 추가
+          // if (scheduleId) {
+          //   requestData["scheduleId"] = scheduleId;
+          // }
+
+          try {
+            const response = await axiosInstance.post(`/live`, requestData, {
+              headers: {
+                "Content-Type": "application/json",
+              },
+            });
+            console.log("방생성 spring서버로 전송 성공", response.data);
+          } catch (err) {
+            console.log("방 생성을 spring서버에 알려주는 데 실패", err);
+            console.error("서버 응답:", err.response?.data);
+          }
+        };
+        createRoomPost();
         const recordingService = new RecordingService(room);
         const roomSid = await room.getSid();
 
@@ -503,6 +556,7 @@ const LivePage = () => {
                     serverUrl={APPLICATION_SERVER_URL}
                     token={token}
                     role={participantRole}
+                    fakeTitle={fakeTitle}
                   />
                 )}
               </RightTop>
@@ -563,6 +617,7 @@ const LivePage = () => {
                   serverUrl={APPLICATION_SERVER_URL}
                   token={token}
                   role={participantRole}
+                  fakeTitle={fakeTitle}
                 />
               )}
             </LeftTop>

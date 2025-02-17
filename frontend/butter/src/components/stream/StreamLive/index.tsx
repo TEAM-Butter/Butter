@@ -18,6 +18,7 @@ interface StreamLiveProps {
   serverUrl: string;
   token: string;
   role: string;
+  fakeTitle: string;
 }
 
 const StreamLive = ({
@@ -29,14 +30,16 @@ const StreamLive = ({
   serverUrl,
   token,
   role,
+  fakeTitle,
 }: StreamLiveProps) => {
   console.log("remoeteTracks 정보입니다", remoteTracks);
   console.log("Stream component에서 room을 받아들입니다.", room);
-  console.log("serverURL입니다", serverUrl);
+  console.log("webRTC serverURL입니다", serverUrl);
+
   return (
     <div className="w-full h-full">
       {!room ? (
-        <div>Loading</div>
+        <div>방송 시작 전 입니다</div>
       ) : (
         <LiveKitRoom token={token} serverUrl={serverUrl} connect={true}>
           <div className="flex flex-col h-screen">
@@ -61,7 +64,7 @@ const StreamLive = ({
                         track={localTrack}
                         participantIdentity={participantName}
                         local={true}
-                        roomName={roomName}
+                        roomName={fakeTitle}
                         role={role}
                       />
                       {/* <div className="absolute bottom-2 left-2 bg-black bg-opacity-50 px-2 py-1 rounded text-white text-sm">
