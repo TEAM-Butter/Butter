@@ -6,6 +6,8 @@ import { Link, useMatch } from "react-router-dom";
 import { StreamingModal } from "../modals/StreamingModal";
 import { useUserStore } from "../../../stores/UserStore";
 import { removeAccessToken } from "../../../apis/auth";
+import bell from "../../../assets/user/bell.png"
+import { Alert } from "./Alert";
 
 const Nav = styled.nav`
   display: flex;
@@ -66,6 +68,20 @@ const Profile = styled.li`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  
+  #iconBox {
+    display:flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  #profileImg {
+    justify-content: flex-end;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    margin-left: 10px;
+  }
 `;
 
 const SubProfile = styled(motion.ul)`
@@ -130,6 +146,8 @@ const subProfileVariants = {
 function Navbar() {
   //useUserStore
   const memberType = useUserStore((state) => state.memberType);
+  const profileImg = useUserStore((state) => state.profileImage);
+  const nickname = useUserStore((state) => state.nickname);
   const isLogin = useUserStore((state) => state.isLogin);
   const logout = useUserStore((state) => state.logout);
 
@@ -141,6 +159,7 @@ function Navbar() {
   const loginMatch = useMatch("auth/login");
   // isLogin이 true일 경우 profile dropdown 적용, false일 경우 login link만 렌더링링
   const [isHovered, setIsHovered] = useState(false);
+  const [isToggle, setIsToggle] = useState(false);
   const [modalType, setModalType] = useState<string>("");
 
   const memberLogout = () => {
@@ -183,7 +202,17 @@ function Navbar() {
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
               >
-                PROFILE
+                <div id="iconBox">
+                  <img src={bell} alt="Alert" onClick={() => {
+                    setIsToggle(!isToggle)
+                    setIsHovered(false)
+                  }} />
+                  {profileImg === null ?
+                    `PROFILE`
+                    :
+                    <img id="profileImg" src={profileImg || ""} alt="profileImg" />
+                  }
+                </div>
                 <SubProfile
                   variants={subProfileVariants}
                   initial="normal"
@@ -191,7 +220,7 @@ function Navbar() {
                 >
                   <SubItemComment>
                     안녕하세요,
-                    <br /> Username님!
+                    <br /> {nickname || "guest"}님!
                   </SubItemComment>
                   <Link to="/">
                     <SubItem>마이 캘린더</SubItem>
@@ -253,6 +282,7 @@ function Navbar() {
           setModalType={setModalType}
         ></StreamingModal>
       )}
+      <Alert isToggle={isToggle} />
     </>
   );
 }

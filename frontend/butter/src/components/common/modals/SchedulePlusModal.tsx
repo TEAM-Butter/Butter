@@ -48,8 +48,9 @@ const Check = styled.div`
 `
 const Hr = styled.hr`
     border: none;
-  border-top: 3px solid white; /* 가로줄 스타일 */
-  margin:0; /* 위아래 여백 */
+  border-top: 5px solid white; /* 가로줄 스타일 */
+  margin: 0px; /* 위아래 여백 */
+
 `
 const Hr2 = styled.hr`
     border: none;
@@ -167,6 +168,7 @@ const [markers, setMarkers] = useState<any>([]);
     const geocoder = new kakao.maps.services.Geocoder();
 
     const fetchAddresses = async () => {
+      console.log("positions : ", positions)
       const results = await Promise.all(
         positions.map((pos : any) => 
           new Promise<any>((resolve) => {
@@ -303,7 +305,7 @@ const [selectDate, setSelectDate] = useState<any>("")
         // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
         // LatLngBounds 객체에 좌표를 추가합니다
         const bounds = new kakao.maps.LatLngBounds()
-        let markers2 = []
+        let markers2 : any = []
       
         for (var i = 0; i < data.length; i++) {
           // @ts-ignore
@@ -319,7 +321,7 @@ const [selectDate, setSelectDate] = useState<any>("")
         }
         console.log(markers2)
         setMarkers(markers2)
-      
+
         // // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
          map.setBounds(bounds)
          map.setLevel(6)
@@ -337,7 +339,9 @@ const [selectDate, setSelectDate] = useState<any>("")
        // 🔹 입력값을 저장할 상태 변수
   useEffect(() => {
     setPosition(markers)
-  }, [markers]);
+  }, [markers]); 
+
+
 
 
   const SchedulePost = async() => {
@@ -376,6 +380,50 @@ const Scroll = styled.div`
   overflow-y: auto;
 `
 
+
+const SelectLocation = (locate: any) => {
+  if (!map) return;
+
+  const bounds = new kakao.maps.LatLngBounds();
+  const position = new kakao.maps.LatLng(locate.lat, locate.lng);
+  bounds.extend(position);
+
+  if (marker) {
+    marker.setMap(null);
+  }
+
+  const newMarker = new kakao.maps.Marker({
+    position: position,
+    map: map,
+  });
+
+  setMarker(newMarker);
+
+  // ✅ 마커 클릭 시 정보창 표시
+  const infoWindow = new kakao.maps.InfoWindow({
+    content: `<div style="padding:5px; color:black;">선택한 위치</div>`,
+  });
+
+  kakao.maps.event.addListener(newMarker, "click", () => {
+    infoWindow.open(map, newMarker);
+  });
+
+  map.setBounds(bounds);
+  map.setLevel(6);
+
+  setState((prev: any) => ({
+    ...prev,
+    center: {
+      lat: locate.lat,
+      lng: locate.lng,
+    },
+    isPanto: true,
+  }));
+};
+
+
+
+
 return (
     <ABC>
         <ABCD>
@@ -400,7 +448,7 @@ return (
               {markers.map((a :any, i:any)=>{return(<SearchResultBox>
                   <LocationIcon src={locationIcon} alt="locationIcon"></LocationIcon>
                   <AddressText>{a.content}</AddressText>
-                  <SelectText onClick={()=>{setAddress(a.content); setPosition(a.position)}}>select</SelectText>
+                  <SelectText onClick={()=>{setAddress(a.content); setPosition(a.position); SelectLocation(a.position)}}>select</SelectText>
               </SearchResultBox>)})}
               </Scroll>
     <DateSelectWrapper>    

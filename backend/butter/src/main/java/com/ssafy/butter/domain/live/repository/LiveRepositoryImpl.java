@@ -3,6 +3,7 @@ package com.ssafy.butter.domain.live.repository;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.ssafy.butter.domain.crew.entity.Crew;
 import com.ssafy.butter.domain.crew.entity.QCrew;
 import com.ssafy.butter.domain.crew.entity.QCrewGenre;
 import com.ssafy.butter.domain.crew.entity.QGenre;
@@ -104,5 +105,10 @@ public class LiveRepositoryImpl implements LiveRepository {
             ));
         }
         return booleanBuilder;
+    }
+
+    @Override
+    public Optional<Live> findByCrewAndEndDateIsNull(Crew crew) {
+        return liveJpaRepository.findByCrewAndEndDateIsNull(crew);
     }
 }

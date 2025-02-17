@@ -3,11 +3,11 @@ import NotFoundPage from "./pages/error/NotFoundPage";
 import { userRoutes } from "./routes/userRoutes";
 import { streamRoutes } from "./routes/streamRoutes";
 import { buskingRoutes } from "./routes/buskingRoutes";
-import { crewRoutes } from "./routes/crewRoutes";
-import { breadRoutes } from "./routes/breadRoutes";
-import { homeRoutes } from "./routes/homeRoutes";
+import { crewRoutes } from "./routes/crewRoutes"
+import { breadRoutes } from "./routes/breadRoutes"
 import "./styles/index.css";
 import { CommonLayout } from "./layouts/CommonLayout";
+import HomePage from "./pages/home/HomePage";
 
 import "./styles/reset.css";
 import "./styles/index.css";
@@ -23,7 +23,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route element={<CommonLayout />}>
-          {homeRoutes}
+          <Route path="/" element={<HomePage />} />
           {userRoutes}
           {streamRoutes}
           <Route path="/stream-list" element={<LiveListPage />} />

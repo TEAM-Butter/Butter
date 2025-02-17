@@ -87,7 +87,8 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
 
     private BooleanBuilder createLikedScheduleListCondition(Long memberId) {
         BooleanBuilder booleanBuilder = new BooleanBuilder();
-        booleanBuilder.and(qMember.id.eq(memberId));
+        booleanBuilder.and(qMember.id.eq(memberId))
+                .and(qLikedSchedule.isLiked);
         return booleanBuilder;
     }
 }

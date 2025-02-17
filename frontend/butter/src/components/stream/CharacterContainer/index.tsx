@@ -19,7 +19,6 @@ import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import ThumbUpAltOutlinedIcon from "@mui/icons-material/ThumbUpAltOutlined";
 import BakeryDiningOutlinedIcon from "@mui/icons-material/BakeryDiningOutlined";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
-import { small } from "framer-motion/client";
 
 // const images = [pet1, pet2, pet3, pet4, pet5, pet6];
 
@@ -268,7 +267,7 @@ const CharacterContainer = ({
   const handleMessage = (content: SocketContent) => {
     console.log("웹소켓에서 participantName을 불러옵니다!!", participantName);
     const id = 1;
-    if (content.role === "subscriber" && canUserAct(id)) {
+    if (content.role === "publisher" && canUserAct(id)) {
       switch (content.label) {
         case "little_heart":
           console.log("여기입니다 2");
@@ -306,6 +305,10 @@ const CharacterContainer = ({
   };
   const handleSocketOn = () => {
     socket.on("message", handleMessage);
+    socket.on("message", () => {
+      console.log("❤️❤️❤️");
+      console.log("❤️❤️❤️");
+    });
     socket.on("increaseEmotionCount", (content) => {
       setHeartCount(content.heart);
       setLikeCount(content.like);

@@ -104,11 +104,23 @@ const PayBtn = styled.div`
   margin-top: 20px;
   margin-bottom: 20px;
 `;
+interface MemberDetailResponseDto {
+  loginId: string;
+  email: string;
+  birthdate: string;
+  gender: string;
+  profileImage: string;
+  nickname: string;
+  genres: string[];
+  avatarType: string;
+  isExtraInfoRegistered: boolean;
+}
 
 import { loadPaymentWidget } from "@iamport/payment"; // 아임포트 SDK 추가
 import { axiosInstance } from "../../apis/axiosInstance";
 import { useUserStore } from "../../stores/UserStore";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { memberDetailRequest } from "../../apis/request/member/memberRequest";
 interface BreadResponseDto {
   impUid: string;
 }
@@ -167,6 +179,14 @@ const BreadChargePage = () => {
     );
   };
 
+  useEffect(() => {
+    memberDetailRequest().then(
+      (responseBody: MemberDetailResponseDto | null) => {
+        if (!responseBody) return;
+        console.log(responseBody);
+      }
+    );
+  }, []);
   return (
     <>
       <BreadChargePageWrapper>
@@ -188,7 +208,7 @@ const BreadChargePage = () => {
               {breads.map((bread) => {
                 console.log(bread);
                 return (
-                  <MDLowerInfo>
+                  <MDLowerInfo key={bread}>
                     <input
                       type="radio"
                       name="bread"

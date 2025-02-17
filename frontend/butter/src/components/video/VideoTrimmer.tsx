@@ -3,6 +3,7 @@ import styled from "@emotion/styled";
 import ReactPlayer from "react-player";
 import Control from "./Control";
 import { useForm } from "react-hook-form";
+import { ClipModal } from "./ClipModal";
 import { start } from "repl";
 
 const VideoTrimmerWrapper = styled.div`
@@ -228,6 +229,9 @@ const VideoTrimmer = ({
   const [duration, setDuration] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
   const [isEditing, setIsEditing] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [trimmedVideoUrl, setTrimmedVideoUrl] = useState("");
+  const [clipName, setClipName] = useState("");
   const SEVER_URL = import.meta.env.VITE_NODE_JS_SERVER || "";
 
   const {
@@ -278,31 +282,33 @@ const VideoTrimmer = ({
       `✅ ${formValues.startTime} ~ ${formValues.endTime} 구간을 자릅니다.`
     );
 
+    setTrimmedVideoUrl("");
+    setIsModalOpen(true);
+
     try {
       console.log("📡 서버 요청 중...");
       console.log(recordingName, title, startSeconds, endSeconds);
-      const response = await fetch(
-        `${SEVER_URL}/clip`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            recordingName,
-            title,
-            startTime: startSeconds,
-            endTime: endSeconds,
-            time: new Date()
-          }),
-        }
-      );
+      const response = await fetch(`${SEVER_URL}/clip`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          recordingName,
+          title,
+          startTime: startSeconds,
+          endTime: endSeconds,
+          time: new Date(),
+        }),
+      });
 
       const data = await response.json();
 
       if (response.ok) {
         console.log("✅ 서버 응답:", data);
-        console.log(data.clipUrl)
+        setClipName(data.clipName);
+        setTrimmedVideoUrl(data.clipUrl);
+        setIsModalOpen(true);
         alert(`녹화 클립 생성 완료`);
       } else {
         console.error("❌ 오류 발생:", data.errorMessage);
@@ -532,6 +538,12 @@ const VideoTrimmer = ({
             <div style={{ display: "flex", justifyContent: "end" }}>
               <TrimButton onClick={cuttingVideo}>영상 자르기</TrimButton>
             </div>
+            <ClipModal
+              isOpen={isModalOpen}
+              onClose={() => setIsModalOpen(false)}
+              videoUrl={trimmedVideoUrl}
+              clipName={clipName}
+            />
           </div>
         ) : (
           <GoEditButton onClick={handleGoEdit}>Go Edit</GoEditButton>

@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback } from "react";
 import styled from "@emotion/styled";
 import { RecordingService } from "../../recording/RecordingService";
+import { Recording } from "../../recording/types";
 
 // 상태 타입을 명확히 정의
 type RecordingStatus = "STOPPED" | "STARTED" | "STARTING" | "STOPPING";
@@ -69,11 +70,13 @@ const ErrorMessage = styled.div`
 interface Props {
   recordingService: RecordingService;
   onRecordingStateChange?: (isRecording: boolean) => void;
+  onRecordingStop: (recording: Recording) => void;
 }
 
 export const RecordingControls: React.FC<Props> = ({
   recordingService,
   onRecordingStateChange,
+  onRecordingStop,
 }) => {
   const [recordingStatus, setRecordingStatus] =
     useState<RecordingStatus>("STOPPED");
@@ -124,7 +127,7 @@ export const RecordingControls: React.FC<Props> = ({
     setRecordingStatus("STOPPING");
 
     try {
-      await recordingService.stopRecording();
+      await recordingService.stopRecording(onRecordingStop);
       setRecordingStatus("STOPPED");
     } catch (error) {
       const errorMessage =
@@ -135,7 +138,7 @@ export const RecordingControls: React.FC<Props> = ({
     } finally {
       setIsLoading(false);
     }
-  }, [recordingService, recordingStatus]);
+  }, [onRecordingStop, recordingService, recordingStatus]);
 
   useEffect(() => {
     // 초기 상태 설정

@@ -104,7 +104,7 @@ export const ModalBody_v3 = styled(ModalBody)`
   height: 500px;
   width: 400px;
   display: flex;
-  justify-content: space-between;
+  justify-content: start;
 `;
 
 export const ModalBody_v4 = styled(ModalBody)`

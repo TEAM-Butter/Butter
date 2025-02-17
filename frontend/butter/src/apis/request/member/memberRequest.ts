@@ -1,5 +1,5 @@
-import { CheckLoginIdRequestDto, SignUpRequestDto } from "./memberDto";
-import { MemberExtraInfoResponseDto } from "../../response/member";
+import { CheckLoginIdRequestDto, SignUpRequestDto, PasswordUpdateRequestDTO } from "./memberDto";
+import { MemberExtraInfoResponseDto, PasswordUpdateResponseDto } from "../../response/member";
 import { CheckLoginIdResponseDto, MemberDetailResponseDto, SignUpResponseDto } from "../../response/member";
 import { axiosInstance } from "../../axiosInstance";
 
@@ -59,5 +59,18 @@ export const CheckLoginIdRequest = async (requestBody: CheckLoginIdRequestDto) =
             return null
         })
 
+    return result
+}
+
+export const PasswordUpdateRequest = async (requestBody: PasswordUpdateRequestDTO) => {
+    const result = await axiosInstance.put('/members/password', requestBody)
+        .then(response => {
+            const responseBody: PasswordUpdateResponseDto = response.data;
+            return responseBody
+        })
+        .catch(error => {
+            console.log("PasswordUpdateRequest api error:", error)
+            return null
+        })
     return result
 }

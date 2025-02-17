@@ -1,13 +1,15 @@
 import styled from "@emotion/styled";
 import { SignupForm } from "../../components/user/AuthForm";
 import { Link } from "react-router-dom";
+import DinoGame from "../../components/user/AuthBanner";
 
 const SignupPageWrapper = styled.div`
   width: 100%;
   height: 100%;
   padding: 10px 20px;
   display: grid; /* 부모에 grid 적용 */
-  grid-template-columns: 1fr 2.5fr; /* 좌우 동일 비율 */
+  grid-template-columns: 1fr 2.5fr;
+  gap: 15px; 
   `;
 
 const LtContainer = styled.div`
@@ -61,7 +63,9 @@ const SignupPage = () => {
                 </SignupLink>
             </Link>
         </LtContainer>
-        <RtContainer></RtContainer>
+        <RtContainer>
+            <DinoGame />
+        </RtContainer>
     </SignupPageWrapper>
 };
 

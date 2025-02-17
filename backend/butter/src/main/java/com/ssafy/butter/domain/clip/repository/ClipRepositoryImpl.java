@@ -1,5 +1,6 @@
 package com.ssafy.butter.domain.clip.repository;
 
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.ssafy.butter.domain.clip.entity.Clip;
 import com.ssafy.butter.domain.clip.entity.QClip;
@@ -55,8 +56,15 @@ public class ClipRepositoryImpl implements ClipRepository {
                 .from(qClip)
                 .join(qClip.likedClips, qLikedClip).fetchJoin()
                 .join(qLikedClip.member, qMember).fetchJoin()
-                .where(qMember.id.eq(memberId))
+                .where(createLikedClipListCondition(memberId))
                 .orderBy(qLikedClip.id.desc())
                 .fetch();
+    }
+
+    private BooleanBuilder createLikedClipListCondition(Long memberId) {
+        BooleanBuilder booleanBuilder = new BooleanBuilder();
+        booleanBuilder.and(qMember.id.eq(memberId))
+                .and(qLikedClip.isLiked);
+        return booleanBuilder;
     }
 }

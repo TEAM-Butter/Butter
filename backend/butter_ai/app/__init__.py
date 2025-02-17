@@ -3,8 +3,8 @@ from flask_socketio import SocketIO
 from flask_cors import CORS
 
 app = Flask(__name__)
-sock = SocketIO(app, cors_allowed_origins="*")
-CORS(app, resources={r"/*": {"origins": "*"}})
+sock = SocketIO(cors_allowed_origins="*")
+CORS(app, allowed_origins="*")
 
 
 def create_app():
