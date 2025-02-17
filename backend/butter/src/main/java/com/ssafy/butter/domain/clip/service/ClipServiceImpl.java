@@ -46,7 +46,7 @@ public class ClipServiceImpl implements ClipService {
                 .videoName(clipSaveRequestDTO.videoName())
                 .hitCount(0L)
                 .build();
-        return ClipResponseDTO.from(clipRepository.save(clip), false);
+        return ClipResponseDTO.from(clipRepository.save(clip), false, getLikeCount(clip.getId()));
     }
 
     @Override
@@ -62,10 +62,10 @@ public class ClipServiceImpl implements ClipService {
         Pageable pageable = PageRequest.of(0, clipListRequestDTO.pageSize());
         if (clipListRequestDTO.clipId() == null) {
             return clipRepository.findAllByOrderByIdDesc(pageable).stream()
-                    .map(clip -> ClipResponseDTO.from(clip, isLiking(member, clip))).toList();
+                    .map(clip -> ClipResponseDTO.from(clip, isLiking(member, clip), getLikeCount(clip.getId()))).toList();
         } else {
             return clipRepository.findAllByIdLessThanOrderByIdDesc(clipListRequestDTO.clipId(), pageable).stream()
-                    .map(clip -> ClipResponseDTO.from(clip, isLiking(member, clip))).toList();
+                    .map(clip -> ClipResponseDTO.from(clip, isLiking(member, clip), getLikeCount(clip.getId()))).toList();
         }
     }
 
