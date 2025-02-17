@@ -166,7 +166,7 @@ export const ClipModal: React.FC<ClipModalProps> = ({
 
   const listClip = async () => {
     try {
-      let crewId = clipName.split("-")[1];
+      let crewId = clipName.split("-")[0];
       const response = await fetch(`${SERVER_URL}/clip/${crewId}`, {
         method: "GET", // 클립 저장을 위해 GET 요청
         headers: {
