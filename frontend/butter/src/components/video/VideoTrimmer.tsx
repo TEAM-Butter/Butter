@@ -193,6 +193,19 @@ const TrimButton = styled(Button)`
   }
 `;
 
+const LoadingSpinner = styled.div`
+  <div
+    style={{
+      textAlign: "center",
+      padding: "40px",
+      fontSize: "20px",
+      color: "#333",
+    }}
+  >
+    로딩 중...
+  </div>
+`;
+
 interface FormInputs {
   startTime: string; // HH:mm:ss 형식
   endTime: string;
@@ -308,15 +321,16 @@ const VideoTrimmer = ({
         console.log("✅ 서버 응답:", data);
         setClipName(data.clipName);
         setTrimmedVideoUrl(data.clipUrl);
-        setIsModalOpen(true);
         alert(`녹화 클립 생성 완료`);
       } else {
         console.error("❌ 오류 발생:", data.errorMessage);
         alert(`오류 발생: ${data.errorMessage}`);
+        setIsModalOpen(false);
       }
     } catch (error) {
       console.error("🚨 서버 오류 발생:", error);
       alert("서버 오류 발생");
+      setIsModalOpen(false);
     }
   };
   const onSubmit = (data: FormInputs) => {
