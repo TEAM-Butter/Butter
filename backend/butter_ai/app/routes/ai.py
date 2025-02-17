@@ -58,12 +58,14 @@ def on_join(data):
 
     join_room(room_id)
     join_response = {}
-    join_response["motions"] = websocket_room_service.room_motions[room_id]
-    room_nicknames = websocket_room_service.room_nicknames[room_id]
-    if room_nicknames.size < 20:
-        join_response["nicknames"] = room_nicknames
-    else:
-        join_response["nicknames"] = room_nicknames[:20]
+    if room_id in websocket_room_service.room_motions.keys():
+        join_response["motions"] = websocket_room_service.room_motions[room_id]
+    if room_id in websocket_room_service.room_motions.keys():
+        room_nicknames = websocket_room_service.room_nicknames[room_id]
+        if room_nicknames.size < 20:
+            join_response["nicknames"] = room_nicknames
+        else:
+            join_response["nicknames"] = room_nicknames[:20]
     sock.emit("join", join_response, room=room_id)
 
 
