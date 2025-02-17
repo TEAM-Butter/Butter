@@ -1,127 +1,121 @@
-//package com.ssafy.butter;
-//import com.ssafy.butter.auth.dto.AuthInfoDTO;
-//import com.ssafy.butter.domain.clip.dto.request.ClipLikeRequestDTO;
-//import com.ssafy.butter.domain.clip.service.ClipService;
-//import com.ssafy.butter.domain.member.enums.Gender;
-//import com.ssafy.butter.domain.member.entity.Member;
-//import com.ssafy.butter.domain.clip.entity.Clip;
-//import com.ssafy.butter.domain.clip.entity.LikedClip;
-//import com.ssafy.butter.domain.member.service.member.MemberService;
-//import com.ssafy.butter.infrastructure.redis.RedisManager;
-//import com.ssafy.butter.domain.member.service.MemberService;
-//import com.ssafy.butter.domain.clip.repository.ClipRepository;
-//import com.ssafy.butter.domain.clip.repository.LikedClipRepository;
-//import org.junit.jupiter.api.BeforeEach;
-//import org.junit.jupiter.api.DisplayName;
-//import org.junit.jupiter.api.Test;
-//import org.junit.jupiter.api.extension.ExtendWith;
-//import org.mockito.AdditionalAnswers;
-//import org.mockito.InjectMocks;
-//import org.mockito.Mock;
-//import org.mockito.junit.jupiter.MockitoExtension;
-//
-//import java.time.LocalDate;
-//import java.util.Optional;
-//import java.util.Random;
-//import java.util.concurrent.CountDownLatch;
-//import java.util.concurrent.ExecutorService;
-//import java.util.concurrent.Executors;
-//
-//import static org.assertj.core.api.Assertions.assertThat;
-//import static org.mockito.ArgumentMatchers.any;
-//import static org.mockito.ArgumentMatchers.anyLong;
-//import static org.mockito.Mockito.*;
-//
-//@ExtendWith(MockitoExtension.class)
-//public class LikeClipServiceTest {
-//
-//    // ClipService가 내부에서 사용하고 있는 의존성들
-//    @Mock
-//    private MemberService memberService;
-//
-//    @Mock
-//    private ClipRepository clipRepository;
-//
-//    @Mock
-//    private LikedClipRepository likedClipRepository;
-//
-//    @Mock
-//    private RedisManager redisManager;
-//
-//    // 테스트 대상 서비스 (의존성은 위의 목 객체들이 주입됨)
-//    @InjectMocks
-//    private ClipService clipService;
-//
-//    // 테스트에서 사용할 기본 회원, 클립 객체 생성
-//    private Member testMember;
-//    private Clip testClip;
-//
-//    @BeforeEach
-//    void setUp() {
-//        // 테스트에 사용할 회원과 클립을 미리 준비합니다.
-//        testMember = new Member(1L, "shameless8@naver.com", Gender.FEMALE.name(), LocalDate.now());
-//        testClip = new Clip(1L, "Test Clip");
-//
-//        // memberService.findById(1L) 호출 시 항상 유효한 Member 객체 반환
-//        when(memberService.findById(1L)).thenReturn(testMember);
-//
-//        // clipRepository.findById(1L) 호출 시 항상 유효한 Clip 객체 반환
-//        when(clipRepository.findById(1L)).thenReturn(Optional.of(testClip));
-//
-//        // likedClipRepository.findByMemberAndClip(...)는 기본적으로 좋아요 정보가 없는 경우로 설정
-//        when(likedClipRepository.findByMemberAndClip(any(Member.class), any(Clip.class)))
-//                .thenReturn(Optional.empty());
-//
-//        // likedClipRepository.save()는 저장된 객체를 그대로 반환하도록 설정
-//        when(likedClipRepository.save(any(LikedClip.class)))
-//                .then(AdditionalAnswers.returnsFirstArg());
-//
-//        // RedisManager 관련 설정
-//        // 초기 상태: redis에 좋아요 데이터가 없으면 null 반환
-//        // 단, 이미 좋아요한 경우에는 redis에 문자열 형태의 숫자(예:"1")가 존재한다고 가정합니다.
-//        when(redisManager.getData("1")).thenReturn("1");
-//
-//        // redisManager.incrementValue: 호출 시 전달받은 delta만큼 증가한 값을 반환하도록 단순화
-//        // 실제 Redis의 동작과 달리 테스트에서는 상태를 관리하지 않고, 누적 값으로 가정합니다.
-//        // 예를 들어, 최초 값이 "1"이라면 첫 호출시 2L, 그 다음 호출시 3L ... 이렇게 되도록 할 수 있지만,
-//        // 여기서는 간단히 무조건 101L을 반환하도록 stub 처리합니다.
-//        when(redisManager.incrementValue(eq("1"), anyLong())).thenReturn(101L);
-//
-//        // updateLikeCountFromRedis() 등 내부 메서드는 ClipService 내부에서 처리되므로 별도 Stub 생략
-//    }
-//
-//    @Test
-//    @DisplayName("[좋아요 정보가 Redis에 있을 경우 동시성 이슈가 발생하지 않음]")
-//    void success() throws InterruptedException {
-//        // given
-//        AuthInfoDTO authInfoDTO = new AuthInfoDTO(1L, "shameless8@naver.com", Gender.FEMALE.name(), LocalDate.now());
-//        ClipLikeRequestDTO clipLikeRequestDTO = new ClipLikeRequestDTO(1L);
-//        int threadCount = 100;
-//        ExecutorService service = Executors.newFixedThreadPool(threadCount);
-//        CountDownLatch latch = new CountDownLatch(threadCount);
-//
-//        // 최초 좋아요를 통해 Redis에 좋아요 정보가 있다고 가정
-//        clipService.likeClip(authInfoDTO, clipLikeRequestDTO);
-//
-//        // when
-//        for (int i = 0; i < threadCount; i++) {
-//            service.execute(() -> {
-//                // 랜덤 회원 id 생성 시, 1이 아닌 id가 들어와도 memberService.findById()가
-//                // 항상 유효한 Member를 반환하도록 Stub을 추가할 수 있습니다.
-//                // 여기서는 단순화를 위해 1L 외에도 모든 id에 대해 testMember를 반환하도록 처리합니다.
-//                long randomId = new Random().nextInt(1000) + 1;
-//                when(memberService.findById(randomId)).thenReturn(testMember);
-//
-//                AuthInfoDTO randomAuth = new AuthInfoDTO(randomId, "shameless8@naver.com", Gender.FEMALE.name(), LocalDate.now());
-//                clipService.likeClip(randomAuth, clipLikeRequestDTO);
-//                latch.countDown();
-//            });
-//        }
-//        latch.await();
-//
-//        // then
-//        long likeCount = clipService.getLikeCount(1L);
-//        // 여기서는 RedisManager의 incrementValue stub이 무조건 101L을 반환하도록 설정했으므로, 기대값은 101입니다.
-//        assertThat(likeCount).isEqualTo(101);
-//    }
-//}
+package com.ssafy.butter;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.when;
+
+import com.ssafy.butter.auth.dto.AuthInfoDTO;
+import com.ssafy.butter.domain.clip.dto.request.ClipLikeRequestDTO;
+import com.ssafy.butter.domain.clip.entity.Clip;
+import com.ssafy.butter.domain.clip.entity.LikedClip;
+import com.ssafy.butter.domain.clip.repository.ClipRepository;
+import com.ssafy.butter.domain.clip.repository.LikedClipRepository;
+import com.ssafy.butter.domain.clip.service.ClipServiceImpl;
+import com.ssafy.butter.domain.member.entity.Member;
+import com.ssafy.butter.domain.member.service.member.MemberService;
+import com.ssafy.butter.infrastructure.redis.RedisManager;
+import java.time.LocalDate;
+import java.util.Optional;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicLong;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.AdditionalAnswers;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+@ExtendWith(MockitoExtension.class)
+public class LikeClipServiceTest {
+
+    @Mock
+    private MemberService memberService;
+
+    @Mock
+    private ClipRepository clipRepository;
+
+    @Mock
+    private LikedClipRepository likedClipRepository;
+
+    @Mock
+    private RedisManager redisManager;
+
+    // CrewService는 이 테스트에서 사용되지 않으므로 간단하게 목 처리
+    @Mock
+    private com.ssafy.butter.domain.crew.service.CrewService crewService;
+
+    @InjectMocks
+    private ClipServiceImpl clipService;
+
+    @Test
+    @DisplayName("동시에 1000명이 좋아요를 누르면 좋아요 카운트가 1000개가 되어야 한다")
+    public void concurrentLikeClip_shouldIncrementRedisCountTo1000() throws InterruptedException {
+        // 테스트할 클립 ID
+        Long clipId = 1L;
+
+        // Redis 동작을 시뮬레이션하기 위해 AtomicLong 사용 (초기 값 0)
+        AtomicLong redisCounter = new AtomicLong(0);
+
+        // redisManager.getData("1")는 매번 redisCounter의 현재 값을 문자열로 반환하도록 설정
+        when(redisManager.getData(eq(String.valueOf(clipId))))
+                .thenAnswer(invocation -> String.valueOf(redisCounter.get()));
+
+        // redisManager.incrementValue("1", 1) 호출 시, redisCounter에 1을 더한 값을 반환
+        when(redisManager.incrementValue(eq(String.valueOf(clipId)), eq(1L)))
+                .thenAnswer(invocation -> {
+                    Long delta = invocation.getArgument(1);
+                    return redisCounter.addAndGet(delta);
+                });
+
+        // clipRepository.findById(clipId)는 테스트용 Clip 객체를 반환
+        Clip testClip = Clip.builder().build();
+        when(clipRepository.findById(eq(clipId)))
+                .thenReturn(Optional.of(testClip));
+
+        // likedClipRepository.findByMemberAndClip(...)는 좋아요 기록이 없다고 가정
+        when(likedClipRepository.findByMemberAndClip(any(Member.class), any(Clip.class)))
+                .thenReturn(Optional.empty());
+        // 좋아요 기록 저장은 입력 받은 객체를 그대로 반환
+        when(likedClipRepository.save(any(LikedClip.class)))
+                .then(AdditionalAnswers.returnsFirstArg());
+
+        // memberService.findById(...)는 호출된 id에 따라 새로운 Member 객체를 반환 (id 설정)
+        when(memberService.findById(anyLong()))
+                .thenAnswer(invocation -> {
+                    Long id = invocation.getArgument(0);
+                    Member member = Member.builder().id(id).build();
+                    return member;
+                });
+
+        // 좋아요 요청 DTO (클립 id 1)
+        ClipLikeRequestDTO likeRequest = new ClipLikeRequestDTO(clipId);
+
+        // 동시에 1000명의 사용자가 좋아요 요청을 보내는 상황을 시뮬레이션
+        int threadCount = 1000;
+        ExecutorService executor = Executors.newFixedThreadPool(threadCount);
+        CountDownLatch latch = new CountDownLatch(threadCount);
+
+        // 각 스레드는 서로 다른 회원으로 처리 (회원 id: 100 ~ 119)
+        for (int i = 0; i < threadCount; i++) {
+            long memberId = 100L + i;
+            AuthInfoDTO authInfo = new AuthInfoDTO(memberId, "user" + memberId + "@example.com", "MALE", LocalDate.now());
+            executor.submit(() -> {
+                clipService.likeClip(authInfo, likeRequest);
+                latch.countDown();
+            });
+        }
+        latch.await();
+        executor.shutdown();
+
+        // 최종 좋아요 카운트는 Redis에 저장된 값 (redisCounter의 값)이어야 하며, 20가 되어야 함
+        long finalCount = clipService.getLikeCount(clipId);
+        assertThat(finalCount)
+                .as("동시에 1000명이 좋아요 누르면 최종 카운트가 20이어야 한다")
+                .isEqualTo(1000L);
+    }
+}
