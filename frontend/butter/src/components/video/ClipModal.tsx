@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import styled from "@emotion/styled";
+import loading from "../../assets/loading.mp4";
 
 const ModalOverlay = styled.div`
   position: fixed;
@@ -135,7 +136,6 @@ export const ClipModal: React.FC<ClipModalProps> = ({
 }) => {
   const [title, setTitle] = useState("");
   const SERVER_URL = import.meta.env.VITE_NODE_JS_SERVER || "";
-  const loadingVideoUrl = "../../assets/loading.mp4";
   // 추가: 로딩 스피너 컴포넌트 (간단한 예시)
   const LoadingSpinner = () => (
     <div
@@ -270,7 +270,7 @@ export const ClipModal: React.FC<ClipModalProps> = ({
           <VideoPlayer src={videoUrl} controls autoPlay />
         ) : (
           <VideoPlayer
-            src={loadingVideoUrl}
+            src={loading}
             autoPlay
             loop
             muted
