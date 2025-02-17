@@ -232,7 +232,7 @@ export class ClipService {
       });
 
       // Sort clips by timestamp in descending order
-      sortedClips = clips.sort((a, b) => b.timestamp - a.timestamp);
+      const sortedClips = clips.sort((a, b) => b.timestamp - a.timestamp);
 
       return sortedClips.map((clip) => clip.clipName);
     } catch (error) {
