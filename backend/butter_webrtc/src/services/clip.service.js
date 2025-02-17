@@ -212,6 +212,7 @@ export class ClipService {
   async listClips(crewId) {
     try {
       // crewId에 해당하는 clip 데이터를 조회하는 SQL 쿼리 실행
+      console.log("crewId: " + crewId);
       const sql = crewId
         ? "SELECT * FROM clip WHERE crew_id = ?"
         : "SELECT * FROM clip";

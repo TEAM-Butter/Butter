@@ -13,11 +13,9 @@ clipController.post("/", async (req, res) => {
   const { recordingName, startTime, endTime, time } = req.body;
 
   if (!recordingName || !startTime || !endTime || !time) {
-    res
-      .status(400)
-      .json({
-        errorMessage: "recordingName, startTime, endTime and time are required",
-      });
+    res.status(400).json({
+      errorMessage: "recordingName, startTime, endTime and time are required",
+    });
     return;
   }
 
@@ -37,12 +35,10 @@ clipController.post("/", async (req, res) => {
         clipName: result.clipName,
       });
     } else {
-      res
-        .status(500)
-        .json({
-          errorMessage: "Error clipping recording",
-          details: result.error,
-        });
+      res.status(500).json({
+        errorMessage: "Error clipping recording",
+        details: result.error,
+      });
     }
   } catch (error) {
     console.error("Error clipping recording.", error);
