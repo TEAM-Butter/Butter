@@ -2,7 +2,9 @@ import * as MC from "./modalComponents/modalComponents.tsx"
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import styled from "@emotion/styled";
-
+import findIconBlack from "../../../assets/findIconBlack.png" 
+import { useState } from "react";
+import { axiosInstance } from "../../../apis/axiosInstance.ts";
 interface ModalSizeProps {
 width: string;
 height: string;
@@ -15,7 +17,10 @@ setModalType: React.Dispatch<React.SetStateAction<string>>;
 // CrewSearch Styled
 const CrewSearchForm = styled.form`
 display: flex;
-flex-direction: column;
+background-color: white;
+border-radius: 30px;
+align-items: center;
+padding-right: 10px;
 gap: 10px;
 width: 100%;
 `;
@@ -28,25 +33,49 @@ border: none;
 padding: 0 15px;
 `;
 
+const FindIconBlack = styled.img`
+    height: 25px;
+    width: 25px;
+`
+const ModalBody_v5 = styled.div`
+  margin-top: -25px;
+  padding: 17px;
+  border-radius: 10px;
+  background-color: rgba(82, 57, 57, 0.8);
+  width: 100%;
+
+`
+const FlexCan = styled.div`
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 8px;
+    border-bottom: 1px solid white;
+`
+
+
 export const CrewSearchModal = ({ setModalType, width, height }: ModalProps) => {
-const { register, handleSubmit } = useForm();
+
 const navigate = useNavigate(); // useNavigate 훅 추가
-const onSubmit: SubmitHandler<FieldValues> = (data) => {
-    navigate(`/stream/${data.roomName}`, {
-    state: {
-        roomName: data.roomName,
-        role: "publisher",
-        participantName: "dahee",
-    },
-    });
-    setModalType("");
-};
+const [searchTerm, setSearchTerm] = useState("")
+const [searchResult, setSearchResult] = useState([])
+const handleSearch = async () => {
+    try{
+        const res = await axiosInstance.get(`/crew/list?pageSize=10&sortBy=followerCount&keyword=${searchTerm}`)
+
+        console.log(res.data)
+        setSearchResult(res.data)
+
+    } catch{
+
+    }
+}
 return (
     <>
     <MC.ModalOverlay />
     <MC.ModalWrapper width={width} height={height}>
         <MC.ModalHeader>
-        <div>SET CrewSearch LIVE</div>
+        <div>CrewSearch Modal</div>
         <MC.ModalCloseBtn
             textColor="white"
             onClick={() => {
@@ -57,24 +86,19 @@ return (
         </MC.ModalCloseBtn>
         </MC.ModalHeader>
         <MC.ModalBody>
-        <MC.Comment>스트리밍 제목을 설정하고, 라이브를 시작해보세요!</MC.Comment>
-        <CrewSearchForm onSubmit={handleSubmit(onSubmit)}>
+        <MC.Comment>원하시는 크루의 이름을 검색하고, 크루 디테일 페이지에 접속하세요!</MC.Comment>
+      
             <CrewSearchTitleInput
-            placeholder="스트리밍 제목을 입력해주세요."
-            {...register("roomName", { required: true })}
-            ></CrewSearchTitleInput>
-            <MC.LtBtnWrapper>
-            <MC.BorderBtn
-                type="submit"
-                width="90px"
-                height="35px"
-                color="var(--red)"
+            placeholder="크루 이름을 입력해주세요."
+            value={searchTerm}
+            onChange={(e)=>{setSearchTerm(e.target.value)}} onKeyDown={(e) => {
+                handleSearch();}}
             >
-                LIVE ON
-            </MC.BorderBtn>
-            <MC.FilledBtn width="50px" height="30px" color="var(--yellow)" textColor="black">hello</MC.FilledBtn>
-            </MC.LtBtnWrapper>
-        </CrewSearchForm>
+            </CrewSearchTitleInput>
+            <FindIconBlack src={findIconBlack} alt="findIconBlack"></FindIconBlack>
+        <ModalBody_v5>
+          {searchResult && searchResult.map((a : any, i : any )=>{return(<FlexCan> <div>{a.name}</div> <div onClick={()=>{navigate(`/crew/detail/${a.id}`)}}>상세페이지 보기</div></FlexCan>)})}
+        </ModalBody_v5>
         </MC.ModalBody>
     </MC.ModalWrapper>
     </>

@@ -93,14 +93,13 @@ const Box3 = styled.div`
 `
 const Box4 = styled.div`
   background: var(--liner);
-  max-height: 510px;
-  overflow-y: auto;  /* ✅ 내용이 넘칠 경우 스크롤 */
+  height: 510px;
   width: 490px;
   color: black;
   border-radius: 5px;
   padding-top: 20px;
-  padding-left: 20px;
-  position: relative;
+
+
 `
 
 const CalenderBox = styled.div`
@@ -178,7 +177,9 @@ const ScheduleTitle = styled.div`
 const ScheduleContent = styled.div`
  
 `
-
+const MarginBox= styled.div`
+  margin-left: 10px;
+`
 const GenreBox = styled.div`
  display: flex;
 `
@@ -209,7 +210,9 @@ const ZoomBtn = styled.img`
   border-radius: 50px;
   margin-bottom: -3px;
 `
+const HeightModify = styled.div`
 
+`
 const ZoomBox2 = styled.div`
   position: absolute;
   z-index: 966;
@@ -975,15 +978,18 @@ useEffect(() => {
         </Box3>
       </SearchWrapper>
       <Box4>
+        <MarginBox>
         <TextBox1><DateBox>{selectedDate} </DateBox> <div>날짜로, </div></TextBox1>
         <TextBox2><div>현재</div> <LocationBox> {searchTerm} </LocationBox> <div>근처에</div>  <CountBox >{positions2.length}개</CountBox> <div>의 버스킹 일정이 있어요!</div></TextBox2>
-       
+        </MarginBox>
+        <hr style={{border : "1px solid black", marginBottom: "0px"}}/>
+       <HeightModify id="scroll-area3">
           { updatedPositions.map((pos :any, i : any)=> {return(
         <ScheduleBox>
           <ScheduleInnerBox key={i} 
           style={{
             padding: "8px 10px",
-            borderBottom: "1px solid #eee",
+            borderBottom: "1px solid #000000",
             cursor: "pointer",
           }}
           onClick={() => {handleResultClick(pos); myLocationLevel("upgrade")} } // ✅ 클릭 시 해당 위치로 이동 & 마커 클릭 효과
@@ -1003,7 +1009,7 @@ useEffect(() => {
         </ScheduleBox>
           )})}
         
-
+        </HeightModify>
       </Box4>
     </LayOut2>
   </PageContainer>

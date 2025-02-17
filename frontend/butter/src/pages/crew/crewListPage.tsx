@@ -1,6 +1,6 @@
 import axios from "axios"
 import { useState } from "react"
-import { Link } from "react-router-dom"
+import { Link, Navigate, useNavigate } from "react-router-dom"
 import { useEffect } from "react"
 import styled from "@emotion/styled";
 import sample1 from "../../assets/sample1.png";
@@ -212,7 +212,7 @@ function CrewListPage() {
     const images = [sample1,sample2,sample3,sample4,sample5]
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [modalType, setModalType] = useState("")
-
+    const navigate = useNavigate()
 
     useEffect (() => {
         const fetchCrewDetail = async () => {
@@ -270,7 +270,7 @@ function CrewListPage() {
         </Box1>
         
         <Box2>
-        
+        <button onClick={()=>{navigate(`/crew/myCalendar`)}}>가보자고</button>
         <p>당신의 마음에 맞는 크루를 지금 바로 찾아보세요!</p>
         </Box2>
        <Write>

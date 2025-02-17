@@ -3,11 +3,13 @@ import { useParams, useNavigate } from "react-router-dom"
 import { useState, useEffect, useRef } from "react"
 import "./CrewCss.css";
 import rightArrow from "../../assets/rightArrow.png"
+import rightRightArrow from "../../assets/rightRightArrow.png"
 import leftArrow from "../../assets/leftArrow.png"
 import upArrow from "../../assets/upArrow.png"
 import editButton from "../../assets/editButton.png"
 import plusButton from "../../assets/plusButton.png"
-import followButton from "../../assets/followButton.png"
+import notFollowedIcon from "../../assets/notFollowedIcon.png"
+import followedIcon from "../../assets/FollowedIcon.png"
 import cancelButton from "../../assets/cancelButton.png"
 import deleteIcon from "../../assets/deleteIcon.png"
 import sample1 from "../../assets/sample1.png";
@@ -23,11 +25,12 @@ import sample10 from "../../assets/sample5.png";
 import styled from "@emotion/styled";
 import { axiosInstance } from "../../apis/axiosInstance"
 import { SchedulePlusModal } from "../../components/common/modals/SchedulePlusModal.tsx";
+import { ScheduleEditModal } from "../../components/common/modals/ScheduleEditModal.tsx";
 import { div } from "framer-motion/client";
 import { StreamingModal } from "../../components/common/modals/StreamingModal.tsx";
 import { CustomOverlayMap, Map, MapMarker, MarkerClusterer} from "react-kakao-maps-sdk";
 import { StatementSync } from "node:sqlite";
-import { MyLocation } from "@mui/icons-material";
+import { Bookmark, MyLocation } from "@mui/icons-material";
 const images = [sample1,sample2,sample3,sample4,sample5,sample6,sample5,sample5,sample5,sample5]
 
 
@@ -107,14 +110,15 @@ const Box4=styled.button`
   padding-top: 20px;
   padding-left: 20px;
   flex-direction: column;
-  
+  align-items: end;
+  padding-right: 20px;
 `
 
 const Box5=styled.div`
   background: var(--liner);
   color : black;
   border-radius: 20px;
-  height: 300px;
+  height: 328px;
   margin-bottom: 25px;
 `
 
@@ -126,6 +130,8 @@ const Box6=styled.div`
   font-size: 20px;
   border-bottom: 1px dashed var(--darkgray);
   display: flex;
+  justify-content: space-between;
+  padding-right: 15px;
   align-items: center;
   padding-left: 20px;
   gap : 12px;
@@ -133,12 +139,12 @@ const Box6=styled.div`
 const Box7=styled.div`
   border-radius: 10px 10px 0 0; /* 하단은 0, 상단만 둥글게 */
   background-color: #161616;
-  height: 220px;
+  height: 200px;
   color: white;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  padding-top: 15px;
+  justify-content: space-evenly;
+  padding-top: 10px;
   padding-bottom: 15px;
   padding-left: 20px;
   gap: 10px;
@@ -204,16 +210,28 @@ const Box1BottomWrapper = styled.div`
 `
 
 
-const FollowButton = styled.img`
-    height: 35px;
+const FollowButton = styled.div`
+      height: 40px;
     margin-top: 10px;
     margin-right: 5px;
+    width: 90px;
+    background-color: #a3a3a3;
+    border-radius: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 `
 
 const UnFollowButton = styled.div`
-    height: 35px;
+    height: 40px;
     margin-top: 10px;
     margin-right: 5px;
+    width: 90px;
+    background-color: #a3a3a3;
+    border-radius: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 `
 
 
@@ -275,6 +293,11 @@ const SnsText = styled.div`
     flex-direction: column;
 `
 
+const MoveToNoticePage = styled.img`
+    height: 30px;
+    width: 30px;
+`
+
 const ServerUrl = 'http://localhost:8080'
 
 function CrewDetailPage() {
@@ -290,7 +313,7 @@ function CrewDetailPage() {
     const [crewEditSwitch , setCrewEditSwitch] =  useState(false)
     const [crewDetailSwitch, setcrewDetailSwitch] = useState(true)
     const [isFollowed, setIsFollowed] = useState(false)
-
+    const [scheduleLikeList, setScheduleLikeList] = useState([])
 
 
 
@@ -309,7 +332,9 @@ function CrewDetailPage() {
                 const response = await axiosInstance.get(`/crew/detail/${id}`) // 크루 디테일 정보 받아옴
                 setCrewDetail(response.data);
                 console.log("response.data : ", response.data)
-                
+                const likeresponse = await axiosInstance.get(`schedule/like`)
+                setScheduleLikeList(likeresponse.data)
+                console.log(likeresponse.data)
                 if (crewDetail?.lives[0].endDate === null) {
                     setLiveOn(true)
                 } else {
@@ -350,6 +375,7 @@ function CrewDetailPage() {
 
           alert('팔로우 성공!')
           console.log(response.data)
+          setIsFollowed(!isFollowed)
         }
         catch (err : any) {
             console.error("에러 발생:", err)
@@ -368,7 +394,7 @@ function CrewDetailPage() {
 
           alert('언팔로우 성공!')
           console.log(response.data)
-          window.location.reload(); // ✅ 화면 새로고침 
+          setIsFollowed(!isFollowed)
         }
         catch (err : any) {
             console.error("에러 발생:", err)
@@ -403,7 +429,7 @@ function CrewDetailPage() {
                       <ImageMovingBox>
                         {crewDetail.members.map((a :any, i: any)=>{return(<CrewMemberImage src={images[i]} alt="CrewMemberImage2"></CrewMemberImage>)})}
                       </ImageMovingBox>  
-                        {isFollowed && <FollowButton src={followButton} alt="followButton" onClick={()=>{CrewFollow()}}></FollowButton>}
+                        {isFollowed && <FollowButton  onClick={()=>{CrewFollow()}}>follow</FollowButton>}
                         {!isFollowed && <UnFollowButton onClick={()=>{CrewUnFollow()}}>unfollow</UnFollowButton>}
                     </Box1BottomWrapper>
                 </Box1>
@@ -426,18 +452,18 @@ function CrewDetailPage() {
         </LayOut3>       
                 </LayOut1>
                 <LayOut2>
-                <ScheduleEditComponent crewScheduleDetail={crewScheduleDetail} crewDetail={crewDetail} />
+                <ScheduleEditComponent crewScheduleDetail={crewScheduleDetail} crewDetail={crewDetail} scheduleLikeList={scheduleLikeList} setScheduleLikeList={setScheduleLikeList} />
                 
-                <Box6><div>Notice</div><PlusBtn onClick={()=>{navigate(`/crew/notice/detail/${id}/${0}`)}}>Move to Notice Page</PlusBtn></Box6>
-                <Box7 id="scroll-area"> {crewDetail.notices.map((a : any, i : any)=>
-                                {return(<NoticeBox key={i}>
+                <Box6><div>Notice</div><MoveToNoticePage src={rightRightArrow} alt="rightRightArrow" onClick={()=>{navigate(`/crew/notice/detail/${id}/${0}`)}}></MoveToNoticePage></Box6>
+                <Box7 ><div id="scroll-area2"> {crewDetail.notices.map((a : any, i : any)=>
+                                {return(<NoticeBox  key={i}>
                                             <NoticeImg src={images[i+1]}></NoticeImg>
                                                 <NoticeWrapperBox> 
                                                     <NoticeTitle>{i+1}번 Notice Title</NoticeTitle>
                                                     <NoticeContent> {a.content}</NoticeContent>
                                                 </NoticeWrapperBox> 
                                             <Arrow onClick={() => {navigate(`/crew/notice/detail/${id}/${i}`)}} src={rightArrow} alt="rightArrow"></Arrow>
-                                        </NoticeBox>)})}
+                                        </NoticeBox>)})}</div>
                 </Box7>
                 </LayOut2>
 
@@ -956,8 +982,10 @@ const ScheduleDetailModalContent = styled.div`
     color: white;
     padding: 20px;
     border-radius: 10px;
-    width: 300px;
+    width: 400px;
+
     text-align: center;
+    border-bottom: 1px dashed white;
 `;
 
 const ScheduleDetailModalContent2 = styled.div`
@@ -965,10 +993,10 @@ const ScheduleDetailModalContent2 = styled.div`
     color: white;
     padding: 20px;
     border-radius: 10px;
-    width: 300px;
-    background-color:rgba(0, 0, 0, 0.5);
+    width: 400px;
+    background-color:rgba(0, 0, 0, 0.8);
     height: 400px;
-    text-align: center;
+
 `;
 
 const ScheduleText = styled.div`
@@ -1057,9 +1085,24 @@ const SchedulPlusWrapper = styled.div`
 
 const ScheduleTitleBox = styled.div`
     display: flex;
+    align-items: center;
+    justify-content: space-between;
+
 `
 const GenreFlexBox = styled.div`
     display: flex;
+    align-items: center;
+    gap : 5px;
+    padding-left: 50px;
+`
+const GenreBox = styled.div`
+    border: 0.5px solid white;
+    border-radius: 30px;
+    font-size: 10px;
+    font-weight: 200;
+    padding: 5px;
+    
+    
 `
 const ModalCollumBox = styled.div`
     display: flex;
@@ -1067,9 +1110,72 @@ const ModalCollumBox = styled.div`
 `
 const FlexCan = styled.div`
     display: flex;
+    align-items: center;
+    gap: 10px;
 `
 
-function ScheduleEditComponent({crewScheduleDetail,crewDetail}:any) {
+
+const TextBox = styled.div`
+    display: flex;
+    flex-direction: column;
+`
+
+const TitleText =styled.div`
+    font-size: 25px;
+    padding-bottom: 10px;
+`
+const ContentText = styled.div`
+    padding-bottom: 50px;
+`
+const DateText = styled.div`
+    
+`
+const FollowedIcon = styled.img`
+    height: 25px;
+    width: 25px;
+
+`
+const NotFollowedIcon = styled.img`
+    height: 25px;
+    width: 25px;
+`
+const RadiusBox = styled.div`
+    background-color: black;
+    border-radius: 30px;
+    height: 50px;
+    width: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+`
+const ButtonWrapper2 = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    gap : 5px;
+`
+const DeleteBox = styled.div`
+    border: 1px solid white;
+    padding: 5px;
+    width: 50px;
+    border-radius: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+`
+const EditBox = styled.div`
+       border: 1px solid white;
+    padding: 5px;
+    width: 50px;
+    border-radius: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+`
+
+function ScheduleEditComponent({crewScheduleDetail,crewDetail,scheduleLikeList,setScheduleLikeList}:any) {
     const [isSchedulePlusModalOpen, setisSchedulePlusModalOpen] = useState(false) // 스케쥴 추가 스위치
     const [isScheduleDetailModalOpen, setisScheduleDetailModalOpen] = useState(false) // 스케쥴 디테일 스위치
     const [isScheduleEditModalOpen, setisScheduleEditModalOpen] = useState(false) // 스케쥴 디테일 스위치
@@ -1078,9 +1184,75 @@ function ScheduleEditComponent({crewScheduleDetail,crewDetail}:any) {
     const { id} = useParams()
     const [map, setMap] = useState<kakao.maps.Map | null>(null);    
     const mapRef = useRef<kakao.maps.Map>(null)     
+    const [bookmarked, setBookmarked] = useState(true);
+    
+    const [haveBookMarked, setHaveBookMarked] = useState(false)
+    
+    useEffect(()=> {
+        console.log("실행됨")
+        for (let i = 0 ; i < scheduleLikeList.length; i++) {
+            
+            if(scheduleLikeList[i].id == crewDetail.schedules[selectedScheduleIndex-1].id ) {
+                setHaveBookMarked(true)
+                return
+            } else {
+                setHaveBookMarked(false)
+            }
+        }
+    }, [isScheduleDetailModalOpen])
+
+    useEffect(()=> {
+
+    },[scheduleLikeList])
 
 
+    const BookmarkPlus = async (scheduleId : number) => {
+        try {
 
+            const payload = { scheduleId : scheduleId }
+            const res = await axiosInstance.post(`schedule/like`, payload)
+            console.log(res.data)
+            alert('북마크 성공!')
+            setBookmarked(!bookmarked)
+            console.log(bookmarked)
+            setHaveBookMarked(!haveBookMarked)
+        }
+         catch {
+
+        }
+    }
+
+
+  
+    const BookmarkMinus = async (scheduleId : any) => {
+        try {
+
+            console.log(scheduleId)
+            const res = await axiosInstance.delete(`schedule/like/${scheduleId}`)
+            console.log(res.data)
+            alert('북마크 취소 성공!')
+            setBookmarked(!bookmarked)
+            console.log(bookmarked)
+            setHaveBookMarked(!haveBookMarked)
+        } catch {
+
+        }
+    }
+
+    const DeleteSchedule = async (scheduleId : any) => {
+        try {
+            const res = await axiosInstance.delete(`schedule/${scheduleId}`)
+            alert("일정 삭제 성공!")
+            window.location.reload(); // ✅ 화면 새로고침 
+        } catch {
+
+        }
+    }
+    
+
+    useEffect(() => {
+    console.log("북마크 상태 변경됨, 모달 리렌더링!");
+    }, [bookmarked]); // ✅ bookmarked 상태가 변경될 때 실행됨
 
     const openModal = () => {
         setisSchedulePlusModalOpen(true)
@@ -1089,6 +1261,8 @@ function ScheduleEditComponent({crewScheduleDetail,crewDetail}:any) {
     const closeModal = () => {
         setisSchedulePlusModalOpen(false)
     }
+
+    const [haveSchedule,sethaveSchedule] = useState(true) 
 
     return (
        <Box5>
@@ -1117,23 +1291,28 @@ function ScheduleEditComponent({crewScheduleDetail,crewDetail}:any) {
             <ModalCollumBox>
                 <ScheduleDetailModalOverlay>
                     <ScheduleDetailModalContent>
-                        <ScheduleTitleBox><div>{crewDetail.name}</div> <GenreFlexBox>{crewDetail.genres.map((a:any,i:any)=>{return (<div>{a}</div>)})}</GenreFlexBox>   <button onClick={() => { setisScheduleDetailModalOpen(false) }}>닫기</button> </ScheduleTitleBox>
+                        <ScheduleTitleBox><div style={{fontSize : "30px"}}>{crewDetail.name}</div> <GenreFlexBox>{crewDetail.genres.map((a:any,i:any)=>{return (<GenreBox>{a}</GenreBox>)})}</GenreFlexBox>   <div onClick={() => { setisScheduleDetailModalOpen(false) }}>X</div> </ScheduleTitleBox>
                       
                                 
                     </ScheduleDetailModalContent>
                     <ScheduleDetailModalContent2>
-                        
-                        <div> {crewDetail.schedules[selectedScheduleIndex-1].title}</div>
-                        <div> {crewDetail.schedules[selectedScheduleIndex-1].content}</div>
+                        <TextBox>
+                        <TitleText> {crewDetail.schedules[selectedScheduleIndex-1].title}</TitleText>
+                        <ContentText> {crewDetail.schedules[selectedScheduleIndex-1].content}</ContentText>
+                        </TextBox>
                         <FlexCan>
-                        <div>{crewDetail.schedules[selectedScheduleIndex-1].buskingDate[0]}년 {crewDetail.schedules[selectedScheduleIndex-1].buskingDate[1]}월 {crewDetail.schedules[selectedScheduleIndex-1].buskingDate[2]}일 {crewDetail.schedules[selectedScheduleIndex-1].buskingDate[3]}시 일자로, {crewDetail.schedules[selectedScheduleIndex-1].place}에서 버스킹합니다! </div>
-                        <div>북마크 버튼</div>
+                        <DateText>{crewDetail.schedules[selectedScheduleIndex-1].buskingDate[0]}년 {crewDetail.schedules[selectedScheduleIndex-1].buskingDate[1]}월 {crewDetail.schedules[selectedScheduleIndex-1].buskingDate[2]}일 {crewDetail.schedules[selectedScheduleIndex-1].buskingDate[3]}시 일자로, {crewDetail.schedules[selectedScheduleIndex-1].place}에서 버스킹합니다! </DateText>
+                        
+                        <RadiusBox>
+                        {haveBookMarked  &&<FollowedIcon src={followedIcon} alt="followedIcon" onClick={()=>{BookmarkMinus(crewDetail.schedules[selectedScheduleIndex-1].id)}}></FollowedIcon>}
+                        {!haveBookMarked &&<NotFollowedIcon src={notFollowedIcon} alt="notFollowedIcon" onClick={()=>{BookmarkPlus(crewDetail.schedules[selectedScheduleIndex-1].id)}}></NotFollowedIcon>}
+                        </RadiusBox>
                         </FlexCan>
                        <Map // 지도를 표시할 Container
                             center={{lat : crewDetail.schedules[selectedScheduleIndex-1].latitude, lng: crewDetail.schedules[selectedScheduleIndex-1].longitude}}
                             style={{
                             // 지도의 크기
-                            width: "300px",
+                            width: "360px",
                             height: "200px",
                             }}
                             id="map"
@@ -1143,14 +1322,12 @@ function ScheduleEditComponent({crewScheduleDetail,crewDetail}:any) {
                             ref={mapRef}
                         >
                         <MapMarker position={{lat : crewDetail.schedules[selectedScheduleIndex-1].latitude, lng: crewDetail.schedules[selectedScheduleIndex-1].longitude}}>
-                            <div style={{ padding: "5px", color: "#000", }}>
-                            "내 위치"
-                            </div>
                          </MapMarker>
                        </Map>
-                        <div>삭제</div>
-                        <div onClick={()=> {setisScheduleEditModalOpen(true); setisScheduleDetailModalOpen(false)}}>수정</div>
-               
+                        <ButtonWrapper2>
+                        <DeleteBox onClick={()=>{DeleteSchedule(crewDetail.schedules[selectedScheduleIndex-1].id)}}>삭제</DeleteBox>
+                        <EditBox onClick={()=> {setisScheduleDetailModalOpen(false); setModalType("ScheduleEdit"); }}>수정</EditBox>
+                        </ButtonWrapper2>
                     </ScheduleDetailModalContent2>
                 </ScheduleDetailModalOverlay>
             </ModalCollumBox>
@@ -1175,6 +1352,7 @@ function ScheduleEditComponent({crewScheduleDetail,crewDetail}:any) {
                 )}
               
                 { modalType === "SchedulePlus" && <SchedulePlusModal width="600px" height="500px" setModalType={setModalType} id={id}></SchedulePlusModal>}
+                { modalType === "ScheduleEdit" && <ScheduleEditModal width="600px" height="500px" setModalType={setModalType} id={id}></ScheduleEditModal>}
        </Box5>
 
 

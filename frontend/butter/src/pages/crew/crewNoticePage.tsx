@@ -167,12 +167,70 @@ const EditAndDelBtn = styled.div`
 
 const EditButton = styled.img`
     height: 25px;
-    padding-left: 375px;
+ 
 `
 
 const DeleteButton = styled.img`
     height: 25px;
+    padding-left: 375px;
 `
+
+const TitleBox = styled.div`
+    background-color: gray;
+    width: 98%;
+    height: 50px;
+
+`
+
+const ContentBox = styled.div`
+    background-color: gray;
+    width: 98%;
+    height: 400px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+`
+
+const ImageBox = styled.div`
+    display: flex;
+    gap : 10px;
+    align-items: center;
+`
+
+const DeleteText = styled.div`
+    border: 1px solid white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 30px;
+    width: 80px;
+    border-radius: 30px;
+    margin-left: 340px;
+`
+
+const PostText = styled.div`
+    border: 1px solid white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 30px;
+    width: 80px;
+    border-radius: 30px;
+`
+
+const FlexCan = styled.div`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 5px;
+    padding-right: 20px;
+    
+`
+
+
+
+
 
 function CrewNoticePage() {
 
@@ -226,7 +284,7 @@ function CrewNoticePage() {
           if(image){
           formData.append("image", image)} // ✅ 파일 추가
                try {
-                   setLoading(true);
+                 
                  
                    const response = await axiosInstance.post(`/crew/notice`, formData, // 크루 정보 수정 요청
                    {headers: {
@@ -258,7 +316,7 @@ function CrewNoticePage() {
               if(image){
               formData.append("image", image)} // ✅ 파일 추가
                    try {
-                       setLoading(true);
+                      
                      
                        const response = await axiosInstance.put(`/crew/notice/${selectedNotice}`, formData, // 크루 정보 수정 요청
                        {headers: {
@@ -361,8 +419,8 @@ function CrewNoticePage() {
                     <div> {crewDetail.notices.length  > 0 ? crewDetail.notices[basicNum].content : ""}  </div>
                     <EditAndDelBtn>
                     <NoticeImage2 src={crewDetail.notices[basicNum].imageUrl} alt="NoticeImage"></NoticeImage2>
-                        <EditButton src={editButton} alt="editButton" onClick={()=> editHandlerOn()}></EditButton>
                         <DeleteButton src={deleteButton} alt="deleteButton" onClick={()=> {axiosInstance.delete(`crew/notice/${selectedNotice}`); alert("삭제성공!");  window.location.reload(); }}></DeleteButton>
+                        <EditButton src={editButton} alt="editButton" onClick={()=> editHandlerOn()}></EditButton>
                     </EditAndDelBtn>
                     </Box5>
             </div>}
@@ -372,16 +430,18 @@ function CrewNoticePage() {
                 <div>Edit Notice</div>
                 </Box4>
                 <Box5>
-                <div><input type="text" placeholder={crewDetail.notices[basicNum].title} value={Name} onChange={handleTitleChange} /></div>
-                <div><input type="text" placeholder={crewDetail.notices[basicNum].content} value={content} onChange={handleContentChange} /></div>
-                <div><input type="file"  accept="image/*" onChange={handleImageChange}/></div>  <div onClick={()=>{{setPreview(null); setImage(null) }}}>x</div>
-                {preview && <img src={preview} alt="Preview" width="200" />}
-                <div><button onClick={() => {editHandlerOff(); setPreview(null); setImage(null)  }}>취소</button>
-                <button onClick={() => {
+                <TitleBox><input type="text" placeholder={crewDetail.notices[basicNum].title} value={Name} onChange={handleTitleChange} style={{backgroundColor : "gray", height : "50px", width: "100%", color:"white", fontSize : "20px"}}/></TitleBox>
+                <ContentBox><input type="text" placeholder={crewDetail.notices[basicNum].content} value={content} onChange={handleContentChange} style={{backgroundColor : "gray", height : "400px", width: "100%", color:"white", fontSize : "15px"}} /></ContentBox>
+                <FlexCan> <ImageBox><input type="file"  accept="image/*" onChange={handleImageChange}/>
+                <div onClick={()=>{{setPreview(null); setImage(null) }}}>x</div>
+                </ImageBox>  
+                {/* {preview && <img src={preview} alt="Preview" width="200" />} */}
+               <DeleteText onClick={() => {editHandlerOff(); setPreview(null); setImage(null)  }}>취소</DeleteText>
+                <PostText onClick={() => {
                     NoticeEdit()
                     .then(() => editHandlerOff())
-                }}>편집 완료</button>
-                </div>
+                }}>편집 완료</PostText>
+                </FlexCan>
                 </Box5>
                
             </div>}
@@ -389,19 +449,23 @@ function CrewNoticePage() {
 
             {noticePlusSwitch && <div>
                 <Box4>
-                <div>Post Notice</div>
+                <div>Create Notice</div>
                 </Box4>
                 <Box5>
-                <div><input type="text" placeholder="type your notice content" value={Name2} onChange={handleTitleChange2} /></div>
-                <div><input type="text" placeholder="type your notice content" value={content2} onChange={handleContentChange2} /></div>
-                <div><input type="file"  accept="image/*" onChange={handleImageChange}/></div>  <div onClick={()=>{{setPreview(null); setImage(null) }}}>x</div>
-                {preview && <img src={preview} alt="Preview" width="200" />}
-                <div><button onClick={() => { plusHandlerOff(); setPreview(null); setImage(null)  }}>취소</button>
-                <button onClick={() => {
+                <TitleBox><input type="text" placeholder="type your notice title" value={Name2} onChange={handleTitleChange2} style={{backgroundColor : "gray", height : "50px", width: "100%", color:"white", fontSize : "20px"}} /></TitleBox>
+                <ContentBox><input id="ContentBox" type="text" placeholder="type your notice content" value={content2} onChange={handleContentChange2} style={{backgroundColor : "gray", height : "400px", width: "100%", color:"white", fontSize : "15px"}}/>
+                </ContentBox>
+                <FlexCan>   <ImageBox><input type="file"  accept="image/*" onChange={handleImageChange}/>
+                    <div onClick={()=>{{setPreview(null); setImage(null) }}}>x</div>
+                    </ImageBox>
+                {/* {preview && <img src={preview} alt="Preview" width="200" />} */}
+                  
+                <DeleteText onClick={() => { plusHandlerOff(); setPreview(null); setImage(null)  }}>취소</DeleteText>
+                <PostText onClick={() => {
                     NoticePost()
                     .then(() => editHandlerOff())
-                }}>생성</button>
-                </div>
+                }}>생성</PostText>
+                </FlexCan>
                 </Box5>            
             </div>}
 
