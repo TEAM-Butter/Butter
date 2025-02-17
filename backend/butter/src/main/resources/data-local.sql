@@ -133,26 +133,26 @@ INSERT INTO liked_schedule (is_liked, schedule_id, member_id) VALUES
 -- crew_notice 테이블
 INSERT INTO crew_notice (create_date, crew_id, crew_notice_id, update_date, title, content, image_url)
 VALUES
-    ('2025-02-01 10:15:30.654321', 1, 1, '2025-02-05 14:30:00.654987', 'New Busking Schedule!', '다음 주 새로운 버스킹 일정이 업데이트되었습니다.', '/assets/notice1.jpg'),
-    ('2025-02-02 11:30:25.123654', 2, 2, '2025-02-06 16:45:10.321987', 'Practice Session Update', '연습 시간이 변경되었습니다. 확인해 주세요.', '/assets/notice2.jpg'),
-    ('2025-02-03 14:50:55.456321', 3, 3, '2025-02-07 13:20:30.654789', 'Live Performance Tonight!', '오늘 저녁 특별 공연이 진행됩니다!', '/assets/notice3.jpg'),
-    ('2025-02-04 09:10:15.789654', 4, 4, '2025-02-08 15:10:45.987321', 'New Crew Member!', '새로운 크루 멤버를 소개합니다!', '/assets/notice4.jpg'),
-    ('2025-02-05 12:20:40.321789', 5, 5, '2025-02-09 18:55:20.123654', 'Busking Location Change', '공연 장소가 변경되었습니다.', '/assets/notice5.jpg'),
-    ('2025-02-06 15:25:33.654123', 6, 6, '2025-02-10 07:45:20.987321', 'Thank You for Your Support!', '모두의 성원에 감사드립니다!', '/assets/notice6.jpg'),
-    ('2025-02-07 10:40:25.321987', 7, 7, '2025-02-11 12:30:55.987654', 'Merchandise Update', '새로운 굿즈가 출시되었습니다.', '/assets/notice7.jpg'),
-    ('2025-02-08 07:30:50.654321', 8, 8, '2025-02-12 14:50:20.456321', 'Live Streaming Event!', '온라인으로 함께 공연을 즐기세요.', '/assets/notice8.jpg'),
-    ('2025-02-09 13:40:10.789654', 9, 9, '2025-02-13 10:10:25.321987', 'Special Guest Announcement', '이번 공연의 스페셜 게스트를 소개합니다!', '/assets/notice9.jpg'),
-    ('2025-02-10 08:35:40.987654', 10, 10, '2025-02-14 11:45:33.654321', 'Rehearsal Schedule', '이번 주 리허설 일정이 공지되었습니다.', '/assets/notice10.jpg'),
-    ('2025-02-11 14:10:15.987654', 1, 11, '2025-02-15 15:30:55.321654', 'Crowdfunding Project!', '크라우드 펀딩 프로젝트가 시작되었습니다.', '/assets/notice11.jpg'),
-    ('2025-02-12 16:50:55.123789', 2, 12, '2025-02-16 06:45:25.654321', 'Fan Meeting Event', '팬들과의 특별한 만남을 준비했습니다.', '/assets/notice12.jpg'),
-    ('2025-02-13 09:15:30.789654', 3, 13, '2025-02-17 21:30:15.654987', 'Performance Highlights', '지난 공연의 하이라이트 영상이 업로드되었습니다.', '/assets/notice13.jpg'),
-    ('2025-02-14 12:50:55.987654', 4, 14, '2025-02-18 16:10:25.321456', 'Winter Festival Performance!', '겨울 페스티벌 공연 일정이 추가되었습니다.', '/assets/notice14.jpg'),
-    ('2025-02-15 07:45:20.321789', 5, 15, '2025-02-19 11:45:33.987654', 'New Collaboration', '특별한 아티스트와의 협업이 예정되어 있습니다.', '/assets/notice15.jpg'),
-    ('2025-02-16 10:20:30.123654', 6, 16, '2025-02-20 14:30:45.654789', 'Behind the Scenes', '무대 뒤 이야기를 공유합니다.', '/assets/notice16.jpg'),
-    ('2025-02-17 08:55:40.321987', 7, 17, '2025-02-21 10:10:55.123456', 'New Music Release!', '새로운 곡이 발매되었습니다!', '/assets/notice17.jpg'),
-    ('2025-02-18 15:30:20.456321', 8, 18, '2025-02-22 13:45:40.789654', 'Interview Feature', '인터뷰 영상이 공개되었습니다.', '/assets/notice18.jpg'),
-    ('2025-02-19 11:40:10.789654', 9, 19, '2025-02-23 07:55:30.654321', 'Limited Edition Merch', '한정판 굿즈가 출시되었습니다!', '/assets/notice19.jpg'),
-    ('2025-02-20 14:50:55.321987', 10, 20, '2025-02-24 12:20:15.987654', 'Concert Ticket Sales', '콘서트 티켓 예매가 시작되었습니다.', '/assets/notice20.jpg');
+    ('2025-02-01 10:15:30.654321', 1, 1, '2025-02-05 14:30:00.654987', 'New Busking Schedule!', '다음 주 새로운 버스킹 일정이 업데이트되었습니다.', 'https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/c2620a7c-fa94-4726-a67f-176704549bb8.jpg'),
+    ('2025-02-02 11:30:25.123654', 2, 2, '2025-02-06 16:45:10.321987', 'Practice Session Update', '연습 시간이 변경되었습니다. 확인해 주세요.', 'https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/4e0e0a60-ec5d-44e7-974a-4c279fed6a56.jpg'),
+    ('2025-02-03 14:50:55.456321', 3, 3, '2025-02-07 13:20:30.654789', 'Live Performance Tonight!', '오늘 저녁 특별 공연이 진행됩니다!', 'https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/40a43d2d-c330-4480-8957-602040074488.jpg'),
+    ('2025-02-04 09:10:15.789654', 4, 4, '2025-02-08 15:10:45.987321', 'New Crew Member!', '새로운 크루 멤버를 소개합니다!', 'https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/5bf78906-cb36-4ff7-b5a8-e1901d2333db.jpg'),
+    ('2025-02-05 12:20:40.321789', 5, 5, '2025-02-09 18:55:20.123654', 'Busking Location Change', '공연 장소가 변경되었습니다.', 'https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/abc48305-8f9d-4e59-81c1-6df316430f61.jpg'),
+    ('2025-02-06 15:25:33.654123', 6, 6, '2025-02-10 07:45:20.987321', 'Thank You for Your Support!', '모두의 성원에 감사드립니다!', 'https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/0f722d62-d262-4edf-a65e-b6e7c3208b22.jpg'),
+    ('2025-02-07 10:40:25.321987', 7, 7, '2025-02-11 12:30:55.987654', 'Merchandise Update', '새로운 굿즈가 출시되었습니다.', 'https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/ab40fa82-38b7-49c1-a24f-cf21cefeacfe.jpg'),
+    ('2025-02-08 07:30:50.654321', 8, 8, '2025-02-12 14:50:20.456321', 'Live Streaming Event!', '온라인으로 함께 공연을 즐기세요.', 'https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/bb11a127-da3f-4d88-8619-b9aed75f5260.jpg'),
+    ('2025-02-09 13:40:10.789654', 9, 9, '2025-02-13 10:10:25.321987', 'Special Guest Announcement', '이번 공연의 스페셜 게스트를 소개합니다!', 'https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/73ae9d7b-4984-400d-b1a0-f59d77257f6b.jpg'),
+    ('2025-02-10 08:35:40.987654', 10, 10, '2025-02-14 11:45:33.654321', 'Rehearsal Schedule', '이번 주 리허설 일정이 공지되었습니다.', 'https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/02a2f2d1-776f-49a3-84bf-2d251ad67c79.jpg'),
+    ('2025-02-11 14:10:15.987654', 1, 11, '2025-02-15 15:30:55.321654', 'Crowdfunding Project!', '크라우드 펀딩 프로젝트가 시작되었습니다.', 'https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/b9391f09-be0c-4a12-8da8-c999293969c6.jpg'),
+    ('2025-02-12 16:50:55.123789', 2, 12, '2025-02-16 06:45:25.654321', 'Fan Meeting Event', '팬들과의 특별한 만남을 준비했습니다.', 'https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/58fd91eb-c695-4cf5-9c39-88b349336a5c.jpg'),
+    ('2025-02-13 09:15:30.789654', 3, 13, '2025-02-17 21:30:15.654987', 'Performance Highlights', '지난 공연의 하이라이트 영상이 업로드되었습니다.', 'https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/d452059f-0092-44e8-a99b-6157f997d3a2.jpg'),
+    ('2025-02-14 12:50:55.987654', 4, 14, '2025-02-18 16:10:25.321456', 'Winter Festival Performance!', '겨울 페스티벌 공연 일정이 추가되었습니다.', 'https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/1743884a-f8a4-44c3-90d3-80cad59734df.jpg'),
+    ('2025-02-15 07:45:20.321789', 5, 15, '2025-02-19 11:45:33.987654', 'New Collaboration', '특별한 아티스트와의 협업이 예정되어 있습니다.', 'https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/f285cbe4-719e-4961-8252-4e62c4a0b63e.jpg'),
+    ('2025-02-16 10:20:30.123654', 6, 16, '2025-02-20 14:30:45.654789', 'Behind the Scenes', '무대 뒤 이야기를 공유합니다.', 'https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/e115de6e-2379-4888-bcc9-07aec7287dfa.jpg'),
+    ('2025-02-17 08:55:40.321987', 7, 17, '2025-02-21 10:10:55.123456', 'New Music Release!', '새로운 곡이 발매되었습니다!', 'https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/b6d80a38-cb4b-4064-952e-da70fb7880da.jpg'),
+    ('2025-02-18 15:30:20.456321', 8, 18, '2025-02-22 13:45:40.789654', 'Interview Feature', '인터뷰 영상이 공개되었습니다.', 'https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/74f022f2-22d0-4395-bc53-cf60e0de7e9f.jpg'),
+    ('2025-02-19 11:40:10.789654', 9, 19, '2025-02-23 07:55:30.654321', 'Limited Edition Merch', '한정판 굿즈가 출시되었습니다!', 'https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/5bfb2c5f-929b-40e8-a20e-e2a32061bfa3.jpg'),
+    ('2025-02-20 14:50:55.321987', 10, 20, '2025-02-24 12:20:15.987654', 'Concert Ticket Sales', '콘서트 티켓 예매가 시작되었습니다.', 'https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/f6e24a02-750d-4e08-aded-af22861cd586.jpg');
 
 -- schedule 테이블 (서울 2025-02-11)
 INSERT INTO schedule (latitude, longitude, busking_date, create_date, crew_id, update_date, title, content, place) VALUES
