@@ -3,17 +3,21 @@ package com.ssafy.butter.domain.live.controller;
 import com.ssafy.butter.auth.dto.AuthInfoDTO;
 import com.ssafy.butter.domain.live.dto.request.LiveSaveRequestDTO;
 import com.ssafy.butter.domain.live.dto.request.LiveListRequestDTO;
+import com.ssafy.butter.domain.live.dto.request.LiveThumbnailRequestDTO;
 import com.ssafy.butter.domain.live.dto.response.LiveResponseDTO;
+import com.ssafy.butter.domain.live.dto.response.LiveThumbnailResponseDTO;
 import com.ssafy.butter.domain.live.service.LiveService;
 import com.ssafy.butter.global.token.CurrentUser;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -67,5 +71,15 @@ public class LiveController {
             @PathVariable Long id) {
         liveService.finishLive(currentUser, id);
         return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "라이브 썸네일 수정", description = "라이브 썸네일을 수정합니다.")
+    @PutMapping(value = "/{id}/thumbnail", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<LiveThumbnailResponseDTO> updateLiveThumbnail(
+            @Parameter(hidden = true) @CurrentUser AuthInfoDTO currentUser,
+            @PathVariable Long id,
+            @Parameter(content = @Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE))
+            @ModelAttribute LiveThumbnailRequestDTO liveThumbnailRequestDTO) {
+        return ResponseEntity.ok(liveService.updateLiveThumbnail(currentUser, id, liveThumbnailRequestDTO));
     }
 }
