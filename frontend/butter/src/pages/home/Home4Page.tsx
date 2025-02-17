@@ -27,7 +27,7 @@ const HomePageWrapper = styled(motion.div)`
 const Container = styled.div`
     width: 100%;
     height: 87%;
-    padding: 0 20px;
+    padding: 0 35px;
     display: grid;
     grid-template-columns: 2fr 3fr;
     gap: 20px;

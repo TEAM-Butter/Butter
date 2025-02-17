@@ -27,7 +27,7 @@ const HomePageWrapper = styled(motion.div)`
 const Container = styled.div`
     width: 100%;
     height: 87%;
-    padding: 0 20px;
+    padding: 0 35px;
     display: grid;
     grid-template-columns: 2fr 3fr;
     gap: 20px;
@@ -62,7 +62,7 @@ const BgText = styled.div`
     z-index: -5;
     justify-content: center;
     flex-wrap: wrap;
-    font-size: 370px;
+    font-size: 300px;
     font-weight: 800;
     letter-spacing: -30px;
     
@@ -96,7 +96,7 @@ const InfoWrapper = styled.div`
     
     #info1 {
         font-size: 20px;
-        margin-bottom: 40px;
+        margin-bottom: 20px;
     }
 
     #info2 {
