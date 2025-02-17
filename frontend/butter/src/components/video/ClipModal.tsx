@@ -196,7 +196,7 @@ export const ClipModal: React.FC<ClipModalProps> = ({
       if (response.ok) {
         console.log(data);
       } else {
-        console.error("❌ 클립 삭제제 실패:", data.errorMessage);
+        console.error("❌ 클립 삭제 실패:", data.errorMessage);
         alert(`클립 삭제 실패: ${data.errorMessage}`);
       }
     } catch (error) {
