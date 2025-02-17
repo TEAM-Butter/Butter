@@ -8,12 +8,14 @@ interface StreamLiveVideoProps {
   local?: boolean;
   roomName: string;
   role: string;
+  fakeTitle: string;
 }
 
 function StreamLiveVideo({
   track,
   participantIdentity,
   roomName,
+  fakeTitle,
   role,
   local = false, // local 속성 추가
 }: StreamLiveVideoProps) {
@@ -131,7 +133,7 @@ function StreamLiveVideo({
   return (
     <div id={"camera-" + participantIdentity} className="video-container">
       <div className="participant-data">
-        <p>{roomName}</p>
+        <p>{fakeTitle}</p>
         <p>{participantIdentity}</p>
       </div>
       <video ref={videoElement} id={track.sid}></video>

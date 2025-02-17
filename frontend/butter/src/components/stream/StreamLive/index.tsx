@@ -64,7 +64,8 @@ const StreamLive = ({
                         track={localTrack}
                         participantIdentity={participantName}
                         local={true}
-                        roomName={fakeTitle}
+                        fakeTitle={fakeTitle}
+                        roomName={roomName}
                         role={role}
                       />
                       {/* <div className="absolute bottom-2 left-2 bg-black bg-opacity-50 px-2 py-1 rounded text-white text-sm">
@@ -84,6 +85,7 @@ const StreamLive = ({
                           track={remoteTrack.trackPublication.videoTrack!}
                           participantIdentity={remoteTrack.participantIdentity}
                           roomName={roomName}
+                          fakeTitle={fakeTitle}
                           role={role}
                         />
                         <div className="absolute bottom-2 left-2 bg-black bg-opacity-50 px-2 py-1 rounded text-white text-sm">
