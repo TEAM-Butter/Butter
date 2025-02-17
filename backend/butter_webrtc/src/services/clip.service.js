@@ -234,7 +234,7 @@ export class ClipService {
       // Sort clips by timestamp in descending order
       const sortedClips = clips.sort((a, b) => b.timestamp - a.timestamp);
 
-      return sortedClips.map((clip) => clip.clipName);
+      return { success: true, sortedClips };
     } catch (error) {
       console.error("Error retrieving clip list:", error);
       return { success: false, error: error.message };
