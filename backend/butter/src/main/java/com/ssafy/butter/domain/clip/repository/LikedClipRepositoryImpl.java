@@ -25,7 +25,7 @@ public class LikedClipRepositoryImpl implements LikedClipRepository {
     }
 
     @Override
-    public long countLikedClipByIdAndIsLiked(Long id, Boolean isLiked) {
-        return likedClipJpaRepository.countLikedClipByIdAndIsLiked(id, isLiked);
+    public long countLikedClipByClipAndIsLiked(Clip clip, Boolean isLiked) {
+        return likedClipJpaRepository.countLikedClipByClipAndIsLiked(clip, isLiked);
     }
 }

@@ -46,7 +46,8 @@ public class Clip {
     private List<LikedClip> likedClips = new ArrayList<>();
 
     @Builder
-    public Clip(Crew crew, String title, String videoName, Long hitCount, List<LikedClip> likedClips) {
+    public Clip(Long id, Crew crew, String title, String videoName, Long hitCount, List<LikedClip> likedClips) {
+        this.id = id;
         this.crew = crew;
         this.title = title;
         this.videoName = videoName;
