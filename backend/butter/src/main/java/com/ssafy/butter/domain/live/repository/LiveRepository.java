@@ -1,5 +1,6 @@
 package com.ssafy.butter.domain.live.repository;
 
+import com.ssafy.butter.domain.crew.entity.Crew;
 import com.ssafy.butter.domain.live.dto.request.LiveListRequestDTO;
 import com.ssafy.butter.domain.live.entity.Live;
 import org.springframework.data.domain.Pageable;
@@ -20,4 +21,6 @@ public interface LiveRepository {
     List<Live> getActiveLiveList(LiveListRequestDTO liveListRequestDTO);
 
     List<Live> getActiveLiveListOrderByStartDate(LiveListRequestDTO liveListRequestDTO);
+
+    Optional<Live> findByCrewAndEndDateIsNull(Crew crew);
 }
