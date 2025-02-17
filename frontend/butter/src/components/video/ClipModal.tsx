@@ -135,10 +135,17 @@ export const ClipModal: React.FC<ClipModalProps> = ({
 }) => {
   const [title, setTitle] = useState("");
   const SERVER_URL = import.meta.env.VITE_NODE_JS_SERVER || "";
-
+  const loadingVideoUrl = "../../assets/loading.mp4";
   // 추가: 로딩 스피너 컴포넌트 (간단한 예시)
   const LoadingSpinner = () => (
-    <div style={{ textAlign: "center", padding: "20px", fontSize: "18px" }}>
+    <div
+      style={{
+        textAlign: "center",
+        padding: "40px",
+        fontSize: "20px",
+        color: "#333",
+      }}
+    >
       로딩 중...
     </div>
   );
@@ -262,7 +269,14 @@ export const ClipModal: React.FC<ClipModalProps> = ({
         {videoUrl ? (
           <VideoPlayer src={videoUrl} controls autoPlay />
         ) : (
-          <LoadingSpinner />
+          <VideoPlayer
+            src={loadingVideoUrl}
+            autoPlay
+            loop
+            muted
+            // 로딩 영상의 스타일을 원한다면 추가 속성을 설정
+            style={{ backgroundColor: "#000" }}
+          />
         )}
         <Input
           type="text"
