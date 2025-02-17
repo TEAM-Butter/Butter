@@ -96,6 +96,24 @@ const DownLoadButton = styled(Button)`
   //  background-color: #4caf50;
 `;
 
+const ListButton = styled(Button)`
+  padding: 10px 20px;
+  border: none;
+  background-color: #dc3545;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+`;
+
+const DeleteButton = styled(Button)`
+  padding: 10px 20px;
+  border: none;
+  background-color: #dc3545;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+`;
+
 interface ClipModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -110,14 +128,13 @@ export const ClipModal: React.FC<ClipModalProps> = ({
   clipName,
 }) => {
   const [title, setTitle] = useState("");
+  const SERVER_URL = import.meta.env.VITE_NODE_JS_SERVER || "";
 
   const handleSave = async () => {
     if (!title.trim()) {
       alert("제목을 입력해 주세요!");
       return;
     }
-
-    const SERVER_URL = import.meta.env.VITE_NODE_JS_SERVER || ""; // NodeJS 서버 URL
 
     try {
       const response = await fetch(`${SERVER_URL}/clip/${title}/${clipName}`, {
@@ -135,6 +152,52 @@ export const ClipModal: React.FC<ClipModalProps> = ({
       } else {
         console.error("❌ 클립 저장 실패:", data.errorMessage);
         alert(`클립 저장 실패: ${data.errorMessage}`);
+      }
+    } catch (error) {
+      console.error("🚨 서버 오류 발생:", error);
+      alert("서버 오류 발생");
+    }
+  };
+
+  const listClip = async () => {
+    try {
+      const response = await fetch(`${SERVER_URL}/clip/`, {
+        method: "GET", // 클립 저장을 위해 GET 요청
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        console.log(data);
+      } else {
+        console.error("❌ 클립 리스트 실패:", data.errorMessage);
+        alert(`클립 리스트 실패: ${data.errorMessage}`);
+      }
+    } catch (error) {
+      console.error("🚨 서버 오류 발생:", error);
+      alert("서버 오류 발생");
+    }
+  };
+
+  const deleteClip = async () => {
+    try {
+      const response = await fetch(`${SERVER_URL}/clip/${clipName}`, {
+        method: "DELETE", // 클립 저장을 위해 GET 요청
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        console.log(data);
+      } else {
+        console.error("❌ 클립 삭제제 실패:", data.errorMessage);
+        alert(`클립 삭제 실패: ${data.errorMessage}`);
       }
     } catch (error) {
       console.error("🚨 서버 오류 발생:", error);
@@ -194,6 +257,10 @@ export const ClipModal: React.FC<ClipModalProps> = ({
           </DownLoadButton>
           <SaveButton onClick={handleSave}>저장</SaveButton>
           <CancelButton onClick={onClose}>취소</CancelButton>
+        </ButtonContainer>
+        <ButtonContainer>
+          <ListButton onClick={listClip}>리스트</ListButton>
+          <DeleteButton onClick={deleteClip}>삭제</DeleteButton>
         </ButtonContainer>
       </ModalContent>
     </ModalOverlay>
