@@ -29,7 +29,7 @@ def get_classes(labels_path):
     return sorted(list(classes_set))
 
 if __name__ == "__main__":
-    dataset_path = "./dataset"  # 데이터셋 폴더 경로 설정
+    dataset_path = "C:/Users/SSAFY/Downloads/dataset/data"  # 데이터셋 폴더 경로 설정
     labels_path = os.path.join(dataset_path, "labels", "train")  # 라벨 폴더 경로
     
     if not os.path.exists(labels_path):
