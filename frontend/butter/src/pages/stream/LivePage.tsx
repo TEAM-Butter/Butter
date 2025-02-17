@@ -238,8 +238,8 @@ const LivePage = () => {
   const [currentVideoUrl, setCurrentVideoUrl] = useState("");
   const [token, setToken] = useState<string | null>(null);
 
-  const crewName = useCrewStore((state) => state.name);
-  console.log("crewStore crewName : ", crewName);
+  const crewId = useCrewStore((state) => state.id);
+  console.log("crewStore crewName : ", crewId);
 
   const navigate = useNavigate();
 
@@ -255,7 +255,8 @@ const LivePage = () => {
 
   // 크루ID 로 roomName을 설정 //해쉬!!!
   const fakeTitle = state.roomName;
-  const roomName = state.roomName;
+  const roomName = `${crewId}`;
+
   const user = useUserStore((state) => state);
 
   const role = user.memberType ?? "user"; // useMemberType이 crew 없으면 user
@@ -356,7 +357,7 @@ const LivePage = () => {
   }, [room]);
 
   async function getToken(
-    roomName: string,
+    roomName: number,
     participantName: string,
     participantRole: string
   ) {
@@ -568,6 +569,7 @@ const LivePage = () => {
                   serverUrl={APPLICATION_SERVER_URL}
                   token={token}
                   role={participantRole}
+                  fakeTitle={fakeTitle}
                 />
               )}
             </LeftTop>

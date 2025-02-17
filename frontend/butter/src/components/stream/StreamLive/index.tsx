@@ -64,7 +64,7 @@ const StreamLive = ({
                         track={localTrack}
                         participantIdentity={participantName}
                         local={true}
-                        roomName={roomName}
+                        roomName={fakeTitle}
                         role={role}
                       />
                       {/* <div className="absolute bottom-2 left-2 bg-black bg-opacity-50 px-2 py-1 rounded text-white text-sm">

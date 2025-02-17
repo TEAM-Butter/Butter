@@ -72,7 +72,10 @@ function StreamLiveVideo({
                   const errorData = await response.json();
                   errorMessage += ` - ${JSON.stringify(errorData)}`;
                 } catch (jsonError) {
-                  console.warn("서버 응답을 JSON으로 변환할 수 없음:", jsonError);
+                  console.warn(
+                    "서버 응답을 JSON으로 변환할 수 없음:",
+                    jsonError
+                  );
                 }
                 throw new Error(errorMessage);
               }
