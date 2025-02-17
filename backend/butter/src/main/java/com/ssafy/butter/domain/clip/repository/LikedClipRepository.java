@@ -13,5 +13,5 @@ public interface LikedClipRepository {
 
     Optional<LikedClip> findByMemberAndClip(Member member, Clip clip);
 
-    long countLikedClipByIdAndIsLiked(Long id, @NotNull Boolean isLiked);
+    long countLikedClipByClipAndIsLiked(Clip clip, @NotNull Boolean isLiked);
 }
