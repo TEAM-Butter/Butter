@@ -9,7 +9,7 @@ import upArrow from "../../assets/upArrow.png"
 import editButton from "../../assets/editButton.png"
 import plusButton from "../../assets/plusButton.png"
 import notFollowedIcon from "../../assets/notFollowedIcon.png"
-import followedIcon from "../../assets/FollowedIcon.png"
+import followedIcon from "../../assets/followedIcon.png"
 import cancelButton from "../../assets/cancelButton.png"
 import deleteIcon from "../../assets/deleteIcon.png"
 import sample1 from "../../assets/sample1.png";
