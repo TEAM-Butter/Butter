@@ -34,6 +34,10 @@ const TextInput = styled.input`
   font-size: 17px;
   font-weight: 500;
   margin-top: 10px;
+
+  &::placeholder {
+    color: var(--darkgray);
+}
 `;
 
 const FormBtn = styled.button<ColorProps>`
