@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { useEffect, useState, useRef } from 'react';
 import { useUserStore } from "../../../stores/UserStore";
 import { EventSourcePolyfill } from "event-source-polyfill";
+import { getAccessToken } from "../../../apis/auth";
 
 const AlertWrapper = styled(motion.div)`
     position: fixed;
@@ -23,31 +24,48 @@ interface AlertProps {
 }
 
 export const Alert = ({ isToggle }: AlertProps) => {
-    const [messages, setMessages] = useState<string[]>([]);
-    const eventSource = useRef<null | EventSource>(null);
-    const token = "your-access-token"; // 인증 토큰
+  const [messages, setMessages] = useState<string[]>([]);
+  const eventSource = useRef<null | EventSource>(null);
+  const token = getAccessToken(); // 인증 토큰
+  const isLogin = useUserStore(state => state.isLogin)
+  const isSubscribed: boolean = sessionStorage.getItem('isSubscribed') === "true";
   
     useEffect(() => {
-      eventSource.current = new EventSourcePolyfill(`${import.meta.env.VITE_SPRING_BOOT_SERVER}/notify/subscribe`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        withCredentials: true,
-      });
-  
-      eventSource.current.onmessage = (event) => {
-        setMessages((prev) => [...prev, event.data]);
-      };
-  
-      eventSource.current.onerror = () => {
-        console.error("SSE 연결 오류");
-        eventSource.current?.close();
-      };
-  
+      // if (eventSource.current) {
+      //   eventSource.current.close(); // 기존 연결 닫기
+      // }
+
+      if(isLogin && !isSubscribed){
+        eventSource.current = new EventSourcePolyfill(`${import.meta.env.VITE_SPRING_BOOT_SERVER}/v1/notify/subscribe`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          withCredentials: true,
+        });
+        
+        eventSource.current.onopen = () => {
+          console.log("✅ SSE 연결 성공");
+          sessionStorage.setItem('isSubscribed', "true");
+        }
+
+        eventSource.current.onmessage = (event) => {
+          setMessages((prev) => [...prev, event.data]);
+          console.log("message:", messages);
+          console.log("📩 새 메시지 수신:", event.data);
+        };
+
+        eventSource.current.onerror = () => {
+          console.error("SSE 연결 오류");
+          eventSource.current?.close();
+        };
+      }
       return () => {
-        eventSource.current?.close();
+        if (eventSource.current && !isLogin) {
+          sessionStorage.setItem('isSubscribed', "false")
+          eventSource.current?.close();
+        }
       };
-    }, []);
+    }, [isLogin]);
 
     return (
         <AlertWrapper
@@ -55,6 +73,11 @@ export const Alert = ({ isToggle }: AlertProps) => {
             transition={{ type: "spring", stiffness: 50 }}
         >
             <p>알림</p>
+            <ul>
+                {messages.map((msg, index) => (
+                    <li key={index}>{msg}</li>
+                ))}
+            </ul>
         </AlertWrapper>
     );
 };
