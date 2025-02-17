@@ -12,6 +12,7 @@ import { motion } from "framer-motion";
 import findIcon from "../../assets/findIcon.png";
 import { CrewSearchModal } from "../../components/common/modals/CrewSearchModal";
 import { axiosInstance } from "../../apis/axiosInstance";
+import { GenreToggle } from "../../components/common/toggle/toggle";
 
 const Write = styled.div`
  font-size : 200px;
@@ -23,6 +24,7 @@ const Write = styled.div`
  gap : 30px;
  margin-left : 50px;
  margin-bottom : 60px ; 
+ height: 300px;
 `
 
 
@@ -109,46 +111,12 @@ white-space: pre; /* 띄어쓰기를 그대로 유지 */
 
 const Box2 = styled.div`
  display : flex;
- justify-content : right;
- margin-right : 30px;
- margin-top : 10px;
- margin-bottom : 50px;
+ flex-direction: column;
+ align-items: flex-end;
+ margin: 20px 30px 20px 30px;
+ gap: 10px;
  font-size : 15px;
 `
-
-const ServerUrl = 'http://localhost:8080'
-
-
-const TabsContainer = styled.ul`
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  font-weight: 500;
-  font-size: 14px;
-  display: flex;
-  width: 100%;
-`;
-
-const Tab = styled(motion.li)`
-  border-radius: 20px;
-  width: 100%;
-  padding: 15px 5px;
-  position: relative;
-  cursor: pointer;
-  height: 24px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex: 1;
-  min-width: 0;
-  user-select: none;
-  justify-content: center;
-`;
-
-
-
-const tabs = ["Popular", "Favor Genre"];
-
 
 const Underline = styled(motion.div)`
   position: absolute;
@@ -159,19 +127,6 @@ const Underline = styled(motion.div)`
   background: var(--accent);
 `;
 
-const Nav = styled.nav`
-  background: #040a14;
-  color: white;
-  padding: 5px;
-  border-radius: 20px;
-  height: 40px;
-  width: 260px;
-  display: flex;
-  margin-top: auto;
-  position: absolute;
-  left: 40px;
-`;
-
 
 const FindBox = styled.img`
   color: white;
@@ -180,31 +135,48 @@ const FindBox = styled.img`
   width: 20px;
 
 `
-const SearchWrapper = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    position: absolute;
-    right: 0px;
-    top : 70px;
-    background-color: black;
-    height: 40px;
-  width: 130px;
-  font-size: 20px;
-  color: white;
-  z-index: 500;
-  padding-left: 13px;
-  padding-right: 13px;
-  border-radius: 30px;
-  border: 2px solid white;
-`
+// const SearchWrapper = styled.div`
+//     display: flex;
+//     align-items: center;
+//     justify-content: space-between;
+//     position: absolute;
+//     right: 0px;
+//     top : 70px;
+//     background-color: black;
+//     height: 40px;
+//   width: 130px;
+//   font-size: 20px;
+//   color: white;
+//   z-index: 500;
+//   padding-left: 13px;
+//   padding-right: 13px;
+//   border-radius: 30px;
+//   border: 2px solid white;
+// `
 const SearchText = styled.div`
     
 `
+const FilterWrapper = styled.div`
+    height: 40px;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+`
 
+const SearchWrapper = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    height: 100%;
+    width: 200px;
+    justify-content: space-between;
+    padding: 0 15px;
+    border-radius: 20px;
+    background-color: #040a14;
+    border: 1px solid white;
+`
 
 function CrewListPage() {
-    const [selectedTab, setSelectedTab] = useState(tabs[0]);
     const [crewId, setCrewId] = useState(0)  
     const [ loading, setLoading ] = useState(true) // 로딩 표시하는 변수
     const [ error, setError] = useState(null) // 에러 상태
@@ -213,15 +185,29 @@ function CrewListPage() {
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [modalType, setModalType] = useState("")
     const navigate = useNavigate()
+    const [genreToggle, setGenreToggle] = useState("All")
+
+
+     
+
+
+
+
+
 
     useEffect (() => {
         const fetchCrewDetail = async () => {
             try {
                 // ✅ 헤더 추가: Authorization (JWT 토큰 포함)
                 setLoading(true);
-                const response = await axiosInstance.get(`/crew/list?pageSize=10&sortBy=followerCount`) // 크루 리스트 정보 받아옴
-                console.log(response.data)
-                setCrewList(response.data);
+                if (genreToggle == "All"){
+                    const response = await axiosInstance.get(`/crew/list?pageSize=10&sortBy=followerCount`)
+                    setCrewList(response.data);
+                } else{
+                const response = await axiosInstance.get(`/crew/list?pageSize=10&sortBy=followerCount&genre=${genreToggle}`)
+                setCrewList(response.data);} // 크루 리스트 정보 받아옴
+          
+                
             } catch (err: any) {
                 setError(err.message); //요청 놓치면 에러 메세지 띄우기
             } finally {
@@ -232,47 +218,32 @@ function CrewListPage() {
         fetchCrewDetail();
   
 
-    }, [])
-    
-    if (loading) return <div>Loading...</div>;
-    if (error) return <div>Error: {error}</div>;
+    }, [genreToggle])
+   
+
+
+
+
     return (
         <div>
         <Box1>
-            <SearchWrapper onClick={()=>{
-                setModalType("crewSearch")
-                // setIsModalOpen(!true)
-             }}>
-            <SearchText>크루 검색</SearchText>
-            <FindBox src={findIcon} alt="findIcon"></FindBox>
-            </SearchWrapper>
-            <Nav>
-                <TabsContainer>
-                {tabs.map((item) => (
-                    <Tab
-                    key={item}
-                    initial={false}
-                    animate={{
-                        backgroundColor: item === selectedTab ? "#eee" : "#eee0",
-                        color: item === selectedTab ? "#000000" : "#eee",
-                    }}
-                    onClick={() => setSelectedTab(item)}
-                    >
-                    {item}
-                    {item === selectedTab && <Underline layoutId="underline" />}
-                    </Tab>
-                ))}
-                </TabsContainer>
-            </Nav>
-          
             <P1>Busking </P1> <p>Crew</p>
-            
         </Box1>
-        
         <Box2>
-        <button onClick={()=>{navigate(`/crew/myCalendar`)}}>가보자고</button>
-        <p>당신의 마음에 맞는 크루를 지금 바로 찾아보세요!</p>
+            <p>당신의 마음에 맞는 크루를 지금 바로 찾아보세요!</p>
+            <FilterWrapper>
+            <GenreToggle setGenreToggle={setGenreToggle} />
+            <SearchWrapper
+                onClick={()=>{
+                    setModalType("crewSearch")
+                    // setIsModalOpen(!true)
+                }}>
+                <div>크루 검색</div>
+                <FindBox src={findIcon} alt="findIcon"></FindBox>
+            </SearchWrapper>
+            </FilterWrapper>
         </Box2>
+        
        <Write>
        <div>C</div>
        <ImgContainer>
