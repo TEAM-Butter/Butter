@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import styled from "@emotion/styled";
 
 const ModalOverlay = styled.div`
@@ -63,23 +63,37 @@ const Button = styled.button`
 
 const ButtonContainer = styled.div`
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
+  align-items: center;
   gap: 10px;
 `;
 
 const SaveButton = styled(Button)`
+  padding: 10px 20px;
+  border: none;
   background-color: #4caf50;
   color: white;
+  border-radius: 4px;
+  cursor: pointer;
 `;
 
 const CancelButton = styled(Button)`
-  background-color: #f44336;
+  padding: 10px 20px;
+  border: none;
+  background-color: #dc3545;
   color: white;
+  border-radius: 4px;
+  cursor: pointer;
 `;
 
 const DownLoadButton = styled(Button)`
-  background-color: #4caf50;
+  padding: 10px 20px;
+  border: none;
+  background-color: #007bff;
   color: white;
+  border-radius: 4px;
+  cursor: pointer;
+  //  background-color: #4caf50;
 `;
 
 interface ClipModalProps {
@@ -128,7 +142,6 @@ export const ClipModal: React.FC<ClipModalProps> = ({
     }
   };
 
-
   if (!isOpen) return null;
 
   const handleDownload = async () => {
@@ -176,9 +189,11 @@ export const ClipModal: React.FC<ClipModalProps> = ({
           onChange={(e) => setTitle(e.target.value)}
         />
         <ButtonContainer>
+          <DownLoadButton onClick={handleDownload}>
+            Download Video
+          </DownLoadButton>
           <SaveButton onClick={handleSave}>저장</SaveButton>
           <CancelButton onClick={onClose}>취소</CancelButton>
-          <DownLoadButton onClick={handleDownload}>Download Video</DownLoadButton>
         </ButtonContainer>
       </ModalContent>
     </ModalOverlay>
