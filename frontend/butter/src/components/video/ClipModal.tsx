@@ -136,6 +136,13 @@ export const ClipModal: React.FC<ClipModalProps> = ({
   const [title, setTitle] = useState("");
   const SERVER_URL = import.meta.env.VITE_NODE_JS_SERVER || "";
 
+  // 추가: 로딩 스피너 컴포넌트 (간단한 예시)
+  const LoadingSpinner = () => (
+    <div style={{ textAlign: "center", padding: "20px", fontSize: "18px" }}>
+      로딩 중...
+    </div>
+  );
+
   const handleSave = async () => {
     if (!title.trim()) {
       alert("제목을 입력해 주세요!");
@@ -251,7 +258,12 @@ export const ClipModal: React.FC<ClipModalProps> = ({
       <ModalContent onClick={(e) => e.stopPropagation()}>
         <h2>편집된 영상</h2>
         <CloseButton onClick={onClose}>&times;</CloseButton>
-        <VideoPlayer src={videoUrl} controls autoPlay />
+        {/* videoUrl이 없으면 로딩 스피너를 보여주고, 있으면 비디오 플레이어 출력 */}
+        {videoUrl ? (
+          <VideoPlayer src={videoUrl} controls autoPlay />
+        ) : (
+          <LoadingSpinner />
+        )}
         <Input
           type="text"
           placeholder="영상 제목을 입력하세요"
