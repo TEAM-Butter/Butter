@@ -42,17 +42,23 @@ public class Live {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "schedule_id")
     private Schedule schedule;
+    private String thumbnailUrl;
 
     @Builder
-    public Live(Crew crew, String title, LocalDateTime startDate, LocalDateTime endDate, Schedule schedule) {
+    public Live(Crew crew, String title, LocalDateTime startDate, LocalDateTime endDate, Schedule schedule, String thumbnailUrl) {
         this.crew = crew;
         this.title = title;
         this.startDate = startDate;
         this.endDate = endDate;
         this.schedule = schedule;
+        this.thumbnailUrl = thumbnailUrl;
     }
 
     public void updateEndDate(LocalDateTime endDate) {
         this.endDate = endDate;
+    }
+
+    public void updateThumbnailUrl(String thumbnailUrl) {
+        this.thumbnailUrl = thumbnailUrl;
     }
 }
