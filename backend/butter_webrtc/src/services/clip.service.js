@@ -191,6 +191,8 @@ export class ClipService {
       const crewId = this.getCrewIdToClipName(clipName);
       const sql = "DELETE * FROM clip WHERE crew_id = ? AND video_name = ?";
       const rows = await dbService.query(sql, [crewId, clipName]);
+      console.log(sql);
+      console.log(rows);
 
       const clipKey = this.getClipKey(clipName);
       const thumbnailKey = this.getClipThumbnailKey(
@@ -214,8 +216,11 @@ export class ClipService {
         ? "SELECT * FROM clip WHERE crew_id = ?"
         : "SELECT * FROM clip";
       const rows = await dbService.query(sql, [crewId]);
+      console.log("sql: " + sql);
+      console.log("row: " + rows);
 
       const clipNames = rows.map((row) => row.clipName);
+      console.log("clipNames: " + clipNames);
       const clips = clipNames.map((clipName) => {
         const timestamp = clipName.split("-").pop().replace(".mp4", "");
         const clipKey = this.getClipKey(clipName);
@@ -230,6 +235,7 @@ export class ClipService {
           thumbnailUrl,
         };
       });
+      console.log("clips: " + clips);
 
       // Sort clips by timestamp in descending order
       const sortedClips = clips.sort((a, b) => b.timestamp - a.timestamp);
