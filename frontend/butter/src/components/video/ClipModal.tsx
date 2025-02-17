@@ -114,6 +114,11 @@ const DeleteButton = styled(Button)`
   cursor: pointer;
 `;
 
+const RightButtonGroup = styled.div`
+  display: flex;
+  gap: 10px;
+`;
+
 interface ClipModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -161,7 +166,8 @@ export const ClipModal: React.FC<ClipModalProps> = ({
 
   const listClip = async () => {
     try {
-      const response = await fetch(`${SERVER_URL}/clip/`, {
+      let crewId = clipName.split("-")[1];
+      const response = await fetch(`${SERVER_URL}/clip/${crewId}`, {
         method: "GET", // 클립 저장을 위해 GET 요청
         headers: {
           "Content-Type": "application/json",
@@ -255,8 +261,10 @@ export const ClipModal: React.FC<ClipModalProps> = ({
           <DownLoadButton onClick={handleDownload}>
             Download Video
           </DownLoadButton>
-          <SaveButton onClick={handleSave}>저장</SaveButton>
-          <CancelButton onClick={onClose}>취소</CancelButton>
+          <RightButtonGroup>
+            <SaveButton onClick={handleSave}>저장</SaveButton>
+            <CancelButton onClick={onClose}>취소</CancelButton>
+          </RightButtonGroup>
         </ButtonContainer>
         <ButtonContainer>
           <ListButton onClick={listClip}>리스트</ListButton>
