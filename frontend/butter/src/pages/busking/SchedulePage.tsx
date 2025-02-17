@@ -11,6 +11,7 @@ import sample4 from "../../assets/sample4.jpg";
 import sample5 from "../../assets/sample5.png";
 import myLocationIcon from "../../assets/myLocationIcon.png";
 import zoomIcon from "../../assets/zoomIcon.png";
+import downArrow from "../../assets/downArrow.png";
 import zoomoutIcon from "../../assets/zoomOutIcon.png";
 import guitarIcon from "../../assets/guitarIcon.png";
 import { useEffect, useRef, useState } from "react";
@@ -107,7 +108,7 @@ const CalenderBox = styled.div`
   background-color: gray;
   border-radius: 30px;
   padding: 20px;
-  top: 180px;
+  top: 130px;
   right: 100px;
   width: 430px;
   position: absolute;
@@ -239,6 +240,7 @@ const InputBox = styled.input`
   padding-left: 20px;
   padding-right: 20px;
   font-size: 15px;
+  border-width: 0;
 `
 
 
@@ -688,6 +690,11 @@ useEffect(() => {
               lng: parseFloat(schedule.longitude),
             },
             content: schedule.place,
+            description : schedule.content,
+            crewImage : schedule.crew.imageUrl,
+            crewName : schedule.crew.name,
+            isLiked : schedule.isLiked,
+            title : schedule.title,
           }));
     
           markers3.forEach((marker:any) => {
@@ -730,8 +737,14 @@ useEffect(() => {
         position: {
           lat: parseFloat(schedule.latitude),
           lng: parseFloat(schedule.longitude),
+          
         },
         content: schedule.place,
+        description : schedule.content,
+        crewImage : schedule.crew.imageUrl,
+        crewName : schedule.crew.name,
+        isLiked : schedule.isLiked,
+        title : schedule.title,
       }));
   
       markers3.forEach((marker:any) => {
@@ -834,17 +847,10 @@ useEffect(() => {
                     <strong>{myAddress}</strong>
                     </div>
                     <div className="jibun ellipsis">
-                      (우) 63309 (지번) 영평동 2181
+                      
                     </div>
                     <div>
-                      <a
-                        href="https://www.kakaocorp.com/main"
-                        target="_blank"
-                        className="link"
-                        rel="noreferrer"
-                      >
-                        홈페이지
-                      </a>
+                    
                     </div>
                   </div>
                 </div>
@@ -890,8 +896,8 @@ useEffect(() => {
             <CustomOverlayMap position={pos.position}>
             <div className="wrap">
               <div className="info">
-                <div className="title">
-                  {pos.content}
+                <div className="title" style={{color: "white"}}>
+                  {pos.title}
                   <div
                     className="close"
                     onClick={() => setIsOpenSmall(false)}
@@ -907,22 +913,18 @@ useEffect(() => {
                       alt="카카오 스페이스닷원"
                     />
                   </div>
+                 
                   <div className="desc">
-                    <div className="ellipsis" style={{color : "black"}}>
-                    <strong>위치:</strong> {pos.address}
+                    <div className="ellipsis" style={{color : "white"}}>
+                    {pos.crewName}
                     </div>
                     <div className="jibun ellipsis">
-                      (우) 63309 (지번) 영평동 2181
+                    {pos.description}
                     </div>
-                    <div>
-                      <a
-                        href="https://www.kakaocorp.com/main"
-                        target="_blank"
-                        className="link"
-                        rel="noreferrer"
-                      >
-                        홈페이지
-                      </a>
+                    <div style={{color: "white"}}>
+                    {pos.address}
+                        
+                    
                     </div>
                   </div>
                 </div>
@@ -996,12 +998,11 @@ useEffect(() => {
           >
             <ScheduleImage src={images[i]} alt="scheduleImages"></ScheduleImage>
               <ScheduleInnerBox2>
-                <ScheduleTitle>{pos.content}</ScheduleTitle>
-                <ScheduleContent>{pos.address || "위치 불러오는 중..."}</ScheduleContent>
+                  <ScheduleGenre>{pos.crewName}</ScheduleGenre>
+                <ScheduleContent>{pos.description}</ScheduleContent>
                 <GenreBox>
-                  <ScheduleGenre>장르1</ScheduleGenre>
-                  <ScheduleGenre>장르1</ScheduleGenre>
-                  <ScheduleGenre>장르1</ScheduleGenre>
+                <ScheduleTitle>{pos.content}에서 만나요!</ScheduleTitle>
+                
                 </GenreBox>
               </ScheduleInnerBox2>
                 <OpenDetailBtn src={leftArrow} alt="leftArrow"></OpenDetailBtn>

@@ -97,7 +97,8 @@ const ImgStyle2 = styled.img<any>`
 
 const Box1 = styled.div`
  display : flex;
- justify-content : right;
+ flex-direction: column;
+ align-items : flex-end;
  margin-right : 30px;
  margin-top : 50px;
  font-size : 30px;
@@ -113,7 +114,7 @@ const Box2 = styled.div`
  display : flex;
  flex-direction: column;
  align-items: flex-end;
- margin: 20px 30px 20px 30px;
+ margin: 35px 30px 10px 30px;
  gap: 10px;
  font-size : 15px;
 `
@@ -176,6 +177,13 @@ const SearchWrapper = styled.div`
     border: 1px solid white;
 `
 
+const FlexCan = styled.div`
+    display: flex;
+ ;
+`
+
+
+
 function CrewListPage() {
     const [crewId, setCrewId] = useState(0)  
     const [ loading, setLoading ] = useState(true) // 로딩 표시하는 변수
@@ -226,11 +234,8 @@ function CrewListPage() {
 
     return (
         <div>
-        <Box1>
-            <P1>Busking </P1> <p>Crew</p>
-        </Box1>
         <Box2>
-            <p>당신의 마음에 맞는 크루를 지금 바로 찾아보세요!</p>
+          
             <FilterWrapper>
             <GenreToggle setGenreToggle={setGenreToggle} />
             <SearchWrapper
@@ -243,6 +248,10 @@ function CrewListPage() {
             </SearchWrapper>
             </FilterWrapper>
         </Box2>
+        <Box1>
+            <FlexCan><P1>Busking </P1> <p>Crew</p></FlexCan>
+            <p>당신의 마음에 맞는 크루를 지금 바로 찾아보세요!</p>
+        </Box1>
         
        <Write>
        <div>C</div>

@@ -457,7 +457,7 @@ function CrewDetailPage() {
                                 {return(<NoticeBox  key={i}>
                                             <NoticeImg src={images[i+1]}></NoticeImg>
                                                 <NoticeWrapperBox> 
-                                                    <NoticeTitle>{i+1}번 Notice Title</NoticeTitle>
+                                                    <NoticeTitle>{a.title}</NoticeTitle>
                                                     <NoticeContent> {a.content}</NoticeContent>
                                                 </NoticeWrapperBox> 
                                             <Arrow onClick={() => {navigate(`/crew/notice/detail/${id}/${i}`)}} src={rightArrow} alt="rightArrow"></Arrow>
@@ -1225,7 +1225,7 @@ function ScheduleEditComponent({crewScheduleDetail,crewDetail}:any) {
         }
     }, [isScheduleDetailModalOpen])
 
-
+   
     const BookmarkPlus = async (scheduleId : number) => {
         try {
 
@@ -1302,7 +1302,7 @@ function ScheduleEditComponent({crewScheduleDetail,crewDetail}:any) {
         <ScheduleList id="scroll-area"> 
             {
             crewDetail.schedules.map((a:any, i:any) => {
-                return ( <ScheduleWrapper key={i} > <ScheduleImg src={images[i+1]} alt="ScheduleImg"></ScheduleImg> <ScheduleTitle><ScheduleTitleComponent1>{i+1}번 스케쥴 Title Section</ScheduleTitleComponent1><div>{a.content}</div></ScheduleTitle><LeftArrowTag onClick={()=> {setisScheduleDetailModalOpen(true); setSelectedScheduleIndex(i+1);}} src={leftArrow} alt="leftArrow"></LeftArrowTag></ScheduleWrapper>)
+                return ( <ScheduleWrapper key={i} > <ScheduleImg src={images[i+1]} alt="ScheduleImg"></ScheduleImg> <ScheduleTitle><ScheduleTitleComponent1>{a.title}</ScheduleTitleComponent1><div>{a.content}</div></ScheduleTitle><LeftArrowTag onClick={()=> {setisScheduleDetailModalOpen(true); setSelectedScheduleIndex(i+1);}} src={leftArrow} alt="leftArrow"></LeftArrowTag></ScheduleWrapper>)
             })
             }
         </ScheduleList>
@@ -1373,7 +1373,7 @@ function ScheduleEditComponent({crewScheduleDetail,crewDetail}:any) {
                 )}
               
                 { modalType === "SchedulePlus" && <SchedulePlusModal width="600px" height="500px" setModalType={setModalType} id={id}></SchedulePlusModal>}
-                { modalType === "ScheduleEdit" && <ScheduleEditModal width="600px" height="500px" setModalType={setModalType} id={id}></ScheduleEditModal>}
+                { modalType === "ScheduleEdit" && <ScheduleEditModal width="600px" height="500px" setModalType={setModalType} id={id} scheduleId ={crewDetail.schedules[selectedScheduleIndex-1].id}></ScheduleEditModal>}
        </Box5>
 
 
