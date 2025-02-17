@@ -63,6 +63,101 @@ VALUES
     (2000,'2024-03-28 17:51:27.000000',2,'2025-02-12 09:42:34.000000','Jazz Ensemble','A jazz music crew','https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/a77e3349-0888-4a7a-afc3-0cd2345eb708.jpg','http://video.url/crew2','http://promo.url/crew2'),
     (2200,'2024-02-23 16:52:47.000000',5,'2025-02-12 09:42:34.000000','Classical Orchestra','A classical music crew','https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/4dd3ea96-ffc5-4136-9a01-e392ad63795c.jpg','http://video.url/crew5','http://promo.url/crew5');
 
+INSERT INTO `crew` (`donation_amount`,`create_date`,`update_date`,`name`,`description`,`image_url`,`portfolio_video_url`,`promotion_url`)
+VALUES
+    -- 발라드 크루 8개
+    (15000,'2025-02-02 21:59:16.000000','2025-02-12 09:42:34.000000','감성버스','Advancing biotech solutions.','https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/2bef287b-fa94-431d-ad03-e811b41360ac.jpg','http://video.url/crew10','http://promo.url/crew10'),
+    (7500,'2024-12-28 14:01:04.000000','2025-02-12 09:42:34.000000','노을빛 멜로디','Leading robotics innovation.','https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/ca21626e-442b-465b-b1b1-3f55bf5fc79e.jpg','http://video.url/crew8','http://promo.url/crew8'),
+    (1500,'2024-11-29 19:46:27.000000','2025-02-12 09:42:34.000000','담담한 노래들','A pop music group','https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/14e47e70-1fed-4481-a942-c2c423acb555.gif','http://video.url/crew3','http://promo.url/crew3'),
+    (1800,'2024-11-24 22:07:29.000000','2025-02-12 09:42:34.000000','여운','A hip-hop music crew','https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/995af50c-2f30-4aa4-9d35-8ea3b8a28663.jpg','http://video.url/crew4','http://promo.url/crew4'),
+    (12000,'2024-10-09 03:44:24.000000','2025-02-12 09:42:34.000000','깊은 밤, 노래 한 곡','Specialized in AI development.','https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/1f90b929-e81c-4ded-ae19-97a9e013e201.jpg','http://video.url/crew7','http://promo.url/crew7'),
+    (1000,'2024-05-01 16:31:43.000000','2025-02-12 09:42:34.000000','시간의 흔적','A rock music crew','https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/37b5dc38-ff8e-486e-a796-3cb5251178fa.jpg','http://video.url/crew1','http://promo.url/crew1'),
+    (5000,'2024-04-10 22:42:05.000000','2025-02-12 09:42:34.000000','목소리로 그리는 그림','Innovative space explorers.','https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/1c64cbe2-51dd-433a-8d5a-a0e7de556a4e.jpg','http://video.url/crew6','http://promo.url/crew6'),
+    (9800,'2024-04-02 12:02:22.000000','2025-02-12 09:42:34.000000','하모니, 그 순간','Experts in cybersecurity.','https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/b15297fe-8996-484f-a761-8f685e58a464.jpg','http://video.url/crew9','http://promo.url/crew9'),
+
+    -- 알앤비 크루 8개
+    (15000,'2025-02-02 21:59:16.000000','2025-02-12 09:42:34.000000','소울파이어','Advancing biotech solutions.','https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/702d0045-523e-4714-90d1-5b5b0382a8b4.jpg','http://video.url/crew10','http://promo.url/crew10'),
+    (7500,'2024-12-28 14:01:04.000000','2025-02-12 09:42:34.000000','감성코드','Leading robotics innovation.','https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/751b542b-fe05-46b6-bb22-c63b9b6548fa.jpg','http://video.url/crew8','http://promo.url/crew8'),
+    (1500,'2024-11-29 19:46:27.000000','2025-02-12 09:42:34.000000','네온소울','A pop music group','https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/6145732b-649b-40da-b725-af085e5ddd02.jpg','http://video.url/crew3','http://promo.url/crew3'),
+    (1800,'2024-11-24 22:07:29.000000','2025-02-12 09:42:34.000000','비트앤소울','A hip-hop music crew','https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/fbd0ace8-f789-4fbe-89cd-19ac9f86102c.jpg','http://video.url/crew4','http://promo.url/crew4'),
+    (12000,'2024-10-09 03:44:24.000000','2025-02-12 09:42:34.000000','무드바이브','Specialized in AI development.','https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/b68b9f7b-d478-4734-917c-5c62b5599b0b.jpg','http://video.url/crew7','http://promo.url/crew7'),
+    (1000,'2024-05-01 16:31:43.000000','2025-02-12 09:42:34.000000','블루스웨이브','A rock music crew','https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/c29db0eb-c687-401b-8a0c-430ae27a298a.jpg','http://video.url/crew1','http://promo.url/crew1'),
+    (5000,'2024-04-10 22:42:05.000000','2025-02-12 09:42:34.000000','루프탑그루브','Innovative space explorers.','https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/b565dabd-226d-4610-b8e0-eb7a6d8733a6.jpg','http://video.url/crew6','http://promo.url/crew6'),
+    (9800,'2024-04-02 12:02:22.000000','2025-02-12 09:42:34.000000','미드나잇스웨이','Experts in cybersecurity.','https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/5864f338-44fc-404f-bde5-5cfdfc9a29ab.jpg','http://video.url/crew9','http://promo.url/crew9'),
+
+    -- 어쿠스틱 크루 8개
+    (15000,'2025-02-02 21:59:16.000000','2025-02-12 09:42:34.000000','나무 위의 노래','Advancing biotech solutions.','https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/a5383b2a-e6c2-498d-8875-82bbbe8caa0d.jpg','http://video.url/crew10','http://promo.url/crew10'),
+    (7500,'2024-12-28 14:01:04.000000','2025-02-12 09:42:34.000000','스트링하모니','Leading robotics innovation.','https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/706af792-a1b9-4d05-a378-dcf791045077.jpg','http://video.url/crew8','http://promo.url/crew8'),
+    (1500,'2024-11-29 19:46:27.000000','2025-02-12 09:42:34.000000','맑은날 기타','A pop music group','https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/bbb29f98-6b46-4362-b563-b72c37b28cb1.jpg','http://video.url/crew3','http://promo.url/crew3'),
+    (1800,'2024-11-24 22:07:29.000000','2025-02-12 09:42:34.000000','소리바람','A hip-hop music crew','https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/5440f62b-a89e-4296-8675-b5d460c9d033.jpg','http://video.url/crew4','http://promo.url/crew4'),
+    (12000,'2024-10-09 03:44:24.000000','2025-02-12 09:42:34.000000','숲속 멜로디','Specialized in AI development.','https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/bba79eaf-9971-4780-b88a-eb524bf56015.jpg','http://video.url/crew7','http://promo.url/crew7'),
+    (1000,'2024-05-01 16:31:43.000000','2025-02-12 09:42:34.000000','작은 방의 음악회','A rock music crew','https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/ae2c67af-b77f-40d1-8953-bd83d17f8950.jpg','http://video.url/crew1','http://promo.url/crew1'),
+    (5000,'2024-04-10 22:42:05.000000','2025-02-12 09:42:34.000000','우드소울','Innovative space explorers.','https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/59bc631c-1036-45e8-82ac-c2c3cc5776f2.jpg','http://video.url/crew6','http://promo.url/crew6'),
+    (9800,'2024-04-02 12:02:22.000000','2025-02-12 09:42:34.000000','통기타 이야기','Experts in cybersecurity.','https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/dc151fc1-408a-493c-a98b-6a7e3f893339.jpg','http://video.url/crew9','http://promo.url/crew9'),
+
+    -- 인디밴드 크루 8개
+    (15000,'2025-02-02 21:59:16.000000','2025-02-12 09:42:34.000000','바람의 여정','Advancing biotech solutions.','https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/b68e3d19-a008-429e-b209-c16e841db11a.jpg','http://video.url/crew10','http://promo.url/crew10'),
+    (7500,'2024-12-28 14:01:04.000000','2025-02-12 09:42:34.000000','밤하늘 유랑단','Leading robotics innovation.','https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/68d7c686-a094-4b8c-91c2-8c3bfe6fb144.jpg','http://video.url/crew8','http://promo.url/crew8'),
+    (1500,'2024-11-29 19:46:27.000000','2025-02-12 09:42:34.000000','무명은 아름다워','A pop music group','https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/8fde11d5-5986-4323-923f-cce11dc7386c.jpg','http://video.url/crew3','http://promo.url/crew3'),
+    (1800,'2024-11-24 22:07:29.000000','2025-02-12 09:42:34.000000','도로 위 선율','A hip-hop music crew','https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/f6093f38-f657-4779-8d6d-857c2b427392.jpg','http://video.url/crew4','http://promo.url/crew4'),
+    (12000,'2024-10-09 03:44:24.000000','2025-02-12 09:42:34.000000','길거리 시인들','Specialized in AI development.','https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/54d6e570-2f6a-41e7-827a-8ef281f1316c.jpg','http://video.url/crew7','http://promo.url/crew7'),
+    (1000,'2024-05-01 16:31:43.000000','2025-02-12 09:42:34.000000','인디그라운드','A rock music crew','https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/d1cf60a1-5052-44fc-b91f-f0247f5968df.jpg','http://video.url/crew1','http://promo.url/crew1'),
+    (5000,'2024-04-10 22:42:05.000000','2025-02-12 09:42:34.000000','색깔있는 소리','Innovative space explorers.','https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/ece04bd2-af61-4fe9-bd58-3f7394392bb6.jpg','http://video.url/crew6','http://promo.url/crew6'),
+    (9800,'2024-04-02 12:02:22.000000','2025-02-12 09:42:34.000000','자유음악단','Experts in cybersecurity.','https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/4ff86549-5641-49d5-92c2-2c68ebdbb34c.jpg','http://video.url/crew9','http://promo.url/crew9'),
+
+    -- 케이팝 크루 8개
+    (15000,'2025-02-02 21:59:16.000000','2025-02-12 09:42:34.000000','빛나는 하루','Advancing biotech solutions.','https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/43debbde-97d1-4e4b-aba8-e018be6d589a.jpg','http://video.url/crew10','http://promo.url/crew10'),
+    (7500,'2024-12-28 14:01:04.000000','2025-02-12 09:42:34.000000','하이라이트 크루','Leading robotics innovation.','https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/a396edda-174c-4bf1-9a05-09dd42cf0caf.jpg','http://video.url/crew8','http://promo.url/crew8'),
+    (1500,'2024-11-29 19:46:27.000000','2025-02-12 09:42:34.000000','퍼플스테이지','A pop music group','https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/59e680f9-a4d8-4aaa-a392-d4cc54d0a0d0.jpg','http://video.url/crew3','http://promo.url/crew3'),
+    (1800,'2024-11-24 22:07:29.000000','2025-02-12 09:42:34.000000','스포트라이트','A hip-hop music crew','https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/e40f0d7d-ea16-45d8-af14-81a66ac9a889.jpg','http://video.url/crew4','http://promo.url/crew4'),
+    (12000,'2024-10-09 03:44:24.000000','2025-02-12 09:42:34.000000','하트비트','Specialized in AI development.','https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/53cac171-647a-49ea-8c76-97b0d5f6426c.jpg','http://video.url/crew7','http://promo.url/crew7'),
+    (1000,'2024-05-01 16:31:43.000000','2025-02-12 09:42:34.000000','블링버스','A rock music crew','https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/1948f51c-da52-4c79-8696-00a6d0b26260.jpg','http://video.url/crew1','http://promo.url/crew1'),
+    (5000,'2024-04-10 22:42:05.000000','2025-02-12 09:42:34.000000','에너제틱','Innovative space explorers.','https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/2465e65f-6290-473f-97ea-5d96216063ce.jpg','http://video.url/crew6','http://promo.url/crew6'),
+    (9800,'2024-04-02 12:02:22.000000','2025-02-12 09:42:34.000000','윙스온더로드','Experts in cybersecurity.','https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/a8bd990e-6df9-49bf-a48a-15be5dfe4099.jpg','http://video.url/crew9','http://promo.url/crew9'),
+
+    -- 트로트 크루 8개
+    (15000,'2025-02-02 21:59:16.000000','2025-02-12 09:42:34.000000','한잔 멜로디','Advancing biotech solutions.','https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/b66a58f9-1fff-4e29-a3bf-35589731a9dc.jpg','http://video.url/crew10','http://promo.url/crew10'),
+    (7500,'2024-12-28 14:01:04.000000','2025-02-12 09:42:34.000000','복고소울','Leading robotics innovation.','https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/9c9094ca-bcf5-4b73-855f-4aa063d48860.jpg','http://video.url/crew8','http://promo.url/crew8'),
+    (1500,'2024-11-29 19:46:27.000000','2025-02-12 09:42:34.000000','가락의 향기','A pop music group','https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/b4fcce61-eced-4ab0-b3c3-a57be64747c7.jpg','http://video.url/crew3','http://promo.url/crew3'),
+    (1800,'2024-11-24 22:07:29.000000','2025-02-12 09:42:34.000000','트롯로드','A hip-hop music crew','https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/4e6a29d8-a725-49f9-a879-206355e8c8db.jpg','http://video.url/crew4','http://promo.url/crew4'),
+    (12000,'2024-10-09 03:44:24.000000','2025-02-12 09:42:34.000000','감성트롯','Specialized in AI development.','https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/a9fe4180-0d2f-494e-9e94-e3b363095050.jpg','http://video.url/crew7','http://promo.url/crew7'),
+    (1000,'2024-05-01 16:31:43.000000','2025-02-12 09:42:34.000000','어게인7080','A rock music crew','https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/72f91fbb-5f17-4540-920b-d0325a3a0228.jpg','http://video.url/crew1','http://promo.url/crew1'),
+    (5000,'2024-04-10 22:42:05.000000','2025-02-12 09:42:34.000000','한밤의 트롯','Innovative space explorers.','https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/b89af8b0-2167-4a05-9b89-2b0a4c1b1b33.jpg','http://video.url/crew6','http://promo.url/crew6'),
+    (9800,'2024-04-02 12:02:22.000000','2025-02-12 09:42:34.000000','신바람버스킹','Experts in cybersecurity.','https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/f8e35442-213c-462d-9c01-db7e8fa1d608.jpg','http://video.url/crew9','http://promo.url/crew9'),
+
+    -- 팝 크루 8개
+    (15000,'2025-02-02 21:59:16.000000','2025-02-12 09:42:34.000000','스테리나잇','Advancing biotech solutions.','https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/d925c90b-7939-48a5-8a12-83adff892b70.jpg','http://video.url/crew10','http://promo.url/crew10'),
+    (7500,'2024-12-28 14:01:04.000000','2025-02-12 09:42:34.000000','팝코어','Leading robotics innovation.','https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/c3646555-9a91-4dcc-a2a3-5e932dc20aac.jpg','http://video.url/crew8','http://promo.url/crew8'),
+    (1500,'2024-11-29 19:46:27.000000','2025-02-12 09:42:34.000000','스트릿팝','A pop music group','https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/397a117c-ad12-490a-9a0a-f1f8a5f11e49.jpg','http://video.url/crew3','http://promo.url/crew3'),
+    (1800,'2024-11-24 22:07:29.000000','2025-02-12 09:42:34.000000','크리스탈비트','A hip-hop music crew','https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/a73316de-55a2-4d73-bbb7-f232d698c8c7.jpg','http://video.url/crew4','http://promo.url/crew4'),
+    (12000,'2024-10-09 03:44:24.000000','2025-02-12 09:42:34.000000','메이저노트','Specialized in AI development.','https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/72cc9709-f1d1-45c7-9c24-2b8f01371559.jpg','http://video.url/crew7','http://promo.url/crew7'),
+    (1000,'2024-05-01 16:31:43.000000','2025-02-12 09:42:34.000000','오픈마이크팝','A rock music crew','https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/776dda13-cc22-4bf8-92bc-8894a2b2e209.jpg','http://video.url/crew1','http://promo.url/crew1'),
+    (5000,'2024-04-10 22:42:05.000000','2025-02-12 09:42:34.000000','빅웨이브','Innovative space explorers.','https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/80921169-c6bf-4f60-8974-ed3f30a8e3a5.jpg','http://video.url/crew6','http://promo.url/crew6'),
+    (9800,'2024-04-02 12:02:22.000000','2025-02-12 09:42:34.000000','업비트크루','Experts in cybersecurity.','https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/d1d7f0f5-f3f6-4a89-8b41-a99437fd7858.jpg','http://video.url/crew9','http://promo.url/crew9'),
+
+    -- 힙합 크루 8개
+    (15000,'2025-02-02 21:59:16.000000','2025-02-12 09:42:34.000000','리듬시티','Advancing biotech solutions.','https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/e09bcb05-b86f-4f05-9c95-cc21776935f4.jpg','http://video.url/crew10','http://promo.url/crew10'),
+    (7500,'2024-12-28 14:01:04.000000','2025-02-12 09:42:34.000000','언더비트','Leading robotics innovation.','https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/dff53ff2-9496-445c-bae3-8cbbc753d035.jpg','http://video.url/crew8','http://promo.url/crew8'),
+    (1500,'2024-11-29 19:46:27.000000','2025-02-12 09:42:34.000000','플로우킹즈','A pop music group','https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/002783da-4fc0-499c-b4f5-0856212c4d20.jpg','http://video.url/crew3','http://promo.url/crew3'),
+    (1800,'2024-11-24 22:07:29.000000','2025-02-12 09:42:34.000000','사이퍼스쿼드','A hip-hop music crew','https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/1816b8df-644e-46bc-9851-6a395e1d6504.jpg','http://video.url/crew4','http://promo.url/crew4'),
+    (12000,'2024-10-09 03:44:24.000000','2025-02-12 09:42:34.000000','버스킹헤드','Specialized in AI development.','https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/5f4160b9-9c1c-4c9e-99ba-b50bea9d49fa.jpg','http://video.url/crew7','http://promo.url/crew7'),
+    (1000,'2024-05-01 16:31:43.000000','2025-02-12 09:42:34.000000','스트릿라임즈','A rock music crew','https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/70a87ab7-10de-4e84-baa9-445196020332.jpg','http://video.url/crew1','http://promo.url/crew1'),
+    (5000,'2024-04-10 22:42:05.000000','2025-02-12 09:42:34.000000','베이스클랜','Innovative space explorers.','https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/3c5773b8-f7cc-4dc1-9ad4-4c1dbc2c6407.jpg','http://video.url/crew6','http://promo.url/crew6'),
+    (9800,'2024-04-02 12:02:22.000000','2025-02-12 09:42:34.000000','킹오브더스트릿','Experts in cybersecurity.','https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/8665ca4e-4711-4444-9879-e9156815bc81.jpg','http://video.url/crew9','http://promo.url/crew9');
+
+-- crew_genre 테이블
+-- 위 크루들 순서대로 장르 지정
+insert into crew_genre(crew_id, genre_id)
+values
+    (11, 2), (12, 2), (13, 2), (14, 2), (15, 2), (16, 2), (17, 2), (18, 2),
+    (19, 8), (20, 8), (21, 8), (22, 8), (23, 8), (24, 8), (25, 8), (26, 8),
+    (27, 6), (28, 6), (29, 6), (30, 6), (31, 6), (32, 6), (33, 6), (34, 6),
+    (35, 12), (36, 12), (37, 12), (38, 12), (39, 12), (40, 12), (41, 12), (42, 12),
+    (43, 5), (44, 5), (45, 5), (46, 5), (47, 5), (48, 5), (49, 5), (50, 5),
+    (51, 13), (52, 13), (53, 13), (54, 13), (55, 13), (56, 13), (57, 13), (58, 13),
+    (59, 4), (60, 4), (61, 4), (62, 4), (63, 4), (64, 4), (65, 4), (66, 4),
+    (67, 7), (68, 7), (69, 7), (70, 7), (71, 7), (72, 7), (73, 7), (74, 7);
+
 -- CrewMember 더미 데이터 INSERT
 INSERT INTO crew_member (crew_id, member_id, is_crew_admin) VALUES
                                                                 (8, 3, TRUE),     -- butter123을 크루장(admin)으로 지정
