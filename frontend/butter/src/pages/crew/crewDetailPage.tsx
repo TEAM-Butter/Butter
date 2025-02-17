@@ -332,9 +332,7 @@ function CrewDetailPage() {
                 const response = await axiosInstance.get(`/crew/detail/${id}`) // 크루 디테일 정보 받아옴
                 setCrewDetail(response.data);
                 console.log("response.data : ", response.data)
-                const likeresponse = await axiosInstance.get(`schedule/like`)
-                setScheduleLikeList(likeresponse.data)
-                console.log(likeresponse.data)
+               
                 if (crewDetail?.lives[0].endDate === null) {
                     setLiveOn(true)
                 } else {
@@ -452,7 +450,7 @@ function CrewDetailPage() {
         </LayOut3>       
                 </LayOut1>
                 <LayOut2>
-                <ScheduleEditComponent crewScheduleDetail={crewScheduleDetail} crewDetail={crewDetail} scheduleLikeList={scheduleLikeList} setScheduleLikeList={setScheduleLikeList} />
+                <ScheduleEditComponent crewScheduleDetail={crewScheduleDetail} crewDetail={crewDetail} />
                 
                 <Box6><div>Notice</div><MoveToNoticePage src={rightRightArrow} alt="rightRightArrow" onClick={()=>{navigate(`/crew/notice/detail/${id}/${0}`)}}></MoveToNoticePage></Box6>
                 <Box7 ><div id="scroll-area2"> {crewDetail.notices.map((a : any, i : any)=>
@@ -1175,7 +1173,7 @@ const EditBox = styled.div`
     justify-content: center;
 `
 
-function ScheduleEditComponent({crewScheduleDetail,crewDetail,scheduleLikeList,setScheduleLikeList}:any) {
+function ScheduleEditComponent({crewScheduleDetail,crewDetail}:any) {
     const [isSchedulePlusModalOpen, setisSchedulePlusModalOpen] = useState(false) // 스케쥴 추가 스위치
     const [isScheduleDetailModalOpen, setisScheduleDetailModalOpen] = useState(false) // 스케쥴 디테일 스위치
     const [isScheduleEditModalOpen, setisScheduleEditModalOpen] = useState(false) // 스케쥴 디테일 스위치
@@ -1187,9 +1185,35 @@ function ScheduleEditComponent({crewScheduleDetail,crewDetail,scheduleLikeList,s
     const [bookmarked, setBookmarked] = useState(true);
     
     const [haveBookMarked, setHaveBookMarked] = useState(false)
-    
+    const [scheduleLikeList, setScheduleLikeList] = useState<any>([])
+
+    const Check = async () => {
+        try {
+            const res = await axiosInstance.get('schedule/like')
+            console.log(res.data, '새로운 좋아요리스트')
+            setScheduleLikeList(res.data)
+        } catch {
+
+        }
+    }
+
+
+
     useEffect(()=> {
+        const FetchLikeList = async () => {
+            try {
+                const res = await axiosInstance.get('schedule/like')
+                console.log(res.data, '새로운 좋아요리스트')
+                setScheduleLikeList(res.data)
+              
+            } catch {
+                console.log("못받음")
+            }
+           
+        }
+        FetchLikeList()
         console.log("실행됨")
+       
         for (let i = 0 ; i < scheduleLikeList.length; i++) {
             
             if(scheduleLikeList[i].id == crewDetail.schedules[selectedScheduleIndex-1].id ) {
@@ -1201,10 +1225,6 @@ function ScheduleEditComponent({crewScheduleDetail,crewDetail,scheduleLikeList,s
         }
     }, [isScheduleDetailModalOpen])
 
-    useEffect(()=> {
-
-    },[scheduleLikeList])
-
 
     const BookmarkPlus = async (scheduleId : number) => {
         try {
@@ -1215,7 +1235,7 @@ function ScheduleEditComponent({crewScheduleDetail,crewDetail,scheduleLikeList,s
             alert('북마크 성공!')
             setBookmarked(!bookmarked)
             console.log(bookmarked)
-            setHaveBookMarked(!haveBookMarked)
+            setHaveBookMarked(true)
         }
          catch {
 
@@ -1233,7 +1253,7 @@ function ScheduleEditComponent({crewScheduleDetail,crewDetail,scheduleLikeList,s
             alert('북마크 취소 성공!')
             setBookmarked(!bookmarked)
             console.log(bookmarked)
-            setHaveBookMarked(!haveBookMarked)
+            setHaveBookMarked(false)
         } catch {
 
         }
@@ -1244,6 +1264,7 @@ function ScheduleEditComponent({crewScheduleDetail,crewDetail,scheduleLikeList,s
             const res = await axiosInstance.delete(`schedule/${scheduleId}`)
             alert("일정 삭제 성공!")
             window.location.reload(); // ✅ 화면 새로고침 
+            
         } catch {
 
         }
@@ -1304,8 +1325,8 @@ function ScheduleEditComponent({crewScheduleDetail,crewDetail,scheduleLikeList,s
                         <DateText>{crewDetail.schedules[selectedScheduleIndex-1].buskingDate[0]}년 {crewDetail.schedules[selectedScheduleIndex-1].buskingDate[1]}월 {crewDetail.schedules[selectedScheduleIndex-1].buskingDate[2]}일 {crewDetail.schedules[selectedScheduleIndex-1].buskingDate[3]}시 일자로, {crewDetail.schedules[selectedScheduleIndex-1].place}에서 버스킹합니다! </DateText>
                         
                         <RadiusBox>
-                        {haveBookMarked  &&<FollowedIcon src={followedIcon} alt="followedIcon" onClick={()=>{BookmarkMinus(crewDetail.schedules[selectedScheduleIndex-1].id)}}></FollowedIcon>}
-                        {!haveBookMarked &&<NotFollowedIcon src={notFollowedIcon} alt="notFollowedIcon" onClick={()=>{BookmarkPlus(crewDetail.schedules[selectedScheduleIndex-1].id)}}></NotFollowedIcon>}
+                        {haveBookMarked  ? (<FollowedIcon src={followedIcon} alt="followedIcon" onClick={()=>{BookmarkMinus(crewDetail.schedules[selectedScheduleIndex-1].id)}}></FollowedIcon>) :
+                        (<NotFollowedIcon src={notFollowedIcon} alt="notFollowedIcon" onClick={()=>{BookmarkPlus(crewDetail.schedules[selectedScheduleIndex-1].id)}}></NotFollowedIcon>)}
                         </RadiusBox>
                         </FlexCan>
                        <Map // 지도를 표시할 Container
