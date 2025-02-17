@@ -491,7 +491,7 @@ const LivePage = () => {
             console.log("방생성 spring서버로 전송 성공", response.data);
           } catch (err) {
             console.log("방 생성을 spring서버에 알려주는 데 실패", err);
-            console.error("서버 응답:", err.response?.data);
+            console.error("spring 서버 응답:", err.response?.data);
           }
         };
         createRoomPost();
