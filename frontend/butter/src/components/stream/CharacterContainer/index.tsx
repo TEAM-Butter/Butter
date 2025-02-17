@@ -19,7 +19,6 @@ import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import ThumbUpAltOutlinedIcon from "@mui/icons-material/ThumbUpAltOutlined";
 import BakeryDiningOutlinedIcon from "@mui/icons-material/BakeryDiningOutlined";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
-import { small } from "framer-motion/client";
 
 // const images = [pet1, pet2, pet3, pet4, pet5, pet6];
 

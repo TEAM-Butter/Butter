@@ -25,6 +25,7 @@ import CharacterContainer from "../../components/stream/CharacterContainer";
 import { io } from "socket.io-client";
 
 import { useUserStore } from "../../stores/UserStore";
+import { useCrewStore } from "../../stores/UserStore";
 
 const LivePageWrapper = styled.div`
   display: flex;
@@ -237,6 +238,9 @@ const LivePage = () => {
   const [currentVideoUrl, setCurrentVideoUrl] = useState("");
   const [token, setToken] = useState<string | null>(null);
 
+  const crewName = useCrewStore((state) => state.name);
+  console.log("crewStore crewName : ", crewName);
+
   const navigate = useNavigate();
 
   const socket = useMemo(
@@ -250,7 +254,7 @@ const LivePage = () => {
   // export const SocketContext = React.createContext<socketType>(socket);
 
   // 크루ID 로 roomName을 설정 //해쉬!!!
-
+  const fakeTitle = state.roomName;
   const roomName = state.roomName;
   const user = useUserStore((state) => state);
 
@@ -503,6 +507,7 @@ const LivePage = () => {
                     serverUrl={APPLICATION_SERVER_URL}
                     token={token}
                     role={participantRole}
+                    fakeTitle={fakeTitle}
                   />
                 )}
               </RightTop>
