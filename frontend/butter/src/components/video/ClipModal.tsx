@@ -34,6 +34,7 @@ const Input = styled.input`
   border: 1px solid #ddd;
   border-radius: 4px;
   font-size: 16px;
+  color: black;
 `;
 
 const CloseButton = styled.button`
