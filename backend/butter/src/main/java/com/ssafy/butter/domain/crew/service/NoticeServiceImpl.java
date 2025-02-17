@@ -13,7 +13,7 @@ import com.ssafy.butter.domain.member.entity.Member;
 import com.ssafy.butter.domain.member.service.member.MemberService;
 import com.ssafy.butter.domain.notification.enums.NotificationType;
 import com.ssafy.butter.domain.notification.service.NotificationService;
-import com.ssafy.butter.infrastructure.awsS3.S3ImageUploader;
+import com.ssafy.butter.infrastructure.awsS3.ImageUploader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -25,7 +25,7 @@ import java.util.List;
 @Service
 public class NoticeServiceImpl implements NoticeService {
 
-    private final S3ImageUploader s3ImageUploader;
+    private final ImageUploader imageUploader;
 
     private final CrewService crewService;
     private final MemberService memberService;
@@ -49,7 +49,7 @@ public class NoticeServiceImpl implements NoticeService {
 
         String imageUrl = null;
         if (noticeSaveRequestDTO.image() != null) {
-            imageUrl = s3ImageUploader.uploadImage(noticeSaveRequestDTO.image());
+            imageUrl = imageUploader.uploadImage(noticeSaveRequestDTO.image());
         }
         Notice notice = Notice.builder()
                 .crew(crew)
@@ -106,7 +106,7 @@ public class NoticeServiceImpl implements NoticeService {
         Notice notice = noticeRepository.findById(id).orElseThrow();
         String imageUrl = null;
         if (noticeSaveRequestDTO.image() != null) {
-            imageUrl = s3ImageUploader.uploadImage(noticeSaveRequestDTO.image());
+            imageUrl = imageUploader.uploadImage(noticeSaveRequestDTO.image());
         }
         notice.update(noticeSaveRequestDTO, imageUrl);
         return NoticeResponseDTO.fromEntity(noticeRepository.save(notice));

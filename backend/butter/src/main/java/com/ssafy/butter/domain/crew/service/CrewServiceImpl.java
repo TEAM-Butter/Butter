@@ -20,7 +20,7 @@ import com.ssafy.butter.domain.crew.repository.follow.FollowRepository;
 import com.ssafy.butter.domain.crew.repository.genre.GenreRepository;
 import com.ssafy.butter.domain.member.entity.Member;
 import com.ssafy.butter.domain.member.service.member.MemberService;
-import com.ssafy.butter.infrastructure.awsS3.S3ImageUploader;
+import com.ssafy.butter.infrastructure.awsS3.ImageUploader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,7 +33,7 @@ import java.util.List;
 public class  CrewServiceImpl implements CrewService {
 
     private final MemberService memberService;
-    private final S3ImageUploader s3ImageUploader;
+    private final ImageUploader imageUploader;
 
     private final CrewRepository crewRepository;
     private final CrewMemberRepository crewMemberRepository;
@@ -54,9 +54,9 @@ public class  CrewServiceImpl implements CrewService {
         }
         String imageUrl = null;
         if (crewSaveRequestDTO.image() != null) {
-            imageUrl = s3ImageUploader.uploadImage(crewSaveRequestDTO.image());
+            imageUrl = imageUploader.uploadImage(crewSaveRequestDTO.image());
         }
-        String portfolioVideoUrl = s3ImageUploader.uploadImage(crewSaveRequestDTO.portfolioVideo());
+        String portfolioVideoUrl = imageUploader.uploadImage(crewSaveRequestDTO.portfolioVideo());
         Crew crew = Crew.builder()
                 .name(crewSaveRequestDTO.name())
                 .description(crewSaveRequestDTO.description())
@@ -160,7 +160,7 @@ public class  CrewServiceImpl implements CrewService {
         validateCrewAdmin(crew, currentMember);
         String imageUrl = null;
         if (crewSaveRequestDTO.image() != null) {
-            imageUrl = s3ImageUploader.uploadImage(crewSaveRequestDTO.image());
+            imageUrl = imageUploader.uploadImage(crewSaveRequestDTO.image());
         }
 
         crew.update(crewSaveRequestDTO, imageUrl);
