@@ -1,4 +1,9 @@
-import { Room, RoomEvent } from "livekit-client";
+import {
+  DataPacket_Kind,
+  RemoteParticipant,
+  Room,
+  RoomEvent,
+} from "livekit-client";
 import { Recording } from "./types";
 
 export class RecordingService {
@@ -10,15 +15,14 @@ export class RecordingService {
     this.room = room;
     // this.baseUrl = baseUrl;
     this.baseUrl =
-      import.meta.env.VITE_NODE_JS_SERVER ||
-      "http://localhost:6080/api";
+      import.meta.env.VITE_NODE_JS_SERVER || "http://localhost:6080/api";
   }
 
   isRecordingInProgress(): boolean {
     return this.isRecording;
   }
   async startRecording(): Promise<void> {
-    const response = await this.httpRequest("POST", "recordings/start", {
+    const response = await this.httpRequest("POST", "/recordings/start", {
       roomName: this.room.name,
     });
     if (response.error) {
@@ -26,15 +30,24 @@ export class RecordingService {
     }
   }
 
-  async stopRecording(): Promise<void> {
-    const response = await this.httpRequest("POST", "recordings/stop", {
+  async stopRecording(callback: (result: Recording) => void): Promise<void> {
+    const response = await this.httpRequest("POST", "/recordings/stop", {
       roomName: this.room.name,
     });
+
+    const resData: Recording = {
+      name: response.data.recording.name,
+      duration: response.data.recording.duration,
+      size: response.data.recording.size,
+      startedAt: response.data.recording.startedAt,
+    };
+
+    callback(resData);
+
     if (response.error) {
       throw new Error(`Failed to stop recording: ${response.error.message}`);
     }
   }
-
   listenToRecordingStatus(callback: (status: string) => void) {
     this.room.on(RoomEvent.RoomMetadataChanged, (metadata: string) => {
       try {
@@ -50,10 +63,27 @@ export class RecordingService {
     });
   }
 
+  // listenToRecordingDataReceived(
+  //   callback: (
+  //     payload: Uint8Array<ArrayBufferLike>,
+  //     _participant: RemoteParticipant | undefined,
+  //     _kind: DataPacket_Kind | undefined,
+  //     topic: string | undefined
+  //   ) => void
+  // ) {
+  //   this.room.on(
+  //     RoomEvent.DataReceived,
+  //     async (payload, _participant, _kind, topic) => {
+  //       console.log("👍👍👍👍👍👍👍");
+  //       callback(payload, _participant, _kind, topic);
+  //     }
+  //   );
+  // }
+
   async deleteRecording(recordingName: string): Promise<void> {
     const response = await this.httpRequest(
       "DELETE",
-      `recordings/${recordingName}`
+      `/recordings/${recordingName}`
     );
     if (response.error && response.error.status !== 404) {
       throw new Error(`Failed to delete recording: ${response.error.message}`);
@@ -63,7 +93,7 @@ export class RecordingService {
   async getRecordingUrl(recordingName: string): Promise<string> {
     const response = await this.httpRequest(
       "GET",
-      `recordings/${recordingName}/url`
+      `/recordings/${recordingName}/url`
     );
     if (response.error) {
       throw new Error(`Failed to get recording URL: ${response.error.message}`);
@@ -78,12 +108,12 @@ export class RecordingService {
     roomId?: string
   ): Promise<Recording[]> {
     const url =
-      "recordings" +
+      "/recordings" +
       (roomName
         ? `?roomName=${roomName}` + (roomId ? `&roomId=${roomId}` : "")
         : "");
-    
-    console.log(url)
+
+    console.log(url);
 
     const response = await this.httpRequest("GET", url);
     if (response.error) {

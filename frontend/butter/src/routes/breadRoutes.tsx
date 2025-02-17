@@ -1,8 +1,8 @@
 import { Route } from "react-router-dom";
-import BreadRechargePage from "../pages/bread/BreadRechargePage";
+import BreadChargePage from "../pages/bread/BreadChargePage";
 
 export const breadRoutes = (
   <Route path="/bread">
-    <Route path="recharge" element={ <BreadRechargePage/> }/>
+    <Route path="charge" element={<BreadChargePage />} />
   </Route>
 );

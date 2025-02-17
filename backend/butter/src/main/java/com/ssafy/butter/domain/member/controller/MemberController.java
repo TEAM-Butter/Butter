@@ -2,14 +2,18 @@ package com.ssafy.butter.domain.member.controller;
 
 import com.ssafy.butter.auth.dto.AuthInfoDTO;
 import com.ssafy.butter.domain.member.dto.request.CheckLoginIdDTO;
+import com.ssafy.butter.domain.member.dto.request.CheckNicknameDuplicationRequestDTO;
 import com.ssafy.butter.domain.member.dto.request.ExtraInfoDTO;
+import com.ssafy.butter.domain.member.dto.request.MemberSearchRequestDTO;
 import com.ssafy.butter.domain.member.dto.request.PasswordUpdateRequestDTO;
 import com.ssafy.butter.domain.member.dto.request.ProfileUpdateRequestDTO;
 import com.ssafy.butter.domain.member.dto.request.SignUpDTO;
 import com.ssafy.butter.domain.member.dto.response.CheckLoginIdResponseDTO;
+import com.ssafy.butter.domain.member.dto.response.CheckNickNameDuplicationResponseDTO;
 import com.ssafy.butter.domain.member.dto.response.PasswordUpdateResponseDTO;
 import com.ssafy.butter.domain.member.dto.response.ProfileUpdateResponseDTO;
 import com.ssafy.butter.domain.member.dto.response.RegisterExtraInfoResponseDTO;
+import com.ssafy.butter.domain.member.dto.response.SearchMemberResponseDTO;
 import com.ssafy.butter.domain.member.dto.response.SignUpResponseDTO;
 import com.ssafy.butter.domain.member.dto.response.UserProfileResponseDTO;
 import com.ssafy.butter.domain.member.service.member.MemberService;
@@ -20,6 +24,8 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -67,7 +73,7 @@ public class MemberController {
     }
 
     @Operation(summary = "비밀번호 변경", description = "현재 로그인한 사용자의 비밀번호를 변경합니다.")
-    @PutMapping(value = "/password", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PutMapping(value = "/password")
     public ResponseEntity<PasswordUpdateResponseDTO> updatePassword(
             @CurrentUser AuthInfoDTO authInfoDTO,
             @RequestBody PasswordUpdateRequestDTO passwordUpdateRequestDTO) {
@@ -93,5 +99,21 @@ public class MemberController {
             @RequestBody CheckLoginIdDTO loginIdDTO) {
         CheckLoginIdResponseDTO response = memberService.checkIfLoginIdExists(loginIdDTO.loginId());
         return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "닉네임 중복 체크", description = "닉네임 중복 여부를 확인합니다.")
+    @PostMapping("/check-nickname")
+    public ResponseEntity<CheckNickNameDuplicationResponseDTO> checkNicknameExists(
+            @RequestBody CheckNicknameDuplicationRequestDTO nicknameDTO) {
+        CheckNickNameDuplicationResponseDTO response = memberService.checkIfNicknameExists(nicknameDTO.nickname());
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "회원 닉네임 검색", description = "닉네임에 해당 문자열이 포함된 회원들을 대소문자 구분 없이 조회합니다."
+    )
+    @GetMapping
+    public ResponseEntity<Page<SearchMemberResponseDTO>> searchMemberByNickname(
+            @ParameterObject @ModelAttribute MemberSearchRequestDTO memberSearchRequestDTO){
+        return ResponseEntity.ok(memberService.findByNicknameContainingIgnoreCase(memberSearchRequestDTO));
     }
 }

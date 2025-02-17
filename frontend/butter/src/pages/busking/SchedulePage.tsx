@@ -93,14 +93,13 @@ const Box3 = styled.div`
 `
 const Box4 = styled.div`
   background: var(--liner);
-  max-height: 510px;
-  overflow-y: auto;  /* ✅ 내용이 넘칠 경우 스크롤 */
+  height: 510px;
   width: 490px;
   color: black;
   border-radius: 5px;
   padding-top: 20px;
-  padding-left: 20px;
-  position: relative;
+
+
 `
 
 const CalenderBox = styled.div`
@@ -178,7 +177,9 @@ const ScheduleTitle = styled.div`
 const ScheduleContent = styled.div`
  
 `
-
+const MarginBox= styled.div`
+  margin-left: 10px;
+`
 const GenreBox = styled.div`
  display: flex;
 `
@@ -209,7 +210,9 @@ const ZoomBtn = styled.img`
   border-radius: 50px;
   margin-bottom: -3px;
 `
+const HeightModify = styled.div`
 
+`
 const ZoomBox2 = styled.div`
   position: absolute;
   z-index: 966;
@@ -311,41 +314,77 @@ function SchedulePage() {
    };
 
 
-   // 검색해주는 함수
-  const handleSearch = () => {
+  //  // 검색해주는 함수
+  // const handleSearch = async () => {
+  //   if (!searchTerm.trim()) return;
+  //   console.log("검색어:", searchTerm);
+  //   // 여기에 검색 로직 추가 (예: API 요청)
+  //   const ps = new kakao.maps.services.Places()
+
+
+  //   ps.keywordSearch(searchTerm, (data, status, _pagination) => {
+  //     if (status === kakao.maps.services.Status.OK) {
+  //       // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
+  //       // LatLngBounds 객체에 좌표를 추가합니다
+  //       const bounds = new kakao.maps.LatLngBounds()
+  //       let markers2 = []
+      
+  //       for (var i = 0; i < data.length; i++) {
+  //         // @ts-ignore
+  //         markers2.push({
+  //           position: {
+  //             lat: parseFloat(data[i].y),
+  //             lng: parseFloat(data[i].x),
+  //           },
+  //           content: data[i].place_name,
+  //         })
+  //         // @ts-ignore
+  //         bounds.extend(new kakao.maps.LatLng(data[i].y, data[i].x))
+  //       }
+      
+  //       setMarkers(markers2)
+      
+  //       // // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
+  //       // map.setBounds(bounds)
+  //     }
+  //   })
+  // };
+
+  const handleSearch = async () => {
     if (!searchTerm.trim()) return;
     console.log("검색어:", searchTerm);
-    // 여기에 검색 로직 추가 (예: API 요청)
-    const ps = new kakao.maps.services.Places()
-
-
-    ps.keywordSearch(searchTerm, (data, status, _pagination) => {
-      if (status === kakao.maps.services.Status.OK) {
-        // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
-        // LatLngBounds 객체에 좌표를 추가합니다
-        const bounds = new kakao.maps.LatLngBounds()
-        let markers2 = []
-      
-        for (var i = 0; i < data.length; i++) {
-          // @ts-ignore
-          markers2.push({
-            position: {
-              lat: parseFloat(data[i].y),
-              lng: parseFloat(data[i].x),
-            },
-            content: data[i].place_name,
-          })
-          // @ts-ignore
-          bounds.extend(new kakao.maps.LatLng(data[i].y, data[i].x))
-        }
-      
-        setMarkers(markers2)
-      
-        // // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
-        // map.setBounds(bounds)
+  
+    try {
+      // ✅ 백엔드 API 호출
+      const response = await axiosInstance.get(`/schedule?keyword=${searchTerm}&&date=${selectedDate}`);
+      console.log(searchTerm, selectedDate)
+      if (Array.isArray(response.data)) {
+        // ✅ 검색 결과를 마커 데이터로 변환
+        console.log(response.data)
+        const markers2 = response.data.map((place: any) => ({
+          position: {
+            lat: parseFloat(place.latitude), // ✅ 백엔드에서 `latitude` 제공
+            lng: parseFloat(place.longitude), // ✅ 백엔드에서 `longitude` 제공
+          },
+          content: place.place, // ✅ 백엔드에서 `name` 또는 `place_name` 제공 // 여기서 받아오고 싶은 정보 추가하면 됨.
+        }));
+  
+        setMarkers(markers2);
+  
+        console.log("🚀 검색 결과:", markers2);
+      } else {
+        console.error("⚠️ API 응답이 배열이 아닙니다:", response.data);
+        setMarkers([]);
       }
-    })
+    } catch (error) {
+      console.error("❌ 백엔드 검색 요청 실패:", error);
+      setMarkers([]);
+    }
   };
+
+
+
+
 
   //목록 선택하면 확대해서 보여주게하는 함수
   const handleResultClick = (pos: any) => {
@@ -416,42 +455,42 @@ function SchedulePage() {
 
 
 
-  //맨처음 랜더링 될때 전국맛집 검색하기
-  useEffect(() => {
+  // //맨처음 랜더링 될때 전국맛집 검색하기
+  // useEffect(() => {
   
-    // 분리 주석
-    if (!map) return
-    const ps = new kakao.maps.services.Places()
+  //   // 분리 주석
+  //   if (!map) return
+  //   const ps = new kakao.maps.services.Places()
 
-    ps.keywordSearch("전국 맛집", (data, status, _pagination) => {
-      if (status === kakao.maps.services.Status.OK) {
-        // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
-        // LatLngBounds 객체에 좌표를 추가합니다
-        const bounds = new kakao.maps.LatLngBounds()
-        let markers2 = []
+  //   ps.keywordSearch("전국 맛집", (data, status, _pagination) => {
+  //     if (status === kakao.maps.services.Status.OK) {
+  //       // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
+  //       // LatLngBounds 객체에 좌표를 추가합니다
+  //       const bounds = new kakao.maps.LatLngBounds()
+  //       let markers2 = []
 
-        for (var i = 0; i < data.length; i++) {
-          // @ts-ignore
-          markers2.push({
-            position: {
-              lat: parseFloat(data[i].y),
-              lng: parseFloat(data[i].x),
-            },
-            content: data[i].place_name,
-          })
-          // @ts-ignore
-          bounds.extend(new kakao.maps.LatLng(data[i].y, data[i].x))
-        }
+  //       for (var i = 0; i < data.length; i++) {
+  //         // @ts-ignore
+  //         markers2.push({
+  //           position: {
+  //             lat: parseFloat(data[i].y),
+  //             lng: parseFloat(data[i].x),
+  //           },
+  //           content: data[i].place_name,
+  //         })
+  //         // @ts-ignore
+  //         bounds.extend(new kakao.maps.LatLng(data[i].y, data[i].x))
+  //       }
       
-        setMarkers(markers2)
+  //       setMarkers(markers2)
 
-        // // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
-        // map.setBounds(bounds)
-      }
-    })
+  //       // // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
+  //       // map.setBounds(bounds)
+  //     }
+  //   })
     
 
-  }, [map])
+  // }, [map])
 
 
     interface Position {
@@ -490,6 +529,7 @@ function SchedulePage() {
         );
   
         setUpdatedPositions(results);  // ✅ 모든 변환 완료 후 상태 업데이트
+        console.log("updatedPosition", results)
       };
   
       fetchAddresses();
@@ -629,28 +669,46 @@ useEffect(() => {
   const [daySchedule, setDaySchedule ] = useState<any>([])
 
   //오늘 날짜 가져와서 스케쥴 받아오는 함수
-  useEffect(()=> {
+ 
     const todayStr= getToday();// 🔥 오늘 날짜 가져오기
     const fecthDaySchedule = async () => {
       try {
           setLoading(true) 
           const response = await axiosInstance.get(`/schedule?pageSize=60&date=${todayStr}`)
-          setDaySchedule(response.data);
-          console.log("daySchedule : ", response.data)
+          
+          const schedules = response.data; // ✅ 데이터를 변수에 저장
+          setDaySchedule(schedules); // ✅ 상태 업데이트
 
-      } catch (err :any) {
-        setError(err.message);
-      } finally {
-        setLoading(false)
-      }
-    }
+          console.log("daySchedule : ", schedules)
+
+          const bounds = new kakao.maps.LatLngBounds();
+          let markers3 = schedules.map((schedule: any) => ({
+            position: {
+              lat: parseFloat(schedule.latitude),
+              lng: parseFloat(schedule.longitude),
+            },
+            content: schedule.place,
+          }));
     
-    fecthDaySchedule()
+          markers3.forEach((marker:any) => {
+            bounds.extend(new kakao.maps.LatLng(marker.position.lat, marker.position.lng));
+          });
 
-  }, [])
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
+          setMarkers(markers3); // ✅ markers3를 한 번에 업데이트
 
+          
+        }catch (err: any) {
+            setError(err.message);
+        } finally {
+          setLoading(false)
+        }
+        }
+
+ // state.center가 변경될 때 로그 출력
+ useEffect(() => {
+  fecthDaySchedule()
+
+}, []);
 
   // const registerSchedule = function (date : string, daySchedule : any ) {
   //   const [changeProcess, setChangeProcss] = useState([{position : {lan: "", lng: ""}, content : "", place:"", title:"", buskingDate : [], crew : {}}])
@@ -920,15 +978,18 @@ useEffect(() => {
         </Box3>
       </SearchWrapper>
       <Box4>
+        <MarginBox>
         <TextBox1><DateBox>{selectedDate} </DateBox> <div>날짜로, </div></TextBox1>
         <TextBox2><div>현재</div> <LocationBox> {searchTerm} </LocationBox> <div>근처에</div>  <CountBox >{positions2.length}개</CountBox> <div>의 버스킹 일정이 있어요!</div></TextBox2>
-       
+        </MarginBox>
+        <hr style={{border : "1px solid black", marginBottom: "0px"}}/>
+       <HeightModify id="scroll-area3">
           { updatedPositions.map((pos :any, i : any)=> {return(
         <ScheduleBox>
           <ScheduleInnerBox key={i} 
           style={{
             padding: "8px 10px",
-            borderBottom: "1px solid #eee",
+            borderBottom: "1px solid #000000",
             cursor: "pointer",
           }}
           onClick={() => {handleResultClick(pos); myLocationLevel("upgrade")} } // ✅ 클릭 시 해당 위치로 이동 & 마커 클릭 효과
@@ -948,7 +1009,7 @@ useEffect(() => {
         </ScheduleBox>
           )})}
         
-
+        </HeightModify>
       </Box4>
     </LayOut2>
   </PageContainer>

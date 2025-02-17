@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import StreamChat from "../../components/stream/StreamChat";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   LocalVideoTrack,
   RemoteParticipant,
@@ -196,7 +196,6 @@ let APPLICATION_SERVER_URL = import.meta.env.VITE_NODE_JS_SERVER || "";
 //let LIVEKIT_URL = "wss://192.168.30.199:7880/";
 let LIVEKIT_URL = import.meta.env.VITE_LIVEKIT_SERVER || "";
 
-let TOKEN = "";
 configureUrls();
 
 function configureUrls() {
@@ -220,6 +219,8 @@ function configureUrls() {
   }
 }
 
+const randomId = Math.random();
+
 const LivePage = () => {
   const [room, setRoom] = useState<Room | undefined>(undefined);
   const [localTrack, setLocalTrack] = useState<LocalVideoTrack | undefined>(
@@ -234,33 +235,30 @@ const LivePage = () => {
   const [recordings, setRecordings] = useState<Recording[]>([]);
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
   const [currentVideoUrl, setCurrentVideoUrl] = useState("");
-  const [participantRole, setParticipantRole] = useState("subscriber");
+  const [token, setToken] = useState<string | null>(null);
 
   const navigate = useNavigate();
-  // const socket = io.connect("http://localhost:5000");
-  const socket = io("http://localhost:5000", {
-    transports: ["websocket"],
-  });
+
+  const socket = useMemo(
+    () =>
+      io(`${import.meta.env.VITE_FLASK_SERVER}`, {
+        transports: ["websocket"],
+      }),
+    []
+  );
 
   // export const SocketContext = React.createContext<socketType>(socket);
 
   // 크루ID 로 roomName을 설정 //해쉬!!!
 
   const roomName = state.roomName;
+  const user = useUserStore((state) => state);
 
-  let role = useUserStore((state) => state.memberType) ?? "user";
-  let participantName =
-    useUserStore((state) => state.nickname) ?? "guest" + Math.random();
-  console.log("role: " + role + " name: " + participantName);
+  const role = user.memberType ?? "user"; // useMemberType이 crew 없으면 user
+  const participantName = user.nickname ?? "guest" + randomId;
+  const participantRole = role === "crew" ? "publisher" : "subscriber";
 
-  if (!role) {
-    if (window.location.hostname === "localhost") {
-      role = "crew";
-      participantName = state.participantName;
-    } else {
-      role = "user";
-    }
-  }
+  console.log("user", user);
 
   const handleBackBtnClick = () => {
     leaveRoom();
@@ -271,16 +269,18 @@ const LivePage = () => {
     try {
       // 녹화 목록 불러오기
       if (recordingService && room) {
+        const roomSid = await room.getSid();
+
         const recordingList = await recordingService.listRecordings(
           roomName,
-          room.sid
+          roomSid
         );
         console.log(
           "test입니다!!!!!!",
           "roomName : ",
           roomName,
           "/room.sid",
-          room.sid
+          roomSid
         );
         setRecordings(recordingList);
       }
@@ -298,8 +298,8 @@ const LivePage = () => {
   // 실제 종료 처리 함수
   const handleRealLiveOffBtnClick = async () => {
     try {
-      await leaveRoom();
       socket.emit("leave", { roomName });
+      leaveRoom();
       setIsLiveOffModalOpen(false);
       navigate("/");
 
@@ -325,128 +325,31 @@ const LivePage = () => {
   // 녹화 삭제 핸들러
   const handleDeleteRecording = async (recordingName: string) => {
     try {
+      console.log("지우기");
       if (recordingService) {
         await recordingService.deleteRecording(recordingName);
-        // setRecordings(recordings.filter((r) => r.name !== recordingName));
-        updateRecordingsList();
+        console.log("recordingName", recordingName);
+        setRecordings(recordings.filter((r) => r.name !== recordingName));
       }
     } catch (error) {
       console.error("Failed to delete recording:", error);
     }
   };
 
-  // Recording list update function
-  const updateRecordingsList = useCallback(async () => {
-    try {
-      if (recordingService && room) {
-        const recordingList = await recordingService.listRecordings(
-          roomName,
-          room.sid
-        );
-        setRecordings(recordingList);
-      }
-    } catch (error) {
-      console.error("Failed to load recordings:", error);
-      // TODO: Add error notification UI
-    }
-  }, [recordingService, room, roomName]);
-
   // 녹화 상태 변경 핸들러
-  const handleRecordingStateChange = useCallback(
-    (recording: boolean) => {
-      setIsRecording(recording);
-      setTimeout(updateRecordingsList, 1000);
-    },
-    [updateRecordingsList]
-  );
-
-  const leaveRoom = useCallback(async () => {
-    // Leave the room by calling 'disconnect' method over the Room object
-    if (room) {
-      await room.disconnect();
-      setRoom(undefined);
-      setLocalTrack(undefined);
-      setRemoteTracks([]);
-    }
+  const handleRecordingStateChange = useCallback((recording: boolean) => {
+    setIsRecording(recording);
+    //   setTimeout(updateRecordingsList, 1000);
+    // },
+    // [updateRecordingsList]
   }, []);
 
-  const joinRoom = useCallback(async () => {
-    // Initialize a new Room object
-    console.log("webRTC 방에 접속을 시도합니다다");
-    console.log("APP" + APPLICATION_SERVER_URL);
-    console.log("LIVE" + LIVEKIT_URL);
-    const room = new Room();
-    setRoom(room);
-
-    // Specify the actions when events take place in the room
-    // On every new Track received...
-    room.on(
-      RoomEvent.TrackSubscribed,
-      (
-        _track: RemoteTrack,
-        publication: RemoteTrackPublication,
-        participant: RemoteParticipant
-      ) => {
-        setRemoteTracks((prev) => [
-          ...prev,
-          {
-            trackPublication: publication,
-            participantIdentity: participant.identity,
-          },
-        ]);
-      }
-    );
-
-    // On every Track destroyed...
-    room.on(
-      RoomEvent.TrackUnsubscribed,
-      (_track: RemoteTrack, publication: RemoteTrackPublication) => {
-        setRemoteTracks((prev) =>
-          prev.filter(
-            (track) => track.trackPublication.trackSid !== publication.trackSid
-          )
-        );
-      }
-    );
-
-    try {
-      //이거는 방 만드는 사람 로직 추가할 때 수정해야합니다다
-      if (role === "crew") {
-        setParticipantRole("publisher");
-      }
-      console.log("아암ㄹ나ㅓㅇ루마ㅓㄴ율 ㅏㅓ;ㅁ뉼;");
-      // Get a token from your application server with the room name and participant name
-      const token = await getToken(roomName, participantName, participantRole);
-      // Connect to the room with the LiveKit URL and the token
-
-      //방에 참가 할 때 본인이 publisher인지 subscriber인지 정보
-      socket.emit("join", { roomName, participantRole });
-
-      console.log("webRtc token :", token);
-      await room.connect(LIVEKIT_URL, token);
-
-      console.log("webRtc 접속성공");
-      console.log("webRTCroom 정보입니다!!:", room);
-      console.log("Participantrole 입니다!!", participantRole);
-
-      if (participantRole === "publisher") {
-        // Publish your camera and microphone
-        await room.localParticipant.enableCameraAndMicrophone();
-        console.log("enableCameraAndMicrophone");
-
-        setLocalTrack(
-          room.localParticipant.videoTrackPublications.values().next().value
-            ?.videoTrack
-        );
-      }
-    } catch (error) {
-      console.log(
-        "There was an error connecting to the room:",
-        (error as Error).message
-      );
-      // await leaveRoom();
+  const leaveRoom = useCallback(() => {
+    if (room) {
+      room.disconnect();
+      console.log("BYE");
     }
-  }, [participantName, participantRole, roomName]);
+  }, [room]);
 
   async function getToken(
     roomName: string,
@@ -454,7 +357,7 @@ const LivePage = () => {
     participantRole: string
   ) {
     try {
-      const response = await fetch(APPLICATION_SERVER_URL + "token", {
+      const response = await fetch(APPLICATION_SERVER_URL + "/token", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -474,56 +377,97 @@ const LivePage = () => {
 
       const data = await response.json();
       console.log("Token received:", data); // 토큰 로깅 추가
-      TOKEN = data.token;
+      // TOKEN = data.token;
       return data.token;
     } catch (error) {
       console.error("Token fetch error:", error); // 에러 로깅 추가
       throw error;
     }
   }
-  console.log("localTrack", localTrack);
-  useEffect(() => {
-    if (room) {
+
+  const onRecordingStop = useCallback((recoding: Recording) => {
+    setRecordings((prev) => [...prev, recoding]);
+  }, []);
+
+  const init = useCallback(async () => {
+    try {
+      console.log("webRTC 방에 접속을 시도합니다다");
+      console.log("APP" + APPLICATION_SERVER_URL);
+      console.log("LIVE" + LIVEKIT_URL);
+
+      const room = new Room();
+      setRoom(room);
       setRecordingService(new RecordingService(room));
-    }
-  }, [room]);
+      room.on(
+        RoomEvent.TrackSubscribed,
+        (
+          _track: RemoteTrack,
+          publication: RemoteTrackPublication,
+          participant: RemoteParticipant
+        ) => {
+          setRemoteTracks((prev) => [
+            ...prev,
+            {
+              trackPublication: publication,
+              participantIdentity: participant.identity,
+            },
+          ]);
+        }
+      );
 
-  useEffect(() => {
-    console.log("CHANGE");
-  }, [room]);
+      room.on(
+        RoomEvent.TrackUnsubscribed,
+        (_track: RemoteTrack, publication: RemoteTrackPublication) => {
+          setRemoteTracks((prev) =>
+            prev.filter(
+              (track) =>
+                track.trackPublication.trackSid !== publication.trackSid
+            )
+          );
+        }
+      );
 
-  useEffect(() => {
-    joinRoom();
-    console.log("webRTC방에 입장하겠습니다");
-  }, [joinRoom]);
-  //조건부 렌더링
+      const token = await getToken(roomName, participantName, participantRole);
+      setToken(token);
 
-  useEffect(() => {
-    return () => {
-      leaveRoom();
-      console.log("webRTC방을 떠났습니다");
-    };
-  }, [leaveRoom]);
+      socket.emit("join", { roomName, role: participantRole }); // 아바타
 
-  useEffect(() => {
-    updateRecordingsList();
-  }, [recordingService, updateRecordingsList]);
+      await room.connect(LIVEKIT_URL, token);
 
-  useEffect(() => {
-    let interval: ReturnType<typeof setInterval>;
+      if (participantRole === "publisher") {
+        await room.localParticipant.enableCameraAndMicrophone();
 
-    if (isRecording) {
-      interval = setInterval(() => {
-        updateRecordingsList();
-      }, 5000); // 5초마다 업데이트
-    }
+        setLocalTrack(
+          room.localParticipant.videoTrackPublications.values().next().value
+            ?.videoTrack
+        );
 
-    return () => {
-      if (interval) {
-        clearInterval(interval);
+        const recordingService = new RecordingService(room);
+        const roomSid = await room.getSid();
+
+        setRecordingService(recordingService);
+        const recordingList = await recordingService.listRecordings(
+          roomName,
+          roomSid
+        );
+
+        setRecordings(recordingList);
       }
-    };
-  }, [isRecording, updateRecordingsList]);
+    } catch (error) {
+      console.log(
+        "There was an error connecting to the room:",
+        (error as Error).message
+      );
+    }
+  }, [participantName, participantRole, roomName, socket]);
+
+  useEffect(() => {
+    init();
+  }, [init]);
+
+  useEffect(() => {
+    return leaveRoom;
+  }, [leaveRoom]);
 
   return (
     <>
@@ -539,28 +483,35 @@ const LivePage = () => {
                 />
               </LeftTop>
               <CharacterBox>
-                <CharacterContainer socket={socket} />
+                <CharacterContainer
+                  socket={socket}
+                  participantName={participantName}
+                  roomName={roomName}
+                />
               </CharacterBox>
             </Left>
 
             <Right>
               <RightTop>
-                <StreamLive
-                  room={room}
-                  participantName={participantName}
-                  roomName={roomName}
-                  localTrack={localTrack}
-                  remoteTracks={remoteTracks}
-                  serverUrl={APPLICATION_SERVER_URL}
-                  token={TOKEN}
-                  role={participantRole}
-                />
+                {token && (
+                  <StreamLive
+                    room={room}
+                    participantName={participantName}
+                    roomName={roomName}
+                    localTrack={localTrack}
+                    remoteTracks={remoteTracks}
+                    serverUrl={APPLICATION_SERVER_URL}
+                    token={token}
+                    role={participantRole}
+                  />
+                )}
               </RightTop>
               <RightMiddle>
                 {recordingService && (
                   <RecordingControls
                     recordingService={recordingService}
                     onRecordingStateChange={handleRecordingStateChange}
+                    onRecordingStop={onRecordingStop}
                   />
                 )}
                 <div>{recordings.length}개의 녹화된 영상</div>
@@ -603,18 +554,24 @@ const LivePage = () => {
         <LivePageWrapper>
           <Left>
             <LeftTop>
-              <StreamLive
-                room={room}
-                participantName={participantName}
-                roomName={roomName}
-                remoteTracks={remoteTracks} // localTrack 제거
-                serverUrl={APPLICATION_SERVER_URL}
-                token={TOKEN}
-                role={participantRole}
-              />
+              {token && (
+                <StreamLive
+                  room={room}
+                  participantName={participantName}
+                  roomName={roomName}
+                  remoteTracks={remoteTracks} // localTrack 제거
+                  serverUrl={APPLICATION_SERVER_URL}
+                  token={token}
+                  role={participantRole}
+                />
+              )}
             </LeftTop>
             <CharacterBox>
-              <CharacterContainer socket={socket} />
+              <CharacterContainer
+                socket={socket}
+                participantName={participantName}
+                roomName={roomName}
+              />
             </CharacterBox>
           </Left>
 

@@ -4,6 +4,7 @@ import com.ssafy.butter.domain.crew.entity.Crew;
 import com.ssafy.butter.domain.crew.entity.CrewMember;
 import com.ssafy.butter.domain.crew.repository.crewmember.CrewMemberRepository;
 import com.ssafy.butter.domain.member.entity.Member;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,7 +22,7 @@ public class CrewMemberServiceImpl implements CrewMemberService {
     }
 
     @Override
-    public CrewMember findByMember(Member member) {
+    public Optional<CrewMember> findByMember(Member member) {
         return crewMemberRepository.findByMember(member);
     }
 }

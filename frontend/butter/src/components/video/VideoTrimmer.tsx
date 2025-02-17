@@ -3,6 +3,7 @@ import styled from "@emotion/styled";
 import ReactPlayer from "react-player";
 import Control from "./Control";
 import { useForm } from "react-hook-form";
+import { ClipModal } from "./ClipModal";
 import { start } from "repl";
 
 const VideoTrimmerWrapper = styled.div`
@@ -228,6 +229,9 @@ const VideoTrimmer = ({
   const [duration, setDuration] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
   const [isEditing, setIsEditing] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [trimmedVideoUrl, setTrimmedVideoUrl] = useState("");
+  const [clipName, setClipName] = useState("");
   const SEVER_URL = import.meta.env.VITE_NODE_JS_SERVER || "";
 
   const {
@@ -282,7 +286,7 @@ const VideoTrimmer = ({
       console.log("📡 서버 요청 중...");
       console.log(recordingName, title, startSeconds, endSeconds);
       const response = await fetch(
-        "http://localhost:6080/api/recordings/clip",
+        `${SEVER_URL}/clip`,
         {
           method: "POST",
           headers: {
@@ -293,6 +297,7 @@ const VideoTrimmer = ({
             title,
             startTime: startSeconds,
             endTime: endSeconds,
+            time: new Date()
           }),
         }
       );
@@ -301,7 +306,10 @@ const VideoTrimmer = ({
 
       if (response.ok) {
         console.log("✅ 서버 응답:", data);
-        alert(`녹화 클립 생성 완료: ${data.clippedRecordingName}`);
+        setClipName(data.clipName);
+        setTrimmedVideoUrl(data.clipUrl);
+        setIsModalOpen(true);
+        alert(`녹화 클립 생성 완료`);
       } else {
         console.error("❌ 오류 발생:", data.errorMessage);
         alert(`오류 발생: ${data.errorMessage}`);
@@ -530,6 +538,12 @@ const VideoTrimmer = ({
             <div style={{ display: "flex", justifyContent: "end" }}>
               <TrimButton onClick={cuttingVideo}>영상 자르기</TrimButton>
             </div>
+            <ClipModal
+              isOpen={isModalOpen}
+              onClose={() => setIsModalOpen(false)}
+              videoUrl={trimmedVideoUrl}
+              clipName={clipName}
+            />
           </div>
         ) : (
           <GoEditButton onClick={handleGoEdit}>Go Edit</GoEditButton>

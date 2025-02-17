@@ -12,13 +12,15 @@ public interface ClipService {
 
     ClipResponseDTO createClip(AuthInfoDTO currentUser, ClipSaveRequestDTO clipSaveRequestDTO);
 
-    ClipResponseDTO getClipDetail(Long id);
+    ClipResponseDTO getClipDetail(AuthInfoDTO currentUser, Long id);
 
-    List<ClipResponseDTO> getClipList(ClipListRequestDTO clipListRequestDTO);
+    List<ClipResponseDTO> getClipList(AuthInfoDTO currentUser, ClipListRequestDTO clipListRequestDTO);
 
     ClipResponseDTO deleteClip(AuthInfoDTO currentUser, Long id);
 
     void likeClip(AuthInfoDTO currentUser, ClipLikeRequestDTO clipLikeRequestDTO);
 
     void unlikeClip(AuthInfoDTO currentUser, Long clipId);
+
+    List<ClipResponseDTO> getLikedClipList(AuthInfoDTO currentUser);
 }

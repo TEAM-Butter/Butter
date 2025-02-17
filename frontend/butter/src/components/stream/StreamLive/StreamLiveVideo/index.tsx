@@ -37,6 +37,7 @@ function StreamLiveVideo({
         async (blob) => {
           if (blob) {
             const formData = new FormData();
+            console.log("streamer의 영상을 서버로 보냅니다");
             formData.append("file", blob);
 
             // 참가자 정보와 룸 정보도 함께 전송
@@ -45,7 +46,9 @@ function StreamLiveVideo({
             formData.append("role", role);
             formData.append("room-id", roomName);
 
-            const serverUrl = "http://localhost:5000/ai/upload_frame";
+            const serverUrl = `${
+              import.meta.env.VITE_FLASK_SERVER
+            }/ai/upload_frame`;
 
             // const agent = new https.Agent({
             //   rejectUnauthorized: false,
@@ -53,6 +56,7 @@ function StreamLiveVideo({
 
             try {
               // fetch API 사용
+              console.log("serverUrl", serverUrl);
               const response = await fetch(serverUrl, {
                 method: "POST",
                 body: formData,
@@ -63,22 +67,36 @@ function StreamLiveVideo({
               });
 
               if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+                let errorMessage = `HTTP error! status: ${response.status}`;
+                try {
+                  const errorData = await response.json();
+                  errorMessage += ` - ${JSON.stringify(errorData)}`;
+                } catch (jsonError) {
+                  console.warn("서버 응답을 JSON으로 변환할 수 없음:", jsonError);
+                }
+                throw new Error(errorMessage);
               }
 
               const data = await response.json();
               console.log("서버 응답:", data);
+              console.log("ServerURl:", serverUrl);
             } catch (error) {
-              if (
-                error instanceof TypeError &&
-                error.message === "Failed to fetch"
-              ) {
-                console.error(
-                  "서버 연결 실패. 서버가 실행 중인지 확인해주세요."
-                );
-              } else {
-                console.error("전송 오류:", error);
+              if (error instanceof Error) {
+                console.error("전송 오류 발생:", error);
+                console.error("에러 메시지:", error.message);
+                console.error("에러 스택:", error.stack);
               }
+              // if (
+              //   error instanceof TypeError &&
+              //   error.message === "Failed to fetch"
+              // ) {
+              //   console.error(
+              //     "서버 연결 실패. 서버가 실행 중인지 확인해주세요."
+              //   );
+              //   console.log(error);
+              // } else {
+              //   console.error("전송 오류:", error);
+              // }
             }
           }
         },

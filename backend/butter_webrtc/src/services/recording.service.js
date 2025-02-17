@@ -9,15 +9,20 @@ import {
   LIVEKIT_API_KEY,
   LIVEKIT_API_SECRET,
   RECORDINGS_PATH,
+  CLIPS_TMP_PATH,
   CLIPS_PATH,
   RECORDINGS_METADATA_PATH,
   RECORDING_FILE_PORTION_SIZE,
 } from "../config.js";
 import { S3Service } from "./s3.service.js";
+import { MySQLService } from "./mysql.service.js";
 import fs from "fs";
-// import {insertClip} from "./mysql.service.js"
+import os from "os";
+import path from "path";
+import { exec } from "node:child_process";
 
 const s3Service = new S3Service();
+const dbService = new MySQLService();
 
 export class RecordingService {
   static instance;
@@ -54,6 +59,7 @@ export class RecordingService {
   async stopRecording(recordingId) {
     // Stop the egress to finish the recording
     const egressInfo = await this.egressClient.stopEgress(recordingId);
+    await this.saveRecordingMetadata(egressInfo);
     return this.convertToRecordingInfo(egressInfo);
   }
 
@@ -70,22 +76,11 @@ export class RecordingService {
       RECORDINGS_PATH + RECORDINGS_METADATA_PATH,
       regex
     );
+
     const recordings = await Promise.all(
       metadataKeys.map((metadataKey) => s3Service.getObjectAsJson(metadataKey))
     );
-    // const recordings = await Promise.all(
-    //   metadataKeys.map(async (metadataKey) => {
-    //     const metadata = await s3Service.getObjectAsJson(metadataKey);
-    //     const recordingExists = await this.existsRecording(metadata.name);
-    //     return recordingExists ? metadata : null;
-    //   })
-    // );
 
-    // const validRecordings = recordings.filter(
-    //   (recording) => recording !== null
-    // );
-
-    // return this.filterAndSortRecordings(validRecordings, roomName, roomId);
     return this.filterAndSortRecordings(recordings, roomName, roomId);
   }
 
@@ -161,11 +156,17 @@ export class RecordingService {
 
   async saveRecordingMetadata(egressInfo) {
     const recordingInfo = this.convertToRecordingInfo(egressInfo);
+    console.log("Saving metadata:", recordingInfo);
     const key = this.getMetadataKey(recordingInfo.name);
     await s3Service.uploadObject(key, recordingInfo);
   }
 
   convertToRecordingInfo(egressInfo) {
+    if (!egressInfo.fileResults || egressInfo.fileResults.length === 0) {
+      console.error("No file results found for egress:", egressInfo);
+      return null;
+    }
+
     const file = egressInfo.fileResults[0];
     return {
       id: egressInfo.egressId,
@@ -205,24 +206,17 @@ export class RecordingService {
     );
   }
 
-  getThumbnailKey(recordingName) {
-    return RECORDINGS_PATH + recordingName.replace(".mp4", ".jpg");
-  }
-
-  getClipKey(clippedRecordingName) {
-    return CLIPS_PATH + clippedRecordingName;
-  }
-
-  getClipThumbnailKey(clippedRecordingName) {
-    return CLIPS_PATH + clippedRecordingName.replace(".mp4", ".jpg");
+  getThumbnailKey(thumbnailName) {
+    return RECORDINGS_PATH + thumbnailName;
   }
 
   async saveThumbnail(recordingName, imageBuffer) {
-    const thumbnailKey = this.getThumbnailKey(recordingName);
+    const thumbnailName = recordingName.replace(".mp4", ".jpg")
+    const thumbnailKey = this.getThumbnailKey(thumbnailName);
 
     try {
       // 이미지 파일을 임시 파일로 저장
-      const tempThumbnailPath = `/tmp/${recordingName.replace(".mp4", ".jpg")}`;
+      const tempThumbnailPath = `/tmp/${thumbnailName}`;
       fs.writeFileSync(tempThumbnailPath, imageBuffer);
 
       // S3에 업로드
@@ -243,7 +237,8 @@ export class RecordingService {
 
   // 썸네일 URL 가져오기
   async getThumbnailUrl(recordingName) {
-    const key = this.getThumbnailKey(recordingName);
+    const thumbnailName = recordingName.replace(".mp4", ".jpg")
+    const key = this.getThumbnailKey(thumbnailName);
 
     // 썸네일 존재 여부 확인
     const exists = await s3Service.exists(key);
@@ -252,51 +247,5 @@ export class RecordingService {
     }
 
     return s3Service.getObjectUrl(key);
-  }
-
-  async clipRecording(recordingName, startTime, endTime, crewId, title) {
-    const inputKey = this.getRecordingKey(recordingName);
-    const clippedRecordingName = `clipped-${startTime}-${endTime}-${recordingName}.mp4`;
-    const outputKey = this.getClipKey(clippedRecordingName);
-    const thumbnailKey = this.getClipThumbnailKey(clippedRecordingName);
-
-    const tempInputPath = `/tmp/${recordingName}`;
-    const tempOutputPath = `/tmp/${clippedRecordingName}.mp4`;
-    const thumbnailPath = `/tmp/thumbnail-${clippedRecordingName}.jpg`;
-
-    try {
-      // S3에서 원본 영상 다운로드
-      await s3Service.downloadObject(inputKey, tempInputPath);
-
-      // FFmpeg을 이용해 영상 자르기
-      const command = `ffmpeg -i "${tempInputPath}" -ss ${startTime} -to ${endTime} -c copy "${tempOutputPath}"`;
-      await execPromise(command);
-
-      // 썸네일 추출 (10번째 프레임)
-      const thumbnailCommand = `ffmpeg -i "${tempOutputPath}" -vf "select='eq(n\\,10)'" -vsync vfr "${thumbnailPath}"`;
-      await execPromise(thumbnailCommand);
-
-      // 잘린 영상 S3에 업로드
-      await s3Service.uploadObject(
-        outputKey,
-        fs.createReadStream(tempOutputPath)
-      );
-      await s3Service.uploadObject(
-        thumbnailKey,
-        fs.createReadStream(thumbnailPath)
-      );
-
-      // 임시 파일 삭제
-      fs.unlinkSync(tempInputPath);
-      fs.unlinkSync(tempOutputPath);
-      fs.unlinkSync(thumbnailPath);
-
-      // await insertClip(crewId, title, clippedRecordingName);
-
-      return { success: true, clippedRecordingName };
-    } catch (error) {
-      console.error("Error clipping recording:", error);
-      return { success: false, error: error.message };
-    }
   }
 }

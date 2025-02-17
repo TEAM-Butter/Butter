@@ -9,6 +9,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
@@ -33,10 +35,18 @@ public class BreadLog {
     @NotNull
     private BreadLogType breadLogType;
 
+    @NotNull
+    LocalDateTime createDate;
+
+    @NotNull
+    private Integer amount;
+
     @Builder
-    public BreadLog(Member member, Crew crew, BreadLogType breadLogType) {
+    public BreadLog(Member member, Crew crew, BreadLogType breadLogType, LocalDateTime createDate, Integer amount) {
         this.member = member;
         this.crew = crew;
         this.breadLogType = breadLogType;
+        this.createDate = createDate;
+        this.amount = amount;
     }
 }

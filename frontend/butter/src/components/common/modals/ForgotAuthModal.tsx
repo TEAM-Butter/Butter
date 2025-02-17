@@ -1,5 +1,5 @@
 import { useState } from "react";
-import * as MC from "./modalComponents/modalComponents"
+import * as MC from "./modalComponents/modalComponents.tsx"
 import styled from "@emotion/styled"
 import { EmailExistRequest, EmailSendCodeRequest, EmailVerifyCodeRequest } from "../../../apis/request/auth/authRequest";
 import { EmailExistSendDto, EmailVerifyCodeRequestDto } from "../../../apis/request/auth/authDto";

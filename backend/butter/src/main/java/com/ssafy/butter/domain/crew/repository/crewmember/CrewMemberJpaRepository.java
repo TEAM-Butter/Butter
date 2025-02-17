@@ -11,5 +11,5 @@ public interface CrewMemberJpaRepository extends JpaRepository<CrewMember, Long>
 
     Optional<CrewMember> findByCrewAndMember(Crew crew, Member member);
 
-    CrewMember findByMember(Member member);
+    Optional<CrewMember> findByMember(Member member);
 }

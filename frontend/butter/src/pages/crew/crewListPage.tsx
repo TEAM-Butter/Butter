@@ -1,6 +1,6 @@
 import axios from "axios"
 import { useState } from "react"
-import { Link } from "react-router-dom"
+import { Link, Navigate, useNavigate } from "react-router-dom"
 import { useEffect } from "react"
 import styled from "@emotion/styled";
 import sample1 from "../../assets/sample1.png";
@@ -212,7 +212,7 @@ function CrewListPage() {
     const images = [sample1,sample2,sample3,sample4,sample5]
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [modalType, setModalType] = useState("")
-
+    const navigate = useNavigate()
 
     useEffect (() => {
         const fetchCrewDetail = async () => {
@@ -220,8 +220,8 @@ function CrewListPage() {
                 // ✅ 헤더 추가: Authorization (JWT 토큰 포함)
                 setLoading(true);
                 const response = await axiosInstance.get(`/crew/list?pageSize=10&sortBy=followerCount`) // 크루 리스트 정보 받아옴
-                setCrewList(response.data);
                 console.log(response.data)
+                setCrewList(response.data);
             } catch (err: any) {
                 setError(err.message); //요청 놓치면 에러 메세지 띄우기
             } finally {
@@ -270,7 +270,7 @@ function CrewListPage() {
         </Box1>
         
         <Box2>
-        
+        <button onClick={()=>{navigate(`/crew/myCalendar`)}}>가보자고</button>
         <p>당신의 마음에 맞는 크루를 지금 바로 찾아보세요!</p>
         </Box2>
        <Write>
@@ -288,7 +288,7 @@ function CrewListPage() {
             </CrewBox>
             )})} 
         </CrewListContainer>
-       { modalType === "crewSearch" && <CrewSearchModal width="600px" height="300px" setModalType={setModalType}></CrewSearchModal>}
+       { modalType === "crewSearch" && <CrewSearchModal width="600px" height="500px" setModalType={setModalType}></CrewSearchModal>}
        </div>
     )
 }

@@ -2,36 +2,26 @@ package com.ssafy.butter.domain.member.entity;
 
 import com.ssafy.butter.domain.crew.entity.Genre;
 import com.ssafy.butter.domain.member.enums.Gender;
-import com.ssafy.butter.domain.member.vo.BirthDate;
-import com.ssafy.butter.domain.member.vo.BreadAmount;
-import com.ssafy.butter.domain.member.vo.Email;
-import com.ssafy.butter.domain.member.vo.Nickname;
-import com.ssafy.butter.domain.member.vo.Password;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Embedded;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
+import com.ssafy.butter.domain.member.vo.*;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(indexes = {
+        @Index(name = "idx_nickname", columnList = "nickname"),
+        @Index(name = "idx_email", columnList = "email"),
+        @Index(name = "idx_member_id", columnList = "member_id")
+})
+@Entity
 public class Member {
 
     @Id
@@ -53,6 +43,7 @@ public class Member {
     private String loginId;
 
     @Embedded
+    
     private Nickname nickname;
 
     @Embedded
@@ -129,6 +120,10 @@ public class Member {
     private void updateMemberGenres(List<Genre> newGenres){
         memberGenres.clear();
         newGenres.forEach(genre -> this.memberGenres.add(new MemberGenre(this, genre)));
+    }
+
+    public void updateBreadAmount(Integer breadAmount) {
+        this.breadAmount = new BreadAmount(breadAmount);
     }
 }
 

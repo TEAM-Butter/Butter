@@ -2,23 +2,24 @@ package com.ssafy.butter.domain.member.service.member;
 
 import com.ssafy.butter.auth.dto.AuthInfoDTO;
 import com.ssafy.butter.domain.crew.entity.Genre;
-import com.ssafy.butter.domain.crew.repository.genre.GenreRepository;
 import com.ssafy.butter.domain.crew.service.genre.GenreService;
-import com.ssafy.butter.domain.member.dto.request.CheckLoginIdDTO;
 import com.ssafy.butter.domain.member.dto.request.ExtraInfoDTO;
+import com.ssafy.butter.domain.member.dto.request.MemberSearchRequestDTO;
 import com.ssafy.butter.domain.member.dto.request.PasswordUpdateRequestDTO;
 import com.ssafy.butter.domain.member.dto.request.ProfileUpdateRequestDTO;
 import com.ssafy.butter.domain.member.dto.request.SignUpDTO;
+import com.ssafy.butter.domain.member.dto.response.BreadAmountResponseDTO;
 import com.ssafy.butter.domain.member.dto.response.CheckLoginIdResponseDTO;
+import com.ssafy.butter.domain.member.dto.response.CheckNickNameDuplicationResponseDTO;
 import com.ssafy.butter.domain.member.dto.response.PasswordUpdateResponseDTO;
 import com.ssafy.butter.domain.member.dto.response.ProfileUpdateResponseDTO;
 import com.ssafy.butter.domain.member.dto.response.RegisterExtraInfoResponseDTO;
+import com.ssafy.butter.domain.member.dto.response.SearchMemberResponseDTO;
 import com.ssafy.butter.domain.member.dto.response.SignUpResponseDTO;
 import com.ssafy.butter.domain.member.dto.response.UserProfileResponseDTO;
 import com.ssafy.butter.domain.member.entity.AvatarType;
 import com.ssafy.butter.domain.member.entity.Member;
 import com.ssafy.butter.domain.member.enums.Gender;
-import com.ssafy.butter.domain.member.repository.avatarType.AvatarTypeRepository;
 import com.ssafy.butter.domain.member.repository.member.MemberRepository;
 import com.ssafy.butter.domain.member.service.avatarType.AvatarTypeService;
 import com.ssafy.butter.domain.member.vo.BirthDate;
@@ -28,13 +29,13 @@ import com.ssafy.butter.domain.member.vo.Password;
 import com.ssafy.butter.global.token.JwtManager;
 import com.ssafy.butter.global.util.encrypt.EncryptUtils;
 import com.ssafy.butter.infrastructure.awsS3.ImageUploader;
-import com.ssafy.butter.infrastructure.email.dto.request.SendEmailDTO;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.BadRequestException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -191,6 +192,26 @@ public class MemberServiceImpl implements MemberService{
         String message = exists ? "요청 ID 회원이 확인 되었습니다" : "요청 ID 회원이 존재하지 않습니다";
         return new CheckLoginIdResponseDTO(exists, message);
     }
+    
+    public CheckNickNameDuplicationResponseDTO checkIfNicknameExists(String nickname){
+        Optional<Member> findMember = memberRepository.findByNickname(nickname);
+        boolean exists = findMember.isPresent();
+        String message = exists ? "중복 닉네임입니다" : "닉네임 사용이 가능합니다";
+        return new CheckNickNameDuplicationResponseDTO(exists, message);
+    }
+
+    @Override
+    public Page<SearchMemberResponseDTO> findByNicknameContainingIgnoreCase(MemberSearchRequestDTO memberSearchRequestDTO) {
+        String keyword = memberSearchRequestDTO.keyword();
+        Pageable pageable = memberSearchRequestDTO.getPageable();
+
+        if (keyword == null || keyword.trim().isEmpty()) {
+            return Page.empty(pageable);
+        }
+
+        return memberRepository.searchByNickname(keyword, pageable)
+                .map(SearchMemberResponseDTO::from);
+    }
 
     private Member getMember(Long memberId) {
         Member findMember = memberRepository.findById(memberId)
@@ -237,5 +258,10 @@ public class MemberServiceImpl implements MemberService{
     private AvatarType getAvatarType(String avatarTypeName) {
         return avatarTypeService.findByName(avatarTypeName)
                 .orElseThrow(() -> new IllegalArgumentException("ERR : "+ avatarTypeName+"은 존재하지 않는 장르입니다"));
+    }
+
+    @Override
+    public BreadAmountResponseDTO getBreadAmount(AuthInfoDTO authInfoDTO) {
+        return new BreadAmountResponseDTO(memberRepository.findById(authInfoDTO.id()).orElseThrow().getBreadAmount().getAmount());
     }
 }

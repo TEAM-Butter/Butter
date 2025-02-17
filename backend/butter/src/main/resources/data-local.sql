@@ -70,11 +70,9 @@ INSERT INTO crew_member (crew_id, member_id, is_crew_admin) VALUES
 
 -- bread_log_type 테이블
 INSERT INTO bread_log_type (name) VALUES
-                                      ('Deposit'),
-                                      ('Withdrawal'),
-                                      ('Transfer'),
-                                      ('Bonus'),
-                                      ('Penalty');
+                                      ('Recharge'),
+                                      ('Donate'),
+                                      ('Settle');
 
 
 -- live 테이블 (clip 테이블 참조를 위해 선행 삽입 필요)

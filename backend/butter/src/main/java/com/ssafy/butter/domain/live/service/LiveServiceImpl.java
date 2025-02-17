@@ -12,6 +12,8 @@ import com.ssafy.butter.domain.live.entity.Live;
 import com.ssafy.butter.domain.live.repository.LiveRepository;
 import com.ssafy.butter.domain.member.entity.Member;
 import com.ssafy.butter.domain.member.service.member.MemberService;
+import com.ssafy.butter.domain.notification.enums.NotificationType;
+import com.ssafy.butter.domain.notification.service.NotificationService;
 import com.ssafy.butter.domain.schedule.service.ScheduleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -34,6 +36,7 @@ public class LiveServiceImpl implements LiveService {
     private final CrewMemberService crewMemberService;
     private final ScheduleService scheduleService;
     private final ChatRoomService chatRoomService;
+    private final NotificationService notificationService;
 
     private final LiveRepository liveRepository;
 
@@ -41,15 +44,22 @@ public class LiveServiceImpl implements LiveService {
     public LiveResponseDTO createLive(AuthInfoDTO currentUser, LiveSaveRequestDTO liveSaveRequestDTO) {
         Member member = memberService.findById(currentUser.id());
         Crew crew = crewService.findById(liveSaveRequestDTO.crewId());
-        if (!crewMemberService.findByCrewAndMember(crew, member).getIsCrewAdmin()) {
-            throw new IllegalArgumentException("Current user is not crew admin");
+        crewService.validateCrewAdmin(crew, member);
+        if (crew.getLives().stream().anyMatch(live -> live.getEndDate() == null)) {
+            throw new IllegalArgumentException("Crew already has active live");
         }
         Live live = Live.builder()
                 .crew(crew)
                 .title(liveSaveRequestDTO.title())
-                .startDate(liveSaveRequestDTO.startDate())
+                .startDate(LocalDateTime.now())
                 .schedule(liveSaveRequestDTO.scheduleId() == null ? null : scheduleService.findById(liveSaveRequestDTO.scheduleId()))
                 .build();
+
+        String content = "새로운 라이브: " + live.getTitle();
+        String notificationType = NotificationType.SCHEDULE.getAlias();
+        String url = NotificationType.SCHEDULE.getPath() + live.getId();
+        notificationService.sendNotificationToFollowers(live.getCrew(), content, notificationType, url);
+
         return LiveResponseDTO.from(
                 liveRepository.save(live),
                 chatRoomService.getUserCount(crew.getId().toString()));
@@ -105,9 +115,7 @@ public class LiveServiceImpl implements LiveService {
         Live live = liveRepository.findById(id).orElseThrow();
         Crew crew = live.getCrew();
         Member member = memberService.findById(currentUser.id());
-        if (!crewMemberService.findByCrewAndMember(crew, member).getIsCrewAdmin()) {
-            throw new IllegalArgumentException("Current user is not crew admin");
-        }
+        crewService.validateCrewAdmin(crew, member);
         if (live.getEndDate() != null) {
             throw new IllegalArgumentException("Live is already finished");
         }

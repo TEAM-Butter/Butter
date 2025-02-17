@@ -7,6 +7,7 @@ import com.ssafy.butter.auth.dto.response.AuthenticatedMemberInfoDTO;
 import com.ssafy.butter.auth.dto.response.LoginResponseDTO;
 import com.ssafy.butter.auth.dto.response.ReissueResponseDTO;
 import com.ssafy.butter.auth.enums.MemberTypes;
+import com.ssafy.butter.domain.crew.dto.BaseCrewDTO;
 import com.ssafy.butter.domain.crew.entity.CrewMember;
 import com.ssafy.butter.domain.crew.service.CrewMemberService;
 import com.ssafy.butter.domain.member.entity.Member;
@@ -15,11 +16,14 @@ import com.ssafy.butter.global.token.JwtManager;
 import com.ssafy.butter.global.util.encrypt.EncryptUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
+import java.util.Collections;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Objects;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
-import java.util.*;
 
 @Slf4j
 @Service
@@ -53,7 +57,8 @@ public class LoginServiceImpl implements LoginService{
                 member.getAvatarType().getName(),
                 memberType,
                 genres,
-                member.isExtraInfoRegistered()
+                member.isExtraInfoRegistered(),
+                getCrewInfo(member)
         );
 
         AuthInfoDTO authInfo = new AuthInfoDTO(member.getId(),member.getEmail().getValue(), member.getGender().name(), member.getBirthDate().getDate());
@@ -65,13 +70,27 @@ public class LoginServiceImpl implements LoginService{
         return new LoginResponseDTO(accessToken, refreshToken, authenticatedMemberInfo);
     }
 
-    private String getMemberTypeInLogic(Member member){
-        CrewMember findCrewMember =  crewMemberService.findByMember(member);
-        if(findCrewMember==null)return MemberTypes.MEMBER.name().toLowerCase();
+    private BaseCrewDTO getCrewInfo(Member member){
+        Optional<CrewMember> crewMember = crewMemberService.findByMember(member);
 
+        return crewMember.map(value ->
+                new BaseCrewDTO(value.getCrew()))
+                .orElse(null);
+    }
+
+    private String getMemberTypeInLogic(Member member){
+        Optional<CrewMember> optionalCrewMember = crewMemberService.findByMember(member);
+
+        if (optionalCrewMember.isEmpty()) {
+            return MemberTypes.MEMBER.name().toLowerCase();
+        }
+
+        CrewMember findCrewMember = optionalCrewMember.get();
         boolean isCrewAdmin = findCrewMember.getIsCrewAdmin();
 
-        return isCrewAdmin?MemberTypes.CREW.name().toLowerCase():MemberTypes.MEMBER.name().toLowerCase();
+        return isCrewAdmin
+                ? MemberTypes.CREW.name().toLowerCase()
+                : MemberTypes.MEMBER.name().toLowerCase();
     }
 
     @Override
@@ -98,7 +117,8 @@ public class LoginServiceImpl implements LoginService{
                 member.getAvatarType().getName(),
                 memberType,
                 genres,
-                member.isExtraInfoRegistered()
+                member.isExtraInfoRegistered(),
+                getCrewInfo(member)
         );
 
         AuthInfoDTO authInfo = new AuthInfoDTO(member.getId(),member.getEmail().getValue(), member.getGender().name(), member.getBirthDate().getDate());

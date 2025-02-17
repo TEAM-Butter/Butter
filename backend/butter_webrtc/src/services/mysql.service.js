@@ -4,35 +4,69 @@ import {
   MYSQL_PASSWORD,
   MYSQL_DATABASE,
 } from "../config.js";
-
-// mysql.service.js
 import mysql from "mysql2/promise";
 
-// MySQL 연결 설정
-// const db = mysql.createConnection({
-//   host: MYSQL_ENDPOINT,   // MySQL 서버 호스트
-//   user: MYSQL_USER,   // MySQL 사용자
-//   password: MYSQL_PASSWORD, // MySQL 비밀번호
-//   database: MYSQL_DATABASE,
-//   port: 3306, // MySQL 기본 포트
-//   waitForConnections: true,
-//   connectionLimit: 10,
-//   queueLimit: 0  // 데이터베이스 이름
-// });
+export class MySQLService {
+  static instance;
 
-// 데이터 삽입 함수
-// export async function insertClip(crewId, title, videoName) {
-//   return new Promise((resolve, reject) => {
-//     const query =
-//       "INSERT INTO clip (crew_id, title, video_name) VALUES (?, ?, ?)";
-//     db.execute(query, [crewId, title, videoName], (err, results) => {
-//       if (err) {
-//         console.error("Error inserting into database:", err);
-//         reject(err);
-//       } else {
-//         console.log("Inserted data into database successfully:", results);
-//         resolve(results);
-//       }
-//     });
-//   });
-// }
+  constructor() {
+    if (MySQLService.instance) {
+      return MySQLService.instance;
+    }
+
+    // Connection Pool 생성 (연결 재사용을 위한 설정)
+    this.pool = mysql.createPool({
+      host: MYSQL_ENDPOINT,
+      user: MYSQL_USER,
+      password: MYSQL_PASSWORD,
+      database: MYSQL_DATABASE,
+      port: 3306,
+      timezone: 'local',
+      ssl: false,
+    });
+
+    MySQLService.instance = this;
+    return this;
+  }
+
+  /**
+  * SQL 쿼리를 실행합니다.
+  * @param {string} sql 실행할 SQL 문
+  * @param {Array} params SQL 문에 전달할 파라미터 배열
+  * @returns {Promise<any>} 쿼리 결과 rows
+  */
+  async query(sql, params = []) {
+    try {
+      const [rows] = await this.pool.execute(sql, params);
+      return rows;
+    } catch (error) {
+      console.error("MySQL query error:", error);
+      throw error;
+    }
+  }
+
+  /**
+  * Connection Pool에서 하나의 연결을 가져옵니다.
+  * (트랜잭션 등 직접 연결 관리가 필요한 경우 사용)
+  * @returns {Promise<PoolConnection>} DB 연결 객체
+  */
+  async getConnection() {
+    try {
+      return await this.pool.getConnection();
+    } catch (error) {
+      console.error("Error getting connection:", error);
+      throw error;
+    }
+  }
+
+  /**
+   * Connection Pool을 종료합니다.
+   */
+  async closePool() {
+    try {
+      await this.pool.end();
+    } catch (error) {
+      console.error("Error closing pool:", error);
+    }
+  }
+}

@@ -10,6 +10,9 @@ COPY package*.json ./
 # 4️⃣ 의존성 설치 (프로덕션 환경에서는 `npm ci` 사용)
 RUN npm install
 
+#ffmpeg 설치
+RUN apt update && apt install -y ffmpeg
+
 # 5️⃣ 애플리케이션 소스 코드 복사
 COPY . .
 

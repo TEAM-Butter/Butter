@@ -4,8 +4,10 @@ import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.ssafy.butter.domain.crew.dto.request.CrewFollowRequestDTO;
 import com.ssafy.butter.domain.crew.dto.request.CrewListRequestDTO;
 import com.ssafy.butter.domain.crew.entity.*;
+import com.ssafy.butter.domain.member.entity.QMember;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -26,6 +28,8 @@ public class CrewRepositoryImpl implements CrewRepository {
     private final QCrew qCrew = QCrew.crew;
     private final QGenre qGenre = QGenre.genre;
     private final QCrewGenre qCrewGenre = QCrewGenre.crewGenre;
+    private final QFollow qFollow = QFollow.follow;
+    private final QMember qMember = QMember.member;
 
     private final JPAQueryFactory jpaQueryFactory;
     private final CrewJpaRepository crewJpaRepository;
@@ -124,5 +128,23 @@ public class CrewRepositoryImpl implements CrewRepository {
         }
         orderSpecifiers.add(qCrew.id.asc());
         return orderSpecifiers.toArray(OrderSpecifier[]::new);
+    }
+
+    @Override
+    public List<Crew> getFollowedCrewList(Long memberId) {
+        return jpaQueryFactory.selectDistinct(qCrew)
+                .from(qCrew)
+                .join(qCrew.follows, qFollow).fetchJoin()
+                .join(qFollow.member, qMember).fetchJoin()
+                .where(createFollowedCrewListCondition(memberId))
+                .orderBy(qFollow.id.desc())
+                .fetch();
+    }
+
+    private BooleanBuilder createFollowedCrewListCondition(Long memberId) {
+        BooleanBuilder booleanBuilder = new BooleanBuilder();
+        booleanBuilder.and(qMember.id.eq(memberId))
+                .and(qFollow.isFollowed);
+        return booleanBuilder;
     }
 }

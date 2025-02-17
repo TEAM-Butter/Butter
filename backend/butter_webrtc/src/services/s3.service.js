@@ -41,6 +41,28 @@ export class S3Service {
         return this.run(command);
     }
 
+    async uploadVideo(key, videoBuffer) {
+        const params = {
+          Bucket: S3_BUCKET,
+          Key: key,
+          Body: videoBuffer,             // JSON.stringify 제거, 바이너리 그대로 전달
+          ContentType: 'video/mp4'       // 콘텐츠 타입 명시
+        };
+        const command = new PutObjectCommand(params);
+        return this.run(command);
+    }
+
+    async uploadImage(key, imageBuffer) {
+        const params = {
+            Bucket: S3_BUCKET,
+            Key: key,
+            Body: imageBuffer,           // 바이너리 데이터 그대로 전달
+            ContentType: 'image/jpeg'    // 콘텐츠 타입 명시 (필요에 따라 'image/png' 등 변경)
+        };
+        const command = new PutObjectCommand(params);
+        return this.run(command);
+    }
+      
     async exists(key) {
         try {
             await this.headObject(key);
@@ -112,6 +134,13 @@ export class S3Service {
     }
 
     async run(command) {
-        return this.s3Client.send(command);
+        try {
+            // console.log(command)
+            return await this.s3Client.send(command);
+        } catch (error) {
+            // error.$response를 콘솔에 출력하여 원시 응답 내용을 확인
+            console.error("Raw error response:", error.$response);
+            throw error;
+        }
     }
 }

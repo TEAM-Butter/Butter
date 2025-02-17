@@ -29,6 +29,10 @@ export const ModalWrapper_v2 = styled(ModalWrapper)`
   color: var(--darkgray);
 `;
 
+export const ModalWrapper_v3 = styled(ModalWrapper)`
+  transform: translate(-70%, -400%);
+`;
+
 // Modal type 1 (검은 테마의 모달 디자인)
 export const ModalHeader = styled.div`
   display: flex;
@@ -42,6 +46,36 @@ export const ModalHeader = styled.div`
   justify-content: space-between;
   border-radius: 0 0 10px 10px;
 `;
+
+export const ModalHeader2 = styled.div`
+  display: flex;
+  width: 100%;
+  background-color: black;
+  align-items: center;
+  padding: 0 12px;
+  font-size: 20px;
+  font-weight: 200;
+  border-bottom: 1px dashed gray;
+  justify-content: space-between;
+  border-radius: 0 0 10px 10px;
+  height: 40px;
+`;
+
+export const ModalHeader3 = styled.div`
+  display: flex;
+  width: 100%;
+  background-color: black;
+  align-items: center;
+  font-size: 18px;
+  font-weight: 200;
+  justify-content: space-between;
+  border-radius: 10px;
+  height: 60px;
+  padding-right: 10px;
+`;
+
+
+
 
 export const ModalHeader_v2 = styled(ModalHeader)`
   background-color: white;
@@ -66,6 +100,19 @@ export const ModalBody_v2 = styled(ModalBody)`
   gap: 20px;
 `;
 
+export const ModalBody_v3 = styled(ModalBody)`
+  height: 500px;
+  width: 400px;
+  display: flex;
+  justify-content: start;
+`;
+
+export const ModalBody_v4 = styled(ModalBody)`
+  height: 480px;
+  width: 450px;
+  justify-content: space-between;
+`;
+
 export const Comment = styled.div`
   font-weight: 200;
   margin-bottom: 15px;
@@ -75,6 +122,23 @@ export const Comment_v2 = styled(Comment)<ColorProps>`
   margin-bottom: 5px;
 `;
 
+export const Comment_v3 = styled.input`
+  background-color: rgba(0, 0, 0, 0.8);
+  margin-bottom: 0px;
+  height: 40px;
+  font-size: 20px;
+  color:white;
+`;
+export const Comment_v4 = styled.input`
+  background-color: rgba(0, 0, 0, 0.8);
+  height: 80px;
+  color: white;
+
+`;
+export const Comment_v5 = styled.input`
+
+  margin-bottom: 5px;
+`;
 export const ModalCloseBtn = styled.button<ColorProps>`
   background: none;
   color: ${(props) => props.textColor};
@@ -114,6 +178,9 @@ export const FilledBtn = styled(BorderBtn)<ColorProps>`
     color: ${(props) => props.color};
   }
 `;
+
+
+
 
 interface BorderProps {
   width: string;

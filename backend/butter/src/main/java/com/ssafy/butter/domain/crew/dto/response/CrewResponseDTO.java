@@ -1,11 +1,9 @@
 package com.ssafy.butter.domain.crew.dto.response;
 
 import com.ssafy.butter.domain.crew.entity.Crew;
-import com.ssafy.butter.domain.crew.entity.CrewMember;
 import com.ssafy.butter.domain.crew.entity.Notice;
 import com.ssafy.butter.domain.live.dto.BaseLiveDTO;
 import com.ssafy.butter.domain.live.entity.Live;
-import com.ssafy.butter.domain.member.entity.Member;
 import com.ssafy.butter.domain.schedule.dto.BaseScheduleDTO;
 import com.ssafy.butter.domain.schedule.entity.Schedule;
 import lombok.Getter;
@@ -25,10 +23,11 @@ public record CrewResponseDTO(
         String imageUrl,
         String promotionUrl,
         LocalDateTime createDate,
-        Integer followerCnt
+        Integer followerCnt,
+        Boolean isFollowed
 ) {
 
-    public static CrewResponseDTO fromEntity(Crew crew) {
+    public static CrewResponseDTO from(Crew crew, Boolean isFollowed) {
         return new CrewResponseDTO(
                 crew.getId(),
                 crew.getSchedules() == null ? null : crew.getSchedules().stream().map(ScheduleDTO::new).toList(),
@@ -41,7 +40,8 @@ public record CrewResponseDTO(
                 crew.getImageUrl(),
                 crew.getPromotionUrl(),
                 crew.getCreateDate(),
-                crew.getFollows().size()
+                crew.getFollows().size(),
+                isFollowed
         );
     }
 
@@ -52,7 +52,8 @@ public record CrewResponseDTO(
 
         private ScheduleDTO(Schedule schedule) {
             super(schedule.getId(), schedule.getTitle(), schedule.getContent(), schedule.getPlace(),
-                    schedule.getBuskingDate(), schedule.getLatitude(), schedule.getLongitude());
+                    schedule.getBuskingDate(), schedule.getLatitude(), schedule.getLongitude(),
+                    schedule.getCreateDate(), schedule.getUpdateDate());
             this.live = schedule.getLive() == null ? null :
                     new BaseLiveDTO(schedule.getLive().getId(), schedule.getLive().getTitle(),
                     schedule.getLive().getStartDate(), schedule.getLive().getEndDate());
@@ -69,7 +70,8 @@ public record CrewResponseDTO(
             this.schedule = live.getSchedule() == null ? null :
                     new BaseScheduleDTO(live.getSchedule().getId(), live.getSchedule().getTitle(),
                     live.getSchedule().getContent(), live.getSchedule().getPlace(), live.getSchedule().getBuskingDate(),
-                    live.getSchedule().getLatitude(), live.getSchedule().getLongitude());
+                    live.getSchedule().getLatitude(), live.getSchedule().getLongitude(),
+                    live.getSchedule().getCreateDate(), live.getSchedule().getUpdateDate());
         }
     }
 }

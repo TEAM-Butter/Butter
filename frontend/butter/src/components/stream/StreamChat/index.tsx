@@ -162,10 +162,7 @@ function StreamChat({ participantName, roomRole, streamId }: StreamChatProps) {
     const client = new Client({
       // webSocketFactory: () => new SockJS("http://localhost:8080/ws"),
       webSocketFactory: () => {
-        // 개발 환경에서는 http, 프로덕션에서는 https 사용
-        const protocol =
-          process.env.NODE_ENV === "development" ? "http" : "https";
-        return new SockJS(`${protocol}://localhost:8080/ws`);
+        return new SockJS(`${import.meta.env.VITE_SPRING_BOOT_SERVER}/ws`);
       },
       reconnectDelay: 5000,
       debug: (str) => console.log(str),
