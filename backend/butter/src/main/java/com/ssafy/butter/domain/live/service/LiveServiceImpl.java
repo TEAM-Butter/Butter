@@ -7,7 +7,9 @@ import com.ssafy.butter.domain.crew.service.CrewMemberService;
 import com.ssafy.butter.domain.crew.service.CrewService;
 import com.ssafy.butter.domain.live.dto.request.LiveListRequestDTO;
 import com.ssafy.butter.domain.live.dto.request.LiveSaveRequestDTO;
+import com.ssafy.butter.domain.live.dto.request.LiveThumbnailRequestDTO;
 import com.ssafy.butter.domain.live.dto.response.LiveResponseDTO;
+import com.ssafy.butter.domain.live.dto.response.LiveThumbnailResponseDTO;
 import com.ssafy.butter.domain.live.entity.Live;
 import com.ssafy.butter.domain.live.repository.LiveRepository;
 import com.ssafy.butter.domain.member.entity.Member;
@@ -15,6 +17,7 @@ import com.ssafy.butter.domain.member.service.member.MemberService;
 import com.ssafy.butter.domain.notification.enums.NotificationType;
 import com.ssafy.butter.domain.notification.service.NotificationService;
 import com.ssafy.butter.domain.schedule.service.ScheduleService;
+import com.ssafy.butter.infrastructure.awsS3.ImageUploader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,10 +36,10 @@ public class LiveServiceImpl implements LiveService {
 
     private final MemberService memberService;
     private final CrewService crewService;
-    private final CrewMemberService crewMemberService;
     private final ScheduleService scheduleService;
     private final ChatRoomService chatRoomService;
     private final NotificationService notificationService;
+    private final ImageUploader imageUploader;
 
     private final LiveRepository liveRepository;
 
@@ -112,14 +115,29 @@ public class LiveServiceImpl implements LiveService {
 
     @Override
     public void finishLive(AuthInfoDTO currentUser, Long id) {
-        Live live = liveRepository.findById(id).orElseThrow();
-        Crew crew = live.getCrew();
+        Crew crew = crewService.findById(id);
+        Live live = liveRepository.findByCrewAndEndDateIsNull(crew).orElseThrow();
         Member member = memberService.findById(currentUser.id());
         crewService.validateCrewAdmin(crew, member);
+        validateLiveFinished(live);
+        live.updateEndDate(LocalDateTime.now());
+        liveRepository.save(live);
+    }
+
+    @Override
+    public LiveThumbnailResponseDTO updateLiveThumbnail(AuthInfoDTO currentUser, Long id, LiveThumbnailRequestDTO liveThumbnailRequestDTO) {
+        Crew crew = crewService.findById(id);
+        Live live = liveRepository.findByCrewAndEndDateIsNull(crew).orElseThrow();
+        validateLiveFinished(live);
+        Member member = memberService.findById(currentUser.id());
+        crewService.validateCrewAdmin(crew, member);
+        live.updateThumbnailUrl(imageUploader.uploadImage(liveThumbnailRequestDTO.thumbnail()));
+        return LiveThumbnailResponseDTO.from(liveRepository.save(live));
+    }
+
+    private void validateLiveFinished(Live live) {
         if (live.getEndDate() != null) {
             throw new IllegalArgumentException("Live is already finished");
         }
-        live.updateEndDate(LocalDateTime.now());
-        liveRepository.save(live);
     }
 }
