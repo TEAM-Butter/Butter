@@ -108,9 +108,32 @@ const liveList = [
   },
 ];
 
+interface ScheduleInfo {
+  title: string;
+  place: string;
+  content: string;
+}
+
+interface CrewGenre {
+  genre: string;
+}
+
+interface CrewInfo {
+  id: number;
+  name: string;
+  genres: CrewGenre[];
+}
+
+interface Live {
+  id: number;
+  title: string;
+  schedule: ScheduleInfo;
+  crew: CrewInfo;
+}
+
 const LiveListPage = () => {
   const [genreToggle, setGenreToggle] = useState("All");
-  const [presentlivelist, setpresentlivelist] = useState([]);
+  const [presentlivelist, setpresentlivelist] = useState<Live[]>([]);
 
   useEffect(() => {
     const GetLiveList = async () => {
@@ -125,11 +148,12 @@ const LiveListPage = () => {
           const response = await axiosInstance.get(
             `/crew/list?pageSize=10&sortBy=followerCount&genre=${genreToggle}`
           );
-          setpresentlivelist(response.data);
+          setGenreToggle(response.data);
         } // 크루 리스트 정보 받아옴
       } catch (err: any) {
         console.log("에러뜸뜸");
       }
+      console.log("성공공");
     };
 
     GetLiveList();
@@ -150,13 +174,13 @@ const LiveListPage = () => {
       </Header>
       <GenreToggle setGenreToggle={setGenreToggle} />
       <LiveContainer>
-        {liveList.map((live) => (
+        {presentlivelist.map((live) => (
           <LiveCard key={live.id}>
             <LiveBox
-              id={live.id}
+              id={live.crew.id}
               title={live.title}
-              genres={live.genres}
-              location={live.location}
+              genres={live.crew.genres}
+              location={"임의의 장소"}
             />
           </LiveCard>
         ))}

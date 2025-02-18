@@ -1,4 +1,5 @@
 import styled from "@emotion/styled";
+import { Navigate, useNavigate } from "react-router-dom";
 
 const LiveBoxWrapper = styled.div`
   width: 100%;
@@ -74,15 +75,21 @@ const LiveBtn = styled.div`
 `;
 
 interface LiveProps {
-  id: number;
+  id: string;
   title: string;
   genres: string[];
-  location: string;
+  location: string | null;
 }
 
 const LiveBox = ({ id, title, genres, location }: LiveProps) => {
-  const goLive = (title: string) => {
+  const navigate = useNavigate();
+  const goLive = (id, title) => {
     console.log(`Going live: ${title}`);
+    navigate(`/stream/${title}`, {
+      state: {
+        roomId: id,
+      },
+    });
   };
 
   return (
@@ -97,7 +104,7 @@ const LiveBox = ({ id, title, genres, location }: LiveProps) => {
           <LiveTitle>{title}</LiveTitle>
           <LiveLocation>{location}</LiveLocation>
         </LiveInfo>
-        <LiveBtn onClick={() => goLive(title)}>Live</LiveBtn>
+        <LiveBtn onClick={() => goLive(id, title)}>Live</LiveBtn>
       </LiveInfoContainer>
     </LiveBoxWrapper>
   );
