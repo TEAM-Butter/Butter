@@ -114,18 +114,14 @@ interface ScheduleInfo {
   content: string;
 }
 
-interface CrewGenre {
-  genre: string;
-}
-
 interface CrewInfo {
-  id: number;
+  id: string;
   name: string;
-  genres: CrewGenre[];
+  genres: string[];
 }
 
 interface Live {
-  id: number;
+  id: string;
   title: string;
   schedule: ScheduleInfo;
   crew: CrewInfo;

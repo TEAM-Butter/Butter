@@ -60,8 +60,6 @@ function StreamLiveVideo({
             // });
 
             try {
-              // fetch API 사용
-              console.log("serverUrl", serverUrl);
               const response = await fetch(serverUrl, {
                 method: "POST",
                 body: formData,
@@ -84,10 +82,6 @@ function StreamLiveVideo({
                 }
                 throw new Error(errorMessage);
               }
-
-              const data = await response.json();
-              console.log("서버 응답:", data);
-              console.log("ServerURl:", serverUrl);
             } catch (error) {
               if (error instanceof Error) {
                 console.error("전송 오류 발생:", error);

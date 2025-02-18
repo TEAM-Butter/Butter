@@ -257,7 +257,8 @@ const LivePage = () => {
   // export const SocketContext = React.createContext<socketType>(socket);
 
   // 크루ID 로 roomName을 설정 //해쉬!!!
-  const fakeTitle = state.roomName;
+
+  const fakeTitle = state.roomName ? state.roomName : location.state.title;
   const roomName = `${crewId}`;
 
   const user = useUserStore((state) => state);
@@ -359,7 +360,7 @@ const LivePage = () => {
         // 받은 데이터 활용 예시
         console.log(`${participant}님이 방 ${room}에서 나갔습니다`);
       });
-      socket.emit("leave", { roomName });
+      socket.emit("leave", { roomName, participant: participantName });
 
       room.disconnect();
       console.log("BYE");
@@ -474,7 +475,6 @@ const LivePage = () => {
         participant: participantName,
         avatarType,
       }); // 아바타
-      console.log("join이요❤️❤️❤️❤️❤️❤️❤️❤️");
       await room.connect(LIVEKIT_URL, token);
 
       if (participantRole === "publisher") {
