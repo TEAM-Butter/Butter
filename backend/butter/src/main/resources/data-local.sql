@@ -46,6 +46,41 @@ VALUES (2, 3, 'choco789', '초코', 'user4@example.com', '1998-08-20', 150, '$2a
 INSERT INTO member (member_type_id, avatar_type_id, login_id, nickname, email, birth_date, bread_amount, password, profile_image, gender, create_date, is_extra_info_registered)
 VALUES (1, 1, 'straw999', '딸기', 'user5@example.com', '1992-12-10', 180, '$2a$12$Y7LSF6/NwYpMc74uOTn6ZeUOujMPJHMT/FzghyATC08oM8Ykx.JhO', NULL, 'MALE', NOW(), FALSE);
 
+INSERT INTO member (member_type_id, avatar_type_id, login_id, nickname, email, birth_date, bread_amount, password, profile_image, gender, create_date, is_extra_info_registered)
+VALUES (1, 2, 'butter1234', '최재익', 'user6@example.com', '1990-01-01', 100, '$2a$12$EGlsV9zlJcfjr2Iplvxq9uY1to7FUnsUG9wUFj4mJpD3kPRl7Wsz6', 'https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/bc9333b8-0268-4a1e-b09b-b438586bd325.jpg', 'MALE', NOW(), FALSE);
+
+INSERT INTO member (member_type_id, avatar_type_id, login_id, nickname, email, birth_date, bread_amount, password, profile_image, gender, create_date, is_extra_info_registered)
+VALUES (1, 2, 'butter1235', '임다희', 'user7@example.com', '1990-01-01', 100, '$2a$12$EGlsV9zlJcfjr2Iplvxq9uY1to7FUnsUG9wUFj4mJpD3kPRl7Wsz6', 'https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/e9821646-ba6d-47fb-b8e1-2223934fa2c0.jpg', 'FEMALE', NOW(), FALSE);
+
+INSERT INTO member (member_type_id, avatar_type_id, login_id, nickname, email, birth_date, bread_amount, password, profile_image, gender, create_date, is_extra_info_registered)
+VALUES (1, 2, 'butter1236', '안다정', 'user8@example.com', '1990-01-01', 100, '$2a$12$EGlsV9zlJcfjr2Iplvxq9uY1to7FUnsUG9wUFj4mJpD3kPRl7Wsz6', 'https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/cc62a2c8-cc83-4755-93a0-8e82f35d4a88.jpg', 'FEMALE', NOW(), FALSE);
+
+INSERT INTO member (member_type_id, avatar_type_id, login_id, nickname, email, birth_date, bread_amount, password, profile_image, gender, create_date, is_extra_info_registered)
+VALUES (1, 2, 'butter1237', '이병건', 'user9@example.com', '1990-01-01', 100, '$2a$12$EGlsV9zlJcfjr2Iplvxq9uY1to7FUnsUG9wUFj4mJpD3kPRl7Wsz6', 'https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/c5f32f5e-5f55-4dc4-b5b7-7ff4163b3305.jpg', 'MALE', NOW(), FALSE);
+
+INSERT INTO member (member_type_id, avatar_type_id, login_id, nickname, email, birth_date, bread_amount, password, profile_image, gender, create_date, is_extra_info_registered)
+VALUES (1, 2, 'butter1238', '김원찬', 'user10@example.com', '1990-01-01', 100, '$2a$12$EGlsV9zlJcfjr2Iplvxq9uY1to7FUnsUG9wUFj4mJpD3kPRl7Wsz6', 'https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/c9c1b9f4-028f-4239-a066-2a09b9673fe5.jpg', 'MALE', NOW(), FALSE);
+
+INSERT INTO member (member_type_id, avatar_type_id, login_id, nickname, email, birth_date, bread_amount, password, profile_image, gender, create_date, is_extra_info_registered)
+VALUES (1, 2, 'butter1239', '김원겸', 'user11@example.com', '1990-01-01', 100, '$2a$12$EGlsV9zlJcfjr2Iplvxq9uY1to7FUnsUG9wUFj4mJpD3kPRl7Wsz6', 'https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/92e6ae65-1bbe-411f-8a09-e59cbd25b6b1.jpg', 'MALE', NOW(), FALSE);
+
+INSERT INTO member (member_type_id, avatar_type_id, login_id, nickname, email, birth_date, bread_amount, password, profile_image, gender, create_date, is_extra_info_registered)
+VALUES (1, 2, 'butter1240', '짱구', 'user3@example.com', '1990-01-01', 100, '$2a$12$EGlsV9zlJcfjr2Iplvxq9uY1to7FUnsUG9wUFj4mJpD3kPRl7Wsz6', 'https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/49514493-c78b-4592-ae61-d4e547d96f08.jpg', 'MALE', NOW(), FALSE);
+
+INSERT INTO member (member_type_id, avatar_type_id, login_id, nickname, email, birth_date, bread_amount, password, profile_image, gender, create_date, is_extra_info_registered)
+VALUES (1, 2, 'butter1241', '흰둥이', 'user3@example.com', '1990-01-01', 100, '$2a$12$EGlsV9zlJcfjr2Iplvxq9uY1to7FUnsUG9wUFj4mJpD3kPRl7Wsz6', 'https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/c4e4a73f-c7f5-4c9d-b525-820aae2936ca.jpg', 'MALE', NOW(), FALSE);
+
+INSERT INTO member (member_type_id, avatar_type_id, login_id, nickname, email, birth_date, bread_amount, password, profile_image, gender, create_date, is_extra_info_registered)
+VALUES (1, 2, 'butter1242', '철수', 'user3@example.com', '1990-01-01', 100, '$2a$12$EGlsV9zlJcfjr2Iplvxq9uY1to7FUnsUG9wUFj4mJpD3kPRl7Wsz6', 'https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/ecb68ffd-6f91-4129-bb0a-bd7777e87e69.jpg', 'MALE', NOW(), FALSE);
+
+INSERT INTO member (member_type_id, avatar_type_id, login_id, nickname, email, birth_date, bread_amount, password, profile_image, gender, create_date, is_extra_info_registered)
+VALUES (1, 2, 'butter1243', '유리', 'user3@example.com', '1990-01-01', 100, '$2a$12$EGlsV9zlJcfjr2Iplvxq9uY1to7FUnsUG9wUFj4mJpD3kPRl7Wsz6', 'https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/07186f22-e6a9-4c3f-8994-28d46e93a980.jpg', 'MALE', NOW(), FALSE);
+
+INSERT INTO member (member_type_id, avatar_type_id, login_id, nickname, email, birth_date, bread_amount, password, profile_image, gender, create_date, is_extra_info_registered)
+VALUES (1, 2, 'butter1244', '맹구', 'user3@example.com', '1990-01-01', 100, '$2a$12$EGlsV9zlJcfjr2Iplvxq9uY1to7FUnsUG9wUFj4mJpD3kPRl7Wsz6', 'https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/1a1cef8b-b188-4aaf-883b-6cd27384f2d2.jpg', 'MALE', NOW(), FALSE);
+
+INSERT INTO member (member_type_id, avatar_type_id, login_id, nickname, email, birth_date, bread_amount, password, profile_image, gender, create_date, is_extra_info_registered)
+VALUES (1, 2, 'butter1245', '훈이', 'user3@example.com', '1990-01-01', 100, '$2a$12$EGlsV9zlJcfjr2Iplvxq9uY1to7FUnsUG9wUFj4mJpD3kPRl7Wsz6', 'https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/5d6c29a9-3a42-4df0-84ab-5619798016d7.jpg', 'MALE', NOW(), FALSE);
 
 -- 더미 데이터 삽입
 

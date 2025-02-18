@@ -63,6 +63,15 @@ const LayOut3=styled.div`
   justify-content: space-between;
 `
 
+const Box1Wrapper = styled.div`
+    
+`
+
+const Box1Friend = styled.img`
+    
+`
+
+
 const Box1=styled.div`
   background-color: gray;
   width : 100%;
@@ -413,7 +422,9 @@ function CrewDetailPage() {
             <LayOut1 >
             
             {crewDetailSwitch && <div className="크루 디테일 정보">   
-               
+                <Box1Wrapper></Box1Wrapper>
+                <Box1Friend>
+                </Box1Friend>
                 <Box1>
                     <Right>
                     <EditButton onClick={() => handleEditClick()} src={editButton} alt="editButton"></EditButton>
