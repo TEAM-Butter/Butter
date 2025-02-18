@@ -16,5 +16,5 @@ public interface NotificationRepository {
 
     void deleteAllEmitterStartsWithId(String id);
 
-    void deleteAllEventCacheStartsWithId(String id);
+    void deleteEventCacheById(String id);
 }
