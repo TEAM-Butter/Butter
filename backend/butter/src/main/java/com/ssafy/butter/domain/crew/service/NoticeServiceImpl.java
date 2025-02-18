@@ -60,7 +60,7 @@ public class NoticeServiceImpl implements NoticeService {
 
         String content = "크루 공지: " + notice.getTitle();
         String notificationType = NotificationType.NOTICE.getAlias();
-        String url = NotificationType.NOTICE.getPath() + notice.getId();
+        String url = NotificationType.NOTICE.getPath() + crew.getId();
         notificationService.sendNotificationToFollowers(notice.getCrew(), content, notificationType, url);
 
         return NoticeResponseDTO.fromEntity(noticeRepository.save(notice));
