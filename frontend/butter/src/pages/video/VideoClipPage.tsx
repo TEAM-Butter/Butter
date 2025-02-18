@@ -24,6 +24,17 @@ const VideoPlayer = styled.video`
   border-radius: 4px;
 `;
 
+const HeartButton = styled.button`
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  background: none;
+  border: none;
+  font-size: 40px;
+  cursor: pointer;
+  z-index: 10;
+`;
+
 interface Video {
   id: string; // 녹화 ID
   crewId: number; // 녹화된 크루 ID
@@ -31,6 +42,8 @@ interface Video {
   videoName: string; // 녹화 파일 이름
   videoUrl: string; // 녹화 파일 이름
   hitCount: number; // 조회수
+  isLiking: boolean;
+  getLikeCount: number;
 }
 
 const PAGE_SIZE = 10;
@@ -113,6 +126,15 @@ const VideoClipPage = () => {
     }
   };
 
+  // 찜하기 버튼 토글 함수
+  const toggleLike = (videoId: string) => {
+    setVideos((prevVideos) =>
+      prevVideos.map((video) =>
+        video.id === videoId ? { ...video, isLike: !video.isLiking } : video
+      )
+    );
+  };
+
   // 슬라이드 변경 시 비디오 자동 재생
   useEffect(() => {
     if (videoRefs.current.length > 0) {
@@ -191,6 +213,9 @@ const VideoClipPage = () => {
                 e.currentTarget.play(); // 다시 자동 재생
               }}
             />
+            <HeartButton onClick={() => toggleLike(video.id)}>
+              {video.getLikeCount} {video.isLiking ? "❤️" : "🤍"}
+            </HeartButton>
           </SwiperSlide>
         ))}
       </Swiper>
