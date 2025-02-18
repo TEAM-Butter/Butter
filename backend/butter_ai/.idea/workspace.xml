@@ -6,7 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="9d7c38df-f533-4bfb-8b82-f0c5671298ff" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../frontend/butter/src/pages/stream/LiveListPage.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../../frontend/butter/src/pages/stream/LiveListPage.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../frontend/butter/src/components/stream/CharacterContainer/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../../frontend/butter/src/components/stream/CharacterContainer/index.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -31,7 +31,7 @@
     "Python.run.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "feat/#S12P11E204-235-fe-streaming-list",
+    "git-widget-placeholder": "feat/#S12P11E204-236-fe-avatar-reallll",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
