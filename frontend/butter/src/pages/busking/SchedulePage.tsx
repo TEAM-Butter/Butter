@@ -23,9 +23,16 @@ import { Calendar } from '@fullcalendar/core';
 import interactionPlugin from '@fullcalendar/interaction'; // for selectable
 import { axiosInstance } from "../../apis/axiosInstance";
 import axios, { Axios } from "axios";
-
+import notFollowedIcon from "../../assets/notFollowedIcon.png"
+import followedIcon from "../../assets/followedIcon.png"
 
 const images = [sample1,sample2,sample3,sample4,sample5]
+
+const BookMarkIcon = styled.img`
+  height: 20px;
+  width: 20px;
+`
+
 
 
 const PageContainer=styled.div`
@@ -290,8 +297,42 @@ function SchedulePage() {
     return today.toISOString().split("T")[0]; // YYYY-MM-DD 형식
   };
 
+  const [bookmarked, setBookmarked] = useState(true);
+  const [haveBookMarked, setHaveBookMarked] = useState(false)
 
-  
+
+  const BookmarkPlus = async (scheduleId : number) => {
+    try {
+
+        const payload = { scheduleId : scheduleId }
+        const res = await axiosInstance.post(`schedule/like`, payload)
+        console.log(res.data)
+        alert('북마크 성공!')
+        setBookmarked(!bookmarked)
+        console.log(bookmarked)
+        setHaveBookMarked(!haveBookMarked)
+    }
+     catch {
+
+    }
+}
+
+
+
+const BookmarkMinus = async (scheduleId : any) => {
+    try {
+
+        console.log(scheduleId)
+        const res = await axiosInstance.delete(`schedule/like/${scheduleId}`)
+        console.log(res.data)
+        alert('북마크 취소 성공!')
+        setBookmarked(!bookmarked)
+        console.log(bookmarked)
+        setHaveBookMarked(!haveBookMarked)
+    } catch {
+
+    }
+}
 
   // 날짜 선택하는 함수
   const handleDateSelect = (selectInfo: any) => {
@@ -695,6 +736,7 @@ useEffect(() => {
             crewName : schedule.crew.name,
             isLiked : schedule.isLiked,
             title : schedule.title,
+            scheduleId : schedule.id,
           }));
     
           markers3.forEach((marker:any) => {
@@ -745,6 +787,7 @@ useEffect(() => {
         crewName : schedule.crew.name,
         isLiked : schedule.isLiked,
         title : schedule.title,
+        scheduleId : schedule.id,
       }));
   
       markers3.forEach((marker:any) => {
@@ -926,6 +969,8 @@ useEffect(() => {
                         
                     
                     </div>
+                    {haveBookMarked && <BookMarkIcon src={followedIcon} alt="followedIcon" onClick={()=>{BookmarkMinus(pos.scheduleId)}}></BookMarkIcon>}
+                    {!haveBookMarked && <BookMarkIcon src={notFollowedIcon} alt="notFollowedIcon" onClick={()=>{BookmarkPlus(pos.scheduleId)}}></BookMarkIcon>}
                   </div>
                 </div>
               </div>

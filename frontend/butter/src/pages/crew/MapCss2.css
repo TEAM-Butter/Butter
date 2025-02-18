@@ -14,7 +14,7 @@
 .desc .ellipsis {overflow: hidden;text-overflow: ellipsis;white-space: nowrap;}
 .desc .jibun {font-size: 11px;color: white;margin-top: -2px;}
 .info .img {position: absolute;top: 6px;left: 5px;width: 73px;height: 71px;border: 1px solid #ddd;color: #888;overflow: hidden;}
-.info:after {content: '';position: absolute;margin-left: -12px;left: 50%;bottom: 0;width: 22px;height: 12px; background: url('');}
+.info:after {content: '';position: absolute;margin-left: -12px;left: 50%;bottom: 0;width: 22px;height: 12px; background: url('https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/down.png');}
 .info .link {color: #5085BB;}
 
 :root {
