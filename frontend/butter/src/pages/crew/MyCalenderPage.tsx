@@ -8,7 +8,7 @@ import { axiosInstance } from '../../apis/axiosInstance';
 import { CustomOverlayMap, Map, MapMarker, MarkerClusterer} from "react-kakao-maps-sdk";
 import notFollowedIcon from "../../assets/notFollowedIcon.png"
 import followedIcon from "../../assets/followedIcon.png"
-import "./MapCss.css";
+import "./MapCss2.css";
 
 
 const CalenderBox = styled.div`

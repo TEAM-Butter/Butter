@@ -94,13 +94,14 @@ const ImgStyle2 = styled.img<any>`
 `;
 
 const Box1 = styled.div`
-  display: flex;
-  justify-content: right;
-  margin-right: 30px;
-  margin-top: 50px;
-  font-size: 30px;
-  position: relative;
-`;
+ display : flex;
+ flex-direction: column;
+ align-items : flex-end;
+ margin-right : 30px;
+ margin-top : 50px;
+ font-size : 30px;
+ position: relative;
+`
 
 const P1 = styled.div`
   font-weight: bold;
@@ -108,13 +109,13 @@ const P1 = styled.div`
 `;
 
 const Box2 = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  margin: 20px 30px 20px 30px;
-  gap: 10px;
-  font-size: 15px;
-`;
+ display : flex;
+ flex-direction: column;
+ align-items: flex-end;
+ margin: 35px 30px 10px 30px;
+ gap: 10px;
+ font-size : 15px;
+`
 
 const Underline = styled(motion.div)`
   position: absolute;
@@ -169,6 +170,13 @@ const SearchWrapper = styled.div`
   background-color: #040a14;
   border: 1px solid white;
 `;
+
+const FlexCan = styled.div`
+    display: flex;
+ ;
+`
+
+
 
 function CrewListPage() {
   const [crewId, setCrewId] = useState(0);
@@ -228,22 +236,64 @@ function CrewListPage() {
         </FilterWrapper>
       </Box2>
 
-      <Write>
-        <div>C</div>
-        <ImgContainer>
-          {crewList.map((a: any, i) => {
-            if (i <= 2)
-              return (
-                <Link to={`/crew/detail/${a.id}`}>
-                  <ImgStyle
-                    src={images[i]}
-                    alt="Crew Logo 1"
-                    index={i}
-                    size="230px"
-                  />
-                </Link>
-              );
-          })}
+
+
+
+
+    useEffect (() => {
+        const fetchCrewDetail = async () => {
+            try {
+                // ✅ 헤더 추가: Authorization (JWT 토큰 포함)
+                setLoading(true);
+                if (genreToggle == "All"){
+                    const response = await axiosInstance.get(`/crew/list?pageSize=10&sortBy=followerCount`)
+                    setCrewList(response.data);
+                } else{
+                const response = await axiosInstance.get(`/crew/list?pageSize=10&sortBy=followerCount&genre=${genreToggle}`)
+                setCrewList(response.data);} // 크루 리스트 정보 받아옴
+          
+                
+            } catch (err: any) {
+                setError(err.message); //요청 놓치면 에러 메세지 띄우기
+            } finally {
+                setLoading(false) // 요청 끝나면 로딩끄기
+            }
+        }
+
+        fetchCrewDetail();
+  
+
+    }, [genreToggle])
+   
+
+
+
+
+    return (
+        <div>
+        <Box2>
+          
+            <FilterWrapper>
+            <GenreToggle setGenreToggle={setGenreToggle} />
+            <SearchWrapper
+                onClick={()=>{
+                    setModalType("crewSearch")
+                    // setIsModalOpen(!true)
+                }}>
+                <div>크루 검색</div>
+                <FindBox src={findIcon} alt="findIcon"></FindBox>
+            </SearchWrapper>
+            </FilterWrapper>
+        </Box2>
+        <Box1>
+            <FlexCan><P1>Busking </P1> <p>Crew</p></FlexCan>
+            <p>당신의 마음에 맞는 크루를 지금 바로 찾아보세요!</p>
+        </Box1>
+        
+       <Write>
+       <div>C</div>
+       <ImgContainer>
+       {crewList.map((a : any, i ) =>{if(i <=2 ) return(<Link to={`/crew/detail/${a.id}`}><ImgStyle src={images[i]} alt="Crew Logo 1" index={i} size="230px" /></Link> )})}
         </ImgContainer>
         <Div1> REW</Div1>
       </Write>
