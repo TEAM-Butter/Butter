@@ -8,6 +8,7 @@ import { useUserStore } from "../../../stores/UserStore";
 import { removeAccessToken } from "../../../apis/auth";
 import bell from "../../../assets/user/bell.png"
 import { Alert } from "./Alert";
+import { useNavigate } from "react-router-dom";
 
 const Nav = styled.nav`
   display: flex;
@@ -150,6 +151,7 @@ function Navbar() {
   const nickname = useUserStore((state) => state.nickname);
   const isLogin = useUserStore((state) => state.isLogin);
   const logout = useUserStore((state) => state.logout);
+  const navigate = useNavigate();
 
   const homeMatch = useMatch("");
   const buskingMatch = useMatch("busking");
@@ -165,6 +167,7 @@ function Navbar() {
   const memberLogout = () => {
     logout();
     removeAccessToken();
+    navigate("/auth/login")
   };
 
   return (
