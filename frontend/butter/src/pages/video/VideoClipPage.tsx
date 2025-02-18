@@ -47,8 +47,8 @@ interface Video {
   videoName: string; // 녹화 파일 이름
   videoUrl: string; // 녹화 파일 이름
   hitCount: number; // 조회수
-  isLiking: boolean;
-  getLikeCount: number;
+  isLiked: boolean;
+  likeCount: number;
 }
 
 const PAGE_SIZE = 10;
@@ -138,9 +138,9 @@ const VideoClipPage = () => {
         video.id === videoId
           ? {
               ...video,
-              isLiking: !video.isLiking,
+              isLiking: !video.isLiked,
               // 좋아요 수를 토글할 때, 단순 예시로 증감 처리 (원하는 로직에 맞게 수정)
-              getLikeCount: video.isLiking ? video.getLikeCount - 1 : video.getLikeCount + 1,
+              getLikeCount: video.isLiked ? video.likeCount - 1 : video.likeCount + 1,
             }
           : video
       )
@@ -207,8 +207,8 @@ const VideoClipPage = () => {
               }}
             />
             <HeartButton onClick={() => toggleLike(video.id)}>
-              <LikeCountSpan>{video.getLikeCount}</LikeCountSpan>
-              {video.isLiking ? "❤️" : "🤍"}
+              <LikeCountSpan>{video.likeCount}</LikeCountSpan>
+              {video.isLiked ? "❤️" : "🤍"}
             </HeartButton>
           </SwiperSlide>
         ))}
