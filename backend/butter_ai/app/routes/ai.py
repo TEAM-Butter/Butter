@@ -36,7 +36,8 @@ def upload_frame():
     detection["role"] = request.form.get("role")
     if room_id in websocket_room_service.room_motions.keys():
         detection["roomMotions"] = websocket_room_service.room_motions[room_id]
-    print(detection)
+    if websocket_room_service.room_nicknames.get(room_id) is not None:
+        detection["nickname"] = websocket_room_service.room_nicknames.get(room_id)
 
     # 웹소켓으로 탐지 결과 송신
     sock.emit("message", detection, room=room_id)
