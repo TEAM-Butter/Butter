@@ -19,6 +19,7 @@ import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import ThumbUpAltOutlinedIcon from "@mui/icons-material/ThumbUpAltOutlined";
 import BakeryDiningOutlinedIcon from "@mui/icons-material/BakeryDiningOutlined";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
+import { ContactEmergency } from "@mui/icons-material";
 // const images = [pet1, pet2, pet3, pet4, pet5, pet6];
 
 const CharacterContainerWrapper = styled.div`
@@ -122,6 +123,7 @@ interface CharacterContainer {
   socket: Socket;
   participantName: string;
   roomName: string;
+  role: string;
 }
 
 interface CharacterData {
@@ -139,6 +141,7 @@ const CharacterContainer = ({
   socket,
   participantName,
   roomName,
+  role,
 }: CharacterContainer) => {
   const [characters, setCharacters] = useState<CharacterData[]>(() =>
     Array.from({ length: 13 }, (_, index) => ({
@@ -265,6 +268,11 @@ const CharacterContainer = ({
 
   const handleMessage = (content: SocketContent) => {
     console.log("웹소켓에서 participantName을 불러옵니다!!", participantName);
+
+    console.log(content);
+    console.log("여기요❤️❤️❤️❤️❤️❤️❤️❤️");
+    setHeartCount(content.roomMotions.heart);
+    setLikeCount(content.roomMotions.like);
     const id = 1;
     if (content.role === "publisher" && canUserAct(id)) {
       switch (content.label) {
@@ -304,13 +312,6 @@ const CharacterContainer = ({
   };
   const handleSocketOn = () => {
     socket.on("message", handleMessage);
-    socket.on("connect", () =>
-      console.log("웹소켓에 연결은 성공했음❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️")
-    );
-    socket.on("message", () => {
-      console.log("❤️❤️❤️");
-      console.log("❤️❤️❤️");
-    });
     socket.on("increaseEmotionCount", (content) => {
       setHeartCount(content.heart);
       setLikeCount(content.like);
@@ -319,6 +320,7 @@ const CharacterContainer = ({
 
   useEffect(() => {
     handleSocketOn();
+    return () => {};
   }, [participantName, handleMyEmotion, handleOtherEmotion]);
 
   return (

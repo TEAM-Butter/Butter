@@ -1,8 +1,14 @@
+interface roomMotionsType {
+  heart: number;
+  like: number;
+}
+
 export interface SocketContent {
   status: string;
   participant: string;
   role: string;
   label: string;
+  roomMotions: roomMotionsType;
 }
 
 interface ServerToClientEvents {

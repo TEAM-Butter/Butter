@@ -19,6 +19,7 @@ interface StreamLiveProps {
   token: string;
   role: string;
   fakeTitle: string;
+  avatarType: string | null;
 }
 
 const StreamLive = ({
@@ -31,6 +32,7 @@ const StreamLive = ({
   token,
   role,
   fakeTitle,
+  avatarType,
 }: StreamLiveProps) => {
   console.log("remoeteTracks 정보입니다", remoteTracks);
   console.log("Stream component에서 room을 받아들입니다.", room);
@@ -67,6 +69,7 @@ const StreamLive = ({
                         fakeTitle={fakeTitle}
                         roomName={roomName}
                         role={role}
+                        avatarType={avatarType}
                       />
                       {/* <div className="absolute bottom-2 left-2 bg-black bg-opacity-50 px-2 py-1 rounded text-white text-sm">
                         {participantName}
@@ -87,6 +90,7 @@ const StreamLive = ({
                           roomName={roomName}
                           fakeTitle={fakeTitle}
                           role={role}
+                          avatarType={avatarType}
                         />
                         <div className="absolute bottom-2 left-2 bg-black bg-opacity-50 px-2 py-1 rounded text-white text-sm">
                           {remoteTrack.participantIdentity}
