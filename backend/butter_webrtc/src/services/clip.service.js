@@ -31,12 +31,12 @@ export class ClipService {
 
   async getClipUrl(clipName) {
     const key = this.getClipKey(clipName);
-    return s3Service.getObjectUrl(key);
+    return s3Service.getObjectUrlMonth(key);
   }
 
   async getClipThumbnailUrl(clipThumbnailName) {
     const key = this.getClipThumbnailKey(clipThumbnailName);
-    return s3Service.getObjectUrl(key);
+    return s3Service.getObjectUrlMonth(key);
   }
 
   async existsClipTmp(clipTmpName) {
@@ -157,9 +157,10 @@ export class ClipService {
     try {
       // INSERT 쿼리 실행: crewId, title, videoName (clipName으로 저장)
       const crewId = this.getCrewIdToClipName(clipName);
+      const clipUrl = this.getClipUrl(this.getClipKey(clipName));
       const sql =
-        "INSERT INTO clip (crew_id, title, video_name) VALUES (?, ?, ?)";
-      await dbService.query(sql, [crewId, title, clipName]);
+        "INSERT INTO clip (crew_id, title, video_name, video_url) VALUES (?, ?, ?, ?)";
+      await dbService.query(sql, [crewId, title, clipName, clipUrl]);
 
       // 성공적으로 완료되면 clipName 반환
       return { success: true, clipName: clipName };
