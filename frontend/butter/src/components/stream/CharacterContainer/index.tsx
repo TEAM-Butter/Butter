@@ -278,8 +278,8 @@ const CharacterContainer = ({
     setMembersCount(content.members?.length);
     console.log(content);
     if (content.roomMotions !== null) {
-      setHeartCount(content.roomMotions.heart);
-      setLikeCount(content.roomMotions.like);
+      setHeartCount(content.roomMotions.heart || 0);
+      setLikeCount(content.roomMotions.like || 0);
     }
     setMembers(content.members);
     const id = 1;
