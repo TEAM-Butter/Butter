@@ -211,9 +211,7 @@ INSERT INTO clip (hit_count, crew_id, title, video_name, video_url) VALUES
 INSERT INTO liked_clip (is_liked, clip_id, member_id) VALUES
                                                           (1, 1, 1),
                                                           (0, 2, 2),
-                                                          (1, 3, 3),
-                                                          (0, 4, 4),
-                                                          (1, 5, 5);
+                                                          (1, 3, 3);
 
 -- liked_schedule 테이블
 INSERT INTO liked_schedule (is_liked, schedule_id, member_id) VALUES
