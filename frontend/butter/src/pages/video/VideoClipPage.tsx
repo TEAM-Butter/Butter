@@ -42,7 +42,7 @@ const VideoClipPage = () => {
   useEffect(() => {
     const fetchInitialVideos = async () => {
       try {
-        const response = await axios.post(`${SEVER_URL}/v1/clip/list_rev`, {
+        const response = await axios.get(`${SEVER_URL}/v1/clip/list_rev`, {
           clipId: null,
           pageSize: 1,
           liveId: null,
@@ -64,7 +64,7 @@ const VideoClipPage = () => {
   const fetchPreviousClip = async () => {
     if (!currentClipId) return;
     try {
-      const response = await axios.post(`${SEVER_URL}/v1/clip/list_rev`, {
+      const response = await axios.get(`${SEVER_URL}/v1/clip/list_rev`, {
         clipId: currentClipId,
         pageSize: 1,
         liveId: null,
@@ -82,7 +82,7 @@ const VideoClipPage = () => {
   const fetchNextClip = async () => {
     if (!currentClipId) return;
     try {
-      const response = await axios.post(`${SEVER_URL}/v1/clip/list`, {
+      const response = await axios.get(`${SEVER_URL}/v1/clip/list`, {
         clipId: currentClipId,
         pageSize: 1,
         liveId: null,
