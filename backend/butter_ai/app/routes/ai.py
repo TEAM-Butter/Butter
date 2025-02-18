@@ -76,7 +76,7 @@ def on_leave(data):
         return
 
     leave_room(room_id)
-    websocket_room_service.remove_member(room_id, data["nickname"])
+    websocket_room_service.remove_member(room_id, data["participant"])
     if get_room_size(room_id) == 0:
         print(f"Room {room_id} is empty")
         websocket_room_service.remove_room(room_id)
