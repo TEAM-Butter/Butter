@@ -65,6 +65,7 @@ const VideoClipPage = () => {
 
   // 이전 클립 불러오기 (아래로 스크롤)
   const fetchPreviousClip = async () => {
+    console.log("prev");
     if (!currentClipId) return;
     try {
       const response = await axiosInstance.get(`/clip/list_rev`, {
@@ -85,6 +86,7 @@ const VideoClipPage = () => {
 
   // 다음 클립 불러오기 (위로 스크롤)
   const fetchNextClip = async () => {
+    console.log("next");
     if (!currentClipId) return;
     try {
       const response = await axiosInstance.get(`/clip/list`, {
@@ -151,10 +153,9 @@ const VideoClipPage = () => {
         direction={"vertical"}
         slidesPerView={1}
         spaceBetween={30}
-        mousewheel={{
-          forceToAxis: true,
-          releaseOnEdges: true,
-        }}
+        mousewheel={
+          true
+        }
         pagination={{
           clickable: true,
         }}
