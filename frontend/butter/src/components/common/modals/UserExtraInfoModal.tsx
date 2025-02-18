@@ -80,6 +80,32 @@ const EFWrapper = styled.div`
   width: 90%;
 `
 
+const NicknameInputWrapper = styled.div`
+  display: flex;
+  width: 90%;
+  gap: 10px;
+
+  & > input {
+    flex: 1;
+  }
+
+  #checkNicknameBtn {
+    width: 80px;
+    background-color: var(--yellow);
+    border-radius: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: black;
+  }
+`
+
+const NicknameComment = styled.div`
+  margin: 5px 0 0 5px;
+  color: #a8a8a8;
+  font-size: 15px;
+`
+
 interface ModalSizeProps {
   width: string;
   height: string;
@@ -205,13 +231,17 @@ export const UserExtraInfoModal = ({
                   <ExtraInfoLabel>
                     <StepNumber>2</StepNumber>뭐라고 불러드릴까요?
                   </ExtraInfoLabel>
-                  <ExtraInfoInput
-                    name="nickname"
-                    placeholder="사용할 닉네임을 입력해주세요."
-                    value={formData.nickname}
-                    onChange={handleChange}
-                    required
-                  />
+                  <NicknameInputWrapper>
+                    <ExtraInfoInput
+                      name="nickname"
+                      placeholder="사용할 닉네임을 입력해주세요."
+                      value={formData.nickname}
+                      onChange={handleChange}
+                      required
+                    />
+                    <div id="checkNicknameBtn">확인</div>
+                  </NicknameInputWrapper>
+                  <NicknameComment>이미 존재하는 닉네임 입니다.</NicknameComment>
                 </div>
                 <div>
                   <ExtraInfoLabel>
@@ -389,13 +419,17 @@ export const UserExtraInfoModal_v2 = ({
                   <ExtraInfoLabel>
                     <StepNumber>2</StepNumber>뭐라고 불러드릴까요?
                   </ExtraInfoLabel>
-                  <ExtraInfoInput
-                    name="nickname"
-                    placeholder="사용할 닉네임을 입력해주세요."
-                    value={formData.nickname}
-                    onChange={handleChange}
-                    required
-                  />
+                  <NicknameInputWrapper>
+                    <ExtraInfoInput
+                      name="nickname"
+                      placeholder="사용할 닉네임을 입력해주세요."
+                      value={formData.nickname}
+                      onChange={handleChange}
+                      required
+                    />
+                    <div id="checkNicknameBtn">확인</div>
+                  </NicknameInputWrapper>
+                  <NicknameComment>이미 존재하는 닉네임 입니다.</NicknameComment>
                 </div>
                 <div>
                   <ExtraInfoLabel>
