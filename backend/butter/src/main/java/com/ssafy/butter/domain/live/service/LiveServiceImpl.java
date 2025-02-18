@@ -19,6 +19,7 @@ import com.ssafy.butter.domain.notification.service.NotificationService;
 import com.ssafy.butter.domain.schedule.service.ScheduleService;
 import com.ssafy.butter.infrastructure.awsS3.ImageUploader;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,6 +33,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 @RequiredArgsConstructor
 @Service
 @Transactional
+@Slf4j
 public class LiveServiceImpl implements LiveService {
 
     private final MemberService memberService;
@@ -88,16 +90,16 @@ public class LiveServiceImpl implements LiveService {
 
     private List<LiveResponseDTO> getLiveListOrderByViewerCount(LiveListRequestDTO liveListRequestDTO) {
         List<Map.Entry<String, CopyOnWriteArraySet<String>>> sortedRoomSessions = chatRoomService.getRoomSessionsOrderBySessionCount();
-        List<Live> lives = liveRepository.getActiveLiveList(liveListRequestDTO);
-        Map<Long, Integer> crewIdLiveIndices = new HashMap<>();
-        for (int i = 0; i < lives.size(); i++) {
-            crewIdLiveIndices.put(lives.get(i).getCrew().getId(), i);
-        }
+        List<Live> activeLives = liveRepository.getActiveLiveList(liveListRequestDTO);
+        log.info("sorted room session: {}", sortedRoomSessions);
+        activeLives.forEach(live -> log.info("live id: {}", live.getCrew().getId()));
         List<LiveResponseDTO> liveResponseDTOs = new ArrayList<>();
         for (Map.Entry<String, CopyOnWriteArraySet<String>> roomSession : sortedRoomSessions) {
-            Integer liveIndex = crewIdLiveIndices.get(Long.parseLong(roomSession.getKey()));
-            if (liveIndex != null) {
-                liveResponseDTOs.add(LiveResponseDTO.from(lives.get(liveIndex), roomSession.getValue().size()));
+            for (Live activeLive : activeLives) {
+                if (Long.parseLong(roomSession.getKey()) == activeLive.getCrew().getId()) {
+                    liveResponseDTOs.add(LiveResponseDTO.from(activeLive, roomSession.getValue().size()));
+                    break;
+                }
             }
         }
         return liveResponseDTOs;
