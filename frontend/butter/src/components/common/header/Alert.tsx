@@ -28,14 +28,14 @@ export const Alert = ({ isToggle }: AlertProps) => {
   const eventSource = useRef<null | EventSource>(null);
   const token = getAccessToken(); // 인증 토큰
   const isLogin = useUserStore(state => state.isLogin)
-  const isSubscribed: boolean = sessionStorage.getItem('isSubscribed') === "true";
+  // const isSubscribed: boolean = sessionStorage.getItem('isSubscribed') === "true";
   
     useEffect(() => {
       // if (eventSource.current) {
       //   eventSource.current.close(); // 기존 연결 닫기
       // }
 
-      if(isLogin && !isSubscribed){
+      if(isLogin){
         eventSource.current = new EventSourcePolyfill(`${import.meta.env.VITE_SPRING_BOOT_SERVER}/v1/notify/subscribe`, {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -48,11 +48,10 @@ export const Alert = ({ isToggle }: AlertProps) => {
           sessionStorage.setItem('isSubscribed', "true");
         }
 
-        eventSource.current.onmessage = (event) => {
+        eventSource.current.addEventListener("sse", (event) => {
+          console.log("🎯 'sse' 이벤트 수신:", event.data);
           setMessages((prev) => [...prev, event.data]);
-          console.log("message:", messages);
-          console.log("📩 새 메시지 수신:", event.data);
-        };
+        });
 
         eventSource.current.onerror = () => {
           console.error("SSE 연결 오류");
