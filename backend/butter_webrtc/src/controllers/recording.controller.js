@@ -128,7 +128,6 @@ recordingController.get("/:recordingName/url", async (req, res) => {
     }
 });
 
-
 recordingController.post("/thumnail", upload.single("image"), async (req, res) => {
     const { recordingName } = req.body;
     const imageFile = req.file;
