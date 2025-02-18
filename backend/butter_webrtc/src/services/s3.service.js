@@ -112,7 +112,7 @@ export class S3Service {
             Key: key
         };
         const command = new GetObjectCommand(params);
-        return getSignedUrl(this.s3Client, command, { expiresIn: 86400*30 }); // 24 hours
+        return getSignedUrl(this.s3Client, command, { expiresIn: 86400*7 }); // 24 hours
     }
 
     async getObjectAsJson(key) {
