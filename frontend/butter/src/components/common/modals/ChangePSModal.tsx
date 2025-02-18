@@ -19,6 +19,10 @@ const ChangePSForm = styled.form`
     padding: 0 10px;
     gap: 20px;
     width: 100%;
+
+    #errorInfo {
+        color: var(--yellow);
+    }
 `;
 
 const ChangePSLabel = styled.label`
@@ -71,16 +75,17 @@ const ChangePSFormMode = ({ setMode }: ModeProps) => {
         <ChangePSForm onSubmit={handleSubmit} >
             <div>
                 <ChangePSLabel >현재 비밀번호</ChangePSLabel>
-                <ChangePSInput required value={currentPs} onChange={(e) => { setCurrentPs(e.target.value) }} placeholder="현재 비밀번호를 입력해 주세요."></ChangePSInput>
+                <ChangePSInput required type="password" value={currentPs} onChange={(e) => { setCurrentPs(e.target.value) }} placeholder="현재 비밀번호를 입력해 주세요."></ChangePSInput>
             </div>
             <div>
                 <ChangePSLabel>새로운 비밀번호</ChangePSLabel>
-                <ChangePSInput required value={changePs} onChange={(e) => { setChangePs(e.target.value) }} placeholder="영문자/숫자/특수문자 혼용 8자 이상"></ChangePSInput>
+                <ChangePSInput required type="password" value={changePs} onChange={(e) => { setChangePs(e.target.value) }} placeholder="영문자/숫자/특수문자 혼용 8자 이상"></ChangePSInput>
             </div>
             <div>
                 <ChangePSLabel>비밀번호 확인</ChangePSLabel>
-                <ChangePSInput required value={checkChangePs} onChange={(e) => { setCheckChangePs(e.target.value) }} placeholder="영문자/숫자/특수문자 혼용 8자 이상"></ChangePSInput>
+                <ChangePSInput required type="password" value={checkChangePs} onChange={(e) => { setCheckChangePs(e.target.value) }} placeholder="영문자/숫자/특수문자 혼용 8자 이상"></ChangePSInput>
             </div>
+            <div id="errorInfo">{changePsComment}</div>
             <MC.LtBtnWrapper>
                 <MC.FilledBtn
                     type="submit"
