@@ -132,18 +132,26 @@ const VideoClipPage = () => {
   };
 
   // 찜하기 버튼 토글 함수
-  const toggleLike = (videoId: string) => {
+  const toggleLike = async (videoId: string) => {
     setVideos((prevVideos) =>
-      prevVideos.map((video) =>
-        video.id === videoId
-          ? {
-              ...video,
-              isLiking: !video.isLiked,
-              // 좋아요 수를 토글할 때, 단순 예시로 증감 처리 (원하는 로직에 맞게 수정)
-              getLikeCount: video.isLiked ? video.likeCount - 1 : video.likeCount + 1,
-            }
-          : video
-      )
+      prevVideos.map((video) => {
+        if (video.id === videoId) {
+          const newLiked = !video.isLiked;
+          const newCount = newLiked ? video.likeCount + 1 : video.likeCount - 1;
+          // API 호출: 새로 좋아요 등록하는 경우 POST, 취소하는 경우 DELETE 요청
+          if (newLiked) {
+            axiosInstance.post('/clip/like', { clipId: video.id }).catch((err) =>
+              console.error("Failed to like video", err)
+            );
+          } else {
+            axiosInstance.delete(`/clip/like/${video.id}`).catch((err) =>
+              console.error("Failed to unlike video", err)
+            );
+          }
+          return { ...video, isLiked: newLiked, likeCount: newCount };
+        }
+        return video;
+      })
     );
   };
 
