@@ -16,6 +16,7 @@ public interface ClipService {
     ClipResponseDTO getClipDetail(AuthInfoDTO currentUser, Long id);
 
     List<ClipResponseDTO> getClipList(AuthInfoDTO currentUser, ClipListRequestDTO clipListRequestDTO);
+    List<ClipResponseDTO> getClipListAsc(AuthInfoDTO currentUser, ClipListRequestDTO clipListRequestDTO);
 
     ClipResponseDTO deleteClip(AuthInfoDTO currentUser, Long id);
 

@@ -46,8 +46,18 @@ public class ClipRepositoryImpl implements ClipRepository {
     }
 
     @Override
+    public List<Clip> findAllByOrderById(Pageable pageable) {
+        return clipJpaRepository.findAllByOrderById(pageable);
+    }
+
+    @Override
     public List<Clip> findAllByIdLessThanOrderByIdDesc(Long id, Pageable pageable) {
         return clipJpaRepository.findAllByIdLessThanOrderByIdDesc(id, pageable);
+    }
+
+    @Override
+    public List<Clip> findAllByIdLessThanOrderById(Long id, Pageable pageable) {
+        return clipJpaRepository.findAllByIdLessThanOrderById(id, pageable);
     }
 
     @Override

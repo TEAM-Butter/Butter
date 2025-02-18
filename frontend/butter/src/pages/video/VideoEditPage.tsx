@@ -151,6 +151,7 @@ const VideoEditPage = () => {
     {}
   );
   const [selectedVideoName, setSelectedVideoName] = useState<string>("");
+  const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
 
   const selectVideo = (
     url: { [key: string]: string },

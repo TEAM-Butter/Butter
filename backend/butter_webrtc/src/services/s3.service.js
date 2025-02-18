@@ -106,6 +106,15 @@ export class S3Service {
         return getSignedUrl(this.s3Client, command, { expiresIn: 86400 }); // 24 hours
     }
 
+    async getObjectUrlMonth(key) {
+        const params = {
+            Bucket: S3_BUCKET,
+            Key: key
+        };
+        const command = new GetObjectCommand(params);
+        return getSignedUrl(this.s3Client, command, { expiresIn: 86400*30 }); // 24 hours
+    }
+
     async getObjectAsJson(key) {
         const body = await this.getObject(key);
         const stringifiedData = await body.transformToString();

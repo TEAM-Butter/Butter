@@ -43,7 +43,8 @@ public class ClipServiceImpl implements ClipService {
         Clip clip = Clip.builder()
                 .crew(crew)
                 .title(clipSaveRequestDTO.title())
-                .videoName(clipSaveRequestDTO.videoName())
+                .videoUrl(clipSaveRequestDTO.videoName())
+                .videoUrl(clipSaveRequestDTO.videoUrl())
                 .hitCount(0L)
                 .build();
         return ClipResponseDTO.from(clipRepository.save(clip), false, getLikeCount(clip));
@@ -65,6 +66,19 @@ public class ClipServiceImpl implements ClipService {
                     .map(clip -> ClipResponseDTO.from(clip, isLiking(member, clip), getLikeCount(clip))).toList();
         } else {
             return clipRepository.findAllByIdLessThanOrderByIdDesc(clipListRequestDTO.clipId(), pageable).stream()
+                    .map(clip -> ClipResponseDTO.from(clip, isLiking(member, clip), getLikeCount(clip))).toList();
+        }
+    }
+
+    @Override
+    public List<ClipResponseDTO> getClipListAsc(AuthInfoDTO currentUser, ClipListRequestDTO clipListRequestDTO) {
+        Member member = memberService.findById(currentUser.id());
+        Pageable pageable = PageRequest.of(0, clipListRequestDTO.pageSize());
+        if (clipListRequestDTO.clipId() == null) {
+            return clipRepository.findAllByOrderById(pageable).stream()
+                    .map(clip -> ClipResponseDTO.from(clip, isLiking(member, clip), getLikeCount(clip))).toList();
+        } else {
+            return clipRepository.findAllByIdLessThanOrderById(clipListRequestDTO.clipId(), pageable).stream()
                     .map(clip -> ClipResponseDTO.from(clip, isLiking(member, clip), getLikeCount(clip))).toList();
         }
     }

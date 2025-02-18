@@ -15,8 +15,10 @@ public interface ClipRepository {
     void delete(Clip clip);
 
     List<Clip> findAllByOrderByIdDesc(Pageable pageable);
+    List<Clip> findAllByOrderById(Pageable pageable);
 
     List<Clip> findAllByIdLessThanOrderByIdDesc(Long id, Pageable pageable);
+    List<Clip> findAllByIdLessThanOrderById(Long id, Pageable pageable);
 
     List<Clip> getLikedClipList(Long memberId);
 }

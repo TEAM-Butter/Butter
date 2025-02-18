@@ -37,6 +37,10 @@ public class Clip {
     @NotNull
     private String videoName;
 
+    @Column(length = 2048)
+    @NotNull
+    private String videoUrl;
+
     @NotNull
     @ColumnDefault("0")
     private Long hitCount;
@@ -46,16 +50,17 @@ public class Clip {
     private List<LikedClip> likedClips = new ArrayList<>();
 
     @Builder
-    public Clip(Long id, Crew crew, String title, String videoName, Long hitCount, List<LikedClip> likedClips) {
+    public Clip(Long id, Crew crew, String title, String videoName, String videoUrl, Long hitCount, List<LikedClip> likedClips) {
         this.id = id;
         this.crew = crew;
         this.title = title;
         this.videoName = videoName;
+        this.videoUrl = videoUrl;
         this.hitCount = hitCount;
         this.likedClips = likedClips;
     }
 
-    public void updateVideoName(String videoName) {
-        this.videoName = videoName;
+    public void updateVideoUrl(String videoUrl) {
+        this.videoName = videoUrl;
     }
 }
