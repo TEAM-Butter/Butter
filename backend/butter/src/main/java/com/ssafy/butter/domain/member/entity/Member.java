@@ -75,7 +75,7 @@ public class Member {
     public Member(MemberType memberType, AvatarType avatarType, List<MemberGenre> memberGenres, String loginId,
                   Nickname nickname, Email email, BirthDate birthDate, BreadAmount breadAmount, Password password,
                   String profileImage, Gender gender, LocalDate createDate, boolean isExtraInfoRegistered) {
-        this.memberType = (memberType == null) ? MemberType.builder().name("DEFAULT_MEMBERTYPE").build():memberType;
+        this.memberType = (memberType == null) ? MemberType.builder().id(1L).name("USER").build():memberType;
         this.avatarType = (avatarType == null) ? new AvatarType("DEFAULT_AVATARTYPE"):avatarType;
         this.memberGenres = memberGenres;
         this.loginId = loginId;

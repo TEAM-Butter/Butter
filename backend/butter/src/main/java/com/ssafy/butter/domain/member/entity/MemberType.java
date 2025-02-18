@@ -26,7 +26,8 @@ public class MemberType {
     private String name;
 
     @Builder
-    public MemberType(String name) {
+    public MemberType(Long id, String name) {
+        this.id = id;
         this.name = name;
     }
 }
