@@ -17,6 +17,10 @@ interface CheckLoginIdRequestDto {
     loginId: string
 }
 
+interface CheckNicknameRequestDto {
+    nickname: string
+}
+
 interface PasswordUpdateRequestDTO {
     currentPassword: string;
     newPassword: string;
@@ -27,4 +31,5 @@ export type {
     MemberExtraInfoRequestDto,
     CheckLoginIdRequestDto,
     PasswordUpdateRequestDTO,
+    CheckNicknameRequestDto,
 }
