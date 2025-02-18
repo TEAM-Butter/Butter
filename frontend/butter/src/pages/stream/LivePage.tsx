@@ -239,7 +239,9 @@ const LivePage = () => {
   const [currentVideoUrl, setCurrentVideoUrl] = useState("");
   const [token, setToken] = useState<string | null>(null);
 
-  const crewId = useCrewStore((state) => state.id);
+  const location = useLocation();
+  const roomId = location.state.roomId;
+  const crewId = useCrewStore((state) => state.id || roomId);
   console.log("crewStore crewName : ", crewId);
 
   const navigate = useNavigate();
