@@ -27,7 +27,7 @@ interface Video {
   id: string; // 녹화 ID
   crewId: number; // 녹화된 크루 ID
   title: string; // 녹화 파일 이름
-  videoUrl: string; // 녹화 파일 주소(URL)
+  videoName: string; // 녹화 파일 이름
   hitCount: number; // 조회수
 }
 

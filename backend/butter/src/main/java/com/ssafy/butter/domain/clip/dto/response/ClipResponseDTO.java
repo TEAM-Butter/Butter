@@ -11,16 +11,18 @@ public record ClipResponseDTO(
         Long id,
         CrewDTO crew,
         String title,
+        String videoName,
         String videoUrl,
         Long hitCount,
         Long likeCount,
         Boolean isLiked
 ) {
     @Builder
-    public ClipResponseDTO(Long id, CrewDTO crew, String title, String videoUrl, Long hitCount, Long likeCount, Boolean isLiked) {
+    public ClipResponseDTO(Long id, CrewDTO crew, String title, String videoName, String videoUrl, Long hitCount, Long likeCount, Boolean isLiked) {
         this.id = id;
         this.crew = crew;
         this.title = title;
+        this.videoName = videoName;
         this.videoUrl = videoUrl;
         this.hitCount = hitCount;
         this.likeCount = likeCount;

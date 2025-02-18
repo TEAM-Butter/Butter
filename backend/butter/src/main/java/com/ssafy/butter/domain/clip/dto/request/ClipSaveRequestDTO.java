@@ -11,5 +11,8 @@ public record ClipSaveRequestDTO(
         Long crewId,
 
         @NotNull
+        String videoName,
+
+        @NotNull
         String videoUrl) {
 }

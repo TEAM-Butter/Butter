@@ -43,6 +43,7 @@ public class ClipServiceImpl implements ClipService {
         Clip clip = Clip.builder()
                 .crew(crew)
                 .title(clipSaveRequestDTO.title())
+                .videoUrl(clipSaveRequestDTO.videoName())
                 .videoUrl(clipSaveRequestDTO.videoUrl())
                 .hitCount(0L)
                 .build();
