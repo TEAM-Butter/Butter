@@ -157,7 +157,7 @@ export const ClipModal: React.FC<ClipModalProps> = ({
     }
 
     try {
-      const response = await fetch(`${SERVER_URL}/clip/${title}/${clipName}`, {
+      const response = await fetch(`${SERVER_URL}/clip/${title}/${clipName}/${videoUrl}`, {
         method: "GET", // 클립 저장을 위해 GET 요청
         headers: {
           "Content-Type": "application/json",
