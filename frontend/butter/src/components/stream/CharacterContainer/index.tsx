@@ -1,10 +1,11 @@
 import { motion } from "framer-motion";
-import pet1 from "../../../assets/pets/pet1.png"; // 캐릭터 이미지
-// import pet2 from "../../../assets/pets/pet2.png"; // 캐릭터 이미지
-// import pet3 from "../../../assets/pets/pet3.png"; // 캐릭터 이미지
-// import pet4 from "../../../assets/pets/pet4.png"; // 캐릭터 이미지
-// import pet5 from "../../../assets/pets/pet5.png"; // 캐릭터 이미지
-// import pet6 from "../../../assets/pets/pet6.png"; // 캐릭터 이미지
+import Avatar1 from "../../../assets/pets/pet1.png"; // 캐릭터 이미지
+import Avatar2 from "../../../assets/pets/pet2.png"; // 캐릭터 이미지
+import Avatar3 from "../../../assets/pets/pet3.png"; // 캐릭터 이미지
+import Avatar4 from "../../../assets/pets/pet4.png"; // 캐릭터 이미지
+import Avatar5 from "../../../assets/pets/pet5.png"; // 캐릭터 이미지
+import Avatar6 from "../../../assets/pets/pet6.png"; // 캐릭터 이미지
+
 import like from "../../../assets/like.png";
 import heart from "../../../assets/heart.png";
 import clap from "../../../assets/clap.png";
@@ -176,10 +177,29 @@ const CharacterContainer = ({
 
   const [publisherClap, setPublisherClap] = useState(false);
 
+  const [memberPositions, setMemberPositions] = useState<Map<string, number>>(
+    new Map()
+  );
   // 사용자별 마지막 액션 시간 관리
   const lastActionTimeMap = useRef(new Map<number, number>());
 
-  console.log("하이욤!!!!!!!!!!!!!!!!!!!!!");
+  const getAvatarImage = (avatarType: string) => {
+    switch (avatarType) {
+      case "Avatar1":
+        return Avatar1;
+      case "Avatar2":
+        return Avatar2;
+      case "Avatar3":
+        return Avatar3;
+      case "Avatar4":
+        return Avatar4;
+      case "Avatar5":
+        return Avatar5;
+      case "Avatar6":
+        return Avatar6;
+    }
+  };
+
   const canUserAct = (userId: number) => {
     const currentTime = Date.now();
     const lastTime = lastActionTimeMap.current.get(userId) || 0;
@@ -356,6 +376,21 @@ const CharacterContainer = ({
     return () => {};
   }, [participantName, handleMyEmotion, handleOtherEmotion]);
 
+  useEffect(() => {
+    if (members && members.length > 0) {
+      const newPositions = new Map(memberPositions);
+
+      members.forEach((member) => {
+        // 해당 멤버의 위치가 아직 없는 경우에만 새로운 위치 할당
+        if (!newPositions.has(member.nickname)) {
+          newPositions.set(member.nickname, Math.random() * 80 + 10); // 10~90 사이의 값
+        }
+      });
+
+      setMemberPositions(newPositions);
+    }
+  }, [members]);
+
   return (
     <CharacterContainerWrapper>
       <EmotionClickBox>
@@ -397,25 +432,22 @@ const CharacterContainer = ({
           {likeCount}
         </TotalLikesInfo>
       </TotalInfoBox>
-      {characters.map((char) => (
-        <CharacterBox
-          key={char.id}
-          left={char.left}
-          top={0}
-          initial={{ opacity: 0, scale: 0 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{
-            duration: 0.4,
-            scale: { type: "spring", bounce: 0.5 },
-          }}
-        >
-          <EmotionBox>
-            <Emotion
-              src={
-                char.id === MY_CHARACTER_INDEX
-                  ? myEmotionState.currentEmotion || "heart"
-                  : char.currentEmotion || "heart"
-              }
+      {members &&
+        members.map((member) => (
+          <CharacterBox
+            key={member.nickname}
+            left={memberPositions.get(member.nickname) || 50}
+            top={0}
+            initial={{ opacity: 0, scale: 0 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{
+              duration: 0.4,
+              scale: { type: "spring", bounce: 0.5 },
+            }}
+          >
+            <EmotionBox>
+              {/* <Emotion
+              src={member.label}
               animate={
                 (
                   char.id === MY_CHARACTER_INDEX
@@ -426,11 +458,11 @@ const CharacterContainer = ({
                   : { opacity: 0, y: 10 }
               }
               transition={{ duration: 0.4 }}
-            />
-          </EmotionBox>
-          <Character src={pet1} />
-        </CharacterBox>
-      ))}
+            /> */}
+            </EmotionBox>
+            <Character src={getAvatarImage(member.avatarType)} />
+          </CharacterBox>
+        ))}
       {publisherClap && <ClapBox src={clapclap} />}
     </CharacterContainerWrapper>
   );
