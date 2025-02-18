@@ -5,6 +5,7 @@ import SockJS from "sockjs-client";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { getAccessToken } from "../../../apis/auth";
+import { useUserStore } from "../../../stores/UserStore";
 
 // ChatRoomPageWrapper는 전체 페이지의 컨테이너 역할을 합니다.
 const ChatRoomPageWrapper = styled.div`
@@ -17,16 +18,38 @@ const ChatRoomPageWrapper = styled.div`
 const ChatArea = styled.div`
   flex-grow: 1; /* 화면에서 남는 공간을 모두 차지 */
   padding: 16px;
-  overflow-y: auto;
+  overflow-y: scroll;
   background-color: #4d4d4d; /* 카카오톡처럼 밝은 배경색 */
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
+  justify-content: flex-start;
+  height: calc(100vh - 120px); /* 채팅 입력창과 헤더를 제외한 높이 설정 */
+  max-height: calc(100vh - 120px); /* 최대 높이 설정 */
   scroll-behavior: smooth;
+
+  /* 스크롤바 스타일링 */
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #4d4d4d;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
 `;
 
 // 채팅 메시지
 const Message = styled.div<{ isMine: boolean }>`
+  display: flex;
+  gap: 10px;
   background-color: ${(props) =>
     props.isMine
       ? "#f6d048"
@@ -34,23 +57,12 @@ const Message = styled.div<{ isMine: boolean }>`
   color: ${(props) => (props.isMine ? "white" : "black")};
   border-radius: 20px;
   max-width: 70%;
-  padding: 8px 15px;
+  padding: 6px 12px;
   margin-bottom: 10px;
   align-self: ${(props) => (props.isMine ? "flex-end" : "flex-start")};
   word-break: break-word;
 `;
 
-// 채팅 메시지
-const EnterMessage = styled.div`
-  background-color: rgba(222, 218, 218, 0.9);
-  color: black;
-  border-radius: 20px;
-  max-width: 80%;
-  padding: 8px 20px;
-  align-self: center;
-  margin-bottom: 10px;
-  word-break: break-word;
-`;
 const LiveChatHeader = styled.div`
   display: flex;
   justify-content: space-between;
@@ -59,10 +71,23 @@ const LiveChatHeader = styled.div`
   padding-left: 18px;
   background-color: #717171;
 `;
+const MsgContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-self: center;
+  align-items: center;
+`;
+
+const SenderImage = styled.img`
+  width: 30px;
+  height: 30px;
+  background-color: aliceblue;
+  border-radius: 15px;
+`;
 
 const SenderName = styled.div`
   font-size: 12px;
-  color: #ccc;
+  color: #807c7c;
   margin-bottom: 4px;
 `;
 const LiveChatTitle = styled.div`
@@ -139,28 +164,44 @@ interface StreamChatProps {
 function StreamChat({ participantName, roomRole, streamId }: StreamChatProps) {
   const [stompClient, setStompClient] = useState<Client | null>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [isUserScrolling, setIsUserScrolling] = useState(false);
   const role: "USER" | "HOST" = roomRole === "crew" ? "HOST" : "USER";
-  console.log("participantName", participantName, role, streamId);
   const chatAreaRef = useRef<HTMLDivElement>(null);
-
-  // // const { state } = useLocation();
-  // const state = {
-  //   name: {
-  //     username: "DaHee",
-  //   },
-  // };
-
+  const senderImage = useUserStore((state) => state.profileImage);
   const { register, handleSubmit, reset } = useForm<FormInputs>();
-  useEffect(() => {
-    // STOMP 클라이언트 생성
 
-    // a.subscribe(); // 구독 ? -> 메세지 받을래요.
-    // a.publish(); // 발행 -> 메세지 보낼래요.
+  //맨 아래에 있는 지 확인
+  const isScrollAtBottom = () => {
+    if (!chatAreaRef.current) return true;
+    const { scrollHeight, scrollTop, clientHeight } = chatAreaRef.current;
+    return Math.abs(scrollHeight - scrollTop - clientHeight) < 50;
+  };
+
+  const handleScroll = () => {
+    if (!chatAreaRef.current) return;
+    setIsUserScrolling(!isScrollAtBottom());
+  };
+
+  // 메시지를 받았을 때 스크롤 처리
+  useEffect(() => {
+    if (chatAreaRef.current && (!isUserScrolling || isScrollAtBottom())) {
+      chatAreaRef.current.scrollTop = chatAreaRef.current.scrollHeight;
+    }
+  }, [messages]);
+
+  // 채팅 영역에 스크롤 이벤트 리스너 추가
+  useEffect(() => {
+    const chatArea = chatAreaRef.current;
+    if (chatArea) {
+      chatArea.addEventListener("scroll", handleScroll);
+      return () => chatArea.removeEventListener("scroll", handleScroll);
+    }
+  }, []);
+
+  useEffect(() => {
     const token = `Bearer ${getAccessToken()}`;
-    // a.activate();
     console.log("채팅방 입장 전!!!");
     const client = new Client({
-      // webSocketFactory: () => new SockJS("http://localhost:8080/ws"),
       webSocketFactory: () => {
         return new SockJS(`${import.meta.env.VITE_SPRING_BOOT_SERVER}/ws`);
       },
@@ -182,20 +223,6 @@ function StreamChat({ participantName, roomRole, streamId }: StreamChatProps) {
         setMessages((prev) => [...prev, receivedMessage]);
       });
 
-      const enterMessage: ChatMessage = {
-        streamId: streamId,
-        content: `${participantName}님이 입장했습니다`,
-        sender: participantName,
-        type: "JOIN",
-        role,
-      };
-
-      // 2. 입장 메시지 보내기
-      client.publish({
-        destination: `/app/chat.sendMessage/${streamId}`,
-        body: JSON.stringify(enterMessage),
-      });
-
       // 3. stompClient 상태 변경
       setStompClient(client);
     };
@@ -203,19 +230,6 @@ function StreamChat({ participantName, roomRole, streamId }: StreamChatProps) {
     //useEffect가 unmount될 떄 실행됨 : clear함수
     return () => {
       if (client.connected) {
-        const exitMessage: ChatMessage = {
-          streamId: streamId,
-          content: `${participantName}님이 퇴장했습니다`,
-          sender: participantName,
-          type: "LEAVE",
-          role,
-        };
-
-        client.publish({
-          destination: `/app/chat.sendMessage/${streamId}`,
-          body: JSON.stringify(exitMessage),
-        });
-
         client.deactivate();
       }
     };
@@ -249,6 +263,7 @@ function StreamChat({ participantName, roomRole, streamId }: StreamChatProps) {
     if (data.textMessage?.trim()) {
       sendMessage(data.textMessage);
       reset();
+      setIsUserScrolling(false);
     }
   };
 
@@ -268,19 +283,18 @@ function StreamChat({ participantName, roomRole, streamId }: StreamChatProps) {
         {messages.map((message, idx) => {
           const { content, sender, type } = message;
 
-          switch (type) {
-            case "JOIN":
-            case "LEAVE":
-              return <EnterMessage key={idx}>{content}</EnterMessage>;
-
-            case "CHAT":
-            default:
-              return (
-                <Message key={idx} isMine={participantName === sender}>
-                  <SenderName>{sender}</SenderName>
+          if (type === "CHAT") {
+            return (
+              <Message key={idx} isMine={participantName === sender}>
+                <SenderImage src={senderImage} />
+                <MsgContainer>
+                  {participantName !== sender && (
+                    <SenderName>{sender}</SenderName>
+                  )}
                   {content}
-                </Message>
-              );
+                </MsgContainer>
+              </Message>
+            );
           }
         })}
       </ChatArea>
