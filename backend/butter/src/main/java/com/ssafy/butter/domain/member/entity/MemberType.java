@@ -7,6 +7,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -23,4 +24,9 @@ public class MemberType {
     @Column(length = 50)
     @NotNull
     private String name;
+
+    @Builder
+    public MemberType(String name) {
+        this.name = name;
+    }
 }
