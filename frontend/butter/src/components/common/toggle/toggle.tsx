@@ -24,11 +24,11 @@ const ToggleWrapper = styled.div`
 
     border-radius: 30px;
     align-items: center;
-    position: relative;
-`
+    `
 
 const ToggleItem = styled.div<{ isActive: boolean }>`
     background-color: #040a14;
+    position: relative;
     width: 120px;
     display: flex;
     justify-content: center;
@@ -52,7 +52,7 @@ const ToggleItem = styled.div<{ isActive: boolean }>`
 const ToggleBar = styled(motion.span)`
     background: var(--liner);
     position: absolute;
-    top: 3px;
+    bottom: 3px;
     width: 110px;
     height: 28px;
     border-radius: 30px;
