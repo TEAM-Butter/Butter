@@ -156,6 +156,7 @@ const CharacterContainer = ({
       currentEmotion: heart, // 기본값을 heart 이미지로 설정
     }))
   );
+  const [membersCount, setMembersCount] = useState(0);
   const [members, setMembers] = useState<memberType[]>();
   const [heartCount, setHeartCount] = useState(0);
   const [likeCount, setLikeCount] = useState(0);
@@ -273,16 +274,21 @@ const CharacterContainer = ({
 
   const handleMessage = (content: SocketContent) => {
     console.log("웹소켓에서 participantName을 불러옵니다!!", participantName);
-    setHeartCount(content.roomMotions.heart);
-    setLikeCount(content.roomMotions.like);
+    console.log("🙌🙌🙌🙌🙌🙌");
+    setMembersCount(content.members?.length);
+    console.log(content);
+    if (content.roomMotions !== null) {
+      setHeartCount(content.roomMotions.heart);
+      setLikeCount(content.roomMotions.like);
+    }
     setMembers(content.members);
     const id = 1;
     if (content.role === "publisher" && canUserAct(id)) {
-      switch (content.status) {
+      switch (content.label) {
         case "little_heart":
-          console.log("여기입니다 2");
+          console.log("여기❤️❤️❤️❤️❤️❤️");
           if (id === MY_CHARACTER_INDEX) {
-            console.log("여기입니다 3");
+            console.log("여기입니다 ❤️❤️❤️❤️❤️❤️");
             handleMyEmotion(heart, id, "heart");
           } else {
             console.log("여기입니다4");
@@ -357,7 +363,7 @@ const CharacterContainer = ({
       <TotalInfoBox>
         <TotalUserInfo>
           <PersonOutlineOutlinedIcon fontSize="small" />
-          16
+          {members?.length}
         </TotalUserInfo>
         <TotalHeartsInfo>
           <FavoriteIcon fontSize="small" />
