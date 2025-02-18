@@ -360,7 +360,7 @@ const LivePage = () => {
         // 받은 데이터 활용 예시
         console.log(`${participant}님이 방 ${room}에서 나갔습니다`);
       });
-      socket.emit("leave", { roomName });
+      socket.emit("leave", { roomName, participant: participantName });
 
       room.disconnect();
       console.log("BYE");

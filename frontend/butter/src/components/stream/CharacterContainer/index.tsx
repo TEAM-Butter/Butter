@@ -133,6 +133,11 @@ interface CharacterData {
   currentEmotion: any;
 }
 
+interface memberType {
+  nickname: string;
+  avatarType: string;
+}
+
 const EMOTION_DURATION = 2600; //2초
 const COOLDOWN_DURATION = 3000; // 3초
 const MY_CHARACTER_INDEX = 1; //내 캐릭터의 인덱스
@@ -151,7 +156,7 @@ const CharacterContainer = ({
       currentEmotion: heart, // 기본값을 heart 이미지로 설정
     }))
   );
-
+  const [members, setMembers] = useState<memberType[]>();
   const [heartCount, setHeartCount] = useState(0);
   const [likeCount, setLikeCount] = useState(0);
   const [myEmotionState, setMyEmotionState] = useState({
@@ -268,14 +273,12 @@ const CharacterContainer = ({
 
   const handleMessage = (content: SocketContent) => {
     console.log("웹소켓에서 participantName을 불러옵니다!!", participantName);
-
-    console.log(content);
-    console.log("여기요❤️❤️❤️❤️❤️❤️❤️❤️");
     setHeartCount(content.roomMotions.heart);
     setLikeCount(content.roomMotions.like);
+    setMembers(content.members);
     const id = 1;
     if (content.role === "publisher" && canUserAct(id)) {
-      switch (content.label) {
+      switch (content.status) {
         case "little_heart":
           console.log("여기입니다 2");
           if (id === MY_CHARACTER_INDEX) {
@@ -320,6 +323,7 @@ const CharacterContainer = ({
 
   useEffect(() => {
     handleSocketOn();
+
     return () => {};
   }, [participantName, handleMyEmotion, handleOtherEmotion]);
 
