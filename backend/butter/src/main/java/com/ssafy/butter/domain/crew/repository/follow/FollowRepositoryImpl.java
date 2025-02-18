@@ -28,4 +28,9 @@ public class FollowRepositoryImpl implements FollowRepository {
     public Optional<Follow> findByCrewAndMember(Crew crew, Member member) {
         return followJpaRepository.findByCrewAndMember(crew, member);
     }
+
+    @Override
+    public Long countFollowByCrewIdAndIsFollowed(Long crewId, Boolean isFollowed) {
+        return followJpaRepository.countFollowByCrewIdAndIsFollowed(crewId, isFollowed);
+    }
 }
