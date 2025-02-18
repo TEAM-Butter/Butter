@@ -8,11 +8,13 @@ import com.ssafy.butter.domain.live.dto.response.LiveResponseDTO;
 import com.ssafy.butter.domain.live.dto.response.LiveThumbnailResponseDTO;
 import com.ssafy.butter.domain.live.entity.Live;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 public interface LiveService {
 
-    LiveResponseDTO createLive(AuthInfoDTO currentUser, LiveSaveRequestDTO liveSaveRequestDTO);
+    LiveResponseDTO createLive(AuthInfoDTO currentUser, LiveSaveRequestDTO liveSaveRequestDTO)
+            throws UnsupportedEncodingException;
 
     LiveResponseDTO getLiveDetail(Long id);
 

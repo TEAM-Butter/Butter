@@ -18,6 +18,9 @@ import com.ssafy.butter.domain.notification.enums.NotificationType;
 import com.ssafy.butter.domain.notification.service.NotificationService;
 import com.ssafy.butter.domain.schedule.service.ScheduleService;
 import com.ssafy.butter.infrastructure.awsS3.ImageUploader;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,7 +47,8 @@ public class LiveServiceImpl implements LiveService {
     private final LiveRepository liveRepository;
 
     @Override
-    public LiveResponseDTO createLive(AuthInfoDTO currentUser, LiveSaveRequestDTO liveSaveRequestDTO) {
+    public LiveResponseDTO createLive(AuthInfoDTO currentUser, LiveSaveRequestDTO liveSaveRequestDTO)
+            throws UnsupportedEncodingException {
         Member member = memberService.findById(currentUser.id());
         Crew crew = crewService.findById(liveSaveRequestDTO.crewId());
         crewService.validateCrewAdmin(crew, member);
@@ -59,8 +63,8 @@ public class LiveServiceImpl implements LiveService {
                 .build();
 
         String content = "새로운 라이브: " + live.getTitle();
-        String notificationType = NotificationType.SCHEDULE.getAlias();
-        String url = NotificationType.SCHEDULE.getPath() + live.getId();
+        String notificationType = NotificationType.LIVE.getAlias();
+        String url = NotificationType.LIVE.getPath() + URLEncoder.encode(live.getTitle(), StandardCharsets.UTF_8);
         notificationService.sendNotificationToFollowers(live.getCrew(), content, notificationType, url);
 
         return LiveResponseDTO.from(

@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.io.UnsupportedEncodingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springdoc.core.annotations.ParameterObject;
@@ -40,7 +41,7 @@ public class LiveController {
     @PostMapping
     public ResponseEntity<LiveResponseDTO> createLive(
             @Parameter(hidden = true) @CurrentUser AuthInfoDTO currentUser,
-            @RequestBody LiveSaveRequestDTO liveSaveRequestDTO) {
+            @RequestBody LiveSaveRequestDTO liveSaveRequestDTO) throws UnsupportedEncodingException {
         LiveResponseDTO liveResponseDTO = liveService.createLive(currentUser, liveSaveRequestDTO);
         return ResponseEntity.created(URI.create("/api/v1/live/watch/" + liveResponseDTO.id())).body(liveResponseDTO);
     }
