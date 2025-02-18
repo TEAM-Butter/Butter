@@ -88,6 +88,7 @@ const LiveBox = ({ id, title, genres, location }: LiveProps) => {
     navigate(`/stream/${title}`, {
       state: {
         roomId: id,
+        title: title,
       },
     });
   };
