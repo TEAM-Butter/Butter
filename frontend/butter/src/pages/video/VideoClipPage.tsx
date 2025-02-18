@@ -36,6 +36,7 @@ interface Video {
 const VideoClipPage = () => {
   const [videos, setVideos] = useState<Video[]>([]);
   const [currentClipId, setCurrentClipId] = useState<number | null>(null);
+  const currentClipIdRef = useRef<number | null>(null);
   const videoRefs = useRef<HTMLVideoElement[]>([]);
   const SEVER_URL = import.meta.env.VITE_SPRING_BOOT_SERVER || "";
 
@@ -53,6 +54,7 @@ const VideoClipPage = () => {
         setVideos(response.data);
         if (response.data.length > 0) {
           setCurrentClipId(response.data[0].id);
+          currentClipIdRef.current = response.data[0].id;
         }
       } catch (error) {
         console.error("Failed to fetch initial videos", error);
@@ -63,9 +65,9 @@ const VideoClipPage = () => {
   }, [SEVER_URL]);
 
 
-  // 이전 클립 불러오기 (아래로 스크롤)
-  const fetchPreviousClip = async () => {
-    console.log("prev");
+  // 다음 클립 불러오기(아래)
+  const fetchNextClip = async () => {
+    console.log("next");
     if (!currentClipId) return;
     try {
       const response = await axiosInstance.get(`/clip/list_rev`, {
@@ -77,16 +79,16 @@ const VideoClipPage = () => {
       });
       if (response.data.length > 0) {
         setVideos((prevVideos) => [...prevVideos, ...response.data]);
-        setCurrentClipId(response.data[0].id);
+        currentClipIdRef.current = response.data[0].id; // 최신 값 갱신
       }
     } catch (error) {
       console.error("Failed to fetch previous clip", error);
     }
   };
 
-  // 다음 클립 불러오기 (위로 스크롤)
-  const fetchNextClip = async () => {
-    console.log("next");
+  // 이전 클립 불러오기(위)
+  const fetchPreviousClip = async () => {
+    console.log("prev");
     if (!currentClipId) return;
     try {
       const response = await axiosInstance.get(`/clip/list`, {
@@ -98,7 +100,7 @@ const VideoClipPage = () => {
       });
       if (response.data.length > 0) {
         setVideos((prevVideos) => [response.data[0], ...prevVideos]);
-        setCurrentClipId(response.data[0].id);
+        currentClipIdRef.current = response.data[0].id; // 최신 값 갱신
       }
     } catch (error) {
       console.error("Failed to fetch next clip", error);
@@ -159,8 +161,8 @@ const VideoClipPage = () => {
         pagination={{
           clickable: true,
         }}
-        onSlideNextTransitionStart={fetchPreviousClip} // 아래로 스크롤 -> 이전 클립
-        onSlidePrevTransitionStart={fetchNextClip} // 위로 스크롤 -> 다음 클립
+        onSlideNextTransitionStart={fetchNextClip} // 아래로 스크롤 -> 이전 클립
+        onSlidePrevTransitionStart={fetchPreviousClip} // 위로 스크롤 -> 다음 클립
         modules={[Mousewheel]}
         className="mySwiper"
         style={{
