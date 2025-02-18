@@ -43,9 +43,11 @@ const VideoClipPage = () => {
     const fetchInitialVideos = async () => {
       try {
         const response = await axios.get(`${SEVER_URL}/v1/clip/list_rev`, {
-          clipId: null,
-          pageSize: 1,
-          liveId: null,
+          params: {
+            clipId: null,
+            pageSize: 1,
+            liveId: null,
+          }
         });
         setVideos(response.data);
         if (response.data.length > 0) {
@@ -65,9 +67,11 @@ const VideoClipPage = () => {
     if (!currentClipId) return;
     try {
       const response = await axios.get(`${SEVER_URL}/v1/clip/list_rev`, {
-        clipId: currentClipId,
-        pageSize: 1,
-        liveId: null,
+        params: {
+          clipId: currentClipId,
+          pageSize: 1,
+          liveId: null,
+        }
       });
       if (response.data.length > 0) {
         setVideos((prevVideos) => [...prevVideos, ...response.data]);
@@ -83,9 +87,11 @@ const VideoClipPage = () => {
     if (!currentClipId) return;
     try {
       const response = await axios.get(`${SEVER_URL}/v1/clip/list`, {
-        clipId: currentClipId,
-        pageSize: 1,
-        liveId: null,
+        params: {
+          clipId: currentClipId,
+          pageSize: 1,
+          liveId: null,
+        }
       });
       if (response.data.length > 0) {
         setVideos((prevVideos) => [response.data[0], ...prevVideos]);
