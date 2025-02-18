@@ -26,7 +26,7 @@ const NaverCallback: React.FC = () => {
           const responseBody = response.data;
           const { accessToken } = responseBody as LoginResponseDto;
           setAccessToken(accessToken)
-          setUser(true, String(responseBody?.authenticatedMemberInfo.nickname), String(responseBody?.authenticatedMemberInfo.profileImage), String(responseBody?.authenticatedMemberInfo.avatarType), String(responseBody?.authenticatedMemberInfo.memberType), Boolean(responseBody?.authenticatedMemberInfo.isExtraInfoRegistered));
+          setUser(true, String(responseBody?.authenticatedMemberInfo.nickname), String(responseBody?.authenticatedMemberInfo.profileImage), String(responseBody?.authenticatedMemberInfo.avatarType), String(responseBody?.authenticatedMemberInfo.memberType), Boolean(responseBody?.authenticatedMemberInfo.isExtraInfoRegistered), responseBody?.authenticatedMemberInfo.genres || []);
           navigate("/");
         })
         .catch((error) => {
