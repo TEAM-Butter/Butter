@@ -138,9 +138,9 @@ const VideoClipPage = () => {
         video.id === videoId
           ? {
               ...video,
-              isLiking: !video.isLiked,
+              isLiked: !video.isLiked,
               // 좋아요 수를 토글할 때, 단순 예시로 증감 처리 (원하는 로직에 맞게 수정)
-              getLikeCount: video.isLiked ? video.likeCount - 1 : video.likeCount + 1,
+              likeCount: video.isLiked ? video.likeCount - 1 : video.likeCount + 1,
             }
           : video
       )
