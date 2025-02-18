@@ -167,7 +167,7 @@ function Navbar() {
   const memberLogout = () => {
     logout();
     removeAccessToken();
-    navigate("/auth/login")
+    navigate("/auth/login");
   };
 
   return (
@@ -186,18 +186,21 @@ function Navbar() {
             <Link to="/">
               <Item>HOME {homeMatch && <Bar layoutId="bar" />}</Item>
             </Link>
-            <Link to="/busking">
-              <Item>MAP {buskingMatch && <Bar layoutId="bar" />}</Item>
-            </Link>
-            <Link to="/stream-list">
-              <Item>STREAMING {streamMatch && <Bar layoutId="bar" />}</Item>
-            </Link>
-            <Link to="/crew/list">
-              <Item>CREW {crewMatch && <Bar layoutId="bar" />}</Item>
-            </Link>
-            <Link to="/video/clip">
-              <Item>Clip {clipMatch && <Bar layoutId="bar" />}</Item>
-            </Link>
+            {isLogin && <>
+              <Link to="/busking">
+                <Item>MAP {buskingMatch && <Bar layoutId="bar" />}</Item>
+              </Link>
+              <Link to="/stream-list">
+                <Item>STREAMING {streamMatch && <Bar layoutId="bar" />}</Item>
+              </Link>
+              <Link to="/crew/list">
+                <Item>CREW {crewMatch && <Bar layoutId="bar" />}</Item>
+              </Link>
+              <Link to="/video/clip">
+                <Item>CLIP {clipMatch && <Bar layoutId="bar" />}</Item>
+              </Link>
+            </>
+            }
           </Items>
           <Items>
             {isLogin ? (
@@ -225,12 +228,12 @@ function Navbar() {
                     안녕하세요,
                     <br /> {nickname || "guest"}님!
                   </SubItemComment>
-                  <Link to="/">
+                  <Link to="/crew/myCalendar">
                     <SubItem>마이 캘린더</SubItem>
                   </Link>
-                  <Link to="/">
+                  {/* <Link to="/">
                     <SubItem>마이 크루</SubItem>
-                  </Link>
+                  </Link> */}
                   <Link to="/bread/charge">
                     <SubItem>브레드 충전</SubItem>
                   </Link>

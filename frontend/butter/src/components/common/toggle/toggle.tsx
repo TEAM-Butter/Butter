@@ -2,26 +2,50 @@ import styled from "@emotion/styled";
 import { motion } from "framer-motion";
 import { useState } from "react";
 
+const Container = styled.div`
+    display: flex;
+`
+
 const ToggleWrapper = styled.div`
-    display: inline-flex;
+    display: grid;
+    grid-template-columns: repeat(9, 1fr); 
+
+    @media (max-width: 1350px) {
+        grid-template-columns: repeat(5, 1fr); 
+
+
+        & > div:nth-child(5) {
+            border-radius: 0 30px 30px 0;
+        }
+        & > div:nth-child(6) {
+            border-radius: 30px 0 0 30px;
+        }
+    }
+
     border-radius: 30px;
-    overflow: hidden;
     align-items: center;
     position: relative;
-    `
+`
 
 const ToggleItem = styled.div<{ isActive: boolean }>`
     background-color: #040a14;
     width: 120px;
     display: flex;
     justify-content: center;
-    transition: all ease-in-out 0.2s;
     
     span {
         padding: 10px 15px;
         font-weight: 300;
         z-index: 15;
         color: ${({ isActive }) => (isActive ? "black" : "white")};
+    }
+
+    &:first-child {
+        border-radius: 30px 0 0 30px;
+    }
+    
+    &:last-child {
+        border-radius: 0 30px 30px 0;
     }
 `
 
@@ -55,18 +79,20 @@ export const GenreToggle = ({ setGenreToggle }: ToggleProps) => {
     ];
 
     return (
-        <ToggleWrapper>
-            {genres.map(genre =>
-                <ToggleItem
-                    key={genre}
-                    isActive={genreMatch === genre}
-                    onClick={() => {
-                        setGenreMatch(genre)
-                        setGenreToggle(genre)
-                    }}>
-                    {genreMatch === genre && <ToggleBar layoutId="toggle-bar" />}
-                    <span>{genre}</span>
-                </ToggleItem>)}
-        </ToggleWrapper>
+        <Container>
+            <ToggleWrapper>
+                {genres.map(genre =>
+                    <ToggleItem
+                        key={genre}
+                        isActive={genreMatch === genre}
+                        onClick={() => {
+                            setGenreMatch(genre)
+                            setGenreToggle(genre)
+                        }}>
+                        {genreMatch === genre && <ToggleBar layoutId="toggle-bar" />}
+                        <span>{genre}</span>
+                    </ToggleItem>)}
+            </ToggleWrapper>
+        </Container>
     )
 }
