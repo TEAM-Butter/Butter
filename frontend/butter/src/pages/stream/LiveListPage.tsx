@@ -1,8 +1,9 @@
 import styled from "@emotion/styled";
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import LiveBox from "../../components/stream/LiveBox";
-
+import { axiosInstance } from "../../apis/axiosInstance";
+import { GenreToggle } from "../../components/common/toggle/toggle";
 const LiveListPageWrapper = styled.div`
   width: 90vw;
   margin: auto;
@@ -33,48 +34,6 @@ const T3 = styled.div`
 `;
 
 ///////////////
-
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-`;
-const Nav = styled.nav`
-  background: #040a14;
-  color: white;
-  padding: 5px;
-  border-radius: 20px;
-  height: 40px;
-  width: 260px;
-  display: flex;
-  margin-top: auto;
-`;
-
-const TabsContainer = styled.ul`
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  font-weight: 500;
-  font-size: 14px;
-  display: flex;
-  width: 100%;
-`;
-
-const Tab = styled(motion.li)`
-  border-radius: 20px;
-  width: 100%;
-  padding: 15px 5px;
-  position: relative;
-  cursor: pointer;
-  height: 24px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex: 1;
-  min-width: 0;
-  user-select: none;
-  justify-content: center;
-`;
 
 const Underline = styled(motion.div)`
   position: absolute;
@@ -150,7 +109,33 @@ const liveList = [
 ];
 
 const LiveListPage = () => {
-  const [selectedTab, setSelectedTab] = useState(tabs[0]);
+  const [genreToggle, setGenreToggle] = useState("All");
+  const [presentlivelist, setpresentlivelist] = useState([]);
+
+  useEffect(() => {
+    const GetLiveList = async () => {
+      try {
+        // ✅ 헤더 추가: Authorization (JWT 토큰 포함)
+        if (genreToggle == "All") {
+          const response = await axiosInstance.get(
+            `/live/list?pageSize=10&sortBy=followerCount`
+          );
+          setpresentlivelist(response.data);
+        } else {
+          const response = await axiosInstance.get(
+            `/crew/list?pageSize=10&sortBy=followerCount&genre=${genreToggle}`
+          );
+          setpresentlivelist(response.data);
+        } // 크루 리스트 정보 받아옴
+      } catch (err: any) {
+        console.log("에러뜸뜸");
+      }
+    };
+
+    GetLiveList();
+  }, [genreToggle]);
+
+  console.log(presentlivelist);
 
   return (
     <LiveListPageWrapper>
@@ -162,27 +147,8 @@ const LiveListPage = () => {
           </div>
           <T3>라이브에 참여해 재미있는 모션과 함께 버스킹을 즐겨보세요!</T3>
         </div>
-        <Container>
-          <Nav>
-            <TabsContainer>
-              {tabs.map((item) => (
-                <Tab
-                  key={item}
-                  initial={false}
-                  animate={{
-                    backgroundColor: item === selectedTab ? "#eee" : "#eee0",
-                    color: item === selectedTab ? "#000000" : "#eee",
-                  }}
-                  onClick={() => setSelectedTab(item)}
-                >
-                  {item}
-                  {item === selectedTab && <Underline layoutId="underline" />}
-                </Tab>
-              ))}
-            </TabsContainer>
-          </Nav>
-        </Container>
       </Header>
+      <GenreToggle setGenreToggle={setGenreToggle} />
       <LiveContainer>
         {liveList.map((live) => (
           <LiveCard key={live.id}>
