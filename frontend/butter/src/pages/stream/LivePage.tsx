@@ -259,7 +259,8 @@ const LivePage = () => {
   const roomName = `${crewId}`;
 
   const user = useUserStore((state) => state);
-
+  const avatarType = user.avatarType;
+  console.log("123354576356342523512", avatarType);
   const role = user.memberType ?? "user"; // useMemberType이 crew 없으면 user
   const participantName = user.nickname ?? "guest" + randomId;
   const participantRole = role === "crew" ? "publisher" : "subscriber";
@@ -350,7 +351,14 @@ const LivePage = () => {
 
   const leaveRoom = useCallback(() => {
     if (room) {
+      socket.on("disconnect from room", (data) => {
+        const { room, participant } = data;
+
+        // 받은 데이터 활용 예시
+        console.log(`${participant}님이 방 ${room}에서 나갔습니다`);
+      });
       socket.emit("leave", { roomName });
+
       room.disconnect();
       console.log("BYE");
       navigate("/");
@@ -458,7 +466,12 @@ const LivePage = () => {
       const token = await getToken(roomName, participantName, participantRole);
       setToken(token);
 
-      socket.emit("join", { roomName, role: participantRole }); // 아바타
+      socket.emit("join", {
+        roomName,
+        role: participantRole,
+        participant: participantName,
+        avatarType,
+      }); // 아바타
       console.log("join이요❤️❤️❤️❤️❤️❤️❤️❤️");
       await room.connect(LIVEKIT_URL, token);
 
@@ -540,6 +553,7 @@ const LivePage = () => {
                   socket={socket}
                   participantName={participantName}
                   roomName={roomName}
+                  role={participantRole}
                 />
               </CharacterBox>
             </Left>
@@ -557,6 +571,7 @@ const LivePage = () => {
                     token={token}
                     role={participantRole}
                     fakeTitle={fakeTitle}
+                    avatarType={avatarType}
                   />
                 )}
               </RightTop>
@@ -618,6 +633,7 @@ const LivePage = () => {
                   token={token}
                   role={participantRole}
                   fakeTitle={fakeTitle}
+                  avatarType={avatarType}
                 />
               )}
             </LeftTop>
@@ -626,6 +642,7 @@ const LivePage = () => {
                 socket={socket}
                 participantName={participantName}
                 roomName={roomName}
+                role={participantRole}
               />
             </CharacterBox>
           </Left>
@@ -636,6 +653,7 @@ const LivePage = () => {
                 participantName={participantName}
                 roomName={roomName}
                 role={participantRole}
+                avatarType={avatarType}
               />
             </RightTop>
             <RightMiddle>

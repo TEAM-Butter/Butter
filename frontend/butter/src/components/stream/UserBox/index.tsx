@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { useCallback, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 
 const UserBoxWrapper = styled.div`
   width: 100%;
@@ -11,6 +11,7 @@ interface VideoStreamProps {
   participantName: string;
   roomName: string;
   role: string;
+  avatarType: string | null;
 }
 
 // interface UserBoxProps {
@@ -23,6 +24,7 @@ const UserBox = ({
   participantName,
   roomName,
   role,
+  avatarType,
 }: VideoStreamProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -50,6 +52,7 @@ const UserBox = ({
             //수정
             formData.append("room-id", roomName);
             formData.append("role", role);
+            formData.append("avatarType", avatarType ? avatarType : "");
 
             // 디버깅을 위한 로그 추가
             console.log("Sending request to:", "/ai/upload_frame");
