@@ -36,13 +36,13 @@ const VideoClipPage = () => {
   const [videos, setVideos] = useState<Video[]>([]);
   const [currentClipId, setCurrentClipId] = useState<number | null>(null);
   const videoRefs = useRef<HTMLVideoElement[]>([]);
-  const SEVER_URL = import.meta.env.VITE_NODE_JS_SERVER || "";
+  const SEVER_URL = import.meta.env.VITE_SPRING_BOOT_SERVER || "";
 
   // 첫 영상 목록을 역순으로 가져오기
   useEffect(() => {
     const fetchInitialVideos = async () => {
       try {
-        const response = await axios.post(`${SEVER_URL}/clip/list_rev`, {
+        const response = await axios.post(`${SEVER_URL}/v1/clip/list_rev`, {
           clipId: null,
           pageSize: 1,
           liveId: null,
@@ -64,7 +64,7 @@ const VideoClipPage = () => {
   const fetchPreviousClip = async () => {
     if (!currentClipId) return;
     try {
-      const response = await axios.post(`${SEVER_URL}/clip/list_rev`, {
+      const response = await axios.post(`${SEVER_URL}/v1/clip/list_rev`, {
         clipId: currentClipId,
         pageSize: 1,
         liveId: null,
@@ -82,7 +82,7 @@ const VideoClipPage = () => {
   const fetchNextClip = async () => {
     if (!currentClipId) return;
     try {
-      const response = await axios.post(`${SEVER_URL}/clip/list`, {
+      const response = await axios.post(`${SEVER_URL}/v1/clip/list`, {
         clipId: currentClipId,
         pageSize: 1,
         liveId: null,
