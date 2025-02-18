@@ -151,8 +151,10 @@ const VideoClipPage = () => {
         direction={"vertical"}
         slidesPerView={1}
         spaceBetween={30}
-        mousewheel={true}
-        loop={true}
+        mousewheel={{
+          forceToAxis: true,
+          releaseOnEdges: true,
+        }}
         pagination={{
           clickable: true,
         }}
