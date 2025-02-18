@@ -9,6 +9,8 @@ import java.util.List;
 public interface ClipJpaRepository extends JpaRepository<Clip, Long> {
 
     List<Clip> findAllByOrderByIdDesc(Pageable pageable);
+    List<Clip> findAllByOrderById(Pageable pageable);
 
     List<Clip> findAllByIdLessThanOrderByIdDesc(Long id, Pageable pageable);
+    List<Clip> findAllByIdLessThanOrderById(Long id, Pageable pageable);
 }

@@ -70,6 +70,19 @@ public class ClipServiceImpl implements ClipService {
     }
 
     @Override
+    public List<ClipResponseDTO> getClipListAsc(AuthInfoDTO currentUser, ClipListRequestDTO clipListRequestDTO) {
+        Member member = memberService.findById(currentUser.id());
+        Pageable pageable = PageRequest.of(0, clipListRequestDTO.pageSize());
+        if (clipListRequestDTO.clipId() == null) {
+            return clipRepository.findAllByOrderById(pageable).stream()
+                    .map(clip -> ClipResponseDTO.from(clip, isLiking(member, clip), getLikeCount(clip))).toList();
+        } else {
+            return clipRepository.findAllByIdLessThanOrderById(clipListRequestDTO.clipId(), pageable).stream()
+                    .map(clip -> ClipResponseDTO.from(clip, isLiking(member, clip), getLikeCount(clip))).toList();
+        }
+    }
+
+    @Override
     public ClipResponseDTO deleteClip(AuthInfoDTO currentUser, Long id) {
         Member member = memberService.findById(currentUser.id());
         Clip clip = clipRepository.findById(id).orElseThrow();
