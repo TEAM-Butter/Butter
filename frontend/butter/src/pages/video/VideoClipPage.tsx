@@ -33,9 +33,12 @@ interface Video {
   hitCount: number; // 조회수
 }
 
+const PAGE_SIZE = 10;
+
 const VideoClipPage = () => {
   const [videos, setVideos] = useState<Video[]>([]);
   const [currentClipId, setCurrentClipId] = useState<number | null>(null);
+  const currentClipIdRef = useRef<number | null>(null);
   const videoRefs = useRef<HTMLVideoElement[]>([]);
   const SEVER_URL = import.meta.env.VITE_SPRING_BOOT_SERVER || "";
 
@@ -43,16 +46,17 @@ const VideoClipPage = () => {
   useEffect(() => {
     const fetchInitialVideos = async () => {
       try {
-        const response = await axiosInstance.get(`/clip/list_rev`, {
+        const response = await axiosInstance.get(`/clip/list`, {
           params: {
             clipId: null,
-            pageSize: 1,
+            pageSize: PAGE_SIZE,
             liveId: null,
           }
         });
         setVideos(response.data);
         if (response.data.length > 0) {
           setCurrentClipId(response.data[0].id);
+          currentClipIdRef.current = response.data[0].id;
         }
       } catch (error) {
         console.error("Failed to fetch initial videos", error);
@@ -63,40 +67,46 @@ const VideoClipPage = () => {
   }, [SEVER_URL]);
 
 
-  // 이전 클립 불러오기 (아래로 스크롤)
-  const fetchPreviousClip = async () => {
-    if (!currentClipId) return;
+  // 다음 클립 불러오기(아래)
+  const fetchNextClip = async () => {
+    console.log("next");
+    if (!currentClipIdRef.current) return;
     try {
-      const response = await axiosInstance.get(`/clip/list_rev`, {
+      const response = await axiosInstance.get(`/clip/list`, {
         params: {
-          clipId: currentClipId,
-          pageSize: 1,
+          clipId: currentClipIdRef.current,
+          pageSize: PAGE_SIZE,
           liveId: null,
         }
       });
       if (response.data.length > 0) {
         setVideos((prevVideos) => [...prevVideos, ...response.data]);
-        setCurrentClipId(response.data[0].id);
+        const newCurrentId = response.data[response.data.length - 1].id;
+        setCurrentClipId(newCurrentId);
+        currentClipIdRef.current = newCurrentId;
       }
     } catch (error) {
       console.error("Failed to fetch previous clip", error);
     }
   };
 
-  // 다음 클립 불러오기 (위로 스크롤)
-  const fetchNextClip = async () => {
+  // 이전 클립 불러오기(위)
+  const fetchPreviousClip = async () => {
+    console.log("prev");
     if (!currentClipId) return;
     try {
-      const response = await axiosInstance.get(`/clip/list`, {
+      const response = await axiosInstance.get(`/clip/list_rev`, {
         params: {
           clipId: currentClipId,
-          pageSize: 1,
+          pageSize: PAGE_SIZE,
           liveId: null,
         }
       });
       if (response.data.length > 0) {
-        setVideos((prevVideos) => [response.data[0], ...prevVideos]);
-        setCurrentClipId(response.data[0].id);
+        setVideos((prevVideos) => [...response.data, ...prevVideos]);
+        const newCurrentId = response.data[0].id;
+        setCurrentClipId(newCurrentId);
+        currentClipIdRef.current = newCurrentId;
       }
     } catch (error) {
       console.error("Failed to fetch next clip", error);
@@ -151,22 +161,28 @@ const VideoClipPage = () => {
         direction={"vertical"}
         slidesPerView={1}
         spaceBetween={30}
-        mousewheel={true}
-        loop={true}
+        mousewheel={
+          true
+        }
         pagination={{
           clickable: true,
         }}
-        onSlideNextTransitionStart={fetchPreviousClip} // 아래로 스크롤 -> 이전 클립
-        onSlidePrevTransitionStart={fetchNextClip} // 위로 스크롤 -> 다음 클립
+        onSlideNextTransitionStart={fetchNextClip} // 아래로 스크롤 -> 이전 클립
+        onSlidePrevTransitionStart={fetchPreviousClip} // 위로 스크롤 -> 다음 클립
         modules={[Mousewheel]}
         className="mySwiper"
         style={{
           aspectRatio: 16 / 10,
           backgroundColor: "beige",
         }}
+        // 추가 이벤트로 슬라이드 변화 확인
+        onSlideChange={(swiper) => {
+          console.log("Slide changed. Active index:", swiper.activeIndex);
+          console.log("Slide changed. Active index:", currentClipIdRef.current);
+        }}
       >
         {videos.map((video, idx) => (
-          <SwiperSlide key={idx}>
+          <SwiperSlide key={video.id}>
             <VideoPlayer
               ref={(el) => (videoRefs.current[idx] = el!)}
               src={video.videoUrl}
