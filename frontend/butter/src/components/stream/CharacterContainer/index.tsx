@@ -12,16 +12,14 @@ import clap from "../../../assets/clap.png";
 import mic from "../../../assets/mic.png";
 import styled from "@emotion/styled";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { SocketContent } from "../../../types/socket";
+import { MemberType, SocketContent } from "../../../types/socket";
 import { Socket } from "socket.io-client";
-import { RoomName } from "@livekit/components-react";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import ThumbUpAltOutlinedIcon from "@mui/icons-material/ThumbUpAltOutlined";
 import BakeryDiningOutlinedIcon from "@mui/icons-material/BakeryDiningOutlined";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
 import clapclap from "../../../assets/clapclap.png";
-import { ContactEmergency } from "@mui/icons-material";
 // const images = [pet1, pet2, pet3, pet4, pet5, pet6];
 
 const CharacterContainerWrapper = styled.div`
@@ -136,38 +134,16 @@ interface CharacterContainer {
   role: string;
 }
 
-interface CharacterData {
-  id: number;
-  left: number;
-  isEmoting: boolean;
-  currentEmotion: any;
-}
-
-interface memberType {
-  nickname: string;
-  avatarType: string;
-}
-
 const EMOTION_DURATION = 2600; //2초
 const COOLDOWN_DURATION = 3000; // 3초
-const MY_CHARACTER_INDEX = 1; //내 캐릭터의 인덱스
 
 const CharacterContainer = ({
   socket,
   participantName,
   roomName,
-  role,
 }: CharacterContainer) => {
-  const [characters, setCharacters] = useState<CharacterData[]>(() =>
-    Array.from({ length: 13 }, (_, index) => ({
-      id: index,
-      left: Math.random() * 80,
-      isEmoting: false,
-      currentEmotion: heart, // 기본값을 heart 이미지로 설정
-    }))
-  );
   const [membersCount, setMembersCount] = useState(0);
-  const [members, setMembers] = useState<memberType[]>();
+  const [members, setMembers] = useState<MemberType[]>([]);
   const [heartCount, setHeartCount] = useState(0);
   const [likeCount, setLikeCount] = useState(0);
   const [myEmotionState, setMyEmotionState] = useState({
@@ -177,11 +153,8 @@ const CharacterContainer = ({
 
   const [publisherClap, setPublisherClap] = useState(false);
 
-  const [memberPositions, setMemberPositions] = useState<Map<string, number>>(
-    new Map()
-  );
   // 사용자별 마지막 액션 시간 관리
-  const lastActionTimeMap = useRef(new Map<number, number>());
+  const lastActionTimeMap = useRef(new Map<string, number>());
 
   const getAvatarImage = (avatarType: string) => {
     switch (avatarType) {
@@ -200,9 +173,9 @@ const CharacterContainer = ({
     }
   };
 
-  const canUserAct = (userId: number) => {
+  const canUserAct = (nickname: string) => {
     const currentTime = Date.now();
-    const lastTime = lastActionTimeMap.current.get(userId) || 0;
+    const lastTime = lastActionTimeMap.current.get(nickname) || 0;
     console.log("Cooldown Check:", {
       currentTime,
       lastTime,
@@ -213,9 +186,9 @@ const CharacterContainer = ({
     return currentTime - lastTime >= COOLDOWN_DURATION;
   };
 
-  const updateActionTime = (userId: number) => {
-    console.log("Updating action time for user:", userId, Date.now());
-    lastActionTimeMap.current.set(userId, Date.now());
+  const updateActionTime = (nickname: string) => {
+    console.log("Updating action time for user:", nickname, Date.now());
+    lastActionTimeMap.current.set(nickname, Date.now());
   };
 
   // 내 캐릭터의 emotion 처리
@@ -236,19 +209,32 @@ const CharacterContainer = ({
   };
 
   const handleMyEmotion = useCallback(
-    (emotionType: string, userId: number, emotion: string) => {
-      if (!canUserAct(userId)) {
-        console.log("쿨다운 중입니다");
-        return;
-      }
+    (emotionType: string, nickname: string, emotion: string) => {
+      // if (!canUserAct(userId)) {
+      //   console.log("쿨다운 중입니다");
+      //   return;
+      // }
 
       console.log("확인용 emtoionType입니다!!!!!!!!!!!!", emotionType);
       setMyEmotionState({
         isEmoting: true,
-        currentEmotion: getEmotionImage(emotionType),
+        currentEmotion: emotionType,
       });
+      // members 배열도 업데이트
+      setMembers((prev) =>
+        prev.map((member) =>
+          member.nickname === nickname
+            ? {
+                ...member,
+                isEmoting: true,
+                currentEmotion: emotionType,
+              }
+            : member
+        )
+      );
 
-      updateActionTime(userId);
+      console.log("확인용 emtoionType입니다2222222", emotionType);
+      updateActionTime(nickname);
 
       setTimeout(() => {
         if (emotion === "heart" && !myEmotionState.isEmoting) {
@@ -263,10 +249,23 @@ const CharacterContainer = ({
             emotion: "like",
           });
         }
+        // timeout에서도 두 상태 모두 업데이트
         setMyEmotionState({
           isEmoting: false,
           currentEmotion: emotionType,
         });
+
+        setMembers((prev) =>
+          prev.map((member) =>
+            member.nickname === nickname
+              ? {
+                  ...member,
+                  isEmoting: false,
+                  currentEmotion: emotionType,
+                }
+              : member
+          )
+        );
       }, EMOTION_DURATION);
     },
     [myEmotionState.isEmoting]
@@ -279,13 +278,14 @@ const CharacterContainer = ({
     }, EMOTION_DURATION);
   }, [publisherClap]);
 
+  //행동을 한 사람의 nickname
   const handleOtherEmotion = useCallback(
-    (userId: number, emotionType: string) => {
-      if (userId === MY_CHARACTER_INDEX || !canUserAct(userId)) return;
+    (nickname: string, emotionType: string) => {
+      if (!canUserAct(nickname)) return;
 
-      setCharacters((prev) =>
-        prev.map((char, idx) =>
-          idx === userId
+      setMembers((prev) =>
+        prev.map((char) =>
+          char.nickname === nickname
             ? {
                 ...char,
                 isEmoting: true,
@@ -295,12 +295,12 @@ const CharacterContainer = ({
         )
       );
 
-      updateActionTime(userId);
+      updateActionTime(nickname);
 
       setTimeout(() => {
-        setCharacters((prev) =>
-          prev.map((char, idx) =>
-            idx === userId
+        setMembers((prev) =>
+          prev.map((char) =>
+            char.nickname === nickname
               ? { ...char, isEmoting: false, currentEmotion: heart }
               : char
           )
@@ -311,21 +311,44 @@ const CharacterContainer = ({
   );
 
   const handleMessage = (content: SocketContent) => {
-    console.log("웹소켓에서 participantName을 불러옵니다!!", participantName);
-    setMembersCount(content.members?.length);
-    console.log(content);
+    if (content.members && content.members.length > 0) {
+      // members 상태 업데이트
+      setMembersCount(content.members.length);
+      setMembers((prevMembers) => {
+        // 이미 같은 nickname을 가진 멤버가 있는지 확인
+        const updatedMembers = content.members.map((member) => {
+          const existingMember = prevMembers.find(
+            (m) => m.nickname === member.nickname
+          );
+          return {
+            ...member,
+            left: existingMember?.left ?? Math.random() * 70 + 10,
+            isEmoting: existingMember?.isEmoting ?? false,
+            currentEmotion: existingMember?.currentEmotion ?? null, // 초기값은 null
+          };
+        });
+        console.log("Updated members:", updatedMembers);
+        return updatedMembers;
+      });
+    }
+    // setMembersCount(content.members?.length);
     if (content.roomMotions !== null) {
       setHeartCount(content.roomMotions.heart || 0);
       setLikeCount(content.roomMotions.like || 0);
     }
-    setMembers(content.members);
-    const id = 1;
+
+    //현재 행동하는 사람
+    const id = content.participant;
     if (content.role === "subscriber" && canUserAct(id)) {
+      const isCurrentParticipant = content.members.some(
+        (member) => member.nickname === id
+      );
+
       switch (content.label) {
         case "little_heart":
-          console.log("여기❤️❤️❤️❤️❤️❤️");
-          if (id === MY_CHARACTER_INDEX) {
-            console.log("여기입니다 ❤️❤️❤️❤️❤️❤️");
+          console.log("💕💕💕💕💕");
+          if (isCurrentParticipant) {
+            console.log("😒😒😒😒😒😒");
             handleMyEmotion(heart, id, "heart");
           } else {
             console.log("여기입니다4");
@@ -333,21 +356,26 @@ const CharacterContainer = ({
           }
           break;
         case "clap":
-          if (id === MY_CHARACTER_INDEX) {
+          console.log("👏👏👏👏👏");
+
+          if (isCurrentParticipant) {
             handleMyEmotion(clap, id, "clap");
           } else {
             handleOtherEmotion(id, "clap");
           }
           break;
         case "like":
-          if (id === MY_CHARACTER_INDEX) {
+          console.log("👍👍👍👍");
+
+          if (isCurrentParticipant) {
             handleMyEmotion(like, id, "like");
           } else {
             handleOtherEmotion(id, "like");
           }
           break;
         case "thumb_index":
-          if (id === MY_CHARACTER_INDEX) {
+          console.log("🎤🎤🎤🎤🎤");
+          if (isCurrentParticipant) {
             handleMyEmotion(mic, id, "mic");
           } else {
             handleOtherEmotion(id, "mic");
@@ -357,7 +385,6 @@ const CharacterContainer = ({
     }
     if (content.role === "publisher") {
       if (content.label === "clap") {
-        console.log("👏👏👏👏👏👏👏");
         handlePublisherEmotion();
       }
     }
@@ -374,22 +401,7 @@ const CharacterContainer = ({
     handleSocketOn();
 
     return () => {};
-  }, [participantName, handleMyEmotion, handleOtherEmotion]);
-
-  useEffect(() => {
-    if (members && members.length > 0) {
-      const newPositions = new Map(memberPositions);
-
-      members.forEach((member) => {
-        // 해당 멤버의 위치가 아직 없는 경우에만 새로운 위치 할당
-        if (!newPositions.has(member.nickname)) {
-          newPositions.set(member.nickname, Math.random() * 80 + 10); // 10~90 사이의 값
-        }
-      });
-
-      setMemberPositions(newPositions);
-    }
-  }, [members]);
+  }, [socket, participantName, handleMyEmotion, handleOtherEmotion]);
 
   return (
     <CharacterContainerWrapper>
@@ -421,7 +433,7 @@ const CharacterContainer = ({
       <TotalInfoBox>
         <TotalUserInfo>
           <PersonOutlineOutlinedIcon fontSize="small" />
-          {members?.length}
+          {membersCount}
         </TotalUserInfo>
         <TotalHeartsInfo>
           <FavoriteIcon fontSize="small" />
@@ -436,7 +448,7 @@ const CharacterContainer = ({
         members.map((member) => (
           <CharacterBox
             key={member.nickname}
-            left={memberPositions.get(member.nickname) || 50}
+            left={member.left}
             top={0}
             initial={{ opacity: 0, scale: 0 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -446,19 +458,15 @@ const CharacterContainer = ({
             }}
           >
             <EmotionBox>
-              {/* <Emotion
-              src={member.label}
-              animate={
-                (
-                  char.id === MY_CHARACTER_INDEX
-                    ? myEmotionState.isEmoting
-                    : char.isEmoting
-                )
-                  ? { opacity: 1, y: -30 }
-                  : { opacity: 0, y: 10 }
-              }
-              transition={{ duration: 0.4 }}
-            /> */}
+              <Emotion
+                src={member.currentEmotion || undefined}
+                animate={
+                  member.isEmoting
+                    ? { opacity: 1, y: -30 }
+                    : { opacity: 0, y: 10 }
+                }
+                transition={{ duration: 0.4 }}
+              />
             </EmotionBox>
             <Character src={getAvatarImage(member.avatarType)} />
           </CharacterBox>

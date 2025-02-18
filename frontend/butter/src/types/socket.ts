@@ -3,9 +3,12 @@ interface roomMotionsType {
   like: number;
 }
 
-interface MemberType {
+export interface MemberType {
   nickname: string;
   avatarType: string;
+  left: number;
+  isEmoting: boolean;
+  currentEmotion: string;
 }
 export interface SocketContent {
   status: string;
