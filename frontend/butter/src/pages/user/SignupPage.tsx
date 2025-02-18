@@ -10,7 +10,7 @@ const SignupPageWrapper = styled.div`
   display: grid; /* 부모에 grid 적용 */
   grid-template-columns: 1fr 2.5fr;
   gap: 15px; 
-  `;
+`
 
 const LtContainer = styled.div`
     display: grid;
