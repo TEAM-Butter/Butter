@@ -209,12 +209,18 @@ function CrewListPage() {
                 // ✅ 헤더 추가: Authorization (JWT 토큰 포함)
                 setLoading(true);
                 if (genreToggle == "All"){
-                    const response = await axiosInstance.get(`/crew/list?pageSize=10&sortBy=followerCount`)
+                    const response = await axiosInstance.get(`/crew/list?pageSize=20&sortBy=followerCount`)
                     setCrewList(response.data);
+                    console.log(response.data)
+                } else if (genreToggle == "R&B"){
+                    const response = await axiosInstance.get(`/crew/list?pageSize=20&sortBy=followerCount&genre=R%26B`)
+                    setCrewList(response.data);
+                    console.log(response.data)
                 } else{
                 const response = await axiosInstance.get(`/crew/list?pageSize=10&sortBy=followerCount&genre=${genreToggle}`)
-                setCrewList(response.data);} // 크루 리스트 정보 받아옴
-          
+                setCrewList(response.data); // 크루 리스트 정보 받아옴
+                console.log(response.data)}
+                console.log(genreToggle)
                 
             } catch (err: any) {
                 setError(err.message); //요청 놓치면 에러 메세지 띄우기
@@ -256,7 +262,7 @@ function CrewListPage() {
        <Write>
        <div>C</div>
        <ImgContainer>
-       {crewList.map((a : any, i ) =>{if(i <=2 ) return(<Link to={`/crew/detail/${a.id}`}><ImgStyle src={images[i]} alt="Crew Logo 1" index={i} size="230px" /></Link> )})}
+       {crewList.map((a : any, i ) =>{if(i <=2 ) return(<Link to={`/crew/detail/${a.id}`}><ImgStyle src={a.imageUrl} alt="Crew Logo 1" index={i} size="230px" /></Link> )})}
         </ImgContainer>
        <Div1 > REW</Div1>
        </Write>
@@ -264,7 +270,7 @@ function CrewListPage() {
         {crewList.map((a :any, i : number)=>{ if (3 <=i && i <=7 )return(
              
             <CrewBox key={i}>
-            <Link to={`/crew/detail/${a.id}`}><div>{a.name}</div><ImgStyle2 src={images[i]} alt="crewImage"></ImgStyle2></Link>
+            <Link to={`/crew/detail/${a.id}`}><div>{a.name}</div><ImgStyle2 src={a.imageUrl} alt="crewImage"></ImgStyle2></Link>
             </CrewBox>
             )})} 
         </CrewListContainer>
