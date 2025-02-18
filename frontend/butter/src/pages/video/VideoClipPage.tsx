@@ -124,16 +124,14 @@ const VideoClipPage = () => {
     }
   }, [videos]);
 
-  // const handleSlideChange = (swiper: any) => {
-  //   videoRefs.current.forEach((video, index) => {
-  //     if (index === swiper.realIndex) {
-  //       video.currentTime = 0; // 처음으로 이동
-  //       video.play(); // 재생
-  //     } else {
-  //       video.pause(); // 정지
-  //       video.currentTime = 0; // 처음으로 이동
-  //     }
-  //   });
+  const handleSlideChange = (swiper: any) => {
+    console.log("Slide changed. Active index:", swiper.activeIndex);
+    const activeSlide = videoRefs.current[swiper.activeIndex];
+    if (activeSlide) {
+      activeSlide.currentTime = 0;
+      activeSlide.play();
+    }
+  };
 
   //   prevIndex.current = swiper.realIndex; // 현재 슬라이드 인덱스 업데이트
   // };
@@ -169,16 +167,12 @@ const VideoClipPage = () => {
         }}
         onSlideNextTransitionStart={fetchNextClip} // 아래로 스크롤 -> 이전 클립
         onSlidePrevTransitionStart={fetchPreviousClip} // 위로 스크롤 -> 다음 클립
+        onSlideChange={handleSlideChange}
         modules={[Mousewheel]}
         className="mySwiper"
         style={{
           aspectRatio: 16 / 10,
           backgroundColor: "beige",
-        }}
-        // 추가 이벤트로 슬라이드 변화 확인
-        onSlideChange={(swiper) => {
-          console.log("Slide changed. Active index:", swiper.activeIndex);
-          console.log("Slide changed. Active index:", currentClipIdRef.current);
         }}
       >
         {videos.map((video, idx) => (
