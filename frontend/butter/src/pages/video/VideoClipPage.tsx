@@ -3,6 +3,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Mousewheel } from "swiper/modules";
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
+import { axiosInstance } from "../../apis/axiosInstance";
 
 const VideoClipPageWrapper = styled.div`
   max-width: 2000px;
@@ -42,7 +43,7 @@ const VideoClipPage = () => {
   useEffect(() => {
     const fetchInitialVideos = async () => {
       try {
-        const response = await axios.get(`${SEVER_URL}/v1/clip/list_rev`, {
+        const response = await axiosInstance.get(`/clip/list_rev`, {
           params: {
             clipId: null,
             pageSize: 1,
@@ -66,7 +67,7 @@ const VideoClipPage = () => {
   const fetchPreviousClip = async () => {
     if (!currentClipId) return;
     try {
-      const response = await axios.get(`${SEVER_URL}/v1/clip/list_rev`, {
+      const response = await axiosInstance.get(`/clip/list_rev`, {
         params: {
           clipId: currentClipId,
           pageSize: 1,
@@ -86,7 +87,7 @@ const VideoClipPage = () => {
   const fetchNextClip = async () => {
     if (!currentClipId) return;
     try {
-      const response = await axios.get(`${SEVER_URL}/v1/clip/list`, {
+      const response = await axiosInstance.get(`/clip/list`, {
         params: {
           clipId: currentClipId,
           pageSize: 1,
