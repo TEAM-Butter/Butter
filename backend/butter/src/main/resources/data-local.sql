@@ -205,7 +205,7 @@ INSERT INTO schedule (latitude, longitude, busking_date, create_date, crew_id, u
 INSERT INTO clip (hit_count, crew_id, title, video_name, video_url) VALUES
                                                              (100, 1, 'Rock Performance', 'clip-1-1', 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'),
                                                              (200, 1, 'Jazz Solo', 'clip-1-1', 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4'),
-                                                             (150, 2, 'Pop Star Performance', 'clip-2-1', 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4 '),
+                                                             (150, 2, 'Pop Star Performance', 'clip-2-1', 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4 ');
 
 -- liked_clip 테이블
 INSERT INTO liked_clip (is_liked, clip_id, member_id) VALUES
