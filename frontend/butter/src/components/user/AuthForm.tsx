@@ -9,7 +9,11 @@ import { setAccessToken } from "../../apis/auth";
 import { useNavigate } from "react-router-dom";
 import { useUserStore } from "../../stores/UserStore";
 import { useCrewStore } from "../../stores/UserStore";
+import { CheckLoginIdRequest } from "../../apis/request/member/memberRequest";
+import { CheckLoginIdResponseDto } from "../../apis/response/member";
 import NaverLogin from "./Naver/NaverLogin";
+import { motion } from "framer-motion";
+import { Password } from "@mui/icons-material";
 
 const FormWrapper = styled.form`
   width: 100%;
@@ -64,9 +68,13 @@ interface ColorProps {
   textColor?: string;
 }
 
-const WrongComment = styled.div`
+const ErrorComment = styled(motion.div)`
   flex: 1;
   min-height: 30px;
+  color: var(--red);
+
+  display: flex;
+  flex-direction: column-reverse;
 `;
 
 // Login Css
@@ -88,39 +96,60 @@ export const LoginForm = ({ setModalType }: ModalProps) => {
   const [loginId, setLoginId] = useState<string>("");
   const [password, setPassword] = useState<string>("");
 
+  const [errorComment, setErrorComment] = useState("");
+  const [changeSensor, setChangeSensor] = useState(true);
+
+  const CheckExistId = () => {
+    CheckLoginIdRequest({ loginId: loginId })
+      .then((responseBody: CheckLoginIdResponseDto | null) => {
+        if (responseBody?.exists) {
+          LoginBtnHandler();
+        } else {
+          setChangeSensor(!changeSensor);
+          setErrorComment("존재하지 않는 아이디 입니다. 아이디와 비밀번호를 정확히 입력해주세요.");
+        }
+      })
+  }
+
   const LoginBtnHandler = () => {
     const requestBody: LoginRequestDto = { loginId, password };
-    loginRequest(requestBody).then((responseBody: LoginResponseDto | null) => {
-      const { accessToken } = responseBody as LoginResponseDto;
-      setAccessToken(accessToken);
-      navigator(`/`);
 
-      setUser(
-        true,
-        String(responseBody?.authenticatedMemberInfo.nickname),
-        String(responseBody?.authenticatedMemberInfo.profileImage),
-        String(responseBody?.authenticatedMemberInfo.avatarType),
-        String(responseBody?.authenticatedMemberInfo.memberType),
-        Boolean(responseBody?.authenticatedMemberInfo.isExtraInfoRegistered),
-        responseBody?.authenticatedMemberInfo.genres || []
-      );
+    loginRequest(requestBody)
+      .then((responseBody: LoginResponseDto | null) => {
+        const { accessToken } = responseBody as LoginResponseDto;
+        setAccessToken(accessToken);
+        navigator(`/`);
 
-      setCrew(
-        Number(responseBody?.authenticatedMemberInfo.crew.id),
-        String(responseBody?.authenticatedMemberInfo.crew.name),
-        String(responseBody?.authenticatedMemberInfo.crew.description),
-        String(responseBody?.authenticatedMemberInfo.crew.imageUrl),
-        String(responseBody?.authenticatedMemberInfo.crew.promotionUrl),
-        String(responseBody?.authenticatedMemberInfo.crew.createDate),
-        Number(responseBody?.authenticatedMemberInfo.crew.followerCnt)
-      );
-    });
+        setUser(
+          true,
+          String(responseBody?.authenticatedMemberInfo.nickname),
+          String(responseBody?.authenticatedMemberInfo.profileImage),
+          String(responseBody?.authenticatedMemberInfo.avatarType),
+          String(responseBody?.authenticatedMemberInfo.memberType),
+          Boolean(responseBody?.authenticatedMemberInfo.isExtraInfoRegistered),
+          responseBody?.authenticatedMemberInfo.genres || []
+        );
+
+        setCrew(
+          Number(responseBody?.authenticatedMemberInfo.crew.id),
+          String(responseBody?.authenticatedMemberInfo.crew.name),
+          String(responseBody?.authenticatedMemberInfo.crew.description),
+          String(responseBody?.authenticatedMemberInfo.crew.imageUrl),
+          String(responseBody?.authenticatedMemberInfo.crew.promotionUrl),
+          String(responseBody?.authenticatedMemberInfo.crew.createDate),
+          Number(responseBody?.authenticatedMemberInfo.crew.followerCnt)
+        );
+      })
+      .catch(() => {
+        setChangeSensor(!changeSensor);
+        setErrorComment("잘못된 비밀번호입니다. 다시 시도하거나 비밀번호 찾기를 클릭하여 재설정하세요.");
+      })
   };
   return (
     <FormWrapper
       onSubmit={(e) => {
         e.preventDefault();
-        LoginBtnHandler();
+        CheckExistId();
       }}
     >
       <LgText textColor="black">
@@ -133,14 +162,14 @@ export const LoginForm = ({ setModalType }: ModalProps) => {
         type="text"
         value={loginId}
         onChange={(e) => setLoginId(e.target.value)}
-        placeholder="type your id."
+        placeholder="아이디를 입력해 주세요."
       />
       <TextInput
         required
         type="password"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
-        placeholder="type your password."
+        placeholder="비밀번호를 입력해 주세요."
       />
       <ForgetComment
         className="openModalBtn"
@@ -150,11 +179,16 @@ export const LoginForm = ({ setModalType }: ModalProps) => {
       >
         아이디/ 비밀번호를 잊어버리셨나요?
       </ForgetComment>
-      <WrongComment></WrongComment>
+      <ErrorComment
+        key={changeSensor ? "true" : "false"}
+        initial={{ y: 20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        exit={{ y: 20, opacity: 0 }}
+        transition={{ duration: 0.3 }}
+      >{errorComment ? errorComment : ""}</ErrorComment>
       <FormBtn
         bgColor="rgba(0,0,0,0.4)"
-        type="button"
-        onClick={LoginBtnHandler}
+        type="submit"
       >
         Log in
       </FormBtn>
@@ -164,6 +198,9 @@ export const LoginForm = ({ setModalType }: ModalProps) => {
     </FormWrapper>
   );
 };
+
+
+//회원가입 폼
 
 const RadioWrapper = styled.div`
   display: flex;
@@ -178,9 +215,39 @@ const InputLabel = styled.label`
   gap: 3px;
 `;
 const RadioInput = styled.input``;
+
 const BirthInput = styled.input`
   margin-left: 5px;
 `;
+
+const IdInputWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  & > input {
+    flex: 1
+  }
+
+  #checkIdBtn {
+    width: 70px;
+    height: 30px;
+    border-radius: 20px;
+    font-weight: 300;
+    font-size: 15px;
+    margin-top: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: black;
+  }
+`
+
+const PasswordInfo = styled.div`
+  color: #b5d584;
+  font-size: 15px;
+  margin-top: 5px;
+`
 
 export const SignupForm = () => {
   const navigator = useNavigate();
@@ -191,6 +258,25 @@ export const SignupForm = () => {
   const [password, setPassword] = useState<string>("");
   const [gender, setGender] = useState<string>("");
   const [birthDate, setBirthDate] = useState<string>("");
+
+  const [isIdChecked, setIsIdChecked] = useState(false);
+  const [errorComment, setErrorComment] = useState("");
+  const [changeSensor, setChangeSensor] = useState(true);
+
+  const CheckExistId = () => {
+    CheckLoginIdRequest({ loginId: loginId })
+      .then((responseBody: CheckLoginIdResponseDto | null) => {
+        if (responseBody?.exists) {
+          LoginHandler();
+          setChangeSensor(!changeSensor);
+          setErrorComment("이미 존재하는 아이디 입니다.");
+        } else {
+          setChangeSensor(!changeSensor);
+          setErrorComment("존재하지 않는 아이디 입니다.");
+          setIsIdChecked(true);
+        }
+      })
+  }
 
   const LoginHandler = () => {
     const requestBody: LoginRequestDto = { loginId, password };
@@ -220,8 +306,7 @@ export const SignupForm = () => {
     });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSignUp = () => {
     const requestBody: SignUpRequestDto = {
       loginId,
       password,
@@ -232,6 +317,38 @@ export const SignupForm = () => {
     signupRequest(requestBody).then(() => {
       LoginHandler();
     });
+  }
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*()_+={}[\]:;"'<>,.?/\\|`~]).{8,}$/;
+    const isValidateEmail = emailRegex.test(email);
+    const isValidateBirth = new Date(birthDate) < new Date();
+    const isValidatePS = passwordRegex.test(password);
+
+
+    if (!isIdChecked) {
+      setChangeSensor(!changeSensor);
+      setErrorComment("아이디를 확인해 주세요.");
+      return;
+    } else if (!isValidateEmail) {
+      setChangeSensor(!changeSensor);
+      setErrorComment("유효한 이메일을 기입해 주세요.");
+      return;
+    } else if (!isValidatePS) {
+      setChangeSensor(!changeSensor);
+      setErrorComment("유효한 비밀번호를 기입해 주세요.");
+      return;
+    } else if (!isValidateBirth) {
+      setChangeSensor(!changeSensor);
+      setErrorComment("유효한 생년월일을 기입해 주세요.");
+      return;
+    } else {
+      handleSignUp();
+    }
+
   };
 
   return (
@@ -241,27 +358,31 @@ export const SignupForm = () => {
         <br />
         your account
       </LgText>
-      <TextInput
-        required
-        type="text"
-        value={loginId}
-        onChange={(e) => setLoginId(e.target.value)}
-        placeholder="type your id."
-      />
+      <IdInputWrapper>
+        <TextInput
+          required
+          type="text"
+          value={loginId}
+          onChange={(e) => setLoginId(e.target.value)}
+          placeholder="아이디를 입력해 주세요."
+        />
+        <div id="checkIdBtn" onClick={CheckExistId}>확인</div>
+      </IdInputWrapper>
       <TextInput
         required
         type="email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
-        placeholder="type your email."
+        placeholder="이메일을 입력해 주세요."
       />
       <TextInput
         required
         type="password"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
-        placeholder="type your password."
+        placeholder="비밀번호를 입력해 주세요."
       />
+      <PasswordInfo>※ 영문자/숫자/특수문자 혼용 8자 이상</PasswordInfo>
       <RadioWrapper>
         <InputLabel>
           <RadioInput
@@ -296,7 +417,13 @@ export const SignupForm = () => {
           aria-required="true"
         />
       </InputLabel>
-      <WrongComment></WrongComment>
+      <ErrorComment
+        key={changeSensor ? "true" : "false"}
+        initial={{ y: 20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        exit={{ y: 20, opacity: 0 }}
+        transition={{ duration: 0.3 }}
+      >{errorComment ? errorComment : ""}</ErrorComment>
       <FormBtn bgColor="rgba(0,0,0,0.4)" type="submit">
         Sign up
       </FormBtn>
