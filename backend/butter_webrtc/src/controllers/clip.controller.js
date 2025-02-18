@@ -63,8 +63,8 @@ clipController.get("/:crewId", async (req, res) => {
   }
 });
 
-clipController.get("/:title/:clipName/:clipUrl", async (req, res) => {
-  const { title, clipName, clipUrl } = req.params;
+clipController.get("/:title/:clipName", async (req, res) => {
+  const { title, clipName } = req.params;
   const exists = await clipService.existsClip(clipName);
 
   if (!exists) {
@@ -73,7 +73,7 @@ clipController.get("/:title/:clipName/:clipUrl", async (req, res) => {
   }
 
   try {
-    const result = await clipService.saveClipRecording(title, clipName, clipUrl);
+    const result = await clipService.saveClipRecording(title, clipName);
     if (result.success) {
       res.json({
         message: "Clip save successfully",

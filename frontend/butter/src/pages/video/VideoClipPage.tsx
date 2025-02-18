@@ -46,7 +46,7 @@ const VideoClipPage = () => {
   useEffect(() => {
     const fetchInitialVideos = async () => {
       try {
-        const response = await axiosInstance.get(`/clip/list_rev`, {
+        const response = await axiosInstance.get(`/clip/list`, {
           params: {
             clipId: null,
             pageSize: PAGE_SIZE,
@@ -72,7 +72,7 @@ const VideoClipPage = () => {
     console.log("next");
     if (!currentClipIdRef.current) return;
     try {
-      const response = await axiosInstance.get(`/clip/list_rev`, {
+      const response = await axiosInstance.get(`/clip/list`, {
         params: {
           clipId: currentClipIdRef.current,
           pageSize: PAGE_SIZE,
@@ -95,7 +95,7 @@ const VideoClipPage = () => {
     console.log("prev");
     if (!currentClipId) return;
     try {
-      const response = await axiosInstance.get(`/clip/list`, {
+      const response = await axiosInstance.get(`/clip/list_rev`, {
         params: {
           clipId: currentClipId,
           pageSize: PAGE_SIZE,
@@ -178,6 +178,7 @@ const VideoClipPage = () => {
         // 추가 이벤트로 슬라이드 변화 확인
         onSlideChange={(swiper) => {
           console.log("Slide changed. Active index:", swiper.activeIndex);
+          console.log("Slide changed. Active index:", currentClipIdRef.current);
         }}
       >
         {videos.map((video, idx) => (
