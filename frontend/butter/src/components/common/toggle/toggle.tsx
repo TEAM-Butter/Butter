@@ -9,6 +9,7 @@ const Container = styled.div`
 const ToggleWrapper = styled.div`
     display: grid;
     grid-template-columns: repeat(9, 1fr); 
+    row-gap: 5px;
 
     @media (max-width: 1350px) {
         grid-template-columns: repeat(5, 1fr); 
