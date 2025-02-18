@@ -34,10 +34,8 @@ def upload_frame():
         detection = {"status": "no_object"}
     detection["participant"] = request.form.get("participant")
     detection["role"] = request.form.get("role")
-    if room_id in websocket_room_service.room_motions.keys():
-        detection["roomMotions"] = websocket_room_service.room_motions[room_id]
-    if websocket_room_service.room_nicknames.get(room_id) is not None:
-        detection["nickname"] = websocket_room_service.room_nicknames.get(room_id)
+    detection["roomMotions"] = websocket_room_service.room_motions.get(room_id)
+    detection["members"] = websocket_room_service.room_members.get(room_id)
 
     # 웹소켓으로 탐지 결과 송신
     sock.emit("message", detection, room=room_id)
@@ -58,15 +56,14 @@ def on_join(data):
     role = data["role"]
 
     join_room(room_id)
-    join_response = {}
-    if room_id in websocket_room_service.room_motions.keys():
-        join_response["motions"] = websocket_room_service.room_motions[room_id]
-    if room_id in websocket_room_service.room_motions.keys():
-        room_nicknames = websocket_room_service.room_nicknames[room_id]
-        if room_nicknames.size < 20:
-            join_response["nicknames"] = room_nicknames
-        else:
-            join_response["nicknames"] = room_nicknames[:20]
+    member = {"nickname": data["nickname"], "avatarType": data["avatarType"]}
+    websocket_room_service.put_member(room_id, member)
+    join_response = {"motions": websocket_room_service.room_motions.get(room_id)}
+    room_members = websocket_room_service.room_members.get(room_id)
+    if room_members.size < 20:
+        join_response["members"] = room_members
+    else:
+        join_response["members"] = room_members[:20]
     sock.emit("join", join_response, room=room_id)
 
 
@@ -79,7 +76,7 @@ def on_leave(data):
         return
 
     leave_room(room_id)
-    websocket_room_service.remove_nickname(room_id, data["nickname"])
+    websocket_room_service.remove_member(room_id, data["nickname"])
     if get_room_size(room_id) == 0:
         print(f"Room {room_id} is empty")
         websocket_room_service.remove_room(room_id)
