@@ -25,9 +25,10 @@ public class SseNotificationRepository implements NotificationRepository {
     @Override
     public Map<String, SseEmitter> findAllEmitterStartsWithMemberId(Long memberId) {
         Map<String, SseEmitter> result = new ConcurrentHashMap<>();
-        emitters.forEach((key, emitters) -> {
-            if(key.startsWith(String.valueOf(memberId))){
-                result.put(key, emitters);
+        String prefix = memberId + "_";
+        emitters.forEach((key, emitter) -> {
+            if(key.startsWith(prefix)){
+                result.put(key, emitter);
             }
         });
         return result;
@@ -36,8 +37,9 @@ public class SseNotificationRepository implements NotificationRepository {
     @Override
     public Map<String, Object> findAllEventCacheStartsWithMemberId(Long memberId) {
         Map<String, Object> result = new ConcurrentHashMap<>();
+        String prefix = memberId + "_";
         eventCache.forEach((key, event) -> {
-            if(key.startsWith(String.valueOf(memberId))){
+            if(key.startsWith(prefix)){
                 result.put(key, event);
             }
         });
@@ -50,7 +52,7 @@ public class SseNotificationRepository implements NotificationRepository {
     }
 
     @Override
-    public void deleteAllEventCacheStartsWithId(String id) {
+    public void deleteEventCacheById(String id) {
         eventCache.remove(id);
     }
 
