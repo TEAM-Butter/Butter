@@ -34,6 +34,8 @@ public record ClipResponseDTO(
                 .id(clip.getId())
                 .crew( CrewDTO.fromEntity(clip.getCrew()))
                 .title(clip.getTitle())
+                .videoName(clip.getVideoName())
+                .videoUrl(clip.getVideoUrl())
                 .hitCount(clip.getHitCount())
                 .isLiked(isLiked)
                 .build();
