@@ -76,8 +76,7 @@ public class  CrewServiceImpl implements CrewService {
                 .member(memberService.findById(currentUser.id()))
                 .isCrewAdmin(true)
                 .build());
-        savedCrew.getCrewMembers().add(crewMember);
-        return CrewResponseDTO.from(savedCrew, false, 0L);
+        return CrewResponseDTO.from(savedCrew, crewMember.getMember(), false, 0L);
     }
 
     /**
