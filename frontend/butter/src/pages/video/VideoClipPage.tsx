@@ -33,6 +33,8 @@ interface Video {
   hitCount: number; // 조회수
 }
 
+const PAGE_SIZE = 10;
+
 const VideoClipPage = () => {
   const [videos, setVideos] = useState<Video[]>([]);
   const [currentClipId, setCurrentClipId] = useState<number | null>(null);
@@ -47,7 +49,7 @@ const VideoClipPage = () => {
         const response = await axiosInstance.get(`/clip/list_rev`, {
           params: {
             clipId: null,
-            pageSize: 1,
+            pageSize: PAGE_SIZE,
             liveId: null,
           }
         });
@@ -68,18 +70,20 @@ const VideoClipPage = () => {
   // 다음 클립 불러오기(아래)
   const fetchNextClip = async () => {
     console.log("next");
-    if (!currentClipId) return;
+    if (!currentClipIdRef.current) return;
     try {
       const response = await axiosInstance.get(`/clip/list_rev`, {
         params: {
-          clipId: currentClipId,
-          pageSize: 1,
+          clipId: currentClipIdRef.current,
+          pageSize: PAGE_SIZE,
           liveId: null,
         }
       });
       if (response.data.length > 0) {
         setVideos((prevVideos) => [...prevVideos, ...response.data]);
-        currentClipIdRef.current = response.data[0].id; // 최신 값 갱신
+        const newCurrentId = response.data[response.data.length - 1].id;
+        setCurrentClipId(newCurrentId);
+        currentClipIdRef.current = newCurrentId;
       }
     } catch (error) {
       console.error("Failed to fetch previous clip", error);
@@ -94,13 +98,15 @@ const VideoClipPage = () => {
       const response = await axiosInstance.get(`/clip/list`, {
         params: {
           clipId: currentClipId,
-          pageSize: 1,
+          pageSize: PAGE_SIZE,
           liveId: null,
         }
       });
       if (response.data.length > 0) {
-        setVideos((prevVideos) => [response.data[0], ...prevVideos]);
-        currentClipIdRef.current = response.data[0].id; // 최신 값 갱신
+        setVideos((prevVideos) => [...response.data, ...prevVideos]);
+        const newCurrentId = response.data[0].id;
+        setCurrentClipId(newCurrentId);
+        currentClipIdRef.current = newCurrentId;
       }
     } catch (error) {
       console.error("Failed to fetch next clip", error);
@@ -169,9 +175,13 @@ const VideoClipPage = () => {
           aspectRatio: 16 / 10,
           backgroundColor: "beige",
         }}
+        // 추가 이벤트로 슬라이드 변화 확인
+        onSlideChange={(swiper) => {
+          console.log("Slide changed. Active index:", swiper.activeIndex);
+        }}
       >
         {videos.map((video, idx) => (
-          <SwiperSlide key={idx}>
+          <SwiperSlide key={video.id}>
             <VideoPlayer
               ref={(el) => (videoRefs.current[idx] = el!)}
               src={video.videoUrl}
