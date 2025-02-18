@@ -23,11 +23,11 @@ public record CrewResponseDTO(
         String imageUrl,
         String promotionUrl,
         LocalDateTime createDate,
-        Integer followerCnt,
+        Long followerCount,
         Boolean isFollowed
 ) {
 
-    public static CrewResponseDTO from(Crew crew, Boolean isFollowed) {
+    public static CrewResponseDTO from(Crew crew, Boolean isFollowed, Long followerCount) {
         return new CrewResponseDTO(
                 crew.getId(),
                 crew.getSchedules() == null ? null : crew.getSchedules().stream().map(ScheduleDTO::new).toList(),
@@ -40,7 +40,7 @@ public record CrewResponseDTO(
                 crew.getImageUrl(),
                 crew.getPromotionUrl(),
                 crew.getCreateDate(),
-                crew.getFollows().size(),
+                followerCount,
                 isFollowed
         );
     }

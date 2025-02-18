@@ -21,19 +21,24 @@ import com.ssafy.butter.domain.crew.repository.genre.GenreRepository;
 import com.ssafy.butter.domain.member.entity.Member;
 import com.ssafy.butter.domain.member.service.member.MemberService;
 import com.ssafy.butter.infrastructure.awsS3.ImageUploader;
+import com.ssafy.butter.infrastructure.redis.RedisManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
 @Transactional
 public class  CrewServiceImpl implements CrewService {
 
+    private final long FOLLOW_COUNT_TTL = 3600;
+
     private final MemberService memberService;
     private final ImageUploader imageUploader;
+    private final RedisManager redisManager;
 
     private final CrewRepository crewRepository;
     private final CrewMemberRepository crewMemberRepository;
@@ -72,7 +77,7 @@ public class  CrewServiceImpl implements CrewService {
                 .isCrewAdmin(true)
                 .build());
 
-        return CrewResponseDTO.from(savedCrew, false);
+        return CrewResponseDTO.from(savedCrew, false, 0L);
     }
 
     /**
@@ -129,7 +134,7 @@ public class  CrewServiceImpl implements CrewService {
     public List<CrewResponseDTO> getCrewList(AuthInfoDTO currentUser, CrewListRequestDTO crewListRequestDTO) {
         Member member = memberService.findById(currentUser.id());
         return crewRepository.getCrewList(crewListRequestDTO).stream()
-                .map(crew -> CrewResponseDTO.from(crew, isFollowing(member, crew))).toList();
+                .map(crew -> CrewResponseDTO.from(crew, isFollowing(member, crew), getFollowCount(crew.getId()))).toList();
     }
 
     /**
@@ -143,7 +148,7 @@ public class  CrewServiceImpl implements CrewService {
     public CrewResponseDTO getCrewDetail(AuthInfoDTO currentUser, Long id) {
         Member member = memberService.findById(currentUser.id());
         Crew crew = crewRepository.findById(id).orElseThrow();
-        return CrewResponseDTO.from(crew, isFollowing(member, crew));
+        return CrewResponseDTO.from(crew, isFollowing(member, crew), getFollowCount(crew.getId()));
     }
 
     /**
@@ -164,7 +169,7 @@ public class  CrewServiceImpl implements CrewService {
         }
 
         crew.update(crewSaveRequestDTO, imageUrl);
-        return CrewResponseDTO.from(crewRepository.save(crew), isFollowing(currentMember, crew));
+        return CrewResponseDTO.from(crewRepository.save(crew), isFollowing(currentMember, crew), getFollowCount(crew.getId()));
     }
 
     /**
@@ -179,7 +184,7 @@ public class  CrewServiceImpl implements CrewService {
         Crew crew = crewRepository.findById(id).orElseThrow();
         validateCrewAdmin(crew, currentMember);
         crewRepository.delete(crew);
-        return CrewResponseDTO.from(crew, false);
+        return CrewResponseDTO.from(crew, false, 0L);
     }
 
     /**
@@ -204,6 +209,12 @@ public class  CrewServiceImpl implements CrewService {
                     .isFollowed(true)
                     .build();
             followRepository.save(follow);
+
+            Optional.ofNullable(redisManager.getData(String.valueOf(crewFollowRequestDTO.crewId())))
+                    .ifPresentOrElse(
+                            ignored -> redisManager.incrementValue(String.valueOf(crewFollowRequestDTO.crewId()), 1),
+                            () -> updateFollowCountFromRedis(crewFollowRequestDTO.crewId())
+                    );
         });
     }
 
@@ -262,7 +273,7 @@ public class  CrewServiceImpl implements CrewService {
     @Override
     public List<CrewResponseDTO> getFollowedCrewList(AuthInfoDTO currentUser) {
         return crewRepository.getFollowedCrewList(currentUser.id()).stream()
-                .map(crew -> CrewResponseDTO.from(crew, true)).toList();
+                .map(crew -> CrewResponseDTO.from(crew, true, getFollowCount(crew.getId()))).toList();
     }
 
     @Override
@@ -274,8 +285,20 @@ public class  CrewServiceImpl implements CrewService {
         return crewMember;
     }
 
+    @Override
+    public long getFollowCount(Long crewId) {
+        return Optional.ofNullable(redisManager.getData(String.valueOf(crewId)))
+                .map(Long::parseLong)
+                .orElseGet(() -> followRepository.countFollowByCrewIdAndIsFollowed(crewId, true));
+    }
+
     private boolean isFollowing(Member member, Crew crew) {
         return crew.getFollows().stream()
                 .anyMatch(follow -> follow.getMember().equals(member) && follow.getIsFollowed());
+    }
+
+    private void updateFollowCountFromRedis(Long crewId){
+        Long likeCount = followRepository.countFollowByCrewIdAndIsFollowed(crewId, true);
+        redisManager.setDataExpire(String.valueOf(crewId), String.valueOf(likeCount), FOLLOW_COUNT_TTL);
     }
 }

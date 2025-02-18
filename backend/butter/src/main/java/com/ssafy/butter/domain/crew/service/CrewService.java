@@ -43,4 +43,6 @@ public interface CrewService {
     List<CrewResponseDTO> getFollowedCrewList(AuthInfoDTO currentUser);
     
     CrewMember validateCrewAdmin(Crew crew, Member member);
+
+    long getFollowCount(Long crewId);
 }

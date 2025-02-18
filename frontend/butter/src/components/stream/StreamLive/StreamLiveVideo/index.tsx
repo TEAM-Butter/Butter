@@ -8,13 +8,17 @@ interface StreamLiveVideoProps {
   local?: boolean;
   roomName: string;
   role: string;
+  fakeTitle: string;
+  avatarType: string | null;
 }
 
 function StreamLiveVideo({
   track,
   participantIdentity,
   roomName,
+  fakeTitle,
   role,
+  avatarType,
   local = false, // local 속성 추가
 }: StreamLiveVideoProps) {
   const videoElement = useRef<HTMLVideoElement | null>(null);
@@ -45,6 +49,7 @@ function StreamLiveVideo({
             //수정
             formData.append("role", role);
             formData.append("room-id", roomName);
+            formData.append("avatarType", avatarType ? avatarType : "");
 
             const serverUrl = `${
               import.meta.env.VITE_FLASK_SERVER
@@ -131,7 +136,7 @@ function StreamLiveVideo({
   return (
     <div id={"camera-" + participantIdentity} className="video-container">
       <div className="participant-data">
-        <p>{roomName}</p>
+        <p>{fakeTitle}</p>
         <p>{participantIdentity}</p>
       </div>
       <video ref={videoElement} id={track.sid}></video>
