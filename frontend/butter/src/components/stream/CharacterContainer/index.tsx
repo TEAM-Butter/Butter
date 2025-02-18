@@ -19,6 +19,7 @@ import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import ThumbUpAltOutlinedIcon from "@mui/icons-material/ThumbUpAltOutlined";
 import BakeryDiningOutlinedIcon from "@mui/icons-material/BakeryDiningOutlined";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
+import clapclap from "../../../assets/clapclap.png";
 import { ContactEmergency } from "@mui/icons-material";
 // const images = [pet1, pet2, pet3, pet4, pet5, pet6];
 
@@ -119,6 +120,14 @@ const TotalLikesInfo = styled.div`
   gap: 2px;
 `;
 
+const ClapBox = styled.img`
+  width: 25vh;
+  height: 50px;
+  position: absolute;
+  top: 70%;
+  right: 30px;
+`;
+
 interface CharacterContainer {
   socket: Socket;
   participantName: string;
@@ -164,6 +173,8 @@ const CharacterContainer = ({
     isEmoting: false,
     currentEmotion: heart, // 기본값을 heart 이미지로 설정
   });
+
+  const [publisherClap, setPublisherClap] = useState(false);
 
   // 사용자별 마지막 액션 시간 관리
   const lastActionTimeMap = useRef(new Map<number, number>());
@@ -241,6 +252,13 @@ const CharacterContainer = ({
     [myEmotionState.isEmoting]
   );
 
+  const handlePublisherEmotion = useCallback(() => {
+    setPublisherClap((prev) => !prev);
+    setTimeout(() => {
+      setPublisherClap((prev) => !prev);
+    }, EMOTION_DURATION);
+  }, [publisherClap]);
+
   const handleOtherEmotion = useCallback(
     (userId: number, emotionType: string) => {
       if (userId === MY_CHARACTER_INDEX || !canUserAct(userId)) return;
@@ -274,7 +292,6 @@ const CharacterContainer = ({
 
   const handleMessage = (content: SocketContent) => {
     console.log("웹소켓에서 participantName을 불러옵니다!!", participantName);
-    console.log("🙌🙌🙌🙌🙌🙌");
     setMembersCount(content.members?.length);
     console.log(content);
     if (content.roomMotions !== null) {
@@ -283,7 +300,7 @@ const CharacterContainer = ({
     }
     setMembers(content.members);
     const id = 1;
-    if (content.role === "publisher" && canUserAct(id)) {
+    if (content.role === "subscriber" && canUserAct(id)) {
       switch (content.label) {
         case "little_heart":
           console.log("여기❤️❤️❤️❤️❤️❤️");
@@ -316,6 +333,12 @@ const CharacterContainer = ({
             handleOtherEmotion(id, "mic");
           }
           break;
+      }
+    }
+    if (content.role === "publisher") {
+      if (content.label === "clap") {
+        console.log("👏👏👏👏👏👏👏");
+        handlePublisherEmotion();
       }
     }
   };
@@ -408,6 +431,7 @@ const CharacterContainer = ({
           <Character src={pet1} />
         </CharacterBox>
       ))}
+      {publisherClap && <ClapBox src={clapclap} />}
     </CharacterContainerWrapper>
   );
 };
