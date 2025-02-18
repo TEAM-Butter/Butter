@@ -153,11 +153,10 @@ export class ClipService {
     }
   }
 
-  async saveClipRecording(title, clipName) {
+  async saveClipRecording(title, clipName, clipUrl) {
     try {
       // INSERT 쿼리 실행: crewId, title, videoName (clipName으로 저장)
       const crewId = this.getCrewIdToClipName(clipName);
-      const clipUrl = await this.getClipUrl(this.getClipKey(clipName));
       const sql =
         "INSERT INTO clip (crew_id, title, video_name, video_url) VALUES (?, ?, ?, ?)";
       await dbService.query(sql, [crewId, title, clipName, clipUrl]);
