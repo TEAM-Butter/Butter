@@ -1,9 +1,11 @@
 package com.ssafy.butter.domain.crew.dto.response;
 
 import com.ssafy.butter.domain.crew.entity.Crew;
+import com.ssafy.butter.domain.crew.entity.CrewMember;
 import com.ssafy.butter.domain.crew.entity.Notice;
 import com.ssafy.butter.domain.live.dto.BaseLiveDTO;
 import com.ssafy.butter.domain.live.entity.Live;
+import com.ssafy.butter.domain.member.entity.Member;
 import com.ssafy.butter.domain.schedule.dto.BaseScheduleDTO;
 import com.ssafy.butter.domain.schedule.entity.Schedule;
 import lombok.Getter;
@@ -35,6 +37,24 @@ public record CrewResponseDTO(
                 crew.getLives() == null ? null : crew.getLives().stream().map(LiveDTO::new).toList(),
                 crew.getCrewGenres() == null ? null : crew.getCrewGenres().stream().map(crewGenre -> crewGenre.getGenre().getName()).toList(),
                 crew.getCrewMembers() == null ? null : crew.getCrewMembers().stream().map(crewMember -> CrewMemberResponseDTO.from(crewMember.getMember())).toList(),
+                crew.getName(),
+                crew.getDescription(),
+                crew.getImageUrl(),
+                crew.getPromotionUrl(),
+                crew.getCreateDate(),
+                followerCount,
+                isFollowed
+        );
+    }
+
+    public static CrewResponseDTO from(Crew crew, Member creator, Boolean isFollowed, Long followerCount) {
+        return new CrewResponseDTO(
+                crew.getId(),
+                crew.getSchedules() == null ? null : crew.getSchedules().stream().map(ScheduleDTO::new).toList(),
+                crew.getNotices(),
+                crew.getLives() == null ? null : crew.getLives().stream().map(LiveDTO::new).toList(),
+                crew.getCrewGenres() == null ? null : crew.getCrewGenres().stream().map(crewGenre -> crewGenre.getGenre().getName()).toList(),
+                List.of(CrewMemberResponseDTO.from(creator)),
                 crew.getName(),
                 crew.getDescription(),
                 crew.getImageUrl(),
