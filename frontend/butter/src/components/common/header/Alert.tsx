@@ -160,6 +160,10 @@ interface AlertProps {
   isToggle: boolean;
 }
 
+interface CustomMessageDto extends MessageEvent{
+  id?: string,
+}
+
 export const Alert = ({ isToggle }: AlertProps) => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const eventSource = useRef<EventSource | null>(null);
@@ -193,7 +197,7 @@ export const Alert = ({ isToggle }: AlertProps) => {
     eventSource.current.onopen = () => {
       console.log("✅ SSE 연결 성공");
     };
-    eventSource.current.addEventListener("sse", (event: MessageEvent) => {
+    eventSource.current.addEventListener("sse", (event: CustomMessageDto) => {
       console.log("🎯 'sse' 이벤트 수신:", event.data);
       let data: NotificationData;
       try {
