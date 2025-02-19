@@ -40,13 +40,17 @@ const LiveContainer = styled.div`
   width: 100%;
   justify-content: first baseline;
 `;
-
-const LiveCard = styled.div`
+const LiveCard = styled.div<{ thumbnail?: string }>`
+  ${(props) =>
+    props.thumbnail
+      ? `background-image: url(${props.thumbnail});`
+      : `background-color: gray;`}
+  background-size: cover;
+  background-position: center;
   width: 300px;
   height: 300px;
   border-radius: 20px;
 `;
-
 interface ScheduleInfo {
   title: string;
   place: string;
@@ -54,6 +58,7 @@ interface ScheduleInfo {
 }
 
 interface CrewInfo {
+  imageUrl: string;
   id: string;
   name: string;
   genres: string[];
@@ -64,6 +69,7 @@ interface Live {
   title: string;
   schedule: ScheduleInfo;
   crew: CrewInfo;
+  thumbnailUrl: string;
 }
 
 const LiveListPage = () => {
@@ -72,31 +78,23 @@ const LiveListPage = () => {
   const sortBy = "startDate";
 
   useEffect(() => {
-    const GetLiveList = async () => {
+    const GetLiveList = async (genre: string) => {
       try {
-        // ✅ 헤더 추가: Authorization (JWT 토큰 포함)
-        if (genreToggle == "All") {
-          const response = await axiosInstance.get(
-            `/live/list?pageSize=10&sortBy=${sortBy}`
-          );
-          setpresentlivelist(response.data);
-        } else {
-          console.log("genreToggle🤣🤣🤣", genreToggle);
-          const response = await axiosInstance.get(
-            `/live/list?pageSize=10&sortBy=${sortBy}&crewGenre=${genreToggle}`
-          );
-          console.log("Filtered genre response:", response.data);
-          setpresentlivelist(response.data);
-        } // 크루 리스트 정보 받아옴
+        const endpoint =
+          genre === "All"
+            ? `/live/list?pageSize=10&sortBy=${sortBy}`
+            : `/live/list?pageSize=10&sortBy=${sortBy}&crewGenre=${genre}`;
+
+        const response = await axiosInstance.get(endpoint);
+        setpresentlivelist(response.data);
       } catch (err) {
-        console.log("에러뜸뜸", err);
+        console.error("에러 발생:", err);
+        setpresentlivelist([]);
       }
-      console.log("성공공");
     };
 
-    GetLiveList();
-  }, [genreToggle]);
-
+    GetLiveList(genreToggle);
+  }, [genreToggle, sortBy]);
   console.log(presentlivelist);
 
   return (
@@ -114,12 +112,17 @@ const LiveListPage = () => {
         <GenreToggle setGenreToggle={setGenreToggle} />
         <LiveContainer>
           {presentlivelist.map((live) => (
-            <LiveCard key={live.id}>
+            <LiveCard
+              key={live.id}
+              thumbnail={live.thumbnailUrl || live.crew.imageUrl}
+            >
               <LiveBox
-                id={live.crew.id}
-                title={live.title}
-                genres={live.crew.genres}
-                location={"임의의 장소"}
+                id={live.id || ""}
+                title={live.title || "제목 없음"}
+                genres={
+                  Array.isArray(live.crew?.genres) ? live.crew.genres : []
+                }
+                location={live.schedule?.place || "장소 정보 없음"}
               />
             </LiveCard>
           ))}
