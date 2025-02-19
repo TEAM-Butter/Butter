@@ -96,6 +96,7 @@ return (
             ></StreamingTitleInput>
             <SelectWrapper>
                 <Select
+                    placeholder="버스킹 일정을 선택해 주세요."
                     options={options}
                     styles={selectStyles}
                     value={options ? options.filter(option => selectedOptions.includes(option.value)) : null}
