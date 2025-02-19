@@ -253,6 +253,11 @@ function StreamLiveVideo({
   useEffect(() => {
     if (videoElement.current) {
       track.attach(videoElement.current);
+
+      if (local) {
+        sendThumbnailToServer();
+      }
+
       const intervalId = local
         ? setInterval(sendThumbnailToServer, thumbnailInterval)
         : null;
