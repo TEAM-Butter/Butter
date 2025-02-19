@@ -3,8 +3,8 @@ import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import styled from "@emotion/styled";
 import Select from "react-select";
-import { axiosInstance } from "../../../apis/axiosInstance.ts";
-import { useEffect } from "react";
+import { useState } from "react";
+import { myCrewScheduleRequest } from "../../../apis/request/schedule/scheduleRequest.ts";
 
 interface ModalSizeProps {
 width: string;
@@ -35,7 +35,11 @@ const SelectWrapper = styled.div`
   width: 90%;
 `;
 
+const options = (await myCrewScheduleRequest())?.map(myCrewScheduleResponseDto => {
+    return { value: myCrewScheduleResponseDto.id.toString(), label: myCrewScheduleResponseDto.title };
+});
 export const StreamingModal = ({ setModalType, width, height }: ModalProps) => {
+const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
 const { register, handleSubmit } = useForm();
 const navigate = useNavigate(); // useNavigate 훅 추가
 const onSubmit: SubmitHandler<FieldValues> = (data) => {
@@ -44,13 +48,30 @@ const onSubmit: SubmitHandler<FieldValues> = (data) => {
         roomName: data.roomName,
         role: "publisher",
         participantName: "dahee",
+        scheduleId: selectedOptions[0],
     },
     });
     setModalType("");
 };
-useEffect(() => {
-    
-});
+const selectStyles = {
+  control: (styles: any) => ({
+    ...styles,
+    backgroundColor: "black",
+    border: "1px solid var(--yellow)",
+    borderRadius: "10px",
+    width: "100%",
+    padding: "5px",
+    color: "black",
+  }),
+  menu: (styles: any) => ({ ...styles, backgroundColor: "black" }),
+  multiValue: (styles: any) => ({
+    ...styles,
+    backgroundImage: "var(--liner)",
+    borderRadius: "20px",
+    padding: "3px 5px",
+    marginRight: "5px",
+  }),
+};
 return (
     <>
     <MC.ModalOverlay />
@@ -74,20 +95,18 @@ return (
             {...register("roomName", { required: true })}
             ></StreamingTitleInput>
             <SelectWrapper>
-              <Select
-                options={options}
-                styles={selectStyles}
-                value={options.filter(option => selectedOptions.includes(option.value))}
-                onChange={(selectedOptions) => {
-                  const values = selectedOptions ? selectedOptions.map(option => option.value) : [];
-                  if (values.length <= 3) {
-                    setSelectedOptions(values);
-                    setFormData((prev) => ({ ...prev, genres: values }));
-                  }
-                }}
-                isMulti
-                required
-              ></Select>
+                <Select
+                    options={options}
+                    styles={selectStyles}
+                    value={options ? options.filter(option => selectedOptions.includes(option.value)) : null}
+                    onChange={(selectedOptions) => {
+                        const values = selectedOptions ? selectedOptions.map(option => option.value) : [];
+                        if (values.length <= 1) {
+                            setSelectedOptions(values);
+                        }
+                    }}
+                    isMulti
+                ></Select>
             </SelectWrapper>
             <MC.LtBtnWrapper>
             <MC.BorderBtn
