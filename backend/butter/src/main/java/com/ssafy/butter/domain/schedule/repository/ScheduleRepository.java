@@ -23,4 +23,6 @@ public interface ScheduleRepository {
     List<Schedule> getScheduleList(ScheduleSearchRequestDTO scheduleSearchRequestDTO);
 
     List<Schedule> getLikedScheduleList(Long memberId);
+
+    List<Schedule> getMyCrewScheduleList(Long memberId);
 }

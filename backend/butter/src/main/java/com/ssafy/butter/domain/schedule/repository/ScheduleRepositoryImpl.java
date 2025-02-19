@@ -1,8 +1,11 @@
 package com.ssafy.butter.domain.schedule.repository;
 
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.ssafy.butter.domain.crew.entity.Crew;
+import com.ssafy.butter.domain.crew.entity.QCrew;
+import com.ssafy.butter.domain.crew.entity.QCrewMember;
 import com.ssafy.butter.domain.member.entity.QMember;
 import com.ssafy.butter.domain.schedule.dto.request.ScheduleSearchRequestDTO;
 import com.ssafy.butter.domain.schedule.entity.QLikedSchedule;
@@ -23,6 +26,8 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
     private final QSchedule qSchedule = QSchedule.schedule;
     private final QLikedSchedule qLikedSchedule = QLikedSchedule.likedSchedule;
     private final QMember qMember = QMember.member;
+    private final QCrew qCrew = QCrew.crew;
+    private final QCrewMember qCrewMember = QCrewMember.crewMember;
 
     private final ScheduleJpaRepository scheduleJpaRepository;
     private final JPAQueryFactory jpaQueryFactory;
@@ -82,6 +87,20 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
                 .join(qLikedSchedule.member, qMember).fetchJoin()
                 .where(createLikedScheduleListCondition(memberId))
                 .orderBy(qLikedSchedule.id.desc())
+                .fetch();
+    }
+
+    @Override
+    public List<Schedule> getMyCrewScheduleList(Long memberId) {
+        return jpaQueryFactory.selectDistinct(qSchedule)
+                .from(qSchedule)
+                .where(qSchedule.crew.id.in(
+                        JPAExpressions.select(qCrewMember.crew.id)
+                                .from(qCrewMember)
+                                .where(qCrewMember.member.id.eq(memberId)
+                                        .and(qCrewMember.isCrewAdmin.isTrue()))
+                ))
+                .orderBy(qSchedule.id.desc())
                 .fetch();
     }
 
