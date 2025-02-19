@@ -36,11 +36,13 @@ interface CharacterProps {
 
 const CharacterBox = styled(motion.div)<CharacterProps>`
   position: absolute;
+  display: flex;
+  flex-direction: column;
   width: 10vh;
 
   align-items: center;
   left: ${(props) => props.left}%;
-  bottom: 20%;
+  bottom: 10%;
   transform: translate(-50%, -50%);
 `;
 const EmotionBox = styled.div`
@@ -125,6 +127,16 @@ const ClapBox = styled.img`
   position: absolute;
   top: 70%;
   right: 30px;
+`;
+
+const CharacterName = styled.div`
+  display: flex;
+  justify-content: center;
+  font-weight: 300;
+  background-color: rgba(1, 1, 1, 0.5);
+  padding: 2px;
+  padding-left: 6px;
+  padding-right: 6px;
 `;
 
 interface CharacterContainer {
@@ -469,6 +481,7 @@ const CharacterContainer = ({
               />
             </EmotionBox>
             <Character src={getAvatarImage(member.avatarType)} />
+            <CharacterName>{member.nickname}</CharacterName>
           </CharacterBox>
         ))}
       {publisherClap && <ClapBox src={clapclap} />}
