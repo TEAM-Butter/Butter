@@ -1,6 +1,5 @@
 import os
 import torch
-import concurrent.futures
 from ultralytics import YOLO  # Ensure ultralytics package is installed
 
 # YOLO v10 모델 로드
@@ -12,7 +11,7 @@ print(f"🔹 Using device: {device}")
 model = YOLO(MODEL_PATH)  # Ensure the correct model file is used
 model.to(device)
 
-def process_single_frame(frame):
+def process_frame(frame):
     """
     YOLO v10을 사용해 실시간 영상 프레임을 분석하는 함수.
     
@@ -40,12 +39,3 @@ def process_single_frame(frame):
                         }
 
     return detection
-
-def process_frames_parallel(frames):
-    results = []
-    with concurrent.futures.ThreadPoolExecutor() as executor:  # 또는 ProcessPoolExecutor
-        futures = [executor.submit(process_single_frame, frame) for frame in frames]
-        for future in concurrent.futures.as_completed(futures):
-            results.append(future.result())
-
-    return results
