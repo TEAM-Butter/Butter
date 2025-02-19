@@ -21,7 +21,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     properties:
       hibernate:
         format_sql: true
@@ -30,10 +30,10 @@ spring:
         default_batch_fetch_size: 1000
     defer-datasource-initialization: true
 
-  sql:
-    init:
-      mode: always
-      data-locations: classpath:data-local.sql
+#  sql:
+#    init:
+#      mode: always
+#      data-locations: classpath:data-local.sql
 
   mail:
     host: smtp.gmail.com
