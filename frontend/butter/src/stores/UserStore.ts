@@ -26,7 +26,7 @@ interface UserState {
 export const useUserStore = create<UserState>()(
   persist(
     (set) => ({
-      isLogin: !!getAccessToken(),
+      isLogin: false,
       nickname: null,
       profileImage: null,
       avatarType: null,

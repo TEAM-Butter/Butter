@@ -8,10 +8,10 @@ import lombok.Getter;
 public class NotificationDTO {
 
     private Long id;
+    private String crewImageUrl;
+    private String crewName;
     private String content;
     private Long receiver;
     private String url;
     private String notificationType;
-    private char readYn;
-    private char deletedYn;
 }

@@ -14,4 +14,6 @@ public interface LikedClipRepository {
     Optional<LikedClip> findByMemberAndClip(Member member, Clip clip);
 
     long countLikedClipByClipAndIsLiked(Clip clip, @NotNull Boolean isLiked);
+
+    void delete(LikedClip likedClip);
 }

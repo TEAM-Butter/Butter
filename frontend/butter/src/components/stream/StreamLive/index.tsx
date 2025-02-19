@@ -71,9 +71,6 @@ const StreamLive = ({
                         role={role}
                         avatarType={avatarType}
                       />
-                      {/* <div className="absolute bottom-2 left-2 bg-black bg-opacity-50 px-2 py-1 rounded text-white text-sm">
-                        {participantName}
-                      </div> */}
                     </div>
                   )}
 

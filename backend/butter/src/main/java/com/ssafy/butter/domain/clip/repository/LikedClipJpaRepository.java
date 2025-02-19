@@ -13,4 +13,6 @@ public interface LikedClipJpaRepository extends JpaRepository<LikedClip, Long> {
     Optional<LikedClip> findByMemberAndClip(Member member, Clip clip);
 
     long countLikedClipByClipAndIsLiked(Clip clip, @NotNull Boolean isLiked);
+
+    void delete(LikedClip likedClip);
 }

@@ -6,9 +6,9 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum NotificationType {
-    NOTICE("공지", "/notices/"),
-    SCHEDULE("일정", "/schedules/"),
-    LIVE("라이브", "/lives/");
+    NOTICE("CREW_NOTICE", "/crew/detail/"),
+    SCHEDULE("CREW_SCHEDULE", "/crew/detail/"),
+    LIVE("LIVE_START", "/stream/");
 
     private final String alias;
     private final String path;

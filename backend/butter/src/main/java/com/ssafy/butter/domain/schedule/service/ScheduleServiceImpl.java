@@ -134,6 +134,13 @@ public class ScheduleServiceImpl implements ScheduleService {
                 .map(schedule -> new ScheduleResponseDTO(schedule, true)).toList();
     }
 
+    @Override
+    public List<ScheduleResponseDTO> getMyCrewScheduleList(AuthInfoDTO currentUser) {
+        Member member = memberService.findById(currentUser.id());
+        return scheduleRepository.getMyCrewScheduleList(currentUser.id()).stream()
+                .map(schedule -> new ScheduleResponseDTO(schedule, isLiking(member, schedule))).toList();
+    }
+
     private boolean isLiking(Member member, Schedule schedule) {
         return schedule.getLikedSchedules().stream()
                 .anyMatch(likedSchedule -> likedSchedule.getMember().equals(member) && likedSchedule.getIsLiked());

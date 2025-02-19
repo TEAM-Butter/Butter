@@ -2,7 +2,6 @@ import styled from "@emotion/styled";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Mousewheel } from "swiper/modules";
 import { useEffect, useRef, useState } from "react";
-import axios from "axios";
 import { axiosInstance } from "../../apis/axiosInstance";
 
 const VideoClipPageWrapper = styled.div`
@@ -24,6 +23,23 @@ const VideoPlayer = styled.video`
   border-radius: 4px;
 `;
 
+const HeartButton = styled.button`
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  background: none;
+  border: none;
+  font-size: 40px;
+  cursor: pointer;
+  z-index: 10;
+`;
+
+const LikeCountSpan = styled.span`
+  margin-left: 8px;
+  font-size: 40px;
+`;
+
+
 interface Video {
   id: string; // 녹화 ID
   crewId: number; // 녹화된 크루 ID
@@ -31,6 +47,8 @@ interface Video {
   videoName: string; // 녹화 파일 이름
   videoUrl: string; // 녹화 파일 이름
   hitCount: number; // 조회수
+  isLiked: boolean;
+  likeCount: number;
 }
 
 const PAGE_SIZE = 10;
@@ -80,7 +98,13 @@ const VideoClipPage = () => {
         }
       });
       if (response.data.length > 0) {
-        setVideos((prevVideos) => [...prevVideos, ...response.data]);
+        setVideos((prevVideos) => {
+          // 이미 있는 clipId를 가진 클립은 제거
+          const newVideos = response.data.filter(
+            (video: Video) => !prevVideos.some((v) => v.id === video.id)
+          );
+          return [...prevVideos, ...newVideos];
+        });
         const newCurrentId = response.data[response.data.length - 1].id;
         setCurrentClipId(newCurrentId);
         currentClipIdRef.current = newCurrentId;
@@ -103,7 +127,13 @@ const VideoClipPage = () => {
         }
       });
       if (response.data.length > 0) {
-        setVideos((prevVideos) => [...response.data, ...prevVideos]);
+        setVideos((prevVideos) => {
+          // 이미 있는 clipId를 가진 클립은 제거
+          const newVideos = response.data.filter(
+            (video: Video) => !prevVideos.some((v) => v.id === video.id)
+          );
+          return [...prevVideos, ...newVideos];
+        });
         const newCurrentId = response.data[0].id;
         setCurrentClipId(newCurrentId);
         currentClipIdRef.current = newCurrentId;
@@ -111,6 +141,30 @@ const VideoClipPage = () => {
     } catch (error) {
       console.error("Failed to fetch next clip", error);
     }
+  };
+
+  // 찜하기 버튼 토글 함수
+  const toggleLike = async (videoId: string) => {
+    setVideos((prevVideos) =>
+      prevVideos.map((video) => {
+        if (video.id === videoId) {
+          const newLiked = !video.isLiked;
+          const newCount = newLiked ? video.likeCount + 1 : video.likeCount - 1;
+          // API 호출: 새로 좋아요 등록하는 경우 POST, 취소하는 경우 DELETE 요청
+          if (newLiked) {
+            axiosInstance.post('/clip/like', { clipId: video.id }).catch((err) =>
+              console.error("Failed to like video", err)
+            );
+          } else {
+            axiosInstance.delete(`/clip/like/${video.id}`).catch((err) =>
+              console.error("Failed to unlike video", err)
+            );
+          }
+          return { ...video, isLiked: newLiked, likeCount: newCount };
+        }
+        return video;
+      })
+    );
   };
 
   // 슬라이드 변경 시 비디오 자동 재생
@@ -132,25 +186,6 @@ const VideoClipPage = () => {
       activeSlide.play();
     }
   };
-
-  //   prevIndex.current = swiper.realIndex; // 현재 슬라이드 인덱스 업데이트
-  // };
-
-  // 0 <-> 2 이동 시 play()가 실행되지 않는 문제 해결
-  // const handleTransitionEnd = (swiper: any) => {
-  //   if (
-  //     (prevIndex.current === 2 && swiper.realIndex === 0) ||
-  //     (prevIndex.current === 0 && swiper.realIndex === 2)
-  //   ) {
-  //     setTimeout(() => {
-  //       const video = videoRefs.current[swiper.realIndex];
-  //       if (video) {
-  //         video.currentTime = 0;
-  //         video.play();
-  //       }
-  //     }, 100); // Swiper가 슬라이드를 변경하는 타이밍을 맞추기 위해 지연
-  //   }
-  // };
 
   return (
     <VideoClipPageWrapper>
@@ -176,7 +211,7 @@ const VideoClipPage = () => {
         }}
       >
         {videos.map((video, idx) => (
-          <SwiperSlide key={video.id}>
+          <SwiperSlide key={`${video.id}-${idx}`}>
             <VideoPlayer
               ref={(el) => (videoRefs.current[idx] = el!)}
               src={video.videoUrl}
@@ -191,6 +226,10 @@ const VideoClipPage = () => {
                 e.currentTarget.play(); // 다시 자동 재생
               }}
             />
+            <HeartButton onClick={() => toggleLike(video.id)}>
+              <LikeCountSpan>{video.likeCount}</LikeCountSpan>
+              {video.isLiked ? "❤️" : "🤍"}
+            </HeartButton>
           </SwiperSlide>
         ))}
       </Swiper>

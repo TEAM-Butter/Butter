@@ -22,6 +22,11 @@ interface CheckLoginIdResponseDto {
     message: string,
 }
 
+interface CheckNicknameResponseDto {
+    exists: boolean,
+    message: string,
+}
+
 interface MemberExtraInfoResponseDto {
     nickname: string;
     profileImage: string;
@@ -40,4 +45,5 @@ export type {
     CheckLoginIdResponseDto,
     MemberExtraInfoResponseDto,
     PasswordUpdateResponseDto,
+    CheckNicknameResponseDto,
 }
