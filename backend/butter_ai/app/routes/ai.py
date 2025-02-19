@@ -5,11 +5,14 @@ import numpy as np
 import cv2
 from flask import Blueprint, request, jsonify
 from flask_socketio import join_room, leave_room, rooms
-from app.services.ai_service import process_frames_parallel
+from app.services.ai_service import process_frame
 from app.services import websocket_room_service
 
 from app import sock
+from concurrent.futures import ThreadPoolExecutor
 
+# ThreadPoolExecutor를 사용하여 비동기적으로 처리
+executor = ThreadPoolExecutor(max_workers=10)  # 동시에 처리할 수 있는 작업 수 설정
 ai_bp = Blueprint("ai", __name__)
 
 
@@ -29,7 +32,12 @@ def upload_frame():
     frame = cv2.imdecode(img_np, cv2.IMREAD_COLOR)  # OpenCV로 이미지 디코딩
 
     # YOLO v10 객체 탐지
-    detection = process_frames_parallel(frame)
+    # detection = process_frame(frame)
+    # 비동기적으로 YOLO 모델 예측 실행
+    future = executor.submit(process_frame, frame)
+    
+    detection = future.result() 
+
     if detection is None:
         detection = {"status": "no_object"}
     detection["participant"] = request.form.get("participant")
