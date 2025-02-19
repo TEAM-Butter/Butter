@@ -7,6 +7,7 @@ import com.ssafy.butter.auth.dto.AuthInfoDTO;
 import com.ssafy.butter.domain.bread.dto.request.BreadDonationRequestDTO;
 import com.ssafy.butter.domain.bread.dto.request.BreadRechargeRequestDTO;
 import com.ssafy.butter.domain.bread.dto.request.BreadSettlementRequestDTO;
+import com.ssafy.butter.domain.bread.dto.response.BreadAmountResponseDTO;
 import com.ssafy.butter.domain.bread.dto.response.PaymentVerificationResponseDTO;
 import com.ssafy.butter.domain.bread.service.BreadService;
 import com.ssafy.butter.global.token.CurrentUser;
@@ -17,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -115,5 +117,13 @@ public class BreadController {
             @RequestBody BreadSettlementRequestDTO breadSettlementRequestDTO) {
         breadService.settleBread(authInfoDTO, breadSettlementRequestDTO);
         return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "빵 보유량 조회", description = "로그인한 사용자의 빵 보유량을 조회합니다.")
+    @GetMapping
+    public ResponseEntity<BreadAmountResponseDTO> getBreadAmount(
+            @Parameter(hidden = true) @CurrentUser AuthInfoDTO authInfoDTO
+    ) {
+        return ResponseEntity.ok(breadService.getBreadAmount(authInfoDTO));
     }
 }
