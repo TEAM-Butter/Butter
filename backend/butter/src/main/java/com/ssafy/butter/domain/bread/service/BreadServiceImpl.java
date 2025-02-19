@@ -4,6 +4,7 @@ import com.ssafy.butter.auth.dto.AuthInfoDTO;
 import com.ssafy.butter.domain.bread.dto.request.BreadDonationRequestDTO;
 import com.ssafy.butter.domain.bread.dto.request.BreadRechargeRequestDTO;
 import com.ssafy.butter.domain.bread.dto.request.BreadSettlementRequestDTO;
+import com.ssafy.butter.domain.bread.dto.response.BreadAmountResponseDTO;
 import com.ssafy.butter.domain.bread.entity.BreadLog;
 import com.ssafy.butter.domain.bread.entity.BreadLogType;
 import com.ssafy.butter.domain.bread.repository.BreadLogRepository;
@@ -80,5 +81,10 @@ public class BreadServiceImpl implements BreadService {
                 .createDate(LocalDateTime.now())
                 .build();
         breadLogRepository.save(breadLog);
+    }
+
+    @Override
+    public BreadAmountResponseDTO getBreadAmount(AuthInfoDTO authInfoDTO) {
+        return new BreadAmountResponseDTO(memberService.findById(authInfoDTO.id()).getBreadAmount().getAmount());
     }
 }
