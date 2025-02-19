@@ -3,9 +3,12 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Mousewheel } from "swiper/modules";
 import { useEffect, useRef, useState } from "react";
 import { axiosInstance } from "../../apis/axiosInstance";
+import { div } from "framer-motion/client";
 
 const VideoClipPageWrapper = styled.div`
   max-width: 2000px;
+  width: 90%;
+  height: 90%;
   margin: auto;
   padding-top: 15px; // 하나로 통일
   overflow: hidden; // 추가
@@ -15,12 +18,17 @@ const T1 = styled.div`
   margin: 20px;
   font-size: 100px;
   font-weight: bold;
-  margin-bottom: 20px;
+  margin-bottom: 20x;
+`;
+
+const T2 = styled.div`
+  font-size: 25px;
+  margin: 10px;
+  margin-left: 30px;
 `;
 
 const VideoPlayer = styled.video`
   width: 100%;
-  border-radius: 4px;
 `;
 
 const HeartButton = styled.button`
@@ -34,11 +42,29 @@ const HeartButton = styled.button`
   z-index: 10;
 `;
 
+const NoContentBox = styled.div`
+  font-size: 25px;
+  margin: 10px;
+  width: 100%;
+  height: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 30px;
+`;
+
+const NoContentContext = styled.div`
+  font-size: 30px;
+  padding: 25px;
+  padding-left: 70px;
+  padding-right: 70px;
+  border-radius: 20px;
+  background-color: rgba(1, 1, 1, 0.317);
+`;
 const LikeCountSpan = styled.span`
   margin-left: 8px;
   font-size: 40px;
 `;
-
 
 interface Video {
   id: string; // 녹화 ID
@@ -69,7 +95,7 @@ const VideoClipPage = () => {
             clipId: null,
             pageSize: PAGE_SIZE,
             liveId: null,
-          }
+          },
         });
         setVideos(response.data);
         if (response.data.length > 0) {
@@ -84,7 +110,6 @@ const VideoClipPage = () => {
     fetchInitialVideos();
   }, [SEVER_URL]);
 
-
   // 다음 클립 불러오기(아래)
   const fetchNextClip = async () => {
     console.log("next");
@@ -95,7 +120,7 @@ const VideoClipPage = () => {
           clipId: currentClipIdRef.current,
           pageSize: PAGE_SIZE,
           liveId: null,
-        }
+        },
       });
       if (response.data.length > 0) {
         setVideos((prevVideos) => {
@@ -124,7 +149,7 @@ const VideoClipPage = () => {
           clipId: currentClipId,
           pageSize: PAGE_SIZE,
           liveId: null,
-        }
+        },
       });
       if (response.data.length > 0) {
         setVideos((prevVideos) => {
@@ -152,13 +177,13 @@ const VideoClipPage = () => {
           const newCount = newLiked ? video.likeCount + 1 : video.likeCount - 1;
           // API 호출: 새로 좋아요 등록하는 경우 POST, 취소하는 경우 DELETE 요청
           if (newLiked) {
-            axiosInstance.post('/clip/like', { clipId: video.id }).catch((err) =>
-              console.error("Failed to like video", err)
-            );
+            axiosInstance
+              .post("/clip/like", { clipId: video.id })
+              .catch((err) => console.error("Failed to like video", err));
           } else {
-            axiosInstance.delete(`/clip/like/${video.id}`).catch((err) =>
-              console.error("Failed to unlike video", err)
-            );
+            axiosInstance
+              .delete(`/clip/like/${video.id}`)
+              .catch((err) => console.error("Failed to unlike video", err));
           }
           return { ...video, isLiked: newLiked, likeCount: newCount };
         }
@@ -190,49 +215,57 @@ const VideoClipPage = () => {
   return (
     <VideoClipPageWrapper>
       <T1>Video Clip</T1>
-      <Swiper
-        direction={"vertical"}
-        slidesPerView={1}
-        spaceBetween={30}
-        mousewheel={
-          true
-        }
-        pagination={{
-          clickable: true,
-        }}
-        onSlideNextTransitionStart={fetchNextClip} // 아래로 스크롤 -> 이전 클립
-        onSlidePrevTransitionStart={fetchPreviousClip} // 위로 스크롤 -> 다음 클립
-        onSlideChange={handleSlideChange}
-        modules={[Mousewheel]}
-        className="mySwiper"
-        style={{
-          aspectRatio: 16 / 10,
-          backgroundColor: "beige",
-        }}
-      >
-        {videos.map((video, idx) => (
-          <SwiperSlide key={`${video.id}-${idx}`}>
-            <VideoPlayer
-              ref={(el) => (videoRefs.current[idx] = el!)}
-              src={video.videoUrl}
-              controls
-              autoPlay
-              muted
-              style={{
-                aspectRatio: 16 / 9,
-              }}
-              onEnded={(e) => {
-                e.currentTarget.currentTime = 0; // 처음으로 이동
-                e.currentTarget.play(); // 다시 자동 재생
-              }}
-            />
-            <HeartButton onClick={() => toggleLike(video.id)}>
-              <LikeCountSpan>{video.likeCount}</LikeCountSpan>
-              {video.isLiked ? "❤️" : "🤍"}
-            </HeartButton>
-          </SwiperSlide>
-        ))}
-      </Swiper>
+      <T2>버스킹의 뜨거운 순간, 함께 느껴보세요</T2>
+      {videos ? (
+        <NoContentBox>
+          <NoContentContext>
+            아직 등록된 클립이 없습니다. 첫 번째 버스킹 영상의 주인공이
+            되어보세요!
+          </NoContentContext>
+        </NoContentBox>
+      ) : (
+        <Swiper
+          direction={"vertical"}
+          slidesPerView={1}
+          spaceBetween={30}
+          mousewheel={true}
+          pagination={{
+            clickable: true,
+          }}
+          onSlideNextTransitionStart={fetchNextClip} // 아래로 스크롤 -> 이전 클립
+          onSlidePrevTransitionStart={fetchPreviousClip} // 위로 스크롤 -> 다음 클립
+          onSlideChange={handleSlideChange}
+          modules={[Mousewheel]}
+          className="mySwiper"
+          style={{
+            aspectRatio: 16 / 10,
+            backgroundColor: "beige",
+          }}
+        >
+          {videos.map((video, idx) => (
+            <SwiperSlide key={`${video.id}-${idx}`}>
+              <VideoPlayer
+                ref={(el) => (videoRefs.current[idx] = el!)}
+                src={video.videoUrl}
+                controls
+                autoPlay
+                muted
+                style={{
+                  aspectRatio: 16 / 9,
+                }}
+                onEnded={(e) => {
+                  e.currentTarget.currentTime = 0; // 처음으로 이동
+                  e.currentTarget.play(); // 다시 자동 재생
+                }}
+              />
+              <HeartButton onClick={() => toggleLike(video.id)}>
+                <LikeCountSpan>{video.likeCount}</LikeCountSpan>
+                {video.isLiked ? "❤️" : "🤍"}
+              </HeartButton>
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      )}
     </VideoClipPageWrapper>
   );
 };

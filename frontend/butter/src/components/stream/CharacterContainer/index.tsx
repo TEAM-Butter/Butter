@@ -123,7 +123,7 @@ const TotalLikesInfo = styled.div`
 
 const ClapBox = styled.img`
   width: 25vh;
-  height: 50px;
+  height: 60px;
   position: absolute;
   top: 70%;
   right: 30px;
@@ -162,7 +162,7 @@ const CharacterContainer = ({
     isEmoting: false,
     currentEmotion: heart, // 기본값을 heart 이미지로 설정
   });
-
+  const [isPublisherAct, setIsPublisherAct] = useState(true);
   const [publisherClap, setPublisherClap] = useState(false);
 
   // 사용자별 마지막 액션 시간 관리
@@ -284,7 +284,6 @@ const CharacterContainer = ({
   );
 
   const handlePublisherEmotion = useCallback(() => {
-    setPublisherClap((prev) => !prev);
     setTimeout(() => {
       setPublisherClap((prev) => !prev);
     }, EMOTION_DURATION);
@@ -484,7 +483,7 @@ const CharacterContainer = ({
             <CharacterName>{member.nickname}</CharacterName>
           </CharacterBox>
         ))}
-      {publisherClap && <ClapBox src={clapclap} />}
+      {publisherClap && isPublisherAct && <ClapBox src={clapclap} />}
     </CharacterContainerWrapper>
   );
 };
