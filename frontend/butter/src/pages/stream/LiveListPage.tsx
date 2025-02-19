@@ -40,13 +40,7 @@ const LiveContainer = styled.div`
   width: 100%;
   justify-content: first baseline;
 `;
-const LiveCard = styled.div<{ thumbnail?: string }>`
-  ${(props) =>
-    props.thumbnail
-      ? `background-image: url(${props.thumbnail});`
-      : `background-color: gray;`}
-  background-size: cover;
-  background-position: center;
+const LiveCard = styled.div`
   width: 300px;
   height: 300px;
   border-radius: 20px;
@@ -111,21 +105,22 @@ const LiveListPage = () => {
       <div>
         <GenreToggle setGenreToggle={setGenreToggle} />
         <LiveContainer>
-          {presentlivelist.map((live) => (
-            <LiveCard
-              key={live.id}
-              thumbnail={live.thumbnailUrl || live.crew.imageUrl}
-            >
-              <LiveBox
-                id={live.id || ""}
-                title={live.title || "제목 없음"}
-                genres={
-                  Array.isArray(live.crew?.genres) ? live.crew.genres : []
-                }
-                location={live.schedule?.place || "장소 정보 없음"}
-              />
-            </LiveCard>
-          ))}
+          {presentlivelist.map((live) => {
+            return (
+              <LiveCard key={live.id}>
+                <LiveBox
+                  id={live.id || ""}
+                  title={live.title || "제목 없음"}
+                  genres={
+                    Array.isArray(live.crew?.genres) ? live.crew.genres : []
+                  }
+                  location={live.schedule?.place || "장소 정보 없음"}
+                  crewImg={live.crew.imageUrl}
+                  thumbnail={live.thumbnailUrl}
+                />
+              </LiveCard>
+            );
+          })}
         </LiveContainer>
       </div>
     </LiveListPageWrapper>
