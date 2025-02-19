@@ -490,6 +490,7 @@ const LivePage = () => {
           const requestData = {
             crewId: roomName, // number 또는 string 값
             title: fakeTitle,
+            scheduleId: null,
           };
 
           //scheduleId가 존재하면 추가
