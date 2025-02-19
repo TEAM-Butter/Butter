@@ -17,6 +17,7 @@ import sample3 from "../../assets/sample3.jpg";
 import sample4 from "../../assets/sample4.jpg";
 import sample5 from "../../assets/sample5.png";
 import { axiosInstance } from "../../apis/axiosInstance"
+import { useCrewStore } from "../../stores/UserStore"
 
 
 const ServerUrl = 'http://localhost:8080'
@@ -253,7 +254,19 @@ function CrewNoticePage() {
     const [basicNum, setBasicNum] = useState<number>(noticeId)
 
 
+    
+    const [canSee, setCanSee] = useState(false)
+    const userCrewId = useCrewStore((state)=> state.id)
+    console.log(id)
+    console.log(userCrewId)
 
+    useEffect(()=>{
+        if ( Number(userCrewId) === Number(id)){
+            setCanSee(true)
+           
+        }
+    },[canSee])
+    console.log(canSee)
 
     const [image, setImage] = useState<any>(null); // 선택한 파일 저장
     const [preview, setPreview] = useState<string | null>(null); // 미리보기 이미지
@@ -405,22 +418,22 @@ function CrewNoticePage() {
     return (
         <PageContainer>
             <LayOut1>
-                <Box1>
-                    {crewDetail.name}
-                    <PlusBtnWrapper><div> Notice </div><div onClick={() => plusHandlerOn()} style={{ fontSize: "30px" }}>+</div></PlusBtnWrapper>
-                </Box1>
-                <Box2>
-                    <div>{
-                        crewDetail.notices.map((a: any, i: any) => {
-                            return (<NoticeWrapper> <NoticeImage src={a.imageUrl} alt="noticeImg"></NoticeImage><NoticeText><div style={{ fontSize: "20px" }}>{a.title}</div>  <div>{a.content}</div></NoticeText> <RightRightArrow onClick={() => { { setBasicNum(i); setSelectedNotice(crewDetail.notices[i].id) } }} src={rightRightArrow} alt='rightRightArrow'></RightRightArrow></NoticeWrapper>)
-                        })
-                    }
-                    </div>
-                </Box2>
-                <Box3 onClick={() => navigate(`/crew/detail/${id}`)}>
-                    <GoBackText><div>Back to the </div><CrewPageText>crew page</CrewPageText></GoBackText>
-                    {noticeSwitch && <RightRightArrow src={rightRightArrowBlack} alt="rightRightArrowBlack"></RightRightArrow>}
-                </Box3>
+            <Box1>
+                {crewDetail.name}
+            {canSee && <PlusBtnWrapper><div> Notice </div><div onClick={() => plusHandlerOn()} style={{fontSize: "30px"}}>+</div></PlusBtnWrapper>}
+            </Box1>
+            <Box2>
+            <div>{
+                crewDetail.notices.map((a:any, i:any) => {
+                    return ( <NoticeWrapper> <NoticeImage src={a.imageUrl} alt="noticeImg"></NoticeImage><NoticeText><div style={{fontSize: "20px"}}>{a.title}</div>  <div>{a.content}</div></NoticeText> <RightRightArrow onClick={() => {{setBasicNum(i); setSelectedNotice(crewDetail.notices[i].id)}}} src={rightRightArrow} alt='rightRightArrow'></RightRightArrow></NoticeWrapper> )
+                })
+            }
+            </div>
+            </Box2>
+            <Box3 onClick={() => navigate(`/crew/detail/${id}`)}>
+            <GoBackText><div>Back to the </div><CrewPageText>crew page</CrewPageText></GoBackText>
+            {noticeSwitch && <RightRightArrow src={rightRightArrowBlack} alt="rightRightArrowBlack"></RightRightArrow>}
+            </Box3>
             </LayOut1>
             <LayOut2>
                 {noticeSwitch &&
@@ -443,18 +456,12 @@ function CrewNoticePage() {
                         <div>Edit Notice</div>
                     </Box4>
                     <Box5>
-                        <TitleBox><input type="text" placeholder={crewDetail.notices[basicNum].title} value={Name} onChange={handleTitleChange} style={{ backgroundColor: "gray", height: "50px", width: "100%", color: "white", fontSize: "20px" }} /></TitleBox>
-                        <ContentBox><input type="text" placeholder={crewDetail.notices[basicNum].content} value={content} onChange={handleContentChange} style={{ backgroundColor: "gray", height: "400px", width: "100%", color: "white", fontSize: "15px" }} /></ContentBox>
-                        <FlexCan> <ImageBox><input type="file" accept="image/*" onChange={handleImageChange} />
-                            <div onClick={() => { { setPreview(null); setImage(null) } }}>x</div>
-                        </ImageBox>
-                            {/* {preview && <img src={preview} alt="Preview" width="200" />} */}
-                            <DeleteText onClick={() => { editHandlerOff(); setPreview(null); setImage(null) }}>취소</DeleteText>
-                            <PostText onClick={() => {
-                                NoticeEdit()
-                                    .then(() => editHandlerOff())
-                            }}>편집 완료</PostText>
-                        </FlexCan>
+                    <div> {crewDetail.notices.length  > 0 ? crewDetail.notices[basicNum].content : ""}  </div>
+                    <EditAndDelBtn>
+                    <NoticeImage2 src={crewDetail.notices[basicNum].imageUrl} alt="NoticeImage"></NoticeImage2>
+                        {canSee &&<DeleteButton src={deleteButton} alt="deleteButton" onClick={()=> {axiosInstance.delete(`crew/notice/${selectedNotice}`); alert("삭제성공!");  window.location.reload(); }}></DeleteButton>}
+                        {canSee &&<EditButton src={editButton} alt="editButton" onClick={()=> editHandlerOn()}></EditButton>}
+                    </EditAndDelBtn>
                     </Box5>
 
                 </div>}
