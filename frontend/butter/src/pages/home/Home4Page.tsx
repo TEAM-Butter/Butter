@@ -57,7 +57,7 @@ const InfoWrapper = styled.div`
     
     #info1 {
         font-size: 20px;
-        margin-bottom: 40px;
+        margin-bottom: 20px;
     }
     
     #info2 {
@@ -76,15 +76,22 @@ const LinkBtnBox = styled.div`
         padding: 15px 20px;
         font-size: 15px;
         font-weight: 300;
-        background-color: rgba(107, 102, 102, 0.1);
+        background-color: rgba(0,0,0,0.2);
         border-radius: 30px;
+        transition: all ease-in-out 0.2s;
     }
     
     #linkIcon {
         padding: 15px 16px;
         border-radius: 50%;
     }
-    `
+
+    &:hover{
+        #linkBtn, #linkIcon {
+            background-color: rgba(0,0,0,0.1);
+        }
+    }
+`
 
 const LtWrapper = styled.div`
     display: flex;
@@ -115,12 +122,15 @@ const Home4Page = () => {
                 <RtWrapper>
                     <InfoWrapper>
                         <div id="LgText">CREW</div>
-                        <div id="info1">Every moment is a chance to be the star, discover your next busking event.</div>
+                        <div id="info1">
+                            Find artists who touch your soul and follow the crews that inspire you.<br/>
+                            마음을 울리는 아티스트를 만나고, 영감을 주는 크루를 팔로우하세요.
+                        </div>
                         <div id="info2">
-                            버스킹 일정을 한눈에 쉽게 확인하고, 원하는 날짜와 장소를 설정해 손쉽게 탐색할 수 있습니다.
-                            크루가 등록한 다양한 버스킹 일정들을 지도에서 확인하며,
-                            언제 어디서든 나만의 특별한 공연을 찾을 수 있습니다.
-                            공연이 기다리는 그곳으로 떠나보세요!
+                            노래, 춤, 그리고 다양한 버스킹 퍼포먼스를 선보이는 아티스트들을 한곳에서 만나보세요. 
+                            크루의 상세 페이지에서는 버스킹 일정, 공지사항, 소개, 그리고 하이라이트 영상을 확인할 수 있습니다. 
+                            마음에 드는 크루를 팔로우하면, 새로운 버스킹 일정이 등록되거나 라이브가 시작될 때 가장 먼저 소식을 받아볼 수 있습니다. 
+                            지금, 나만의 특별한 크루를 찾아보세요!
                         </div>
                         <LinkBtnBox>
                             <div id="linkBtn">LINK TO STREAMING PAGE</div>
