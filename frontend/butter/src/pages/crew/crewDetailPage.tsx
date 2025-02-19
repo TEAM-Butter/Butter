@@ -445,7 +445,7 @@ function CrewDetailPage() {
                     <Box1Friend src={crewDetail.imageUrl} alt="crewImage"></Box1Friend>
   
                     <Right>
-                    {canSee && <EditButton onClick={() => handleEditClick()} src={editButton} alt="editButton"></EditButton>}
+                     <EditButton onClick={() => handleEditClick()} src={editButton} alt="editButton"></EditButton>
                     </Right>
                     <CrewNameWrapper>
                         <TextName> {crewDetail.name}</TextName>
@@ -645,7 +645,11 @@ const PlusButton = styled.img`
 `
 
 
-
+const ImageBox = styled.div`
+    display: flex;
+    gap : 10px;
+    align-items: center;
+`
 
 
 function CrewEditComponent1({ crewDetail, handleEditClick }: { crewDetail: any; handleEditClick: () => void }) {
@@ -806,17 +810,18 @@ function CrewEditComponent1({ crewDetail, handleEditClick }: { crewDetail: any; 
 
     }, [crewDetail])
 
-    // const PlusGenre = async () => {
 
-    //     try {
-    //         const res : any = axiosInstance.put(`/crew/${id}/genre`, copyList)
-    //         console.log(res.data)
-    //         alert("장르추가성공")
-    //     } catch (err: any) {
-    //         setError(err.message); //요청 놓치면 에러 메세지 띄우기
-    //     }finally {
-    //         setLoading(false) // 요청 끝나면 로딩끄기
-    //     }}
+
+    const [image, setImage] = useState<any>(null); // 선택한 파일 저장
+    const [preview, setPreview] = useState<string | null>(null); // 미리보기 이미지
+    // 파일 선택 시 실행되는 함수
+    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files[0]) {
+            const file = e.target.files[0];
+            setImage(file); // 선택한 파일 저장
+            setPreview(URL.createObjectURL(file)); // 미리보기 URL 생성
+        }
+    }
 
     
     
@@ -950,6 +955,9 @@ const PlusMember = async (memId : any) => {
             </MemberEditWrapper>})}
           
             <PlusButton src={plusButton} alt="plusButton" onClick={() =>setCrewMemberPlusModalOpen(true)}></PlusButton>
+            <ImageBox><input type="file" accept="image/*" onChange={handleImageChange} />
+                            <div onClick={() => { { setPreview(null); setImage(null) } }}>x</div>
+                        </ImageBox>
             </Box8>          
             
         </Box1Wrapper>

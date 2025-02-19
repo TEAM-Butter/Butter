@@ -1,5 +1,5 @@
 import axios from "axios"
-import { useState } from "react"
+import { useRef, useState } from "react"
 import { Link, Navigate, useNavigate } from "react-router-dom"
 import { useEffect } from "react"
 import styled from "@emotion/styled";
@@ -196,13 +196,13 @@ function CrewListPage() {
     const [genreToggle, setGenreToggle] = useState("All")
 
 
-     
+    const videoRef = useRef<HTMLVideoElement>(null);
 
 
 
 
-
-
+    const [dummy,setdummy] = useState<string>("")
+    
     useEffect (() => {
         const fetchCrewDetail = async () => {
             try {
@@ -212,6 +212,11 @@ function CrewListPage() {
                     const response = await axiosInstance.get(`/crew/list?pageSize=20&sortBy=followerCount`)
                     setCrewList(response.data);
                     console.log(response.data)
+                    // const response2 = await axiosInstance.get('clip/detail/8')
+                    // setdummy(response2.data.videoUrl)
+                    // console.log(response2.data)
+                    // const response3 = await axiosInstance.get('clip/list?pageSize=5')
+                    // console.log(response3.data)
                 } else if (genreToggle == "R&B"){
                     const response = await axiosInstance.get(`/crew/list?pageSize=20&sortBy=followerCount&genre=R%26B`)
                     setCrewList(response.data);
@@ -235,13 +240,12 @@ function CrewListPage() {
     }, [genreToggle])
    
 
-
+console.log(dummy, '주소')
 
 
     return (
         <div>
         <Box2>
-          
             <FilterWrapper>
             <GenreToggle setGenreToggle={setGenreToggle} />
             <SearchWrapper
