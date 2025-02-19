@@ -239,14 +239,6 @@ function Navbar() {
                   {/* <Link to="/">
                     <SubItem>마이 크루</SubItem>
                   </Link> */}
-                  <SubItem
-                    className="openModalBtn"
-                    onClick={() => {
-                      setModalType("streaming");
-                    }}
-                  >
-                    스트리밍 라이브
-                  </SubItem>
                   {memberType == "crew" ? (
                     <>
                       <SubItem
