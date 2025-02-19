@@ -260,6 +260,7 @@ const LivePage = () => {
 
   const fakeTitle = state.roomName ? state.roomName : location.state.title;
   const roomName = `${crewId}`;
+  const scheduleId = state.scheduleId;
 
   const user = useUserStore((state) => state);
   const avatarType = user.avatarType;
@@ -490,7 +491,7 @@ const LivePage = () => {
           const requestData = {
             crewId: roomName, // number 또는 string 값
             title: fakeTitle,
-            scheduleId: null,
+            scheduleId: scheduleId
           };
 
           //scheduleId가 존재하면 추가
