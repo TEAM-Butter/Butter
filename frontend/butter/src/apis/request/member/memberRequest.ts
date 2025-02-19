@@ -1,6 +1,6 @@
-import { CheckLoginIdRequestDto, SignUpRequestDto, PasswordUpdateRequestDTO } from "./memberDto";
+import { CheckLoginIdRequestDto, CheckNicknameRequestDto, SignUpRequestDto, PasswordUpdateRequestDTO } from "./memberDto";
 import { MemberExtraInfoResponseDto, PasswordUpdateResponseDto } from "../../response/member";
-import { CheckLoginIdResponseDto, MemberDetailResponseDto, SignUpResponseDto } from "../../response/member";
+import { CheckLoginIdResponseDto, CheckNicknameResponseDto, MemberDetailResponseDto, SignUpResponseDto } from "../../response/member";
 import { axiosInstance } from "../../axiosInstance";
 
 export const signupRequest = async (requestBody: SignUpRequestDto) => {
@@ -52,6 +52,20 @@ export const CheckLoginIdRequest = async (requestBody: CheckLoginIdRequestDto) =
     const result = await axiosInstance.post('/members/check-loginId', requestBody)
         .then(response => {
             const responseBody: CheckLoginIdResponseDto = response.data;
+            return responseBody
+        })
+        .catch(error => {
+            console.log("CheckLoginIdRequest api error:", error)
+            return null
+        })
+
+    return result
+}
+
+export const CheckNicknameRequest = async (requestBody: CheckNicknameRequestDto) => {
+    const result = await axiosInstance.post('/members/check-nickname', requestBody)
+        .then(response => {
+            const responseBody: CheckNicknameResponseDto = response.data;
             return responseBody
         })
         .catch(error => {

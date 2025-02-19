@@ -4,10 +4,13 @@ import { motion } from "framer-motion";
 import { useState } from "react";
 import { Link, useMatch } from "react-router-dom";
 import { StreamingModal } from "../modals/StreamingModal";
+import { SchedulePlusModal } from "../modals/SchedulePlusModal";
 import { useUserStore } from "../../../stores/UserStore";
+import { useCrewStore } from "../../../stores/UserStore";
 import { removeAccessToken } from "../../../apis/auth";
 import bell from "../../../assets/user/bell.png"
 import { Alert } from "./Alert";
+import { useNavigate } from "react-router-dom";
 
 const Nav = styled.nav`
   display: flex;
@@ -150,6 +153,8 @@ function Navbar() {
   const nickname = useUserStore((state) => state.nickname);
   const isLogin = useUserStore((state) => state.isLogin);
   const logout = useUserStore((state) => state.logout);
+  const crewLogout = useCrewStore((state) => state.logout);
+  const navigate = useNavigate();
 
   const homeMatch = useMatch("");
   const buskingMatch = useMatch("busking");
@@ -161,10 +166,13 @@ function Navbar() {
   const [isHovered, setIsHovered] = useState(false);
   const [isToggle, setIsToggle] = useState(false);
   const [modalType, setModalType] = useState<string>("");
+  const crewId = useCrewStore((state) => state.id)
 
   const memberLogout = () => {
     logout();
+    crewLogout();
     removeAccessToken();
+    navigate("/auth/login");
   };
 
   return (
@@ -183,18 +191,21 @@ function Navbar() {
             <Link to="/">
               <Item>HOME {homeMatch && <Bar layoutId="bar" />}</Item>
             </Link>
-            <Link to="/busking">
-              <Item>MAP {buskingMatch && <Bar layoutId="bar" />}</Item>
-            </Link>
-            <Link to="/stream-list">
-              <Item>STREAMING {streamMatch && <Bar layoutId="bar" />}</Item>
-            </Link>
-            <Link to="/crew/list">
-              <Item>CREW {crewMatch && <Bar layoutId="bar" />}</Item>
-            </Link>
-            <Link to="/video/clip">
-              <Item>Clip {clipMatch && <Bar layoutId="bar" />}</Item>
-            </Link>
+            {isLogin && <>
+              <Link to="/busking">
+                <Item>MAP {buskingMatch && <Bar layoutId="bar" />}</Item>
+              </Link>
+              <Link to="/stream-list">
+                <Item>STREAMING {streamMatch && <Bar layoutId="bar" />}</Item>
+              </Link>
+              <Link to="/crew/list">
+                <Item>CREW {crewMatch && <Bar layoutId="bar" />}</Item>
+              </Link>
+              <Link to="/video/clip">
+                <Item>CLIP {clipMatch && <Bar layoutId="bar" />}</Item>
+              </Link>
+            </>
+            }
           </Items>
           <Items>
             {isLogin ? (
@@ -222,15 +233,12 @@ function Navbar() {
                     안녕하세요,
                     <br /> {nickname || "guest"}님!
                   </SubItemComment>
-                  <Link to="/">
+                  <Link to="/crew/myCalendar">
                     <SubItem>마이 캘린더</SubItem>
                   </Link>
-                  <Link to="/">
+                  {/* <Link to="/">
                     <SubItem>마이 크루</SubItem>
-                  </Link>
-                  <Link to="/bread/charge">
-                    <SubItem>브레드 충전</SubItem>
-                  </Link>
+                  </Link> */}
                   <SubItem
                     className="openModalBtn"
                     onClick={() => {
@@ -249,18 +257,25 @@ function Navbar() {
                       >
                         스트리밍 라이브
                       </SubItem>
-                      <Link to="/">
-                        <SubItem>버스킹 일정 등록</SubItem>
-                      </Link>
-                      <Link to="/">
+                      <SubItem
+                        onClick={() => {
+                          setModalType("schedulePlus");
+                        }}
+                      >
+                        버스킹 일정 등록
+                      </SubItem>
+                      {/* <Link to="/">
                         <SubItem>크루 탈퇴</SubItem>
-                      </Link>
+                      </Link> */}
                     </>
                   ) : (
                     <Link to="/crew/register">
                       <SubItem>크루 등록</SubItem>
                     </Link>
                   )}
+                  <Link to="/bread/charge">
+                    <SubItem>브레드 충전</SubItem>
+                  </Link>
                   <Link to="/member/detail/guest">
                     <SubItem>회원정보 수정</SubItem>
                   </Link>
@@ -282,6 +297,7 @@ function Navbar() {
           setModalType={setModalType}
         ></StreamingModal>
       )}
+      {modalType === "schedulePlus" && <SchedulePlusModal width="600px" height="500px" setModalType={setModalType} id={crewId}></SchedulePlusModal>}
       <Alert isToggle={isToggle} />
     </>
   );

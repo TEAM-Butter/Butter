@@ -47,7 +47,7 @@ const MDUpper = styled.div`
   gap: 15px;
   `
 const MDLower = styled.div`
-  padding: 10px 20px;
+  padding: 10px 20px 120px 20px;
 `
 const MDLowerInfo = styled.div`
   display: flex;
@@ -61,7 +61,7 @@ const MDLowerInfo = styled.div`
   }
 `
 const ChangePasswordLink = styled.div`
-  padding: 130px 0 10px 0;
+  padding: 0 10px 10px 0;
   display: flex;
   height: 30px;
   justify-content: flex-end;
@@ -213,8 +213,8 @@ const MemberDetailPage = () => {
               </MDLowerInfo>
               <MDLowerInfo><span>gender</span>{userInfo.gender}</MDLowerInfo>
               <MDLowerInfo><span>birth</span>{userInfo.birth.split(",").join("-")}</MDLowerInfo>
-              <ChangePasswordLink onClick={() => { setModalType("changePs") }} ><div>비밀번호 변경</div></ChangePasswordLink>
             </MDLower>
+            {userInfo.id !== "" && <ChangePasswordLink onClick={() => { setModalType("changePs") }} ><div>비밀번호 변경</div></ChangePasswordLink>}
             <GenreContainer>
               <GenreComment>회원님이 선호하는 장르 입니다!</GenreComment>
               <GenreWrapper>

@@ -19,6 +19,10 @@ const ChangePSForm = styled.form`
     padding: 0 10px;
     gap: 20px;
     width: 100%;
+
+    #errorInfo {
+        color: var(--yellow);
+    }
 `;
 
 const ChangePSLabel = styled.label`
@@ -33,7 +37,21 @@ const ChangePSInput = styled.input`
     padding: 0 15px;
 `;
 
-export const ChangePSModal = ({ setModalType, width, height }: ModalProps) => {
+const SuccessInfo = styled.div`
+    color: var(--yellow);
+`
+
+interface ModeProps {
+    setMode: React.Dispatch<React.SetStateAction<string>>;
+}
+
+const ChangePSInfoMode = () => {
+    return (
+        <SuccessInfo>비밀번호가 성공적으로 변경되었습니다 !</SuccessInfo>
+    )
+}
+
+const ChangePSFormMode = ({ setMode }: ModeProps) => {
     const [currentPs, setCurrentPs] = useState("")
     const [changePs, setChangePs] = useState("")
     const [checkChangePs, setCheckChangePs] = useState("")
@@ -46,10 +64,51 @@ export const ChangePSModal = ({ setModalType, width, height }: ModalProps) => {
             PasswordUpdateRequest({ currentPassword: currentPs, newPassword: changePs })
                 .then((res) => {
                     console.log("PasswordUpdate: ", res)
+                    setMode("info")
                 })
         } else {
             setChangePsComment("비밀번호가 일치하지 않습니다.")
         }
+    }
+
+    return (
+        <ChangePSForm onSubmit={handleSubmit} >
+            <div>
+                <ChangePSLabel >현재 비밀번호</ChangePSLabel>
+                <ChangePSInput required type="password" value={currentPs} onChange={(e) => { setCurrentPs(e.target.value) }} placeholder="현재 비밀번호를 입력해 주세요."></ChangePSInput>
+            </div>
+            <div>
+                <ChangePSLabel>새로운 비밀번호</ChangePSLabel>
+                <ChangePSInput required type="password" value={changePs} onChange={(e) => { setChangePs(e.target.value) }} placeholder="영문자/숫자/특수문자 혼용 8자 이상"></ChangePSInput>
+            </div>
+            <div>
+                <ChangePSLabel>비밀번호 확인</ChangePSLabel>
+                <ChangePSInput required type="password" value={checkChangePs} onChange={(e) => { setCheckChangePs(e.target.value) }} placeholder="영문자/숫자/특수문자 혼용 8자 이상"></ChangePSInput>
+            </div>
+            <div id="errorInfo">{changePsComment}</div>
+            <MC.LtBtnWrapper>
+                <MC.FilledBtn
+                    type="submit"
+                    width="110px"
+                    height="35px"
+                    color="var(--yellow)"
+                    textColor="black"
+                >
+                    비밀번호 변경
+                </MC.FilledBtn>
+            </MC.LtBtnWrapper>
+        </ChangePSForm>
+    )
+}
+
+export const ChangePSModal = ({ setModalType, width, height }: ModalProps) => {
+    const [mode, setMode] = useState("form");
+    let modeContent = null;
+
+    if (mode === "form") {
+        modeContent = <ChangePSFormMode setMode={setMode} />
+    } else if (mode === "info") {
+        modeContent = <ChangePSInfoMode />
     }
 
     return (
@@ -68,31 +127,7 @@ export const ChangePSModal = ({ setModalType, width, height }: ModalProps) => {
                     </MC.ModalCloseBtn>
                 </MC.ModalHeader>
                 <MC.ModalBody>
-                    <ChangePSForm onSubmit={handleSubmit} >
-                        <div>
-                            <ChangePSLabel >현재 비밀번호</ChangePSLabel>
-                            <ChangePSInput value={currentPs} onChange={(e) => { setCurrentPs(e.target.value) }} placeholder="현재 비밀번호를 입력해 주세요."></ChangePSInput>
-                        </div>
-                        <div>
-                            <ChangePSLabel>새로운 비밀번호</ChangePSLabel>
-                            <ChangePSInput value={changePs} onChange={(e) => { setChangePs(e.target.value) }} placeholder="영문자/숫자/특수문자 혼용 8자 이상"></ChangePSInput>
-                        </div>
-                        <div>
-                            <ChangePSLabel>비밀번호 확인</ChangePSLabel>
-                            <ChangePSInput value={checkChangePs} onChange={(e) => { setCheckChangePs(e.target.value) }} placeholder="영문자/숫자/특수문자 혼용 8자 이상"></ChangePSInput>
-                        </div>
-                        <MC.LtBtnWrapper>
-                            <MC.FilledBtn
-                                type="submit"
-                                width="110px"
-                                height="35px"
-                                color="var(--yellow)"
-                                textColor="black"
-                            >
-                                비밀번호 변경
-                            </MC.FilledBtn>
-                        </MC.LtBtnWrapper>
-                    </ChangePSForm>
+                    {modeContent}
                 </MC.ModalBody>
             </MC.ModalWrapper>
         </>
