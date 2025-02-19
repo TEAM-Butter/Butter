@@ -17,6 +17,7 @@ import sample3 from "../../assets/sample3.jpg";
 import sample4 from "../../assets/sample4.jpg";
 import sample5 from "../../assets/sample5.png";
 import { axiosInstance } from "../../apis/axiosInstance"
+import { useCrewStore } from "../../stores/UserStore"
 
 
 const ServerUrl = 'http://localhost:8080'
@@ -246,7 +247,18 @@ function CrewNoticePage() {
     const [basicNum , setBasicNum] = useState<number>(noticeId)
 
     
+    const [canSee, setCanSee] = useState(false)
+    const userCrewId = useCrewStore((state)=> state.id)
+    console.log(id)
+    console.log(userCrewId)
 
+    useEffect(()=>{
+        if ( Number(userCrewId) === Number(id)){
+            setCanSee(true)
+           
+        }
+    },[canSee])
+    console.log(canSee)
 
     const [image, setImage] = useState<any>(null); // 선택한 파일 저장
     const [preview, setPreview] = useState<string | null>(null); // 미리보기 이미지
@@ -394,7 +406,7 @@ function CrewNoticePage() {
             <LayOut1>
             <Box1>
                 {crewDetail.name}
-            <PlusBtnWrapper><div> Notice </div><div onClick={() => plusHandlerOn()} style={{fontSize: "30px"}}>+</div></PlusBtnWrapper>
+            {canSee && <PlusBtnWrapper><div> Notice </div><div onClick={() => plusHandlerOn()} style={{fontSize: "30px"}}>+</div></PlusBtnWrapper>}
             </Box1>
             <Box2>
             <div>{
@@ -419,8 +431,8 @@ function CrewNoticePage() {
                     <div> {crewDetail.notices.length  > 0 ? crewDetail.notices[basicNum].content : ""}  </div>
                     <EditAndDelBtn>
                     <NoticeImage2 src={crewDetail.notices[basicNum].imageUrl} alt="NoticeImage"></NoticeImage2>
-                        <DeleteButton src={deleteButton} alt="deleteButton" onClick={()=> {axiosInstance.delete(`crew/notice/${selectedNotice}`); alert("삭제성공!");  window.location.reload(); }}></DeleteButton>
-                        <EditButton src={editButton} alt="editButton" onClick={()=> editHandlerOn()}></EditButton>
+                        {canSee &&<DeleteButton src={deleteButton} alt="deleteButton" onClick={()=> {axiosInstance.delete(`crew/notice/${selectedNotice}`); alert("삭제성공!");  window.location.reload(); }}></DeleteButton>}
+                        {canSee &&<EditButton src={editButton} alt="editButton" onClick={()=> editHandlerOn()}></EditButton>}
                     </EditAndDelBtn>
                     </Box5>
             </div>}
