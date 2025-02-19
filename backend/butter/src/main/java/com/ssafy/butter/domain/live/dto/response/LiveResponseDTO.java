@@ -7,7 +7,16 @@ import com.ssafy.butter.domain.schedule.entity.Schedule;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public record LiveResponseDTO(Long id, CrewDTO crew, String title, Integer viewerCount, LocalDateTime startDate, LocalDateTime endDate, ScheduleDTO schedule) {
+public record LiveResponseDTO(
+        Long id,
+        CrewDTO crew,
+        String title,
+        Integer viewerCount,
+        LocalDateTime startDate,
+        LocalDateTime endDate,
+        ScheduleDTO schedule,
+        String thumbnailUrl
+) {
 
     public static LiveResponseDTO from(Live live, Integer viewerCount) {
         return new LiveResponseDTO(
@@ -17,7 +26,8 @@ public record LiveResponseDTO(Long id, CrewDTO crew, String title, Integer viewe
                 viewerCount,
                 live.getStartDate(),
                 live.getEndDate(),
-                live.getSchedule() == null ? null : ScheduleDTO.fromEntity(live.getSchedule())
+                live.getSchedule() == null ? null : ScheduleDTO.fromEntity(live.getSchedule()),
+                live.getThumbnailUrl()
         );
     }
 
