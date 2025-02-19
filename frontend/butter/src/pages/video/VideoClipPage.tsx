@@ -3,12 +3,14 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Mousewheel } from "swiper/modules";
 import { useEffect, useRef, useState } from "react";
 import { axiosInstance } from "../../apis/axiosInstance";
-import { div } from "framer-motion/client";
-
+import redHeart from "../../assets/redheart.png";
+import whiteHeart from "../../assets/whiteheart.png";
 const VideoClipPageWrapper = styled.div`
   max-width: 2000px;
   width: 90%;
-  height: 90%;
+  display: flex;
+  flex-direction: column;
+  /* height: 90%; */
   margin: auto;
   padding-top: 15px; // 하나로 통일
   overflow: hidden; // 추가
@@ -18,30 +20,39 @@ const T1 = styled.div`
   margin: 20px;
   font-size: 100px;
   font-weight: bold;
-  margin-bottom: 20x;
+  margin-bottom: 5px;
 `;
 
 const T2 = styled.div`
-  font-size: 25px;
+  font-size: 23px;
   margin: 10px;
+  margin-bottom: 20px;
   margin-left: 30px;
 `;
 
 const VideoPlayer = styled.video`
   width: 100%;
+  //
 `;
 
 const HeartButton = styled.button`
   position: absolute;
+  display: flex;
+
   bottom: 20px;
   left: 20px;
-  background: none;
+  background-color: #0e0e0e1b;
+  border-radius: 5px;
+  color: white;
   border: none;
-  font-size: 40px;
+  font-size: 30px;
   cursor: pointer;
   z-index: 10;
 `;
 
+const VideoWrapper = styled.div`
+  display: flex;
+`;
 const NoContentBox = styled.div`
   font-size: 25px;
   margin: 10px;
@@ -61,9 +72,16 @@ const NoContentContext = styled.div`
   border-radius: 20px;
   background-color: rgba(1, 1, 1, 0.317);
 `;
-const LikeCountSpan = styled.span`
+const LikeCountSpan = styled.div`
   margin-left: 8px;
-  font-size: 40px;
+  font-size: 30px;
+`;
+const Heart = styled.img`
+  display: flex;
+  width: 30px;
+  height: 30px;
+  margin-left: 5px;
+  /* align-items: center; */
 `;
 
 interface Video {
@@ -103,7 +121,12 @@ const VideoClipPage = () => {
           currentClipIdRef.current = response.data[0].id;
         }
       } catch (error) {
-        console.error("Failed to fetch initial videos", error);
+        console.error("Error details:", {
+          message: error.message,
+          response: error.response?.data, // 서버에서 보낸 에러 메시지
+          status: error.response?.status,
+          config: error.config, // 요청 설정 확인
+        });
       }
     };
 
@@ -216,7 +239,7 @@ const VideoClipPage = () => {
     <VideoClipPageWrapper>
       <T1>Video Clip</T1>
       <T2>버스킹의 뜨거운 순간, 함께 느껴보세요</T2>
-      {videos ? (
+      {videos.length === 0 ? (
         <NoContentBox>
           <NoContentContext>
             아직 등록된 클립이 없습니다. 첫 번째 버스킹 영상의 주인공이
@@ -238,30 +261,37 @@ const VideoClipPage = () => {
           modules={[Mousewheel]}
           className="mySwiper"
           style={{
-            aspectRatio: 16 / 10,
-            backgroundColor: "beige",
+            aspectRatio: 16 / 8.8,
+            backgroundColor: "#0a0a0b84",
           }}
         >
           {videos.map((video, idx) => (
             <SwiperSlide key={`${video.id}-${idx}`}>
-              <VideoPlayer
-                ref={(el) => (videoRefs.current[idx] = el!)}
-                src={video.videoUrl}
-                controls
-                autoPlay
-                muted
-                style={{
-                  aspectRatio: 16 / 9,
-                }}
-                onEnded={(e) => {
-                  e.currentTarget.currentTime = 0; // 처음으로 이동
-                  e.currentTarget.play(); // 다시 자동 재생
-                }}
-              />
-              <HeartButton onClick={() => toggleLike(video.id)}>
-                <LikeCountSpan>{video.likeCount}</LikeCountSpan>
-                {video.isLiked ? "❤️" : "🤍"}
-              </HeartButton>
+              <VideoWrapper>
+                <VideoPlayer
+                  ref={(el) => (videoRefs.current[idx] = el!)}
+                  key={`${video.id}-${idx}`}
+                  src={video.videoUrl}
+                  controls
+                  autoPlay
+                  muted
+                  style={{
+                    aspectRatio: 16 / 9,
+                  }}
+                  onEnded={(e) => {
+                    e.currentTarget.currentTime = 0; // 처음으로 이동
+                    e.currentTarget.play(); // 다시 자동 재생
+                  }}
+                />
+                <HeartButton onClick={() => toggleLike(video.id)}>
+                  <LikeCountSpan>{video.likeCount}</LikeCountSpan>
+                  {video.isLiked ? (
+                    <Heart src={redHeart} />
+                  ) : (
+                    <Heart src={whiteHeart} />
+                  )}
+                </HeartButton>
+              </VideoWrapper>
             </SwiperSlide>
           ))}
         </Swiper>
