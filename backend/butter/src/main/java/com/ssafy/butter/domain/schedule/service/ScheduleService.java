@@ -28,4 +28,6 @@ public interface ScheduleService {
     Schedule findById(Long id);
 
     List<ScheduleResponseDTO> getLikedScheduleList(AuthInfoDTO currentUser);
+
+    List<ScheduleResponseDTO> getMyCrewScheduleList(AuthInfoDTO currentUser);
 }
