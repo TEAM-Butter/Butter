@@ -3,7 +3,7 @@ import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import styled from "@emotion/styled";
 import Select from "react-select";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { myCrewScheduleRequest } from "../../../apis/request/schedule/scheduleRequest.ts";
 
 interface ModalSizeProps {
@@ -35,10 +35,18 @@ const SelectWrapper = styled.div`
   width: 90%;
 `;
 
-const options = (await myCrewScheduleRequest())?.map(myCrewScheduleResponseDto => {
-    return { value: myCrewScheduleResponseDto.id.toString(), label: myCrewScheduleResponseDto.title };
-});
+
 export const StreamingModal = ({ setModalType, width, height }: ModalProps) => {
+const [ options, setOptions ] = useState<{ value: string; label: string }[]>();
+useEffect(() => {
+    const fetchData = async () => {
+        const response = (await myCrewScheduleRequest())?.map(myCrewScheduleResponseDto => {
+            return { value: myCrewScheduleResponseDto.id.toString(), label: myCrewScheduleResponseDto.title };
+        });
+        setOptions(response);
+    };
+    fetchData();
+}, []);
 const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
 const { register, handleSubmit } = useForm();
 const navigate = useNavigate(); // useNavigate 훅 추가
