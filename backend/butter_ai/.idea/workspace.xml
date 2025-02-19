@@ -6,6 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="9d7c38df-f533-4bfb-8b82-f0c5671298ff" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../frontend/butter/src/components/stream/CharacterContainer/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../../frontend/butter/src/components/stream/CharacterContainer/index.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -30,7 +31,7 @@
     &quot;Python.run.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;feat/#S12P11E204-235-fe-streaming-list&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;feat/#S12P11E204-249-fe-clip-final-css&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -73,6 +74,7 @@
       <workItem from="1739878933290" duration="1308000" />
       <workItem from="1739923814011" duration="1165000" />
       <workItem from="1739965232189" duration="1088000" />
+      <workItem from="1739976078720" duration="1719000" />
     </task>
     <servers />
   </component>
@@ -80,7 +82,7 @@
     <option name="version" value="3" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/butter_ai$run.coverage" NAME="run Coverage Results" MODIFIED="1739968479770" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/butter_ai$run.coverage" NAME="run Coverage Results" MODIFIED="1739978003508" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/butter_ai$ai.coverage" NAME="ai 커버리지 결과" MODIFIED="1739632115840" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/app/routes" />
   </component>
 </project>
