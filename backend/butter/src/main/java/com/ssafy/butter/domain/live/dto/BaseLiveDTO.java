@@ -13,4 +13,5 @@ public class BaseLiveDTO {
     private final String title;
     private final LocalDateTime startDate;
     private final LocalDateTime endDate;
+    private final String thumbnailUrl;
 }
