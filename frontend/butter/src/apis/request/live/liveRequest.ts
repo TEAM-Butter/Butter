@@ -2,7 +2,7 @@ import { LiveListResponseDto } from "../../response/live";
 import { axiosInstance } from "../../axiosInstance";
 
 export const LiveListRequest = async () => {
-    const result = await axiosInstance.get('/live/list')
+    const result = await axiosInstance.get('/live/list?pageSize=10&sortBy=startDate')
         .then(response => {
             const responseBody: LiveListResponseDto = response.data;
             return responseBody

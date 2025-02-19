@@ -4,16 +4,16 @@ import { useState } from "react";
 
 const Container = styled.div`
     display: flex;
+    justify-content:flex-end;
 `
 
 const ToggleWrapper = styled.div`
     display: grid;
-    grid-template-columns: repeat(9, 1fr); 
+    grid-template-columns: repeat(10, 1fr); 
     row-gap: 5px;
 
     @media (max-width: 1350px) {
         grid-template-columns: repeat(5, 1fr); 
-
 
         & > div:nth-child(5) {
             border-radius: 0 30px 30px 0;
@@ -62,9 +62,10 @@ const ToggleBar = styled(motion.span)`
 
 interface ToggleProps {
     setGenreToggle: React.Dispatch<React.SetStateAction<string>>;
+    keyName: string;
 }
 
-export const GenreToggle = ({ setGenreToggle }: ToggleProps) => {
+export const GenreToggle = ({ setGenreToggle, keyName }: ToggleProps) => {
     const [genreMatch, setGenreMatch] = useState("All")
 
     const genres = [
@@ -77,6 +78,7 @@ export const GenreToggle = ({ setGenreToggle }: ToggleProps) => {
         "R&B",
         "Indie",
         "Trot",
+        "Dance",
     ];
 
     return (
@@ -90,7 +92,7 @@ export const GenreToggle = ({ setGenreToggle }: ToggleProps) => {
                             setGenreMatch(genre)
                             setGenreToggle(genre)
                         }}>
-                        {genreMatch === genre && <ToggleBar layoutId="toggle-bar" />}
+                        {genreMatch === genre && <ToggleBar layoutId={keyName} />}
                         <span>{genre}</span>
                     </ToggleItem>)}
             </ToggleWrapper>

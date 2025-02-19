@@ -1,12 +1,13 @@
 import styled from "@emotion/styled";
 import { motion } from "framer-motion"
 import { keyframes } from "@emotion/react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import StreamingImg from "../../assets/home/StreamingImg.jpg"
 import band1 from "../../assets/home/band1.jpg"
 import band2 from "../../assets/home/band2.jpg"
 import band3 from "../../assets/home/band3.jpg"
 import band4 from "../../assets/home/band4.jpg"
+import { useUserStore } from "../../stores/UserStore";
 
 const HomePageWrapper = styled(motion.div)`
   overflow: hidden;
@@ -116,6 +117,17 @@ const CrewImg = styled.div`
 `
 
 const Home4Page = () => {
+    const navigate = useNavigate();
+    const isLogin = useUserStore(state => state.isLogin)
+
+    const handleClick = () => {
+        if (isLogin) {
+            navigate('/crew/list')
+        } else {
+            navigate('/auth/login')
+        }
+    }
+
     return (
         <HomePageWrapper>
             <Container>
@@ -123,16 +135,16 @@ const Home4Page = () => {
                     <InfoWrapper>
                         <div id="LgText">CREW</div>
                         <div id="info1">
-                            Find artists who touch your soul and follow the crews that inspire you.<br/>
+                            Find artists who touch your soul and follow the crews that inspire you.<br />
                             마음을 울리는 아티스트를 만나고, 영감을 주는 크루를 팔로우하세요.
                         </div>
                         <div id="info2">
-                            노래, 춤, 그리고 다양한 버스킹 퍼포먼스를 선보이는 아티스트들을 한곳에서 만나보세요. 
-                            크루의 상세 페이지에서는 버스킹 일정, 공지사항, 소개, 그리고 하이라이트 영상을 확인할 수 있습니다. 
-                            마음에 드는 크루를 팔로우하면, 새로운 버스킹 일정이 등록되거나 라이브가 시작될 때 가장 먼저 소식을 받아볼 수 있습니다. 
+                            노래, 춤, 그리고 다양한 버스킹 퍼포먼스를 선보이는 아티스트들을 한곳에서 만나보세요.
+                            크루의 상세 페이지에서는 버스킹 일정, 공지사항, 소개, 그리고 하이라이트 영상을 확인할 수 있습니다.
+                            마음에 드는 크루를 팔로우하면, 새로운 버스킹 일정이 등록되거나 라이브가 시작될 때 가장 먼저 소식을 받아볼 수 있습니다.
                             지금, 나만의 특별한 크루를 찾아보세요!
                         </div>
-                        <LinkBtnBox>
+                        <LinkBtnBox onClick={handleClick}>
                             <div id="linkBtn">LINK TO STREAMING PAGE</div>
                             <div id="linkIcon">→</div>
                         </LinkBtnBox>

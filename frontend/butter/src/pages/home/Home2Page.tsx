@@ -1,10 +1,11 @@
 import styled from "@emotion/styled";
 import { motion } from "framer-motion"
 import { keyframes } from "@emotion/react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import MapImg1 from "../../assets/home/MapImg1.png"
 import MapImg2 from "../../assets/home/MapImg2.png"
 import MapImg3 from "../../assets/home/MapImg3.png"
+import { useUserStore } from "../../stores/UserStore";
 
 const HomePageWrapper = styled(motion.div)`
   overflow: hidden;
@@ -138,6 +139,17 @@ const RtWrapper = styled.div`
 
 
 const Home2Page = () => {
+    const navigate = useNavigate();
+    const isLogin = useUserStore(state => state.isLogin)
+
+    const handleClick = () => {
+        if (isLogin) {
+            navigate('/busking')
+        } else {
+            navigate('/auth/login')
+        }
+    }
+
     return (
         <HomePageWrapper
             key="home2"
@@ -150,7 +162,7 @@ const Home2Page = () => {
                 <LtWrapper>
                     <div id="LgText">MAP</div>
                     <div id="info1">
-                        Seize the moment, step into the spotlight, and find your next busking event.<br/>
+                        Seize the moment, step into the spotlight, and find your next busking event.<br />
                         순간을 놓치지 마세요. 무대의 주인공이 되어 다음 버스킹 이벤트를 찾아보세요.
                     </div>
                     <div id="info2">
@@ -159,7 +171,7 @@ const Home2Page = () => {
                         언제 어디서든 나만의 특별한 공연을 찾을 수 있습니다.
                         공연이 기다리는 그곳으로 떠나보세요!
                     </div>
-                    <LinkBtnBox>
+                    <LinkBtnBox onClick={handleClick}>
                         <div id="linkBtn">LINK TO MAP PAGE</div>
                         <div id="linkIcon">→</div>
                     </LinkBtnBox>
@@ -169,7 +181,6 @@ const Home2Page = () => {
                     </ImgBox>
                 </LtWrapper>
                 <RtWrapper>
-
                     <div>
                         <span>KAKAO MAP</span>
                         <img id="mapImg3" src={MapImg3} />
