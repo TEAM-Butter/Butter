@@ -98,7 +98,13 @@ const VideoClipPage = () => {
         }
       });
       if (response.data.length > 0) {
-        setVideos((prevVideos) => [...prevVideos, ...response.data]);
+        setVideos((prevVideos) => {
+          // 이미 있는 clipId를 가진 클립은 제거
+          const newVideos = response.data.filter(
+            (video: Video) => !prevVideos.some((v) => v.id === video.id)
+          );
+          return [...prevVideos, ...newVideos];
+        });
         const newCurrentId = response.data[response.data.length - 1].id;
         setCurrentClipId(newCurrentId);
         currentClipIdRef.current = newCurrentId;
@@ -121,7 +127,13 @@ const VideoClipPage = () => {
         }
       });
       if (response.data.length > 0) {
-        setVideos((prevVideos) => [...response.data, ...prevVideos]);
+        setVideos((prevVideos) => {
+          // 이미 있는 clipId를 가진 클립은 제거
+          const newVideos = response.data.filter(
+            (video: Video) => !prevVideos.some((v) => v.id === video.id)
+          );
+          return [...prevVideos, ...newVideos];
+        });
         const newCurrentId = response.data[0].id;
         setCurrentClipId(newCurrentId);
         currentClipIdRef.current = newCurrentId;
