@@ -2,6 +2,9 @@ import * as MC from "./modalComponents/modalComponents.tsx"
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import styled from "@emotion/styled";
+import Select from "react-select";
+import { axiosInstance } from "../../../apis/axiosInstance.ts";
+import { useEffect } from "react";
 
 interface ModalSizeProps {
 width: string;
@@ -28,6 +31,10 @@ border: none;
 padding: 0 15px;
 `;
 
+const SelectWrapper = styled.div`
+  width: 90%;
+`;
+
 export const StreamingModal = ({ setModalType, width, height }: ModalProps) => {
 const { register, handleSubmit } = useForm();
 const navigate = useNavigate(); // useNavigate 훅 추가
@@ -41,6 +48,9 @@ const onSubmit: SubmitHandler<FieldValues> = (data) => {
     });
     setModalType("");
 };
+useEffect(() => {
+    
+});
 return (
     <>
     <MC.ModalOverlay />
@@ -63,6 +73,22 @@ return (
             placeholder="스트리밍 제목을 입력해주세요."
             {...register("roomName", { required: true })}
             ></StreamingTitleInput>
+            <SelectWrapper>
+              <Select
+                options={options}
+                styles={selectStyles}
+                value={options.filter(option => selectedOptions.includes(option.value))}
+                onChange={(selectedOptions) => {
+                  const values = selectedOptions ? selectedOptions.map(option => option.value) : [];
+                  if (values.length <= 3) {
+                    setSelectedOptions(values);
+                    setFormData((prev) => ({ ...prev, genres: values }));
+                  }
+                }}
+                isMulti
+                required
+              ></Select>
+            </SelectWrapper>
             <MC.LtBtnWrapper>
             <MC.BorderBtn
                 type="submit"
