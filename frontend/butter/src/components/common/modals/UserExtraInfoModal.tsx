@@ -10,8 +10,9 @@ import pet4 from "/src/assets/pets/pet4.png";
 import pet5 from "/src/assets/pets/pet5.png";
 import pet6 from "/src/assets/pets/pet6.png";
 import { useUserStore } from "../../../stores/UserStore";
-import { MemberExtraInfoRequest } from "../../../apis/request/member/memberRequest";
-import { MemberExtraInfoResponseDto } from "../../../apis/response/member";
+import { CheckNicknameRequest, MemberExtraInfoRequest } from "../../../apis/request/member/memberRequest";
+import { CheckNicknameResponseDto, MemberExtraInfoResponseDto } from "../../../apis/response/member";
+import { motion } from "framer-motion";
 
 const ExtraInfoForm = styled.form`
   display: flex;
@@ -100,7 +101,7 @@ const NicknameInputWrapper = styled.div`
   }
 `
 
-const NicknameComment = styled.div`
+const NicknameComment = styled(motion.div)`
   margin: 5px 0 0 5px;
   color: #a8a8a8;
   font-size: 15px;
@@ -180,8 +181,11 @@ export const UserExtraInfoModal = ({
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const [nicknameComment, setNicknameComment] = useState("");
+  const [isCheckedNickname, setIsCheckedNickname] = useState(false);
+  const [checkSensor, setCheckSensor] = useState(false);
+  
+  const handleExtraInfo = () => {
     setModalType("");
     useUserStore.setState({ isExtraInfoRegistered: true });
 
@@ -203,6 +207,35 @@ export const UserExtraInfoModal = ({
       useUserStore.setState({ genres: responseBody?.genres })
     });
     console.log("Final Data:", formData);
+  }
+
+  const handleCheckNickname = () => {
+    if(formData.nickname === ""){
+      setCheckSensor(!checkSensor)
+      setNicknameComment("사용 불가능한 닉네임 입니다.")
+      return;
+    }
+
+    CheckNicknameRequest({nickname: formData.nickname}).then((responseBody: CheckNicknameResponseDto | null) => {
+      if(responseBody?.exists) {
+        setCheckSensor(!checkSensor)
+        setNicknameComment("이미 존재하는 닉네임 입니다.")
+      } else {
+        setCheckSensor(!checkSensor)
+        setNicknameComment("사용 가능한 닉네임 입니다.")
+        setIsCheckedNickname(true)
+      }
+    })
+  }
+  
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if(isCheckedNickname) {
+      handleExtraInfo();
+    } else {
+      setCheckSensor(!checkSensor)
+      setNicknameComment("닉네임을 확인해 주세요!")
+    }
   };
   return (
     <>
@@ -239,9 +272,16 @@ export const UserExtraInfoModal = ({
                       onChange={handleChange}
                       required
                     />
-                    <div id="checkNicknameBtn">확인</div>
+                    <div id="checkNicknameBtn" onClick={() => {handleCheckNickname();}}>확인</div>
                   </NicknameInputWrapper>
-                  <NicknameComment>이미 존재하는 닉네임 입니다.</NicknameComment>
+                  <NicknameComment 
+                    key={checkSensor ? "true" : "false"}
+                    initial={{ y: 20, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    exit={{ y: 20, opacity: 0 }}
+                    transition={{ duration: 0.3 }}>
+                    {nicknameComment}
+                  </NicknameComment>
                 </div>
                 <div>
                   <ExtraInfoLabel>
@@ -365,8 +405,11 @@ export const UserExtraInfoModal_v2 = ({
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const [nicknameComment, setNicknameComment] = useState("");
+  const [isCheckedNickname, setIsCheckedNickname] = useState(false);
+  const [checkSensor, setCheckSensor] = useState(false);
+  
+  const handleExtraInfo = () => {
     setModalType("");
     useUserStore.setState({ isExtraInfoRegistered: true });
 
@@ -381,12 +424,42 @@ export const UserExtraInfoModal_v2 = ({
     }
     // API 호출 부분에서 formData를 사용\
     MemberExtraInfoRequest(formDataToSend).then((responseBody: MemberExtraInfoResponseDto | null) => {
-      console.log("MemberExtraInfo Response:", responseBody);
+      console.log("Response:", responseBody);
       useUserStore.setState({ nickname: responseBody?.nickname })
       useUserStore.setState({ profileImage: responseBody?.profileImage })
       useUserStore.setState({ avatarType: responseBody?.avatarType })
       useUserStore.setState({ genres: responseBody?.genres })
     });
+    console.log("Final Data:", formData);
+  }
+
+  const handleCheckNickname = () => {
+    if(formData.nickname === ""){
+      setCheckSensor(!checkSensor)
+      setNicknameComment("사용 불가능한 닉네임 입니다.")
+      return;
+    }
+
+    CheckNicknameRequest({nickname: formData.nickname}).then((responseBody: CheckNicknameResponseDto | null) => {
+      if(responseBody?.exists) {
+        setCheckSensor(!checkSensor)
+        setNicknameComment("이미 존재하는 닉네임 입니다.")
+      } else {
+        setCheckSensor(!checkSensor)
+        setNicknameComment("사용 가능한 닉네임 입니다.")
+        setIsCheckedNickname(true)
+      }
+    })
+  }
+  
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if(isCheckedNickname) {
+      handleExtraInfo();
+    } else {
+      setCheckSensor(!checkSensor)
+      setNicknameComment("닉네임을 확인해 주세요!")
+    }
   };
   return (
     <>
@@ -427,9 +500,18 @@ export const UserExtraInfoModal_v2 = ({
                       onChange={handleChange}
                       required
                     />
-                    <div id="checkNicknameBtn">확인</div>
-                  </NicknameInputWrapper>
-                  <NicknameComment>이미 존재하는 닉네임 입니다.</NicknameComment>
+                    <div id="checkNicknameBtn" onClick={() => {handleCheckNickname();}}>
+                      확인
+                    </div>
+                    </NicknameInputWrapper>
+                    <NicknameComment 
+                      key={checkSensor ? "true" : "false"}
+                      initial={{ y: 20, opacity: 0 }}
+                      animate={{ y: 0, opacity: 1 }}
+                      exit={{ y: 20, opacity: 0 }}
+                      transition={{ duration: 0.3 }}>
+                      {nicknameComment}
+                    </NicknameComment>
                 </div>
                 <div>
                   <ExtraInfoLabel>
