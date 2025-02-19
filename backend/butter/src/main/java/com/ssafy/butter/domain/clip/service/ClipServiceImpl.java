@@ -127,8 +127,8 @@ public class ClipServiceImpl implements ClipService {
         if (!likedClip.getIsLiked()) {
             throw new IllegalArgumentException("Already unliked clip");
         }
-        likedClip.updateIsLiked(false);
-        likedClipRepository.save(likedClip);
+        //likedClip.updateIsLiked(false);
+        likedClipRepository.delete(likedClip);
     }
 
     @Override
