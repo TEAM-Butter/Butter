@@ -76,7 +76,7 @@ public class LoginServiceImpl implements LoginService{
     if (crewMembers != null && !crewMembers.isEmpty()) {
         return new BaseCrewDTO(crewMembers.get(0).getCrew());
     }
-    return Optional.empty();
+    return Optional.<BaseCrewDTO>empty();
     }
 
     private String getMemberTypeInLogic(Member member){
