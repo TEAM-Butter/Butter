@@ -241,7 +241,9 @@ const LivePage = () => {
 
   const location = useLocation();
   const roomId = location.state.roomId;
+  console.log("❤️❤️❤️❤️❤️❤️❤️", roomId);
   const crewId = useCrewStore((state) => state.id || roomId);
+  console.log("🤣🤣🤣🤣🤣🤣", crewId);
   console.log("crewStore crewName : ", crewId);
 
   const navigate = useNavigate();
@@ -268,7 +270,7 @@ const LivePage = () => {
   const role = user.memberType ?? "user"; // useMemberType이 crew 없으면 user
   const participantName = user.nickname ?? "guest" + randomId;
   const participantRole = role === "crew" ? "publisher" : "subscriber";
-
+  const [finishLive, setFinishLive] = useState(false);
   console.log("user", user);
 
   const handleBackBtnClick = () => {
@@ -353,15 +355,13 @@ const LivePage = () => {
     // [updateRecordingsList]
   }, []);
 
-  const leaveRoom = useCallback(() => {
+  const subScriberLeaveRoom = useCallback(() => {
     if (room) {
-      socket.on("disconnect from room", (data) => {
-        const { room, participant } = data;
-
-        // 받은 데이터 활용 예시
-        console.log(`${participant}님이 방 ${room}에서 나갔습니다`);
+      socket.emit("leave", {
+        roomName,
+        participant: participantName,
+        role: participantRole,
       });
-      socket.emit("leave", { roomName, participant: participantName });
 
       room.disconnect();
       console.log("BYE");
@@ -390,6 +390,53 @@ const LivePage = () => {
       }
     }
   }, [room]);
+
+  const leaveRoom = useCallback(() => {
+    if (room) {
+      socket.on("disconnect from room", (data) => {
+        const { room, participant } = data;
+
+        // 받은 데이터 활용 예시
+        console.log(`${participant}님이 방 ${room}에서 나갔습니다`);
+      });
+      socket.emit("leave", {
+        roomName,
+        participant: participantName,
+        role: participantRole,
+      });
+
+      room.disconnect();
+      console.log("BYE");
+      navigate("/");
+
+      if (participantRole === "publisher") {
+        const endLive = async (roomName: string) => {
+          try {
+            const response = await axiosInstance.patch(
+              `/live/${roomName}`,
+              {},
+              {
+                headers: {
+                  "Content-Type": "application/json",
+                },
+              }
+            );
+
+            console.log("라이브 종료 성공!", response.data);
+          } catch (err) {
+            console.error("라이브 종료 실패", err);
+          }
+        };
+        endLive(roomName);
+      }
+    }
+  }, [room]);
+
+  socket.on("finishLive", () => {
+    if (participantRole === "subscriber") {
+      subScriberLeaveRoom();
+    }
+  });
 
   async function getToken(
     roomName: string,
@@ -491,7 +538,7 @@ const LivePage = () => {
           const requestData = {
             crewId: roomName, // number 또는 string 값
             title: fakeTitle,
-            scheduleId: scheduleId
+            scheduleId: scheduleId,
           };
 
           //scheduleId가 존재하면 추가

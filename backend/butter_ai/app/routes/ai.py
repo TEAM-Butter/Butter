@@ -83,7 +83,6 @@ def on_leave(data):
         sock.emit("message", "No room ID provided", room=room_id)
         return
 
-    leave_room(room_id)
     websocket_room_service.remove_member(room_id, data["participant"])
     if get_room_size(room_id) == 0:
         print(f"Room {room_id} is empty")
@@ -92,6 +91,7 @@ def on_leave(data):
         sock.emit("finishLive", None, room=room_id)
     else:
         sock.emit("leave", websocket_room_service.room_members.get(room_id), room=room_id)
+    leave_room(room_id)
 
 
 @sock.on("increaseEmotionCount")
