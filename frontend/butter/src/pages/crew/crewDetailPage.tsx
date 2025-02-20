@@ -445,7 +445,7 @@ function CrewDetailPage() {
                     <Box1Friend src={crewDetail.imageUrl} alt="crewImage"></Box1Friend>
   
                     <Right>
-                     <EditButton onClick={() => handleEditClick()} src={editButton} alt="editButton"></EditButton>
+                     {canSee &&<EditButton onClick={() => handleEditClick()} src={editButton} alt="editButton"></EditButton>}
                     </Right>
                     <CrewNameWrapper>
                         <TextName> {crewDetail.name}</TextName>
@@ -667,7 +667,7 @@ function CrewEditComponent1({ crewDetail, handleEditClick }: { crewDetail: any; 
        const [ loading, setLoading ] = useState(true) // 로딩 표시하는 변수
        const [ error, setError] = useState(null) // 에러 상태
        const {id} = useParams()
-       const [file, setFile] = useState<File | null>(null);
+       const [file, setFile] = useState<any>(null);
        const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files) {
           setFile(event.target.files[0]); // ✅ 파일 저장
@@ -689,8 +689,9 @@ function CrewEditComponent1({ crewDetail, handleEditClick }: { crewDetail: any; 
 
             else {formData.append("description", content);} // ✅ 파일 추가
 
-        if (crewImage != null) {
-            formData.append("image", crewImage)
+        if (file != null) {
+            formData.append("image", file)
+            console.log("실행확인")
         }
                try {
                     console.log(formData,"dd")
@@ -955,7 +956,7 @@ const PlusMember = async (memId : any) => {
             </MemberEditWrapper>})}
           
             <PlusButton src={plusButton} alt="plusButton" onClick={() =>setCrewMemberPlusModalOpen(true)}></PlusButton>
-            <ImageBox><input type="file" accept="image/*" onChange={handleImageChange} />
+            <ImageBox><input type="file" accept="image/*" onChange={handleFileChange} />
                             <div onClick={() => { { setPreview(null); setImage(null) } }}>x</div>
                         </ImageBox>
             </Box8>          

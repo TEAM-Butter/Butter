@@ -209,7 +209,7 @@ function CrewListPage() {
                 // ✅ 헤더 추가: Authorization (JWT 토큰 포함)
                 setLoading(true);
                 if (genreToggle == "All"){
-                    const response = await axiosInstance.get(`/crew/list?pageSize=20&sortBy=followerCount`)
+                    const response = await axiosInstance.get(`/crew/list?pageSize=150&sortBy=followerCount`)
                     setCrewList(response.data);
                     console.log(response.data)
                     // const response2 = await axiosInstance.get('clip/detail/8')
