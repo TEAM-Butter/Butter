@@ -245,28 +245,28 @@ let APPLICATION_SERVER_URL = import.meta.env.VITE_NODE_JS_SERVER || "";
 //let LIVEKIT_URL = "wss://192.168.30.199:7880/";
 let LIVEKIT_URL = import.meta.env.VITE_LIVEKIT_SERVER || "";
 
-configureUrls();
+// configureUrls();
 
-function configureUrls() {
-  // If APPLICATION_SERVER_URL is not configured, use default value from OpenVidu Local deployment
-  if (!APPLICATION_SERVER_URL) {
-    if (window.location.hostname === "localhost") {
-      APPLICATION_SERVER_URL = "http://localhost:6080/";
-    } else {
-      APPLICATION_SERVER_URL = "https://" + window.location.hostname + ":6443/";
-    }
-  }
+// function configureUrls() {
+//   // If APPLICATION_SERVER_URL is not configured, use default value from OpenVidu Local deployment
+//   if (!APPLICATION_SERVER_URL) {
+//     if (window.location.hostname === "localhost") {
+//       APPLICATION_SERVER_URL = "http://localhost:6080/";
+//     } else {
+//       APPLICATION_SERVER_URL = "https://" + window.location.hostname + ":6443/";
+//     }
+//   }
 
-  // If LIVEKIT_URL is not configured, use default value from OpenVidu Local deployment
-  if (!LIVEKIT_URL) {
-    if (window.location.hostname === "localhost") {
-      LIVEKIT_URL = "ws://localhost:7880/";
-    } else {
-      LIVEKIT_URL = "wss://" + window.location.hostname + ":7443/";
-      //LIVEKIT_URL = "ws://192.168.219.52:7880/";
-    }
-  }
-}
+//   // If LIVEKIT_URL is not configured, use default value from OpenVidu Local deployment
+//   if (!LIVEKIT_URL) {
+//     if (window.location.hostname === "localhost") {
+//       LIVEKIT_URL = "ws://localhost:7880/";
+//     } else {
+//       LIVEKIT_URL = "wss://" + window.location.hostname + ":7443/";
+//       //LIVEKIT_URL = "ws://192.168.219.52:7880/";
+//     }
+//   }
+// }
 
 const randomId = Math.random();
 

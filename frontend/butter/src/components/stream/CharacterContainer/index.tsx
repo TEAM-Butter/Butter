@@ -377,18 +377,13 @@ const CharacterContainer = ({
 
       switch (content.label) {
         case "little_heart":
-          console.log("💕💕💕💕💕");
           if (isCurrentParticipant) {
-            console.log("😒😒😒😒😒😒");
             handleMyEmotion(heart, id, "heart");
           } else {
-            console.log("여기입니다4");
             handleOtherEmotion(id, "heart");
           }
           break;
         case "clap":
-          console.log("👏👏👏👏👏");
-
           if (isCurrentParticipant) {
             handleMyEmotion(clap, id, "clap");
           } else {
@@ -396,8 +391,6 @@ const CharacterContainer = ({
           }
           break;
         case "like":
-          console.log("👍👍👍👍");
-
           if (isCurrentParticipant) {
             handleMyEmotion(like, id, "like");
           } else {
@@ -405,7 +398,6 @@ const CharacterContainer = ({
           }
           break;
         case "thumb_index":
-          console.log("🎤🎤🎤🎤🎤");
           if (isCurrentParticipant) {
             handleMyEmotion(mic, id, "mic");
           } else {
@@ -422,18 +414,18 @@ const CharacterContainer = ({
   };
   const handleSocketOn = () => {
     socket.on("message", handleMessage);
-
-    socket.on("increaseEmotionCount", (content) => {
-      setHeartCount(content.heart);
-      setLikeCount(content.like);
-    });
-
     socket.on("donate", (content) => {
+      alert("여기있어!!!!!!!");
       console.log("❤️❤️❤️❤️Donation received:", content);
       setRecentDonation({
         participant: content.participant,
         amount: content.breadAmount,
       });
+    });
+
+    socket.on("increaseEmotionCount", (content) => {
+      setHeartCount(content.heart);
+      setLikeCount(content.like);
     });
   };
 

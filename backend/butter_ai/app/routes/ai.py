@@ -117,6 +117,4 @@ def get_room_size(room_id):
 def on_donate(data):
     room_id = data["roomName"]
     print("donate 를 받아옵니다")
-    if room_id is None or room_id == '':
-        return
     sock.emit("donate", { "participant": data["participant"], "breadAmount": data["breadAmount"] }, room=room_id)
