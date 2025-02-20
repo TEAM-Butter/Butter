@@ -46,6 +46,11 @@ public class  CrewServiceImpl implements CrewService {
     private final GenreRepository genreRepository;
     private final CrewGenreRepository crewGenreRepository;
 
+    @Override
+    public Crew save(Crew crew) {
+        return crewRepository.save(crew);
+    }
+
     /**
      * 크루 생성 요청 DTO를 받아 크루를 생성 및 DB에 저장 후 크루 응답 DTO를 반환한다.
      * @param currentUser 현재 로그인한 유저 정보

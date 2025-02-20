@@ -16,6 +16,8 @@ import java.util.List;
 
 public interface CrewService {
 
+    Crew save(Crew crew);
+
     CrewResponseDTO createCrew(AuthInfoDTO currentUser, CrewSaveRequestDTO crewSaveRequestDTO);
 
     CrewMemberResponseDTO createCrewMember(AuthInfoDTO currentUser, CrewMemberRequestDTO crewMemberRequestDTO);
