@@ -33,32 +33,63 @@ const BookMarkIcon = styled.img`
   width: 20px;
 `
 
-
-
 const PageContainer=styled.div`
-display: flex; /* Flexbox 레이아웃 */
-width: 100%;   /* 전체 너비 100% */
-padding: 20px 210px; /* 양쪽 끝에 20px의 여백 추가 */
-box-sizing: border-box; /* 패딩이 포함된 크기 계산 */
+display: grid; 
+grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+grid-template-rows: 1fr;
+width: 100%;   
+height: 100%;
+box-sizing: border-box; 
+align-content: center;
+padding: 30px 40px;
 gap: 40px;
+
+@media (max-width: 900px) {
+}
 
 `
 
 const LayOut1 = styled.div`
-
-`
+  height: 100%;
+  `
 
 const LayOut2 = styled.div`
-
+    height: 100%;
     display: flex;
     flex-direction: column;
-    padding-top: 40px;
+    overflow-y: auto;
+    /* padding-top: 40px; */
+`
+
+const MapBox = styled.div`
+  width: 100%;
+  height: 100%;
 `
 
 const Box1 = styled.div`
-  padding-top: 40px;
+  /* padding-top: 40px; */
   display: flex;
   position: relative;
+  height: 100%;
+`
+
+const Header = styled.div`
+  display: grid;
+  width: 100%;
+  margin-bottom: 20px;
+  justify-content: flex-end;
+  
+  #pageInfo {
+    padding-top: 10px;
+  }
+  `;
+
+
+const Text = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  gap: 5px;
+  font-size: 60px;
 `
 
 const MyLocationBtn = styled.img`
@@ -81,8 +112,8 @@ const Box2 = styled.div`
   background-color: black;
   border-radius: 30px;
   height: 50px;
-  width: 420px;
   display: flex;
+  flex: 1;
   align-items: center;
   justify-content: space-between;
   gap : 15px;
@@ -97,33 +128,37 @@ const Box3 = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
 
 `
 const Box4 = styled.div`
   background: var(--liner);
-  height: 510px;
-  width: 490px;
+  flex:1;
+  /* width: 100%; */
   color: black;
   border-radius: 5px;
   padding-top: 20px;
-
-
+  display: flex;
+  flex-direction: column;
+  max-height: 600px;
+  overflow-y: auto;
 `
 
 const CalenderBox = styled.div`
   z-index: 999;
-  background-color: gray;
-  border-radius: 30px;
+  background-color: var(--bgColor);
+  border-radius: 10px;
   padding: 20px;
-  top: 130px;
-  right: 100px;
-  width: 430px;
+  top: 60px;
+  right: 20px;
+  width: 440px;
   position: absolute;
-  border: 2px solid white;
+  border: 1px solid white;
 `
 
 const SearchWrapper = styled.div`
   display: flex;
+  justify-content: space-between;
   gap: 20px;
   padding-bottom: 20px; 
 `
@@ -209,8 +244,6 @@ const ZoomBox = styled.div`
   top: 100px;
 `
 
-
-
 const ZoomBtn = styled.img`
     height: 25px;
   width: 25px;
@@ -219,7 +252,10 @@ const ZoomBtn = styled.img`
   margin-bottom: -3px;
 `
 const HeightModify = styled.div`
-
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
 `
 const ZoomBox2 = styled.div`
   position: absolute;
@@ -242,8 +278,9 @@ const InputBox = styled.input`
   background-color: black;
   color: white;
   border-radius: 30px;
+  flex: 1;
   height: 50px;
-  width: 420px;
+  /* width: 420px; */
   padding-left: 20px;
   padding-right: 20px;
   font-size: 15px;
@@ -859,15 +896,14 @@ useEffect(() => {
         >
           <ZoomOutBox src={zoomoutIcon} alt="zoomoutIcon"></ZoomOutBox>
         </ZoomBox2>
-      <>
-      
+        <MapBox>
         <Map // 지도를 표시할 Container
         center={state.center}
         isPanto={state.isPanto}
         style={{
           // 지도의 크기
-          width: "550px",
-          height: "580px",
+          width: "100%",
+          height: "100%",
         }}
         id="map"
         onCreate={setMap}
@@ -1000,25 +1036,28 @@ useEffect(() => {
           </CustomOverlayMap>
           )}
         </>
-
       ))}
-
-      
     </MarkerClusterer>
 
       
 
 
-   <DateTextBox2>날짜 : {selectedDate}</DateTextBox2>
-    </Map>
-    </>
+      <DateTextBox2>날짜 : {selectedDate}</DateTextBox2>
+      </Map>
+      </MapBox>
     </Box1>
    
     </LayOut1>
     <LayOut2>
+    <Header>
+        <Text>
+          Map
+        </Text>
+        <div id="pageInfo">버스킹 일정들을 지도에서 확인하고 북마크 해보세요!</div>
+      </Header>
       <SearchWrapper>
         <Box2>
-          <InputBox type="text" placeholder="버스킹 일정이 궁금한 장소를 입력해보세요!" value={searchTerm} onChange={(e)=>{setSearchTerm(e.target.value)}} onKeyDown={(e) => {
+          <InputBox type="text" placeholder="버스킹 장소를 검색해 보세요!" value={searchTerm} onChange={(e)=>{setSearchTerm(e.target.value)}} onKeyDown={(e) => {
         if (e.key === "Enter") handleSearch();
       }}  // 입력값 업데이트
           /> 
@@ -1028,7 +1067,7 @@ useEffect(() => {
           <CalenderIcon src={calenderIcon} alt="calenderIcon" onClick={()=>{calenderHandler()}}></CalenderIcon>
           
           {calenderOpen && <CalenderBox> <FullCalendar
-                height={"450px"}
+                height={"350px"}
                 plugins={[ dayGridPlugin, interactionPlugin ]}
                 initialView="dayGridMonth"
                 selectable= {true}
