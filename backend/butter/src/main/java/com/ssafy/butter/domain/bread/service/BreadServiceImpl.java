@@ -66,6 +66,7 @@ public class BreadServiceImpl implements BreadService {
         breadLogRepository.save(breadLog);
         member.updateBreadAmount(member.getBreadAmount().getAmount() - breadDonationRequestDTO.amount());
         crew.updateDonationAmount(crew.getDonationAmount() + breadDonationRequestDTO.amount());
+        crewService.save(crew);
     }
 
     @Override
