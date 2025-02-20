@@ -13,7 +13,6 @@ import { CheckLoginIdRequest } from "../../apis/request/member/memberRequest";
 import { CheckLoginIdResponseDto } from "../../apis/response/member";
 import NaverLogin from "./Naver/NaverLogin";
 import { motion } from "framer-motion";
-import { Password } from "@mui/icons-material";
 
 const FormWrapper = styled.form`
   width: 100%;
