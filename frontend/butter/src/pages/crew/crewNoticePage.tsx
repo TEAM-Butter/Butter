@@ -56,6 +56,7 @@ const Box1 = styled.div`
   align-items: center;
   padding-left: 25px;
   gap : 10px;
+
 `
 
 const Box2 = styled.div`
@@ -423,7 +424,7 @@ function CrewNoticePage() {
             {canSee && <PlusBtnWrapper><div> Notice </div><div onClick={() => plusHandlerOn()} style={{fontSize: "30px"}}>+</div></PlusBtnWrapper>}
             </Box1>
             <Box2>
-            <div>{
+            <div >{
                 crewDetail.notices.map((a:any, i:any) => {
                     return ( <NoticeWrapper> <NoticeImage src={a.imageUrl} alt="noticeImg"></NoticeImage><NoticeText><div style={{fontSize: "20px"}}>{a.title}</div>  <div>{a.content}</div></NoticeText> <RightRightArrow onClick={() => {{setBasicNum(i); setSelectedNotice(crewDetail.notices[i].id)}}} src={rightRightArrow} alt='rightRightArrow'></RightRightArrow></NoticeWrapper> )
                 })
