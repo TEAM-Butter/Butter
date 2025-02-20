@@ -12,7 +12,6 @@ const VideoClipPageWrapper = styled.div`
   flex-direction: column;
   /* height: 90%; */
   margin: 40px;
-  padding-top: 15px; // 하나로 통일
   overflow: hidden; // 추가
 `;
 
