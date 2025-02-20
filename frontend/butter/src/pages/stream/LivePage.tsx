@@ -20,6 +20,8 @@ import { RecordingModal } from "../../components/recording/RecordingModal";
 import { Recording } from "../../types/recording";
 import UserBox from "../../components/stream/UserBox";
 
+import { DonationModal } from "../../components/common/modals/DonationModal"
+
 import background from "../../assets/background.png";
 import CharacterContainer from "../../components/stream/CharacterContainer";
 import { io } from "socket.io-client";
@@ -162,6 +164,20 @@ const BackBtn = styled.div`
     width: 100%; /* 전체 너비 사용 */
   }
 `;
+const DonateBtn = styled.div`
+  display: flex;
+  justify-content: space-between;
+  background-color: #5ea832;
+  border-radius: 20px;
+  padding-left: 30px;
+  padding: 15px;
+  font-size: 20px;
+  font-weight: 300;
+
+  @media (max-width: 780px) {
+    width: 100%; /* 전체 너비 사용 */
+  }
+`;
 
 const RecordingListContainer = styled.div`
   margin-top: 15px;
@@ -238,6 +254,7 @@ const LivePage = () => {
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
   const [currentVideoUrl, setCurrentVideoUrl] = useState("");
   const [token, setToken] = useState<string | null>(null);
+  const [modalType, setModalType] = useState<string>("");
 
   const location = useLocation();
   const roomId = location.state.roomId;
@@ -277,6 +294,11 @@ const LivePage = () => {
     leaveRoom();
     navigate("/");
   };
+
+  const handleDonateBtnClick = () => {
+    setModalType("donation");
+  }
+  
   // LiveOffBtn 클릭 핸들러
   const handleLiveOffBtnClick = async () => {
     try {
@@ -714,6 +736,11 @@ const LivePage = () => {
                 streamId={roomName}
               />
             </RightMiddle>
+            <DonateBtn onClick={handleDonateBtnClick}>
+              <div style={{ color: "black" }}>
+              <span style={{ fontWeight: 700 }}>Donate</span>
+              </div>
+            </DonateBtn>
             <BackBtn onClick={handleBackBtnClick}>
               <div style={{ color: "black" }}>
                 <span style={{ fontWeight: 700 }}>Back </span>to the live
@@ -723,6 +750,7 @@ const LivePage = () => {
           </Right>
         </LivePageWrapper>
       )}
+      {modalType === "donation" && <DonationModal crewId={+roomName} width="400px" height="400px" setModalType={setModalType}></DonationModal>}
     </>
   );
 };
