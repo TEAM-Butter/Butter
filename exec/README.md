@@ -55,6 +55,8 @@
 **JWT**: 0.12.6<br/>
 **OAuth 2.0** <br/>
 **Lombok**: 1.18.30<br/>
+**Spring Mail**<br/>
+**SSE Emitter**<br/>
 
 ##### Node.js
 **JavaScript**: ECMAScript 2024(ES15)<br/>
@@ -62,7 +64,6 @@
 **mysql2**: 3.12.0<br/>
 **OpenVidu**: 3.0.0<br/>
 **LiveKit Egress**: 1.8.4<br/>
-**LiveKit Ingress**: 1.4.2<br/>
 
 ##### Python Packages
 **Python**: 3.11.9<br/>
