@@ -11,6 +11,7 @@ import { useUserStore } from "../../../stores/UserStore";
 const ChatRoomPageWrapper = styled.div`
   display: flex;
   flex-direction: column;
+  width: 100%;
   height: 100%; /* 화면 전체 높이 사용 */
 `;
 
@@ -75,19 +76,11 @@ const MsgContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-self: center;
-  align-items: center;
-`;
-
-const SenderImage = styled.img`
-  width: 30px;
-  height: 30px;
-  background-color: aliceblue;
-  border-radius: 15px;
 `;
 
 const SenderName = styled.div`
   font-size: 12px;
-  color: #807c7c;
+  color: #fffffff0;
   margin-bottom: 4px;
 `;
 const LiveChatTitle = styled.div`
@@ -111,7 +104,7 @@ const InputField = styled.input`
   margin: 5px;
   border: none;
   background-color: #717171;
-  color: #ccd;
+  color: #ffffff;
   margin-right: 10px;
   font-size: 16px;
 
@@ -167,7 +160,6 @@ function StreamChat({ participantName, roomRole, streamId }: StreamChatProps) {
   const [isUserScrolling, setIsUserScrolling] = useState(false);
   const role: "USER" | "HOST" = roomRole === "crew" ? "HOST" : "USER";
   const chatAreaRef = useRef<HTMLDivElement>(null);
-  const senderImage = useUserStore((state) => state.profileImage);
   const { register, handleSubmit, reset } = useForm<FormInputs>();
 
   //맨 아래에 있는 지 확인
@@ -286,7 +278,6 @@ function StreamChat({ participantName, roomRole, streamId }: StreamChatProps) {
           if (type === "CHAT") {
             return (
               <Message key={idx} isMine={participantName === sender}>
-                <SenderImage src={senderImage} />
                 <MsgContainer>
                   {participantName !== sender && (
                     <SenderName>{sender}</SenderName>
