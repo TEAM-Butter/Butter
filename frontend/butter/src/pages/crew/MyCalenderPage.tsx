@@ -310,6 +310,14 @@ const MyCalendarPage = () => {
       setBookmarked(!bookmarked)
       console.log(bookmarked)
       setHaveBookMarked(!haveBookMarked)
+
+      const response = await axiosInstance.get(`schedule/like`) // 크루 디테일 정보 받아옴
+      setLikedSchedule(response.data)
+      console.log("response.data : ", response.data)
+    const formattedEvents = transformEvents(response.data)
+    console.log("음?", formattedEvents)
+    setEvents(formattedEvents)
+    
     }
     catch {
 
@@ -328,11 +336,27 @@ const MyCalendarPage = () => {
       setBookmarked(!bookmarked)
       console.log(bookmarked)
       setHaveBookMarked(!haveBookMarked)
+      const response = await axiosInstance.get(`schedule/like`) // 크루 디테일 정보 받아옴
+        setLikedSchedule(response.data)
+        console.log("response.data : ", response.data)
+      const formattedEvents = transformEvents(response.data)
+      console.log("음?", formattedEvents)
+      setEvents(formattedEvents)
+      setdayScheduleOPen(false)
     } catch {
 
     }
   }
 
+  const Check = async () => {
+    try{
+      const res = await axiosInstance.get('schedule/like')
+      console.log(res.data, '새로운 좋아요리스트')
+      setLikedSchedule(res.data)
+    } catch {
+
+    }
+  }
 
   const daySchedule = (info: any) => {
     console.log(info.event, "durl")
@@ -343,9 +367,7 @@ const MyCalendarPage = () => {
 
   console.log(selectedEvent, "이게 젤 중요")
 
-
-
-
+ 
   useEffect(() => {
     const FetchLikeList = async () => {
       try {
@@ -386,6 +408,7 @@ const MyCalendarPage = () => {
       <BodyWrapper>
       <CalenderBox>
         <FullCalendar
+          
           height={"100%"}
           plugins={[dayGridPlugin, interactionPlugin]}
           initialView="dayGridMonth"
