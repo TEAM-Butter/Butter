@@ -72,7 +72,6 @@
 **opencv-python**: 4.9.0.60
 **torch-cuda**: 2.1.0
 **ultralytics**: 8.0.0
-**tensorflow**: 2.15.0
 
 #### Frontend
 
