@@ -6,6 +6,7 @@ import com.ssafy.butter.domain.member.entity.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -30,7 +31,7 @@ public class CrewMemberRepositoryImpl implements CrewMemberRepository {
     }
 
     @Override
-    public Optional<CrewMember> findByMember(Member member) {
+    public List<CrewMember> findByMember(Member member) {
         return crewMemberJpaRepository.findByMember(member);
     }
 }

@@ -3,33 +3,46 @@ import { useEffect, useState } from "react";
 import LiveBox from "../../components/stream/LiveBox";
 import { axiosInstance } from "../../apis/axiosInstance";
 import { GenreToggle } from "../../components/common/toggle/toggle";
+import { motion } from "framer-motion";
+
 const LiveListPageWrapper = styled.div`
-  width: 90vw;
-  margin: auto;
+  margin: 40px;
 `;
 
 const Header = styled.div`
-  display: flex;
-  justify-content: space-between;
-  margin-top: 70px;
-  margin-bottom: 50px;
-  height: 150px;
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  margin: 40px 0 20px 0;
+  align-items: flex-end;
+
+  #pageInfo {
+    padding-top: 10px;
+  }
+
+  @media (max-width: 915px) {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
 `;
 
-const T1 = styled.span`
-  font-size: 100px;
-  font-weight: bold;
-  margin-bottom: 60px;
-`;
-const T2 = styled.span`
+const Text = styled.div`
+  display: flex;
+  align-items: flex-end;
+  gap: 5px;
   font-size: 60px;
-  margin-left: 20px;
-  margin-bottom: 60px;
-  white-space: pre; /* 띄어쓰기를 그대로 유지 */
+
+  #pageTitleMd {
+    font-weight: 200;
+  }
 `;
-const T3 = styled.div`
-  margin-top: 20px;
-  font-size: 20px;
+
+const Underline = styled(motion.div)`
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--accent);
 `;
 
 const LiveContainer = styled.div`
@@ -95,21 +108,25 @@ const LiveListPage = () => {
     <LiveListPageWrapper>
       <Header>
         <div>
-          <div>
-            <T1>Live</T1>
-            <T2>Busking</T2>
+          <Text>
+            <div id="pageTitleLg">Live</div>
+            <div id="pageTitleMd">Busking</div>
+          </Text>
+          <div id="pageInfo">
+            라이브에 참여해 재미있는 모션과 함께 버스킹을 즐겨보세요!
           </div>
-          <T3>라이브에 참여해 재미있는 모션과 함께 버스킹을 즐겨보세요!</T3>
+        </div>
+        <div>
+          <GenreToggle setGenreToggle={setGenreToggle} keyName="stream" />
         </div>
       </Header>
       <div>
-        <GenreToggle setGenreToggle={setGenreToggle} />
         <LiveContainer>
           {presentlivelist.map((live) => {
             return (
               <LiveCard key={live.id}>
                 <LiveBox
-                  id={live.id || ""}
+                  id={live.crew.id || ""}
                   title={live.title || "제목 없음"}
                   genres={
                     Array.isArray(live.crew?.genres) ? live.crew.genres : []

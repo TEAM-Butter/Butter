@@ -1,10 +1,11 @@
 import styled from "@emotion/styled";
 import { motion } from "framer-motion"
 import { keyframes } from "@emotion/react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import MapImg1 from "../../assets/home/MapImg1.png"
 import MapImg2 from "../../assets/home/MapImg2.png"
 import MapImg3 from "../../assets/home/MapImg3.png"
+import { useUserStore } from "../../stores/UserStore";
 
 const HomePageWrapper = styled(motion.div)`
   overflow: hidden;
@@ -50,7 +51,7 @@ const LtWrapper = styled.div`
 
     #info1 {
         font-size: 20px;
-        margin-bottom: 40px;
+        margin-bottom: 20px;
     }
 
     #info2 {
@@ -70,11 +71,18 @@ const LinkBtnBox = styled.div`
         font-weight: 300;
         background-color: rgba(255,255,255,0.2);
         border-radius: 30px;
+        transition: all ease-in-out 0.2s;
     }
-    
+
     #linkIcon {
         padding: 15px 16px;
         border-radius: 50%;
+    }
+    
+    &:hover{
+        #linkBtn, #linkIcon {
+            background-color: rgba(255,255,255,0.3);
+        }
     }
 `
 
@@ -98,7 +106,6 @@ const ImgBox = styled.div`
             left: 0;
             top: 0;
             position: relative;
-
         }
     }
 
@@ -132,6 +139,17 @@ const RtWrapper = styled.div`
 
 
 const Home2Page = () => {
+    const navigate = useNavigate();
+    const isLogin = useUserStore(state => state.isLogin)
+
+    const handleClick = () => {
+        if (isLogin) {
+            navigate('/busking')
+        } else {
+            navigate('/auth/login')
+        }
+    }
+
     return (
         <HomePageWrapper
             key="home2"
@@ -143,14 +161,17 @@ const Home2Page = () => {
             <Container>
                 <LtWrapper>
                     <div id="LgText">MAP</div>
-                    <div id="info1">Every moment is a chance to be the star, discover your next busking event.</div>
+                    <div id="info1">
+                        Seize the moment, step into the spotlight, and find your next busking event.<br />
+                        순간을 놓치지 마세요. 무대의 주인공이 되어 다음 버스킹 이벤트를 찾아보세요.
+                    </div>
                     <div id="info2">
                         버스킹 일정을 한눈에 쉽게 확인하고, 원하는 날짜와 장소를 설정해 손쉽게 탐색할 수 있습니다.
                         크루가 등록한 다양한 버스킹 일정들을 지도에서 확인하며,
                         언제 어디서든 나만의 특별한 공연을 찾을 수 있습니다.
                         공연이 기다리는 그곳으로 떠나보세요!
                     </div>
-                    <LinkBtnBox>
+                    <LinkBtnBox onClick={handleClick}>
                         <div id="linkBtn">LINK TO MAP PAGE</div>
                         <div id="linkIcon">→</div>
                     </LinkBtnBox>
@@ -160,7 +181,6 @@ const Home2Page = () => {
                     </ImgBox>
                 </LtWrapper>
                 <RtWrapper>
-
                     <div>
                         <span>KAKAO MAP</span>
                         <img id="mapImg3" src={MapImg3} />

@@ -116,11 +116,11 @@ interface MemberDetailResponseDto {
   isExtraInfoRegistered: boolean;
 }
 
-import { loadPaymentWidget } from "@iamport/payment"; // 아임포트 SDK 추가
 import { axiosInstance } from "../../apis/axiosInstance";
 import { useUserStore } from "../../stores/UserStore";
 import { useEffect, useState } from "react";
 import { memberDetailRequest } from "../../apis/request/member/memberRequest";
+import { getBreadAmount } from "../../apis/request/bread/breadRequest";
 interface BreadResponseDto {
   impUid: string;
 }
@@ -131,6 +131,15 @@ const BreadChargePage = () => {
   const breads = [100, 500, 1000, 5000, 10000];
   const [userBread, setUserBread] = useState(0);
   const nickname = useUserStore((state) => state.nickname);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await getBreadAmount();
+      setUserBread(response.breadAmount);
+    };
+    fetchData();
+  });
+
   const handlePayment = async () => {
     const price = priceMap[selectedAmount as keyof typeof priceMap];
 

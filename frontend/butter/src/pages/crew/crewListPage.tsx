@@ -1,5 +1,5 @@
 import axios from "axios"
-import { useState } from "react"
+import { useRef, useState } from "react"
 import { Link, Navigate, useNavigate } from "react-router-dom"
 import { useEffect } from "react"
 import styled from "@emotion/styled";
@@ -66,6 +66,10 @@ const ImgStyle = styled.img<ImgProps>`
     }
 `;
 
+const CrewListPageWrapper = styled.div`
+    margin: 40px;
+`
+
 // CrewListContainer: 화면 가로 전체에 꽉 차게
 const CrewListContainer = styled.div`
     display: flex;  /* 한 줄에 정렬 */
@@ -82,10 +86,11 @@ const CrewBox = styled.div`
     width: 15%; /* 각 박스가 화면 가로 15%씩 차지 */
     padding: 20px 0px;
     box-sizing: border-box; /* 패딩 포함해서 크기 계산 */
-    text-align: center; /* 텍스트 중앙 정렬 */
+    transition: all ease-in-out 0.2s;
     &:hover {
         outline: 1px solid gray;  /* 마우스가 올라갔을 때 하얀 테두리 */
     }
+  
 `;
 
 // 이미지 스타일2
@@ -136,34 +141,47 @@ const FindBox = styled.img`
   width: 20px;
 
 `
-// const SearchWrapper = styled.div`
-//     display: flex;
-//     align-items: center;
-//     justify-content: space-between;
-//     position: absolute;
-//     right: 0px;
-//     top : 70px;
-//     background-color: black;
-//     height: 40px;
-//   width: 130px;
-//   font-size: 20px;
-//   color: white;
-//   z-index: 500;
-//   padding-left: 13px;
-//   padding-right: 13px;
-//   border-radius: 30px;
-//   border: 2px solid white;
-// `
 const SearchText = styled.div`
     
 `
-const FilterWrapper = styled.div`
-    height: 40px;
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
+
+const Header = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  align-items: center;
+  margin: 40px 0 20px 0;
+  
+  #pageInfo {
+      padding-top: 10px;
+    }
+    
+  @media (max-width: 915px) {
+      grid-template-columns: 1fr;
+      gap: 10px;
+  }
 `
 
+
+const Text = styled.div`
+  display: flex;
+  align-items: flex-end;
+  gap: 5px;
+  font-size: 60px;
+  
+  #pageTitleMd {
+      font-weight: 200;
+    }
+    `;
+
+const FilterWrapper = styled.div`
+    height: 100%;
+    display: flex;
+    gap: 10px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-end;
+    width: 100%;
+`
 const SearchWrapper = styled.div`
     display: flex;
     align-items: center;
@@ -171,57 +189,83 @@ const SearchWrapper = styled.div`
     height: 100%;
     width: 200px;
     justify-content: space-between;
-    padding: 0 15px;
+    padding: 7px 15px;
     border-radius: 20px;
     background-color: #040a14;
     border: 1px solid white;
-`
+    `
 
 const FlexCan = styled.div`
     display: flex;
- ;
+    ;
+    `
+
+const CrewName = styled.div`
+    font-size: 20px;
+`
+const CrewDescription = styled.div`
+    font-size: 10px;
+`
+const CrewGenre = styled.div`
+    display: flex;
+    gap : 10px;
+`
+
+const EachCrew = styled.div`
+    border: 0.5px solid white;
+    border-radius: 20px;
+    height: 25px;
+    display: flex;
+    width: 90px;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
 `
 
 
-
 function CrewListPage() {
-    const [crewId, setCrewId] = useState(0)  
-    const [ loading, setLoading ] = useState(true) // 로딩 표시하는 변수
-    const [ error, setError] = useState(null) // 에러 상태
-    const [ crewList, setCrewList] = useState([])
-    const images = [sample1,sample2,sample3,sample4,sample5]
+    const [crewId, setCrewId] = useState(0)
+    const [loading, setLoading] = useState(true) // 로딩 표시하는 변수
+    const [error, setError] = useState(null) // 에러 상태
+    const [crewList, setCrewList] = useState([])
+    const images = [sample1, sample2, sample3, sample4, sample5]
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [modalType, setModalType] = useState("")
     const navigate = useNavigate()
     const [genreToggle, setGenreToggle] = useState("All")
 
 
-     
+    const videoRef = useRef<HTMLVideoElement>(null);
 
 
 
 
-
-
+    const [dummy,setdummy] = useState<string>("")
+    
     useEffect (() => {
         const fetchCrewDetail = async () => {
             try {
                 // ✅ 헤더 추가: Authorization (JWT 토큰 포함)
                 setLoading(true);
                 if (genreToggle == "All"){
-                    const response = await axiosInstance.get(`/crew/list?pageSize=20&sortBy=followerCount`)
+                    const response = await axiosInstance.get(`/crew/list?pageSize=200&sortBy=followerCount`)
                     setCrewList(response.data);
                     console.log(response.data)
+                    // const response2 = await axiosInstance.get('clip/detail/8')
+                    // setdummy(response2.data.videoUrl)
+                    // console.log(response2.data)
+                    // const response3 = await axiosInstance.get('clip/list?pageSize=5')
+                    // console.log(response3.data)
                 } else if (genreToggle == "R&B"){
-                    const response = await axiosInstance.get(`/crew/list?pageSize=20&sortBy=followerCount&genre=R%26B`)
+                    const response = await axiosInstance.get(`/crew/list?pageSize=50&sortBy=followerCount&genre=R%26B`)
                     setCrewList(response.data);
                     console.log(response.data)
                 } else{
-                const response = await axiosInstance.get(`/crew/list?pageSize=10&sortBy=followerCount&genre=${genreToggle}`)
+                const response = await axiosInstance.get(`/crew/list?pageSize=50&sortBy=followerCount&genre=${genreToggle}`)
                 setCrewList(response.data); // 크루 리스트 정보 받아옴
                 console.log(response.data)}
                 console.log(genreToggle)
-                
+
             } catch (err: any) {
                 setError(err.message); //요청 놓치면 에러 메세지 띄우기
             } finally {
@@ -230,52 +274,60 @@ function CrewListPage() {
         }
 
         fetchCrewDetail();
-  
+
 
     }, [genreToggle])
-   
 
 
+console.log(dummy, '주소')
 
 
     return (
-        <div>
-        <Box2>
-          
-            <FilterWrapper>
-            <GenreToggle setGenreToggle={setGenreToggle} />
-            <SearchWrapper
-                onClick={()=>{
-                    setModalType("crewSearch")
-                    // setIsModalOpen(!true)
-                }}>
-                <div>크루 검색</div>
-                <FindBox src={findIcon} alt="findIcon"></FindBox>
-            </SearchWrapper>
-            </FilterWrapper>
-        </Box2>
-        <Box1>
+        <CrewListPageWrapper>
+            <Header>
+                <div>
+                    <Text>
+                        <div id="pageTitleLg">Busking</div>
+                        <div id="pageTitleMd">Crew</div>
+                    </Text>
+                    <div id="pageInfo">당신의 마음에 맞는 크루를 지금 바로 찾아보세요!</div>
+                </div>
+                <FilterWrapper>
+                    <SearchWrapper
+                        onClick={() => {
+                            setModalType("crewSearch")
+                            // setIsModalOpen(!true)
+                        }}>
+                        <div>크루 검색</div>
+                        <FindBox src={findIcon} alt="findIcon"></FindBox>
+                    </SearchWrapper>
+                    <GenreToggle setGenreToggle={setGenreToggle} keyName="crew" />
+                </FilterWrapper>
+            </Header>
+            {/* <Box1>
             <FlexCan><P1>Busking </P1> <p>Crew</p></FlexCan>
             <p>당신의 마음에 맞는 크루를 지금 바로 찾아보세요!</p>
-        </Box1>
-        
-       <Write>
-       <div>C</div>
-       <ImgContainer>
-       {crewList.map((a : any, i ) =>{if(i <=2 ) return(<Link to={`/crew/detail/${a.id}`}><ImgStyle src={a.imageUrl} alt="Crew Logo 1" index={i} size="230px" /></Link> )})}
-        </ImgContainer>
-       <Div1 > REW</Div1>
-       </Write>
-       <CrewListContainer>
-        {crewList.map((a :any, i : number)=>{ if (3 <=i && i <=7 )return(
-             
-            <CrewBox key={i}>
-            <Link to={`/crew/detail/${a.id}`}><div>{a.name}</div><ImgStyle2 src={a.imageUrl} alt="crewImage"></ImgStyle2></Link>
-            </CrewBox>
-            )})} 
-        </CrewListContainer>
-       { modalType === "crewSearch" && <CrewSearchModal width="600px" height="500px" setModalType={setModalType}></CrewSearchModal>}
-       </div>
+        </Box1> */}
+
+            <Write>
+                <div>C</div>
+                <ImgContainer>
+                    {crewList.map((a: any, i) => { if (i <= 2) return (<Link to={`/crew/detail/${a.id}`}><ImgStyle src={a.imageUrl} alt="Crew Logo 1" index={i} size="230px" /></Link>) })}
+                </ImgContainer>
+                <Div1 > REW</Div1>
+            </Write>
+            <CrewListContainer>
+                {crewList.map((a: any, i: number) => {
+                    if (3 <= i && i <= 7) return (
+
+                        <CrewBox key={i}>
+                            <Link to={`/crew/detail/${a.id}`}><CrewName>{a.name}</CrewName><CrewDescription>{a.description}</CrewDescription><ImgStyle2 src={a.imageUrl} alt="crewImage"></ImgStyle2><CrewGenre>{a.genres.slice(0,3).map((a : string, i: number)=>{return(<EachCrew>{a}</EachCrew>)})}</CrewGenre></Link>
+                        </CrewBox>
+                    )
+                })}
+            </CrewListContainer>
+            {modalType === "crewSearch" && <CrewSearchModal width="600px" height="500px" setModalType={setModalType}></CrewSearchModal>}
+        </CrewListPageWrapper>
     )
 }
 

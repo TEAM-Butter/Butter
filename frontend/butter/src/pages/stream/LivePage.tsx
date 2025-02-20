@@ -20,6 +20,8 @@ import { RecordingModal } from "../../components/recording/RecordingModal";
 import { Recording } from "../../types/recording";
 import UserBox from "../../components/stream/UserBox";
 
+import { DonationModal } from "../../components/common/modals/DonationModal"
+
 import background from "../../assets/background.png";
 import CharacterContainer from "../../components/stream/CharacterContainer";
 import { io } from "socket.io-client";
@@ -162,6 +164,20 @@ const BackBtn = styled.div`
     width: 100%; /* 전체 너비 사용 */
   }
 `;
+const DonateBtn = styled.div`
+  display: flex;
+  justify-content: space-between;
+  background-color: #5ea832;
+  border-radius: 20px;
+  padding-left: 30px;
+  padding: 15px;
+  font-size: 20px;
+  font-weight: 300;
+
+  @media (max-width: 780px) {
+    width: 100%; /* 전체 너비 사용 */
+  }
+`;
 
 const RecordingListContainer = styled.div`
   margin-top: 15px;
@@ -238,10 +254,13 @@ const LivePage = () => {
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
   const [currentVideoUrl, setCurrentVideoUrl] = useState("");
   const [token, setToken] = useState<string | null>(null);
+  const [modalType, setModalType] = useState<string>("");
 
   const location = useLocation();
   const roomId = location.state.roomId;
+  console.log("❤️❤️❤️❤️❤️❤️❤️", roomId);
   const crewId = useCrewStore((state) => state.id || roomId);
+  console.log("🤣🤣🤣🤣🤣🤣", crewId);
   console.log("crewStore crewName : ", crewId);
 
   const navigate = useNavigate();
@@ -260,6 +279,7 @@ const LivePage = () => {
 
   const fakeTitle = state.roomName ? state.roomName : location.state.title;
   const roomName = `${crewId}`;
+  const scheduleId = state.scheduleId;
 
   const user = useUserStore((state) => state);
   const avatarType = user.avatarType;
@@ -267,13 +287,18 @@ const LivePage = () => {
   const role = user.memberType ?? "user"; // useMemberType이 crew 없으면 user
   const participantName = user.nickname ?? "guest" + randomId;
   const participantRole = role === "crew" ? "publisher" : "subscriber";
-
+  const [finishLive, setFinishLive] = useState(false);
   console.log("user", user);
 
   const handleBackBtnClick = () => {
     leaveRoom();
     navigate("/");
   };
+
+  const handleDonateBtnClick = () => {
+    setModalType("donation");
+  }
+  
   // LiveOffBtn 클릭 핸들러
   const handleLiveOffBtnClick = async () => {
     try {
@@ -352,15 +377,13 @@ const LivePage = () => {
     // [updateRecordingsList]
   }, []);
 
-  const leaveRoom = useCallback(() => {
+  const subScriberLeaveRoom = useCallback(() => {
     if (room) {
-      socket.on("disconnect from room", (data) => {
-        const { room, participant } = data;
-
-        // 받은 데이터 활용 예시
-        console.log(`${participant}님이 방 ${room}에서 나갔습니다`);
+      socket.emit("leave", {
+        roomName,
+        participant: participantName,
+        role: participantRole,
       });
-      socket.emit("leave", { roomName, participant: participantName });
 
       room.disconnect();
       console.log("BYE");
@@ -389,6 +412,53 @@ const LivePage = () => {
       }
     }
   }, [room]);
+
+  const leaveRoom = useCallback(() => {
+    if (room) {
+      socket.on("disconnect from room", (data) => {
+        const { room, participant } = data;
+
+        // 받은 데이터 활용 예시
+        console.log(`${participant}님이 방 ${room}에서 나갔습니다`);
+      });
+      socket.emit("leave", {
+        roomName,
+        participant: participantName,
+        role: participantRole,
+      });
+
+      room.disconnect();
+      console.log("BYE");
+      navigate("/");
+
+      if (participantRole === "publisher") {
+        const endLive = async (roomName: string) => {
+          try {
+            const response = await axiosInstance.patch(
+              `/live/${roomName}`,
+              {},
+              {
+                headers: {
+                  "Content-Type": "application/json",
+                },
+              }
+            );
+
+            console.log("라이브 종료 성공!", response.data);
+          } catch (err) {
+            console.error("라이브 종료 실패", err);
+          }
+        };
+        endLive(roomName);
+      }
+    }
+  }, [room]);
+
+  socket.on("finishLive", () => {
+    if (participantRole === "subscriber") {
+      subScriberLeaveRoom();
+    }
+  });
 
   async function getToken(
     roomName: string,
@@ -490,7 +560,7 @@ const LivePage = () => {
           const requestData = {
             crewId: roomName, // number 또는 string 값
             title: fakeTitle,
-            scheduleId: null,
+            scheduleId: scheduleId,
           };
 
           //scheduleId가 존재하면 추가
@@ -666,6 +736,11 @@ const LivePage = () => {
                 streamId={roomName}
               />
             </RightMiddle>
+            <DonateBtn onClick={handleDonateBtnClick}>
+              <div style={{ color: "black" }}>
+              <span style={{ fontWeight: 700 }}>Donate</span>
+              </div>
+            </DonateBtn>
             <BackBtn onClick={handleBackBtnClick}>
               <div style={{ color: "black" }}>
                 <span style={{ fontWeight: 700 }}>Back </span>to the live
@@ -675,6 +750,7 @@ const LivePage = () => {
           </Right>
         </LivePageWrapper>
       )}
+      {modalType === "donation" && <DonationModal crewId={+roomName} width="400px" height="400px" setModalType={setModalType}></DonationModal>}
     </>
   );
 };

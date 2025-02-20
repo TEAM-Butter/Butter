@@ -43,7 +43,7 @@ const UserBox = ({
       canvas.toBlob(
         async (blob) => {
           if (blob) {
-            console.log("유저의 이미지를 서버로 보냅니다");
+            // console.log("유저의 이미지를 서버로 보냅니다");
             const formData = new FormData();
             formData.append("file", blob);
             // 참가자 정보와 룸 정보도 함께 전송
@@ -55,7 +55,7 @@ const UserBox = ({
             formData.append("avatarType", avatarType ? avatarType : "");
 
             // 디버깅을 위한 로그 추가
-            console.log("Sending request to:", "/ai/upload_frame");
+            // console.log("Sending request to:", "/ai/upload_frame");
 
             const serverUrl = `${
               import.meta.env.VITE_FLASK_SERVER
@@ -71,14 +71,14 @@ const UserBox = ({
                 },
               });
 
-              console.log("Response status:", response.status);
+              // console.log("Response status:", response.status);
 
               if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
               }
 
               const data = await response.json();
-              console.log("서버 응답:", data);
+              // console.log("서버 응답:", data);
             } catch (error) {
               console.error("전송 오류:", error);
             }

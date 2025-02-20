@@ -9,7 +9,10 @@ from app.services.ai_service import process_frame
 from app.services import websocket_room_service
 
 from app import sock
+from concurrent.futures import ThreadPoolExecutor
 
+# ThreadPoolExecutor를 사용하여 비동기적으로 처리
+executor = ThreadPoolExecutor(max_workers=10)  # 동시에 처리할 수 있는 작업 수 설정
 ai_bp = Blueprint("ai", __name__)
 
 
@@ -29,7 +32,12 @@ def upload_frame():
     frame = cv2.imdecode(img_np, cv2.IMREAD_COLOR)  # OpenCV로 이미지 디코딩
 
     # YOLO v10 객체 탐지
-    detection = process_frame(frame)
+    # detection = process_frame(frame)
+    # 비동기적으로 YOLO 모델 예측 실행
+    future = executor.submit(process_frame, frame)
+    
+    detection = future.result() 
+
     if detection is None:
         detection = {"status": "no_object"}
     detection["participant"] = request.form.get("participant")
@@ -75,12 +83,15 @@ def on_leave(data):
         sock.emit("message", "No room ID provided", room=room_id)
         return
 
-    leave_room(room_id)
     websocket_room_service.remove_member(room_id, data["participant"])
     if get_room_size(room_id) == 0:
         print(f"Room {room_id} is empty")
         websocket_room_service.remove_room(room_id)
-    sock.emit("leave", websocket_room_service.room_members.get(room_id), room=room_id)
+    if data["role"] == "publisher":
+        sock.emit("finishLive", None, room=room_id)
+    else:
+        sock.emit("leave", websocket_room_service.room_members.get(room_id), room=room_id)
+    leave_room(room_id)
 
 
 @sock.on("increaseEmotionCount")

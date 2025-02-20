@@ -133,7 +133,7 @@ const Home1Page = () => {
           animate={{ y: 0, opacity: 1 }}
           exit={{ opacity: 0, y: -50, transition: { duration: 0.3 } }}
           transition={{ type: "spring", duration: 1 }}
-        >
+          >
           <Logo>BUTTER</Logo>
           <span>당신의 버스킹은 누군가의 하루를 특별하게 만듭니다.</span>
           <span>라이브를 통해 거리의 한계를 넘어 더 많은 이들과 그 순간을 나눠보세요.</span>
@@ -143,9 +143,9 @@ const Home1Page = () => {
         </LogoText>
         <BottomWrapper>
           <LpImgBox></LpImgBox>
-          <TodayInfo>
+          {/* <TodayInfo>
             <div></div>
-          </TodayInfo>
+          </TodayInfo> */}
         </BottomWrapper>
       </Container>
     </HomePageWrapper>

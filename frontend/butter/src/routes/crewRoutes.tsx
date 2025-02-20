@@ -5,11 +5,15 @@ import CrewNoticePage from "../pages/crew/crewNoticePage";
 import VideoEditPage from "../pages/video/VideoEditPage";
 import CrewRegisterPage from "../pages/crew/CrewRegisterPage";
 import MyCalendarPage from "../pages/crew/MyCalenderPage";
+import { HighlightTwoTone } from "@mui/icons-material";
+import CrewHighlightPage from "../pages/crew/crewHighlightPage";
+
 
 export const crewRoutes = (
   <Route path="/crew">
     <Route path="register" element={ <CrewRegisterPage/>} />
     <Route path="list" element={ <CrewListPage/> }/>
+    <Route path="highlight/:id" element={ <CrewHighlightPage/> }/>
     <Route path="myCalendar" element={ <MyCalendarPage/>} />
     <Route path="detail/:id" element={ <CrewDetailPage/> }/>
     <Route path="notice" />
