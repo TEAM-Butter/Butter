@@ -67,10 +67,14 @@ interface ColorProps {
   textColor?: string;
 }
 
-const ErrorComment = styled(motion.div)`
+interface ErrorCommentProps {
+  isIdPresent: boolean
+}
+
+const ErrorComment = styled(motion.div)<ErrorCommentProps>`
   flex: 1;
   min-height: 30px;
-  color: var(--red);
+  color: ${props => (props.isIdPresent ? "var(--green)" : "var(--red)")};
 
   display: flex;
   flex-direction: column-reverse;
@@ -179,6 +183,7 @@ export const LoginForm = ({ setModalType }: ModalProps) => {
         아이디/ 비밀번호를 잊어버리셨나요?
       </ForgetComment>
       <ErrorComment
+        isIdPresent={false}
         key={changeSensor ? "true" : "false"}
         initial={{ y: 20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
@@ -259,6 +264,7 @@ export const SignupForm = () => {
   const [birthDate, setBirthDate] = useState<string>("");
 
   const [isIdChecked, setIsIdChecked] = useState(false);
+  const [isIdPresent, setIsIdPresent] = useState(false);
   const [errorComment, setErrorComment] = useState("");
   const [changeSensor, setChangeSensor] = useState(true);
 
@@ -268,11 +274,13 @@ export const SignupForm = () => {
         if (responseBody?.exists) {
           LoginHandler();
           setChangeSensor(!changeSensor);
-          setErrorComment("이미 존재하는 아이디 입니다.");
+          setErrorComment("이미 존재하는 아이디입니다.");
+          setIsIdPresent(false);
         } else {
           setChangeSensor(!changeSensor);
-          setErrorComment("존재하지 않는 아이디 입니다.");
+          setErrorComment("사용할 수 있는 아이디입니다.");
           setIsIdChecked(true);
+          setIsIdPresent(true);
         }
       })
   }
@@ -417,6 +425,7 @@ export const SignupForm = () => {
         />
       </InputLabel>
       <ErrorComment
+        isIdPresent={isIdPresent}
         key={changeSensor ? "true" : "false"}
         initial={{ y: 20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
