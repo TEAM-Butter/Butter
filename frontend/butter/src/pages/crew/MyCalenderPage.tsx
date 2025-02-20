@@ -405,7 +405,10 @@ const MyCalendarPage = () => {
         {dayScheduleOPen &&
         <>
           {/* 선택한 날짜를 화면에 표시 */}
-          {selectedDate && <SelectedDate>{selectedEvent.start.toISOString().split("T")[0]}</SelectedDate>}
+          {selectedDate && <SelectedDate>{selectedEvent.start.toLocaleDateString("ko-KR", {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",})}</SelectedDate>}
           {/* 스케쥴 상세 정보 모달 */}
 
           <ModalCollumBox>
