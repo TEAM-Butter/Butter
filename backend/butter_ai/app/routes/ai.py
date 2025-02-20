@@ -111,3 +111,11 @@ def on_increase_emotion_count(data):
 
 def get_room_size(room_id):
     return len(sock.server.manager.rooms.get("/", {}).get(room_id, {}))
+
+
+@sock.on("donate")
+def on_donate(data):
+    room_id = data["roomName"]
+    if room_id is None or room_id == '':
+        return
+    sock.emit("donate", { "participant": data["participant"], "breadAmount": data["breadAmount"] }, room=room_id)
