@@ -5,6 +5,8 @@ import { useEffect, useRef, useState } from "react";
 import { axiosInstance } from "../../apis/axiosInstance";
 import redHeart from "../../assets/redheart.png";
 import whiteHeart from "../../assets/whiteheart.png";
+import { Pagination } from "swiper/modules";
+
 const VideoClipPageWrapper = styled.div`
   max-width: 2000px;
   width: 90%;
@@ -18,6 +20,7 @@ const VideoClipPageWrapper = styled.div`
 const T1 = styled.div`
   display: flex;
   align-items: flex-end;
+  justify-content: flex-end;
   gap: 5px;
   font-size: 60px;
 
@@ -27,6 +30,8 @@ const T1 = styled.div`
 `;
 
 const T2 = styled.div`
+  display: flex;
+  justify-content: flex-end;
   margin: 5px;
   margin-bottom: 15px;
 `;
@@ -39,7 +44,6 @@ const VideoPlayer = styled.video`
 const HeartButton = styled.button`
   position: absolute;
   display: flex;
-
   bottom: 10px;
   left: 10px;
   background-color: #0e0e0e1b;
@@ -55,6 +59,7 @@ const VideoWrapper = styled.div`
   display: flex;
 `;
 const NoContentBox = styled.div`
+  margin-top: 100px;
   font-size: 25px;
   margin: 10px;
   display: flex;
@@ -64,7 +69,6 @@ const NoContentBox = styled.div`
 `;
 
 const NoContentContext = styled.div`
-  /* font-size: 20px; */
   padding: 25px;
   padding-left: 70px;
   padding-right: 70px;
@@ -72,7 +76,7 @@ const NoContentContext = styled.div`
   background-color: rgba(1, 1, 1, 0.317);
 `;
 const LikeCountSpan = styled.div`
-  margin-left: 8px;
+  margin-left: 9px;
   font-size: 1rem;
 `;
 const Heart = styled.img`
@@ -217,12 +221,13 @@ const VideoClipPage = () => {
           spaceBetween={30}
           mousewheel={true}
           loop={true}
+          modules={[Pagination, Mousewheel]}
           pagination={{
+            dynamicBullets: true,
             clickable: true,
           }}
           onSlideChange={handleSlideChange}
           onTransitionEnd={handleTransitionEnd}
-          modules={[Mousewheel]}
           className="mySwiper"
           style={{
             aspectRatio: 16 / 8.8,
