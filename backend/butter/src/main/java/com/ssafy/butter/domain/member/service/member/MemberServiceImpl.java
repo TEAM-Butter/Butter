@@ -96,8 +96,12 @@ public class MemberServiceImpl implements MemberService{
     public SignUpResponseDTO signUp(SignUpDTO signUpDTO) {
         Password encryptedPassword = createEncryptedPassword(signUpDTO.password());
 
-        checkIfEmailExists(signUpDTO.email());
-        checkIfLoginIdExists(signUpDTO.loginId());
+        if(checkIfEmailExists(signUpDTO.email())){
+            throw new IllegalStateException("중복 이메일로 회원 가입 불가능");
+        }
+        if(checkIfLoginIdExists(signUpDTO.loginId())){
+            throw new IllegalStateException("중복 아이디로 회원 가입 불가능");
+        }
 
         Member sigunUpMember = Member.builder()
                 .loginId(signUpDTO.loginId())
@@ -186,11 +190,16 @@ public class MemberServiceImpl implements MemberService{
     }
 
     @Override
-    public CheckLoginIdResponseDTO checkIfLoginIdExists(String loginId) {
-        Optional<Member> findMember = memberRepository.findByLoginId(loginId);
-        boolean exists = findMember.isPresent();
+    public CheckLoginIdResponseDTO validateLoginIdDuplication(String loginId) {
+        boolean exists = checkIfLoginIdExists(loginId);
         String message = exists ? "요청 ID 회원이 확인 되었습니다" : "요청 ID 회원이 존재하지 않습니다";
         return new CheckLoginIdResponseDTO(exists, message);
+    }
+
+    @Override
+    public boolean checkIfLoginIdExists(String loginId){
+        Optional<Member> findMember = memberRepository.findByLoginId(loginId);
+        return findMember.isPresent();
     }
     
     public CheckNickNameDuplicationResponseDTO checkIfNicknameExists(String nickname){
