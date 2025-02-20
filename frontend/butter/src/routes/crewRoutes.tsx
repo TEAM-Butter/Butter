@@ -6,7 +6,7 @@ import VideoEditPage from "../pages/video/VideoEditPage";
 import CrewRegisterPage from "../pages/crew/CrewRegisterPage";
 import MyCalendarPage from "../pages/crew/MyCalenderPage";
 import { HighlightTwoTone } from "@mui/icons-material";
-import CrewHighlightPage from "../pages/crew/CrewHighlightPage";
+import CrewHighlightPage from "../pages/crew/crewHighlightPage";
 
 
 export const crewRoutes = (
