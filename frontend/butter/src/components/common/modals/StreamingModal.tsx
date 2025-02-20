@@ -32,7 +32,7 @@ padding: 0 15px;
 `;
 
 const SelectWrapper = styled.div`
-  width: 90%;
+  width: 100%;
 `;
 
 
@@ -65,8 +65,8 @@ const selectStyles = {
   control: (styles: any) => ({
     ...styles,
     backgroundColor: "black",
-    border: "1px solid var(--yellow)",
-    borderRadius: "10px",
+    border: "1px solid white",
+    borderRadius: "30px",
     width: "100%",
     padding: "5px",
     color: "black",

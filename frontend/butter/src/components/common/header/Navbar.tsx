@@ -242,6 +242,15 @@ function Navbar() {
                   </Link> */}
                   {memberType == "crew" ? (
                     <>
+                      <Link to={`/crew/detail/${crewId}`}>
+                        <SubItem>마이 크루</SubItem>
+                      </Link>
+                      <Link to={`/crew/highlight/${crewId}`}>
+                        <SubItem>마이 하이라이트</SubItem>
+                      </Link>
+                      <Link to={`/crew/video-edit/${crewId}`}>
+                        <SubItem>하이라이트 편집</SubItem>
+                      </Link>
                       <SubItem
                         className="openModalBtn"
                         onClick={() => {
@@ -257,9 +266,6 @@ function Navbar() {
                       >
                         버스킹 일정 등록
                       </SubItem>
-                      {/* <Link to="/">
-                        <SubItem>크루 탈퇴</SubItem>
-                      </Link> */}
                     </>
                   ) : (
                     <Link to="/crew/register">

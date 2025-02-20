@@ -62,6 +62,7 @@ function CrewHighlightPage() {
             setCurrentIndex(currentIndex - 1);
         }
         };
+
       useEffect (() => {
             const fetchCrewDetail = async () => {
                 try {
@@ -69,7 +70,7 @@ function CrewHighlightPage() {
                     const response = await axiosInstance.get(`/crew/detail/${id}`) // 크루 디테일 정보 받아옴
                     setCrewDetail(response.data);
                     console.log("response.data : ", response.data)
-                     const response2 = await axiosInstance.get(`/clip/list`, {
+                    const response2 = await axiosInstance.get(`/clip/list`, {
                               params: {
                                 clipId: id,
                                 pageSize: 10,
@@ -89,7 +90,7 @@ function CrewHighlightPage() {
                        else {
                         setIsFollowed(true)
                        }
-    
+                       
                 } catch (err:any) {
                     setError(err.message); //요청 놓치면 에러 메세지 띄우기
                 } finally {
@@ -107,31 +108,29 @@ function CrewHighlightPage() {
 
 
 
-        const PageContainer = styled.div`
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+    const PageContainer = styled.div`
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    `
 
-        `
+    const TitleBox = styled.div`
+        padding-top: 70px;
+        font-size: 70px;
+        font-weight: 550;
+    `
 
-
-
-        const TitleBox = styled.div`
-            padding-top: 70px;
-            font-size: 70px;
-            font-weight: 550;
-        `
-
-        const TitleBox2 = styled.div`
-            
-        `
-        const VideoBox = styled.div`
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-top: 70px;
-            gap: 20px;
-        `
+    const TitleBox2 = styled.div`
+        margin-top: 10px;
+        font-size: 20px;
+    `
+    const VideoBox = styled.div`
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 70px;
+        gap: 20px;
+    `
     const PreviousIcon = styled.img`
      height: 50px ;
      width: 50px;
@@ -144,9 +143,9 @@ function CrewHighlightPage() {
     `
        
     const Circle = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         height: 70px;
         width: 70px;
         background-color: rgba(208, 208, 208, 0.4);
@@ -158,21 +157,27 @@ function CrewHighlightPage() {
     return (
         <PageContainer>
         <TitleBox>{crewDetail.name}'s HIGHLIGHT CLIP</TitleBox>
+        { liveList[currentIndex] ?
+            <>
             <TitleBox2>{liveList[currentIndex].crew.description}</TitleBox2>
-      <VideoBox>
-        <Circle>
-            <PreviousIcon src={previousIcon} alt="previousIcon" onClick={prevVideo} >
-            </PreviousIcon>
-        </Circle>
+            <VideoBox>
+                <Circle>
+                    <PreviousIcon src={previousIcon} alt="previousIcon" onClick={prevVideo} >
+                    </PreviousIcon>
+                </Circle>
 
-            <video width="600" controls>
-            <source src={liveList[currentIndex].videoUrl} type="video/mp4" />
-            </video>
-        <Circle>
-            <NextIcon src={nextIcon} alt="nextIcon" onClick={nextVideo}>
-            </NextIcon>
-        </Circle>
-        </VideoBox>
+                    <video width="600" controls>
+                    <source src={liveList[currentIndex].videoUrl} type="video/mp4" />
+                    </video>
+                <Circle>
+                    <NextIcon src={nextIcon} alt="nextIcon" onClick={nextVideo}>
+                    </NextIcon>
+                </Circle>
+            </VideoBox>
+            </>
+            :
+            <TitleBox2>등록된 하이라이트가 없습니다.</TitleBox2>
+            }
         </PageContainer>
     )
 }
