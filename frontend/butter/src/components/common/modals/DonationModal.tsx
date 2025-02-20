@@ -1,9 +1,13 @@
-import { breadDonationRequest } from "../../../apis/request/bread/breadRequest.ts";
-import * as MC from "./modalComponents/modalComponents.tsx"
+import {
+  breadDonationRequest,
+  getBreadAmount,
+} from "../../../apis/request/bread/breadRequest.ts";
+import * as MC from "./modalComponents/modalComponents.tsx";
 import styled from "@emotion/styled";
-import { useCrewStore } from "../../../stores/UserStore.ts";
-import { RoomName } from "@livekit/components-react";
-
+import { Socket } from "socket.io-client";
+import { useEffect, useState } from "react";
+import { memberDetailRequest } from "../../../apis/request/member/memberRequest.ts";
+import { MemberDetailResponseDto } from "../../../apis/response/member/index.ts";
 const BreadAmountForm = styled.form`
   display: flex;
   flex-direction: column;
@@ -39,7 +43,9 @@ interface ModalProps extends ModalSizeProps {
 }
 
 interface DonationModalProps extends ModalProps {
-  crewId : number;
+  crewId: number;
+  socket: Socket;
+  participant: string;
 }
 
 export const DonationModal = ({
@@ -47,40 +53,67 @@ export const DonationModal = ({
   width,
   height,
   crewId,
+  socket,
+  participant,
 }: DonationModalProps) => {
   let breadAmount: number = 0;
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
+    const { value } = e.target;
     breadAmount = +value;
   };
+
+  const [userBread, setUserBread] = useState(0);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await getBreadAmount();
+      setUserBread(response.breadAmount);
+    };
+    fetchData();
+  }, []);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     breadDonationRequest({
       crewId: crewId,
-      amount: breadAmount
+      amount: breadAmount,
+      socket,
+      participant,
     });
     setModalType("");
     return false;
   };
-  
+
+  socket.on("donate", (content) => {
+    console.log("🤣🤣🤣🤣🤣🤣", content);
+  });
+  useEffect(() => {
+    memberDetailRequest().then(
+      (responseBody: MemberDetailResponseDto | null) => {
+        if (!responseBody) return;
+        console.log(responseBody);
+      }
+    );
+  }, []);
+
   return (
     <>
       <MC.ModalOverlay />
-      <MC.ModalWrapper width={width} height={height} >
+      <MC.ModalWrapper width={width} height={height}>
         <MC.ModalHeader>
           <div>후원하기</div>
           <MC.ModalCloseBtn
             textColor="white"
             onClick={() => {
               setModalType("");
-            }}>
+            }}
+          >
             X
           </MC.ModalCloseBtn>
         </MC.ModalHeader>
         <MC.ModalBody>
-          <MC.Comment>
-            빵을 얼마나 후원하시겠어요?
-          </MC.Comment>
+          <MC.Comment>총 보유량 : {userBread} Bread</MC.Comment>
+          <MC.Comment>빵을 얼마나 후원하시겠어요?</MC.Comment>
           <BreadAmountForm onSubmit={handleSubmit}>
             <BreadAmountInputWrapper>
               <BreadAmountInput
