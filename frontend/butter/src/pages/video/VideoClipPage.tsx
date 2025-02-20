@@ -100,6 +100,7 @@ const VideoClipPage = () => {
   const currentClipIdRef = useRef<number | null>(null);
   const videoRefs = useRef<HTMLVideoElement[]>([]);
   const SEVER_URL = import.meta.env.VITE_SPRING_BOOT_SERVER || "";
+  const prevIndex = useRef<number>(0);
 
   // 첫 영상 목록을 역순으로 가져오기
   useEffect(() => {
@@ -119,74 +120,13 @@ const VideoClipPage = () => {
         }
       } catch (error) {
         console.error("Error details:", {
-          message: error.message,
-          response: error.response?.data, // 서버에서 보낸 에러 메시지
-          status: error.response?.status,
-          config: error.config, // 요청 설정 확인
+          error,
         });
       }
     };
 
     fetchInitialVideos();
   }, [SEVER_URL]);
-
-  // 다음 클립 불러오기(아래)
-  const fetchNextClip = async () => {
-    console.log("next");
-    if (!currentClipIdRef.current) return;
-    try {
-      const response = await axiosInstance.get(`/clip/list`, {
-        params: {
-          clipId: currentClipIdRef.current,
-          pageSize: PAGE_SIZE,
-          liveId: null,
-        },
-      });
-      if (response.data.length > 0) {
-        setVideos((prevVideos) => {
-          // 이미 있는 clipId를 가진 클립은 제거
-          const newVideos = response.data.filter(
-            (video: Video) => !prevVideos.some((v) => v.id === video.id)
-          );
-          return [...prevVideos, ...newVideos];
-        });
-        const newCurrentId = response.data[response.data.length - 1].id;
-        setCurrentClipId(newCurrentId);
-        currentClipIdRef.current = newCurrentId;
-      }
-    } catch (error) {
-      console.error("Failed to fetch previous clip", error);
-    }
-  };
-
-  // 이전 클립 불러오기(위)
-  const fetchPreviousClip = async () => {
-    console.log("prev");
-    if (!currentClipId) return;
-    try {
-      const response = await axiosInstance.get(`/clip/list_rev`, {
-        params: {
-          clipId: currentClipId,
-          pageSize: PAGE_SIZE,
-          liveId: null,
-        },
-      });
-      if (response.data.length > 0) {
-        setVideos((prevVideos) => {
-          // 이미 있는 clipId를 가진 클립은 제거
-          const newVideos = response.data.filter(
-            (video: Video) => !prevVideos.some((v) => v.id === video.id)
-          );
-          return [...prevVideos, ...newVideos];
-        });
-        const newCurrentId = response.data[0].id;
-        setCurrentClipId(newCurrentId);
-        currentClipIdRef.current = newCurrentId;
-      }
-    } catch (error) {
-      console.error("Failed to fetch next clip", error);
-    }
-  };
 
   // 찜하기 버튼 토글 함수
   const toggleLike = async (videoId: string) => {
@@ -224,11 +164,31 @@ const VideoClipPage = () => {
   }, [videos]);
 
   const handleSlideChange = (swiper: any) => {
-    console.log("Slide changed. Active index:", swiper.activeIndex);
-    const activeSlide = videoRefs.current[swiper.activeIndex];
-    if (activeSlide) {
-      activeSlide.currentTime = 0;
-      activeSlide.play();
+    videoRefs.current.forEach((video, index) => {
+      if (index === swiper.realIndex) {
+        video.currentTime = 0; // 처음으로 이동
+        video.play(); // 재생
+      } else {
+        video.pause(); // 정지
+        video.currentTime = 0; // 처음으로 이동
+      }
+    });
+
+    prevIndex.current = swiper.realIndex; // 현재 슬라이드 인덱스 업데이트
+  };
+
+  const handleTransitionEnd = (swiper: any) => {
+    if (
+      (prevIndex.current === 2 && swiper.realIndex === 0) ||
+      (prevIndex.current === 0 && swiper.realIndex === 2)
+    ) {
+      setTimeout(() => {
+        const video = videoRefs.current[swiper.realIndex];
+        if (video) {
+          video.currentTime = 0;
+          video.play();
+        }
+      }, 100); // Swiper가 슬라이드를 변경하는 타이밍을 맞추기 위해 지연
     }
   };
 
@@ -253,9 +213,8 @@ const VideoClipPage = () => {
           pagination={{
             clickable: true,
           }}
-          onSlideNextTransitionStart={fetchNextClip} // 아래로 스크롤 -> 이전 클립
-          onSlidePrevTransitionStart={fetchPreviousClip} // 위로 스크롤 -> 다음 클립
           onSlideChange={handleSlideChange}
+          onTransitionEnd={handleTransitionEnd}
           modules={[Mousewheel]}
           className="mySwiper"
           style={{
