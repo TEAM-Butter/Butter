@@ -86,7 +86,7 @@ public class Member {
         this.nickname = (nickname == null) ? new Nickname("DEFAULT_NICKNAME") : nickname;
         this.email = email;
         this.birthDate = birthDate;
-        this.breadAmount = breadAmount;
+        this.breadAmount = (breadAmount == null) ? new BreadAmount(0) : breadAmount;
         this.password = password;
         this.profileImage = profileImage;
         this.gender = gender;
