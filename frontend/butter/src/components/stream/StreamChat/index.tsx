@@ -11,6 +11,7 @@ import { useUserStore } from "../../../stores/UserStore";
 const ChatRoomPageWrapper = styled.div`
   display: flex;
   flex-direction: column;
+  width: 100%;
   height: 100%; /* 화면 전체 높이 사용 */
 `;
 
