@@ -9,16 +9,16 @@ const Container = styled.div`
 
 const ToggleWrapper = styled.div`
     display: grid;
-    grid-template-columns: repeat(10, 1fr); 
+    grid-template-columns: repeat(8, 1fr); 
     row-gap: 5px;
 
     @media (max-width: 1350px) {
-        grid-template-columns: repeat(5, 1fr); 
+        grid-template-columns: repeat(4, 1fr); 
 
-        & > div:nth-child(5) {
+        & > div:nth-child(4) {
             border-radius: 0 30px 30px 0;
         }
-        & > div:nth-child(6) {
+        & > div:nth-child(5) {
             border-radius: 30px 0 0 30px;
         }
     }
@@ -73,12 +73,10 @@ export const GenreToggle = ({ setGenreToggle, keyName }: ToggleProps) => {
         "Pop",
         "K-Pop",
         "Ballad",
-        "Acoustic",
         "Hip-Hop",
         "R&B",
         "Indie",
         "Trot",
-        "Dance",
     ];
 
     return (

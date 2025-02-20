@@ -1,7 +1,6 @@
 import interactionPlugin from '@fullcalendar/interaction'; // for selectable
 import dayGridPlugin from '@fullcalendar/daygrid' // a plugin!
 import FullCalendar from '@fullcalendar/react'
-import { div } from 'framer-motion/client';
 import styled from "@emotion/styled";
 import { useEffect, useRef, useState } from 'react';
 import { axiosInstance } from '../../apis/axiosInstance';
@@ -12,8 +11,8 @@ import "./MapCss2.css";
 
 
 const Container = styled.div`
-  position: relative;
-  height: 100%;
+  /* position: relative; */
+  height: 89%;
   display:flex;
   flex-direction: column;
   margin: 40px;
@@ -21,6 +20,7 @@ const Container = styled.div`
 
 const Header = styled.div`
   display: grid;
+  width: 100%;
   margin-bottom: 20px;
   
   #pageInfo {
@@ -38,13 +38,13 @@ const Text = styled.div`
 
 
 const CalenderBox = styled.div`
-  background-color: gray;
+  flex: 1;
+  width: 40%;
+  min-width: 500px;
   border-radius: 30px;
   padding: 20px;
   top: 130px;
   left : 220px;
-  width: 500px;
-  /* height: 600px; */
   border: 2px solid white;
 `
 
@@ -363,7 +363,7 @@ const MyCalendarPage = () => {
       </Header>
       <CalenderBox>
         <FullCalendar
-          height={"500px"}
+          height={"100%"}
           plugins={[dayGridPlugin, interactionPlugin]}
           initialView="dayGridMonth"
           selectable={true}

@@ -153,7 +153,12 @@ const Header = styled.div`
   #pageInfo {
       padding-top: 10px;
     }
-    `;
+    
+  @media (max-width: 915px) {
+      grid-template-columns: 1fr;
+      gap: 10px;
+  }
+`
 
 
 const Text = styled.div`
@@ -168,7 +173,7 @@ const Text = styled.div`
     `;
 
 const FilterWrapper = styled.div`
-    height: 40px;
+    height: 100%;
     display: flex;
     gap: 10px;
     flex-direction: column;

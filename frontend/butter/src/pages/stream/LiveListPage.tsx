@@ -17,6 +17,11 @@ const Header = styled.div`
   #pageInfo {
     padding-top: 10px;
   }
+
+  @media (max-width: 915px) {
+      grid-template-columns: 1fr;
+      gap: 10px;
+  }
 `;
 
 const Text = styled.div`
