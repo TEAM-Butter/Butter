@@ -1,5 +1,4 @@
 import { create } from "zustand";
-import { getAccessToken } from "../apis/auth";
 import { persist, createJSONStorage } from "zustand/middleware";
 
 interface UserState {
