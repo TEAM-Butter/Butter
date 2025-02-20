@@ -20,7 +20,7 @@ import { RecordingModal } from "../../components/recording/RecordingModal";
 import { Recording } from "../../types/recording";
 import UserBox from "../../components/stream/UserBox";
 
-import { DonationModal } from "../../components/common/modals/DonationModal"
+import { DonationModal } from "../../components/common/modals/DonationModal";
 
 import background from "../../assets/background.png";
 import CharacterContainer from "../../components/stream/CharacterContainer";
@@ -325,8 +325,8 @@ const LivePage = () => {
 
   const handleDonateBtnClick = () => {
     setModalType("donation");
-  }
-  
+  };
+
   // LiveOffBtn 클릭 핸들러
   const handleLiveOffBtnClick = async () => {
     try {
@@ -768,7 +768,7 @@ const LivePage = () => {
             </RightMiddle>
             <DonateBtn onClick={handleDonateBtnClick}>
               <div style={{ color: "black" }}>
-              <span style={{ fontWeight: 700 }}>Donate</span>
+                <span style={{ fontWeight: 700 }}>Donate</span>
               </div>
             </DonateBtn>
             <BackBtn onClick={handleBackBtnClick}>
@@ -780,7 +780,16 @@ const LivePage = () => {
           </Right>
         </LivePageWrapper>
       )}
-      {modalType === "donation" && <DonationModal crewId={+roomName} width="400px" height="400px" setModalType={setModalType}></DonationModal>}
+      {modalType === "donation" && (
+        <DonationModal
+          crewId={+roomName}
+          width="400px"
+          height="400px"
+          setModalType={setModalType}
+          socket={socket}
+          participant={participantName}
+        ></DonationModal>
+      )}
     </>
   );
 };

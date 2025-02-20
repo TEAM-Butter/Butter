@@ -127,7 +127,13 @@ interface BreadResponseDto {
 
 const BreadChargePage = () => {
   const [selectedAmount, setSelectedAmount] = useState(100);
-  const priceMap = { 100: 100, 500: 100, 1000: 100 } as const;
+  const priceMap = {
+    100: 100,
+    500: 500,
+    1000: 1000,
+    5000: 5000,
+    10000: 3000,
+  } as const;
   const breads = [100, 500, 1000, 5000, 10000];
   const [userBread, setUserBread] = useState(0);
   const nickname = useUserStore((state) => state.nickname);

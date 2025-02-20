@@ -22,6 +22,20 @@ import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined
 import clapclap from "../../../assets/clapclap.png";
 // const images = [pet1, pet2, pet3, pet4, pet5, pet6];
 
+const DonationAlert = styled(motion.div)`
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 1rem;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`;
+
 const CharacterContainerWrapper = styled.div`
   position: relative;
   height: 100%;
@@ -146,6 +160,11 @@ interface CharacterContainer {
   role: string;
 }
 
+interface DonationType {
+  participant: string;
+  amount: number;
+}
+
 const EMOTION_DURATION = 2600; //2초
 const COOLDOWN_DURATION = 3000; // 3초
 
@@ -164,7 +183,9 @@ const CharacterContainer = ({
   });
   const [isPublisherAct, setIsPublisherAct] = useState(true);
   const [publisherClap, setPublisherClap] = useState(false);
-
+  const [recentDonation, setRecentDonation] = useState<DonationType | null>(
+    null
+  );
   // 사용자별 마지막 액션 시간 관리
   const lastActionTimeMap = useRef(new Map<string, number>());
 
@@ -401,12 +422,18 @@ const CharacterContainer = ({
   };
   const handleSocketOn = () => {
     socket.on("message", handleMessage);
-    // socket.on("finishLive", () => {
-    //   console.log("🤣🤣🤣🤣🤣🤣");
-    // });
+
     socket.on("increaseEmotionCount", (content) => {
       setHeartCount(content.heart);
       setLikeCount(content.like);
+    });
+
+    socket.on("donate", (content) => {
+      console.log("❤️❤️❤️❤️Donation received:", content);
+      setRecentDonation({
+        participant: content.participant,
+        amount: content.breadAmount,
+      });
     });
   };
 
@@ -415,6 +442,16 @@ const CharacterContainer = ({
 
     return () => {};
   }, [socket, participantName, handleMyEmotion, handleOtherEmotion]);
+
+  useEffect(() => {
+    if (recentDonation) {
+      const timer = setTimeout(() => {
+        setRecentDonation(null);
+      }, 5000); // 5초 후 메시지 숨김
+
+      return () => clearTimeout(timer);
+    }
+  }, [recentDonation]);
 
   return (
     <CharacterContainerWrapper>
@@ -486,6 +523,17 @@ const CharacterContainer = ({
           </CharacterBox>
         ))}
       {publisherClap && isPublisherAct && <ClapBox src={clapclap} />}
+      {recentDonation && (
+        <DonationAlert
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0 }}
+        >
+          <BakeryDiningOutlinedIcon />
+          {recentDonation.participant}님이 {recentDonation.amount}개의 빵을
+          후원했습니다!
+        </DonationAlert>
+      )}
     </CharacterContainerWrapper>
   );
 };

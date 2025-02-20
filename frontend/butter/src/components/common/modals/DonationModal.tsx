@@ -1,9 +1,9 @@
 import { breadDonationRequest } from "../../../apis/request/bread/breadRequest.ts";
-import * as MC from "./modalComponents/modalComponents.tsx"
+import * as MC from "./modalComponents/modalComponents.tsx";
 import styled from "@emotion/styled";
 import { useCrewStore } from "../../../stores/UserStore.ts";
 import { RoomName } from "@livekit/components-react";
-
+import { Socket } from "socket.io-client";
 const BreadAmountForm = styled.form`
   display: flex;
   flex-direction: column;
@@ -39,7 +39,9 @@ interface ModalProps extends ModalSizeProps {
 }
 
 interface DonationModalProps extends ModalProps {
-  crewId : number;
+  crewId: number;
+  socket: Socket;
+  participant: string;
 }
 
 export const DonationModal = ({
@@ -47,6 +49,8 @@ export const DonationModal = ({
   width,
   height,
   crewId,
+  socket,
+  participant,
 }: DonationModalProps) => {
   let breadAmount: number = 0;
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -57,30 +61,35 @@ export const DonationModal = ({
     e.preventDefault();
     breadDonationRequest({
       crewId: crewId,
-      amount: breadAmount
+      amount: breadAmount,
+      socket,
+      participant,
     });
     setModalType("");
     return false;
   };
-  
+
+  socket.on("donate", (content) => {
+    console.log("🤣🤣🤣🤣🤣🤣", content);
+  });
+
   return (
     <>
       <MC.ModalOverlay />
-      <MC.ModalWrapper width={width} height={height} >
+      <MC.ModalWrapper width={width} height={height}>
         <MC.ModalHeader>
           <div>후원하기</div>
           <MC.ModalCloseBtn
             textColor="white"
             onClick={() => {
               setModalType("");
-            }}>
+            }}
+          >
             X
           </MC.ModalCloseBtn>
         </MC.ModalHeader>
         <MC.ModalBody>
-          <MC.Comment>
-            빵을 얼마나 후원하시겠어요?
-          </MC.Comment>
+          <MC.Comment>빵을 얼마나 후원하시겠어요?</MC.Comment>
           <BreadAmountForm onSubmit={handleSubmit}>
             <BreadAmountInputWrapper>
               <BreadAmountInput
