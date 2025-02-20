@@ -1,5 +1,5 @@
 import axios from "axios"
-import { useParams, useNavigate } from "react-router-dom"
+import { useParams, useNavigate, Link } from "react-router-dom"
 import { useState, useEffect, useRef } from "react"
 import "./CrewCss.css";
 import rightArrow from "../../assets/rightArrow.png"
@@ -316,6 +316,31 @@ const MoveToNoticePage = styled.img`
     width: 30px;
 `
 
+const TextFollowNum2 = styled.div`
+    top: 10px;
+    left: 80px;
+    position: absolute;
+    background-color: black;
+    height: 40px;
+    width: 90px;
+    border-radius: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+`
+const EditVideoBox = styled.div`
+    color: white;
+    background-color: #a3a3a3;
+    height: 40px;
+    width: 90px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    border-radius: 30px;
+    bottom: 50px;
+    right: 120px;
+`
 
 const ServerUrl = 'http://localhost:8080'
 
@@ -361,7 +386,7 @@ function CrewDetailPage() {
                 const response = await axiosInstance.get(`/crew/detail/${id}`) // 크루 디테일 정보 받아옴
                 setCrewDetail(response.data);
                 console.log("response.data : ", response.data)
-                if (crewDetail?.lives[0].endDate === null) {
+                if (crewDetail?.lives[0]?.endDate === null) {
                     setLiveOn(true)
                 } else {
                     setLiveOn(false)
@@ -457,6 +482,7 @@ function CrewDetailPage() {
                         {crewDetail.members.map((a :any, i: any)=>{return(<CrewMemberImage src={a.profileImage} alt="CrewMemberImage2"></CrewMemberImage>)})}
                       </ImageMovingBox>  
                     </Box1BottomWrapper>
+                        {canSee && <Link to={`/crew/video-edit/${id}`}><EditVideoBox>Edit Video</EditVideoBox></Link>}
                         {isFollowed && <FollowButton  onClick={()=>{CrewFollow()}}>follow</FollowButton>}
                         {!isFollowed && <UnFollowButton onClick={()=>{CrewUnFollow()}}>unfollow</UnFollowButton>}
             
@@ -466,14 +492,17 @@ function CrewDetailPage() {
         <LayOut3>        
       
             {crewDetailSwitch &&   
+                <Link to={`/crew/highlight/${id}`}>
                 <Box2>
                     <CrewPicture src={crewDetail.imageUrl}></CrewPicture>
-                    <TextFollowNum> 크루 팔로우 수 : {crewDetail.followerCount}</TextFollowNum>
+                    <TextFollowNum2> Highlight</TextFollowNum2>
+                    <TextFollowNum> 크루 팔로워 수 : {crewDetail.followerCount}</TextFollowNum>
                 </Box2>
+                </Link>
             }
             {crewEditSwitch && <CrewEditComponent2 />}
            
-            <Box3> <SnsText><div style={{ fontSize : "20px"}}>SNS</div><div>link</div></SnsText><UpArrowTag src={upArrow} alt="upArrow"></UpArrowTag></Box3>
+            <Box3><Link to={crewDetail.promotionUrl}><SnsText><div style={{ fontSize : "20px"}}>SNS</div><div>link</div></SnsText><UpArrowTag src={upArrow} alt="upArrow"></UpArrowTag></Link> </Box3>
             {LiveOn == true && <Box4 onClick={()=>{navigate(`/stream/live/${id}`)}}><LiveText1>Live</LiveText1><div>On</div> </Box4>}
             {LiveOn == false && <Box4 onClick={()=>{alert("라이브 중이 아닙니다.")}} style={{backgroundColor : "gray"}}><LiveText1>Live</LiveText1><div>Off</div> </Box4>} 
         </LayOut3>       
