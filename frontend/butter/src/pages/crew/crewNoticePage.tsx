@@ -64,6 +64,7 @@ const Box2 = styled.div`
   background-color: #161616;
   height: 450px;
   color: white;
+
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -99,16 +100,14 @@ const Box4 = styled.div`
 `
 
 const Box5 = styled.div`
-      border-radius: 10px 10px 0 0; /* 하단은 0, 상단만 둥글게 */
+ border-radius: 10px 10px 0 0; /* 하단은 0, 상단만 둥글게 */
   background-color: black;
   height: 530px;
   color: white;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding-top: 15px;
-  padding-bottom: 15px;
-  padding-left: 20px;
+  padding: 15px;
 `
 
 const RightRightArrow = styled.img`
@@ -122,14 +121,17 @@ const NoticeWrapper = styled.div`
     justify-content: space-between;
     padding-right: 20px;
     padding-bottom: 20px;
+   #noticeTextBox {
+    display: flex;
+    gap: 20px;
+   }
 `
 
 const NoticeText = styled.div`
     display: flex;
     flex-direction: column;
     gap : 5px;
-    padding-right: 285px;
-
+    
 `
 
 const PlusBtnWrapper = styled.div`
@@ -177,27 +179,36 @@ const DeleteButton = styled.img`
     padding-left: 375px;
 `
 
-const TitleBox = styled.div`
-    background-color: gray;
-    width: 98%;
+const TitleInput = styled.input`
+    background-color: rgba(255,255,255,0.1);
     height: 50px;
-
-    input::placeholder {
-        color: white;
+    border: none;
+    font-size: 20px;
+    padding: 0 10px;
+    color: #b7a7a7;
+    &::placeholder {
+        color: var(--darkgray);
     }
-`
+    `
 
-const ContentBox = styled.div`
-    background-color: gray;
-    width: 98%;
-    height: 400px;
+const ContentInputWrapper = styled.div`
+    height: 100%;
+    background-color: rgba(255,255,255,0.1);
+    margin-top: 10px;
+`;
+
+const ContentInput = styled.input`
+    background-color: transparent;
+    border: none;
+    font-size: 20px;
+    height: 100%;
+    width: 100%;
     display: flex;
-    flex-direction: column;
-    justify-content: space-between;
     position: relative;
-
-    input::placeholder {
-        color: white;
+    padding: 20px 15px;
+    color: #b7a7a7;
+    &::placeholder {
+        color: var(--darkgray);
     }
 `
 
@@ -429,7 +440,7 @@ function CrewNoticePage() {
             <Box2>
             <div >{
                 crewDetail.notices.map((a:any, i:any) => {
-                    return ( <NoticeWrapper> <NoticeImage src={a?.imageUrl} alt="noticeImg"></NoticeImage><NoticeText><div style={{fontSize: "20px"}}>{a.title}</div>  <div>{a.content}</div></NoticeText> <RightRightArrow onClick={() => {{setBasicNum(i); setSelectedNotice(crewDetail.notices[i].id)}}} src={rightRightArrow} alt='rightRightArrow'></RightRightArrow></NoticeWrapper> )
+                    return ( <NoticeWrapper><div id="noticeTextBox"> <NoticeImage src={a?.imageUrl} alt="noticeImg"></NoticeImage><NoticeText><div style={{fontSize: "20px"}}>{a.title}</div>  <div>{a.content}</div></NoticeText></div> <RightRightArrow onClick={() => {{setBasicNum(i); setSelectedNotice(crewDetail.notices[i].id)}}} src={rightRightArrow} alt='rightRightArrow'></RightRightArrow></NoticeWrapper> )
                 })
             }
             </div>
@@ -460,12 +471,21 @@ function CrewNoticePage() {
                         <div>Edit Notice</div>
                     </Box4>
                     <Box5>
-                    <div> {crewDetail.notices.length  > 0 ? crewDetail.notices[basicNum].content : ""}  </div>
-                    <EditAndDelBtn>
-                    <NoticeImage2 src={crewDetail.notices[basicNum].imageUrl} alt="NoticeImage"></NoticeImage2>
-                        <DeleteButton src={deleteButton} alt="deleteButton" onClick={()=> {axiosInstance.delete(`crew/notice/${selectedNotice}`); alert("삭제성공!");  window.location.reload(); }}></DeleteButton>
-                      <EditButton src={editButton} alt="editButton" onClick={()=> editHandlerOn()}></EditButton>
-                    </EditAndDelBtn>
+                        <TitleInput type="text" placeholder="type your notice title" value={Name} onChange={handleTitleChange} />
+                        <ContentInputWrapper>
+                            <ContentInput id="ContentInput" type="text" placeholder="type your notice content" value={content} onChange={handleContentChange}/>
+                        </ContentInputWrapper>
+                        <FlexCan>   <ImageBox><input type="file" accept="image/*" onChange={handleImageChange} />
+                            <div onClick={() => { { setPreview(null); setImage(null) } }}>x</div>
+                        </ImageBox>
+                            {/* {preview && <img src={preview} alt="Preview" width="200" />} */}
+
+                            <DeleteText onClick={() => { plusHandlerOff(); setPreview(null); setImage(null) }}>취소</DeleteText>
+                            <PostText onClick={() => {
+                                NoticeEdit()
+                                    .then(() => editHandlerOff())
+                            }}>수정</PostText>
+                        </FlexCan>
                     </Box5>
 
                 </div>}
@@ -476,9 +496,10 @@ function CrewNoticePage() {
                         <div>Create Notice</div>
                     </Box4>
                     <Box5>
-                        <TitleBox><input type="text" placeholder="type your notice title" value={Name2} onChange={handleTitleChange2} style={{ backgroundColor: "gray", height: "50px", width: "100%", color: "white", fontSize: "20px" }} /></TitleBox>
-                        <ContentBox><input id="ContentBox" type="text" placeholder="type your notice content" value={content2} onChange={handleContentChange2} style={{ backgroundColor: "gray", height: "400px", width: "100%", color: "white", fontSize: "15px" }} />
-                        </ContentBox>
+                        <TitleInput type="text" placeholder="type your notice title" value={Name2} onChange={handleTitleChange2} />
+                        <ContentInputWrapper>
+                            <ContentInput id="ContentInput" type="text" placeholder="type your notice content" value={content2} onChange={handleContentChange2}/>
+                        </ContentInputWrapper>
                         <FlexCan>   <ImageBox><input type="file" accept="image/*" onChange={handleImageChange} />
                             <div onClick={() => { { setPreview(null); setImage(null) } }}>x</div>
                         </ImageBox>

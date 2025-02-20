@@ -86,10 +86,11 @@ const CrewBox = styled.div`
     width: 15%; /* 각 박스가 화면 가로 15%씩 차지 */
     padding: 20px 0px;
     box-sizing: border-box; /* 패딩 포함해서 크기 계산 */
-    text-align: center; /* 텍스트 중앙 정렬 */
+    transition: all ease-in-out 0.2s;
     &:hover {
         outline: 1px solid gray;  /* 마우스가 올라갔을 때 하얀 테두리 */
     }
+  
 `;
 
 // 이미지 스타일2
@@ -199,6 +200,27 @@ const FlexCan = styled.div`
     ;
     `
 
+const CrewName = styled.div`
+    font-size: 20px;
+`
+const CrewDescription = styled.div`
+    font-size: 10px;
+`
+const CrewGenre = styled.div`
+    display: flex;
+    gap : 10px;
+`
+
+const EachCrew = styled.div`
+    border: 0.5px solid white;
+    border-radius: 20px;
+    height: 25px;
+    display: flex;
+    width: 90px;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+`
 
 
 function CrewListPage() {
@@ -299,7 +321,7 @@ console.log(dummy, '주소')
                     if (3 <= i && i <= 7) return (
 
                         <CrewBox key={i}>
-                            <Link to={`/crew/detail/${a.id}`}><div>{a.name}</div><ImgStyle2 src={a.imageUrl} alt="crewImage"></ImgStyle2></Link>
+                            <Link to={`/crew/detail/${a.id}`}><CrewName>{a.name}</CrewName><CrewDescription>{a.description}</CrewDescription><ImgStyle2 src={a.imageUrl} alt="crewImage"></ImgStyle2><CrewGenre>{a.genres.slice(0,3).map((a : string, i: number)=>{return(<EachCrew>{a}</EachCrew>)})}</CrewGenre></Link>
                         </CrewBox>
                     )
                 })}

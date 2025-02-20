@@ -32,6 +32,7 @@ import { CustomOverlayMap, Map, MapMarker, MarkerClusterer} from "react-kakao-ma
 import { StatementSync } from "node:sqlite";
 import { Bookmark, MyLocation } from "@mui/icons-material";
 import { useCrewStore } from "../../stores/UserStore.ts";
+import { link } from "fs";
 
 const images = [sample1,sample2,sample3,sample4,sample5,sample6,sample5,sample5,sample5,sample5]
 
@@ -209,6 +210,7 @@ padding-right : 10px;
 display: flex;
 gap: 10px;
 padding-left: 10px;
+padding-bottom: 10px;
 `
 
 const Box1BottomWrapper = styled.div`
@@ -391,7 +393,7 @@ function CrewDetailPage() {
                 } else {
                     setLiveOn(false)
                 }
-
+               
                 if (response.data.isFollowed == true) {
                     setIsFollowed(false) }
                    else {
@@ -488,7 +490,7 @@ function CrewDetailPage() {
             
                 </Box1Wrapper>
                 </div>}
-                {crewEditSwitch && <CrewEditComponent1 crewDetail = {crewDetail} handleEditClick={handleEditClick}/>}
+                {crewEditSwitch && <CrewEditComponent1 crewDetail = {crewDetail} setCrewDetail = {setCrewDetail} handleEditClick={handleEditClick}/>}
         <LayOut3>        
       
             {crewDetailSwitch &&   
@@ -502,7 +504,7 @@ function CrewDetailPage() {
             }
             {crewEditSwitch && <CrewEditComponent2 />}
            
-            <Box3><Link to={crewDetail.promotionUrl}><SnsText><div style={{ fontSize : "20px"}}>SNS</div><div>link</div></SnsText><UpArrowTag src={upArrow} alt="upArrow"></UpArrowTag></Link> </Box3>
+            <Box3 onClick={()=> {(crewDetail.promotionUrl) ?(window.location.href = crewDetail.promotionUrl) :  alert("등록된 링크가 없습니다") }}><SnsText><div style={{ fontSize : "20px"}}>SNS</div><div>link</div></SnsText><UpArrowTag src={upArrow} alt="upArrow"></UpArrowTag></Box3>
             {LiveOn == true && <Box4 onClick={()=>{navigate(`/stream/live/${id}`)}}><LiveText1>Live</LiveText1><div>On</div> </Box4>}
             {LiveOn == false && <Box4 onClick={()=>{alert("라이브 중이 아닙니다.")}} style={{backgroundColor : "gray"}}><LiveText1>Live</LiveText1><div>Off</div> </Box4>} 
         </LayOut3>       
@@ -678,10 +680,11 @@ const ImageBox = styled.div`
     display: flex;
     gap : 10px;
     align-items: center;
+
 `
 
 
-function CrewEditComponent1({ crewDetail, handleEditClick }: { crewDetail: any; handleEditClick: () => void }) {
+function CrewEditComponent1({ crewDetail, handleEditClick, setCrewDetail }: { crewDetail: any; handleEditClick: () => void, setCrewDetail : any }) {
 
     const [crewMemberPlusModalOpen, setCrewMemberPlusModalOpen] = useState(false) // 크루 멤버 추가 모달 스위치
       const [Name, setTitle] = useState("");
@@ -757,8 +760,10 @@ function CrewEditComponent1({ crewDetail, handleEditClick }: { crewDetail: any; 
                      
                        console.log("삭제 성공", response.data)
                        alert("멤버 삭제 성공!");
-                        // ✅ 새로운 데이터로 상태 업데이트 → 자동으로 재렌더링됨
-                        window.location.reload(); // ✅ 화면 새로고침 
+                       const res2 = await axiosInstance.get(`crew/detail/${id}`)
+                       console.log(res2.data)
+                       setCrewDetail(res2.data)
+ 
                    } catch (err: any) {
                     alert("삭제 중 오류가 발생했습니다.");
                    } finally {
@@ -922,6 +927,9 @@ const PlusMember = async (memId : any) => {
 
         console.log(res)
         alert("멤버 추가성공~")
+        const res2 = await axiosInstance.get(`crew/detail/${id}`)
+        console.log(res2.data)
+        setCrewDetail(res2.data)
 
     } catch (error : any) {
      console.error("❌ 멤버 추가 실패:", error);
@@ -1444,8 +1452,8 @@ function ScheduleEditComponent({crewScheduleDetail,crewDetail}:any) {
                          </MapMarker>
                        </Map>
                         <ButtonWrapper2>
-                        <DeleteBox onClick={()=>{DeleteSchedule(crewDetail.schedules[selectedScheduleIndex-1].id)}}>삭제</DeleteBox>
-                        <EditBox onClick={()=> {setisScheduleDetailModalOpen(false); setModalType("ScheduleEdit"); }}>수정</EditBox>
+                        {canSee &&<DeleteBox onClick={()=>{DeleteSchedule(crewDetail.schedules[selectedScheduleIndex-1].id)}}>삭제</DeleteBox>}
+                        {canSee &&<EditBox onClick={()=> {setisScheduleDetailModalOpen(false); setModalType("ScheduleEdit"); }}>수정</EditBox>}
                         </ButtonWrapper2>
                     </ScheduleDetailModalContent2>
                 </ScheduleDetailModalOverlay>

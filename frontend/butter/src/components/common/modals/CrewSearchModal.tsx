@@ -43,7 +43,7 @@ const ModalBody_v5 = styled.div`
   border-radius: 10px;
   background-color: rgba(82, 57, 57, 0.8);
   width: 100%;
-
+ 
 `
 const FlexCan = styled.div`
     display: flex;
@@ -97,7 +97,7 @@ return (
             </CrewSearchTitleInput>
             <FindIconBlack src={findIconBlack} alt="findIconBlack"></FindIconBlack>
         <ModalBody_v5>
-          {searchResult && searchResult.map((a : any, i : any )=>{return(<FlexCan> <div>{a.name}</div> <div onClick={()=>{navigate(`/crew/detail/${a.id}`)}}>상세페이지 보기</div></FlexCan>)})}
+          {searchResult && searchResult.slice(0,10).map((a : any, i : any )=>{return(<FlexCan> <div>{a.name}</div> <div onClick={()=>{navigate(`/crew/detail/${a.id}`)}}>상세페이지 보기</div></FlexCan>)})}
         </ModalBody_v5>
         </MC.ModalBody>
     </MC.ModalWrapper>
