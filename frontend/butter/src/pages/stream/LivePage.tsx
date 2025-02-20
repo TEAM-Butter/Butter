@@ -166,16 +166,15 @@ const DonateBtn = styled.div`
 
 const RightMiddle = styled.div`
   border-radius: 20px;
+  width: 100%;
   flex: 1;
-  height: 500px;
-  padding: 10px;
   display: flex;
   overflow: hidden;
 
   @media (max-width: 780px) {
     width: calc(50% - 4px);
     aspect-ratio: 16 / 9;
-    height: 300px;
+    /* height: 300px; */
     flex: none;
   }
 `;
@@ -183,6 +182,7 @@ const RightMiddle = styled.div`
 const RecordingContent = styled.div`
   display: flex;
   flex-direction: column;
+  width: 100%;
   height: calc(100% - 20px); /* padding 고려 */
 `;
 
@@ -193,7 +193,7 @@ const RecordingListContainer = styled.div`
   flex-direction: column;
   gap: 12px;
   overflow-y: auto;
-  padding-right: 8px;
+  width: 100%;
 
   /* Customize scrollbar */
   &::-webkit-scrollbar {
