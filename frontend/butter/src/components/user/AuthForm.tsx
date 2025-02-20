@@ -1,8 +1,8 @@
 import styled from "@emotion/styled";
 import { useState } from "react";
-import { LoginRequestDto } from "../../apis/request/auth/authDto";
+import { EmailExistSendDto, LoginRequestDto } from "../../apis/request/auth/authDto";
 import { signupRequest } from "../../apis/request/member/memberRequest";
-import { loginRequest } from "../../apis/request/auth/authRequest";
+import { EmailExistRequest, loginRequest } from "../../apis/request/auth/authRequest";
 import { LoginResponseDto } from "../../apis/response/auth";
 import { SignUpRequestDto } from "../../apis/request/member/memberDto";
 import { setAccessToken } from "../../apis/auth";
@@ -264,11 +264,19 @@ export const SignupForm = () => {
   const [birthDate, setBirthDate] = useState<string>("");
 
   const [isIdChecked, setIsIdChecked] = useState(false);
+  const [isEmailChecked, setIsEmailChecked] = useState(false);
   const [isIdPresent, setIsIdPresent] = useState(false);
   const [errorComment, setErrorComment] = useState("");
   const [changeSensor, setChangeSensor] = useState(true);
 
   const CheckExistId = () => {
+    if(!loginId){
+      setChangeSensor(!changeSensor);
+      setErrorComment("사용할 수 없는 아이디입니다.");
+      setIsIdPresent(false);
+      return;
+    }
+
     CheckLoginIdRequest({ loginId: loginId })
       .then((responseBody: CheckLoginIdResponseDto | null) => {
         if (responseBody?.exists) {
@@ -283,6 +291,31 @@ export const SignupForm = () => {
           setIsIdPresent(true);
         }
       })
+    }
+    
+    const CheckExistEmail = () => {
+      if(!email || !isValidateEmail){
+        setChangeSensor(!changeSensor);
+        setErrorComment("사용할 수 없는 이메일입니다.");
+        setIsIdPresent(false);
+        return;
+      }
+
+      const requestBody: EmailExistSendDto = { email: email, type: "FIND_ID" }
+      
+      EmailExistRequest(requestBody).then((responseBody) => {
+        if (responseBody) {
+          setChangeSensor(!changeSensor);
+          setErrorComment("이미 존재하는 이메일입니다.");
+          setIsIdPresent(false);
+          
+        } else {
+          setChangeSensor(!changeSensor);
+          setErrorComment("사용할 수 있는 이메일입니다.");
+          setIsIdPresent(true);
+          setIsEmailChecked(true);
+    }
+  })
   }
 
   const LoginHandler = () => {
@@ -325,20 +358,26 @@ export const SignupForm = () => {
       LoginHandler();
     });
   }
+  
+  // 유효성 검사
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*()_+={}[\]:;"'<>,.?/\\|`~]).{8,}$/;
+  const isValidateEmail = emailRegex.test(email);
+  const isValidateBirth = new Date(birthDate) < new Date();
+  const isValidatePS = passwordRegex.test(password);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*()_+={}[\]:;"'<>,.?/\\|`~]).{8,}$/;
-    const isValidateEmail = emailRegex.test(email);
-    const isValidateBirth = new Date(birthDate) < new Date();
-    const isValidatePS = passwordRegex.test(password);
-
+    setIsIdPresent(false);
 
     if (!isIdChecked) {
       setChangeSensor(!changeSensor);
       setErrorComment("아이디를 확인해 주세요.");
+      return;
+    } else if (!isEmailChecked) {
+      setChangeSensor(!changeSensor);
+      setErrorComment("이메일을 확인해 주세요.");
       return;
     } else if (!isValidateEmail) {
       setChangeSensor(!changeSensor);
@@ -375,13 +414,16 @@ export const SignupForm = () => {
         />
         <div id="checkIdBtn" onClick={CheckExistId}>확인</div>
       </IdInputWrapper>
-      <TextInput
-        required
-        type="email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        placeholder="이메일을 입력해 주세요."
-      />
+      <IdInputWrapper>
+        <TextInput
+          required
+          type="text"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="이메일을 입력해 주세요."
+        />
+        <div id="checkIdBtn" onClick={CheckExistEmail}>확인</div>
+      </IdInputWrapper>
       <TextInput
         required
         type="password"
