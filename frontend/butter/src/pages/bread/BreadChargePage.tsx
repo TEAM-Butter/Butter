@@ -116,7 +116,6 @@ interface MemberDetailResponseDto {
   isExtraInfoRegistered: boolean;
 }
 
-import { loadPaymentWidget } from "@iamport/payment"; // 아임포트 SDK 추가
 import { axiosInstance } from "../../apis/axiosInstance";
 import { useUserStore } from "../../stores/UserStore";
 import { useEffect, useState } from "react";
