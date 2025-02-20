@@ -112,7 +112,7 @@ const InfoWrapper = styled.div`
 const LinkBtnBox = styled.div`
     display: flex;
     justify-content: flex-end;
-    margin-top: auto;
+    margin-top: 20px;
     margin-bottom: 20px;
 
     #linkBtn, #linkIcon {
