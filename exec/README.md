@@ -135,6 +135,7 @@
 ### ◼BE
 
 #### Spring Boot
+application-secret.yaml
 ```
 custom:
   db:
@@ -186,6 +187,7 @@ custom:
 ```
 
 #### Node.js
+.env
 ```
 REACT_APP_KAKAOMAP_KEY = [KAKAOMAP-KEY]
 
@@ -201,6 +203,7 @@ VITE_FLASK_SERVER = [FLASK-URL]
 ```
 
 ### ◻FE
+.env
 ```
 SERVER_PORT = [SERVER-PORT]
 
