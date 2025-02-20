@@ -36,11 +36,13 @@ interface CharacterProps {
 
 const CharacterBox = styled(motion.div)<CharacterProps>`
   position: absolute;
+  display: flex;
+  flex-direction: column;
   width: 10vh;
 
   align-items: center;
   left: ${(props) => props.left}%;
-  bottom: 20%;
+  bottom: 10%;
   transform: translate(-50%, -50%);
 `;
 const EmotionBox = styled.div`
@@ -121,10 +123,20 @@ const TotalLikesInfo = styled.div`
 
 const ClapBox = styled.img`
   width: 25vh;
-  height: 50px;
+  height: 60px;
   position: absolute;
   top: 70%;
   right: 30px;
+`;
+
+const CharacterName = styled.div`
+  display: flex;
+  justify-content: center;
+  font-weight: 300;
+  background-color: rgba(1, 1, 1, 0.5);
+  padding: 2px;
+  padding-left: 6px;
+  padding-right: 6px;
 `;
 
 interface CharacterContainer {
@@ -150,7 +162,7 @@ const CharacterContainer = ({
     isEmoting: false,
     currentEmotion: heart, // 기본값을 heart 이미지로 설정
   });
-
+  const [isPublisherAct, setIsPublisherAct] = useState(true);
   const [publisherClap, setPublisherClap] = useState(false);
 
   // 사용자별 마지막 액션 시간 관리
@@ -272,7 +284,6 @@ const CharacterContainer = ({
   );
 
   const handlePublisherEmotion = useCallback(() => {
-    setPublisherClap((prev) => !prev);
     setTimeout(() => {
       setPublisherClap((prev) => !prev);
     }, EMOTION_DURATION);
@@ -469,9 +480,10 @@ const CharacterContainer = ({
               />
             </EmotionBox>
             <Character src={getAvatarImage(member.avatarType)} />
+            <CharacterName>{member.nickname}</CharacterName>
           </CharacterBox>
         ))}
-      {publisherClap && <ClapBox src={clapclap} />}
+      {publisherClap && isPublisherAct && <ClapBox src={clapclap} />}
     </CharacterContainerWrapper>
   );
 };

@@ -78,7 +78,7 @@ public class ClipServiceImpl implements ClipService {
             return clipRepository.findAllByOrderById(pageable).stream()
                     .map(clip -> ClipResponseDTO.from(clip, isLiking(member, clip), getLikeCount(clip))).toList();
         } else {
-            return clipRepository.findAllByIdLessThanOrderById(clipListRequestDTO.clipId(), pageable).stream()
+            return clipRepository.findAllByIdGreaterThanOrderById(clipListRequestDTO.clipId(), pageable).stream()
                     .map(clip -> ClipResponseDTO.from(clip, isLiking(member, clip), getLikeCount(clip))).toList();
         }
     }
@@ -127,8 +127,8 @@ public class ClipServiceImpl implements ClipService {
         if (!likedClip.getIsLiked()) {
             throw new IllegalArgumentException("Already unliked clip");
         }
-        likedClip.updateIsLiked(false);
-        likedClipRepository.save(likedClip);
+        //likedClip.updateIsLiked(false);
+        likedClipRepository.delete(likedClip);
     }
 
     @Override

@@ -1,5 +1,5 @@
 import axios from "axios"
-import { useState } from "react"
+import { useRef, useState } from "react"
 import { Link, Navigate, useNavigate } from "react-router-dom"
 import { useEffect } from "react"
 import styled from "@emotion/styled";
@@ -213,14 +213,14 @@ function CrewListPage() {
     const [genreToggle, setGenreToggle] = useState("All")
 
 
+    const videoRef = useRef<HTMLVideoElement>(null);
 
 
 
 
-
-
-
-    useEffect(() => {
+    const [dummy,setdummy] = useState<string>("")
+    
+    useEffect (() => {
         const fetchCrewDetail = async () => {
             try {
                 // ✅ 헤더 추가: Authorization (JWT 토큰 포함)
@@ -253,7 +253,7 @@ function CrewListPage() {
     }, [genreToggle])
 
 
-
+console.log(dummy, '주소')
 
 
     return (

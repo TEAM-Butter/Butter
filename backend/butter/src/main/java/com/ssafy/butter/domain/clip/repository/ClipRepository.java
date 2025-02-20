@@ -18,7 +18,7 @@ public interface ClipRepository {
     List<Clip> findAllByOrderById(Pageable pageable);
 
     List<Clip> findAllByIdLessThanOrderByIdDesc(Long id, Pageable pageable);
-    List<Clip> findAllByIdLessThanOrderById(Long id, Pageable pageable);
+    List<Clip> findAllByIdGreaterThanOrderById(Long id, Pageable pageable);
 
     List<Clip> getLikedClipList(Long memberId);
 }

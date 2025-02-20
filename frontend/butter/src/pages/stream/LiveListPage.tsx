@@ -1,5 +1,4 @@
 import styled from "@emotion/styled";
-import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import LiveBox from "../../components/stream/LiveBox";
 import { axiosInstance } from "../../apis/axiosInstance";
@@ -45,69 +44,18 @@ const Underline = styled(motion.div)`
 `;
 
 const LiveContainer = styled.div`
+  margin-top: 30px;
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
   width: 100%;
   justify-content: first baseline;
 `;
-
 const LiveCard = styled.div`
   width: 300px;
   height: 300px;
   border-radius: 20px;
 `;
-
-// const LiveBox = styled.div`
-//   width: 400px;
-//   height: 350px;
-//   border-radius: 20px;
-//   background-color: wheat;
-//   display: flex;
-//   flex-direction: column;
-// `;
-
-const tabs = ["Popular", "Most Follower"];
-
-const liveList = [
-  {
-    id: 1,
-    title: "Street Soul",
-    genres: ["Jazz", "Blues"],
-    location: "Downtown Park",
-  },
-  {
-    id: 2,
-    title: "Urban Beats",
-    genres: ["Hip Hop", "Rap", "R&B"],
-    location: "City Square",
-  },
-  {
-    id: 3,
-    title: "Acoustic Afternoon",
-    genres: ["Folk", "Acoustic"],
-    location: "Central Plaza",
-  },
-  {
-    id: 4,
-    title: "Rock on the Road",
-    genres: ["Rock", "Indie"],
-    location: "Market Street",
-  },
-  {
-    id: 5,
-    title: "Electric Evening",
-    genres: ["EDM", "Pop"],
-    location: "Riverside Walk",
-  },
-  {
-    id: 6,
-    title: "Classical Corners",
-    genres: ["Classical", "Instrumental", "Baroque"],
-    location: "Old Town",
-  },
-];
-
 interface ScheduleInfo {
   title: string;
   place: string;
@@ -115,6 +63,7 @@ interface ScheduleInfo {
 }
 
 interface CrewInfo {
+  imageUrl: string;
   id: string;
   name: string;
   genres: string[];
@@ -125,36 +74,32 @@ interface Live {
   title: string;
   schedule: ScheduleInfo;
   crew: CrewInfo;
+  thumbnailUrl: string;
 }
 
 const LiveListPage = () => {
   const [genreToggle, setGenreToggle] = useState("All");
   const [presentlivelist, setpresentlivelist] = useState<Live[]>([]);
+  const sortBy = "startDate";
 
   useEffect(() => {
-    const GetLiveList = async () => {
+    const GetLiveList = async (genre: string) => {
       try {
-        // ✅ 헤더 추가: Authorization (JWT 토큰 포함)
-        if (genreToggle == "All") {
-          const response = await axiosInstance.get(
-            `/live/list?pageSize=10&sortBy=followerCount`
-          );
-          setpresentlivelist(response.data);
-        } else {
-          const response = await axiosInstance.get(
-            `/crew/list?pageSize=10&sortBy=followerCount&genre=${genreToggle}`
-          );
-          setGenreToggle(response.data);
-        } // 크루 리스트 정보 받아옴
-      } catch (err: any) {
-        console.log("에러뜸뜸");
+        const endpoint =
+          genre === "All"
+            ? `/live/list?pageSize=10&sortBy=${sortBy}`
+            : `/live/list?pageSize=10&sortBy=${sortBy}&crewGenre=${genre}`;
+
+        const response = await axiosInstance.get(endpoint);
+        setpresentlivelist(response.data);
+      } catch (err) {
+        console.error("에러 발생:", err);
+        setpresentlivelist([]);
       }
-      console.log("성공공");
     };
 
-    GetLiveList();
-  }, [genreToggle]);
-
+    GetLiveList(genreToggle);
+  }, [genreToggle, sortBy]);
   console.log(presentlivelist);
 
   return (
@@ -171,18 +116,27 @@ const LiveListPage = () => {
           <GenreToggle setGenreToggle={setGenreToggle} keyName="stream" />
         </div>
       </Header>
-      <LiveContainer>
-        {presentlivelist.map((live) => (
-          <LiveCard key={live.id}>
-            <LiveBox
-              id={live.crew.id}
-              title={live.title}
-              genres={live.crew.genres}
-              location={"임의의 장소"}
-            />
-          </LiveCard>
-        ))}
-      </LiveContainer>
+      <div>
+        <GenreToggle setGenreToggle={setGenreToggle} />
+        <LiveContainer>
+          {presentlivelist.map((live) => {
+            return (
+              <LiveCard key={live.id}>
+                <LiveBox
+                  id={live.id || ""}
+                  title={live.title || "제목 없음"}
+                  genres={
+                    Array.isArray(live.crew?.genres) ? live.crew.genres : []
+                  }
+                  location={live.schedule?.place || "장소 정보 없음"}
+                  crewImg={live.crew.imageUrl}
+                  thumbnail={live.thumbnailUrl}
+                />
+              </LiveCard>
+            );
+          })}
+        </LiveContainer>
+      </div>
     </LiveListPageWrapper>
   );
 };

@@ -301,16 +301,33 @@ function SchedulePage() {
   const [haveBookMarked, setHaveBookMarked] = useState(false)
 
 
+
+  const checkLikedSchedule = async (scheduleId : any) => {
+    try {
+      const res = await axiosInstance.get('schedule/like')
+      console.log(res.data, "필요한 데이터")
+      for (let i = 0 ;  i <= res.data.length ; i++ ) {
+        if (res.data[i].id == scheduleId)
+          setHaveBookMarked(true)
+      }
+    } catch{
+      console.log("에러")
+    }
+  }
+
+
+
   const BookmarkPlus = async (scheduleId : number) => {
     try {
-
+    
         const payload = { scheduleId : scheduleId }
         const res = await axiosInstance.post(`schedule/like`, payload)
         console.log(res.data)
         alert('북마크 성공!')
         setBookmarked(!bookmarked)
         console.log(bookmarked)
-        setHaveBookMarked(!haveBookMarked)
+        setHaveBookMarked(true)
+     
     }
      catch {
 
@@ -328,8 +345,11 @@ const BookmarkMinus = async (scheduleId : any) => {
         alert('북마크 취소 성공!')
         setBookmarked(!bookmarked)
         console.log(bookmarked)
-        setHaveBookMarked(!haveBookMarked)
-    } catch {
+        setHaveBookMarked(false)
+     
+        
+    }
+     catch {
 
     }
 }
@@ -428,11 +448,12 @@ const BookmarkMinus = async (scheduleId : any) => {
 
 
 
-
   //목록 선택하면 확대해서 보여주게하는 함수
   const handleResultClick = (pos: any) => {
     setInfo(pos); // ✅ 선택된 위치 정보 저장
     setIsOpenSmall(true); // ✅ 정보창 열기
+    setmyLocationOpen(false);
+    checkLikedSchedule(pos.scheduleId)
     setState((prev) => ({
       ...prev,
       center: {
@@ -657,6 +678,7 @@ useEffect(() => {
           if (status === kakao.maps.services.Status.OK) {
             const address = result[0]?.address?.address_name || "주소 정보를 찾을 수 없음";
             setMyAddress(address);
+            console.log("나또한 실행됨")
           }
         });
       },
@@ -860,9 +882,6 @@ useEffect(() => {
             <>
                 <MapMarker position={state.center}
                 >
-                  <div style={{ padding: "5px", color: "#000", }}>
-                    {state.errMsg ? state.errMsg : "내 위치"}
-                  </div>
                 </MapMarker>
                 <CustomOverlayMap position={state.center}>
 
@@ -886,7 +905,7 @@ useEffect(() => {
                     />
                   </div>
                   <div className="desc">
-                    <div className="ellipsis" style={{color : "black"}}>
+                    <div className="ellipsis" style={{color : "white"}}>
                     <strong>{myAddress}</strong>
                     </div>
                     <div className="jibun ellipsis">
@@ -931,13 +950,14 @@ useEffect(() => {
               }
               
               else { setIsOpenSmall(true)
-
+                    checkLikedSchedule(pos.scheduleId)
+                  
               }
           }}// ✅ 마커 클릭 시 선택된 정보 저장
         />
         {isOpenSmall && info && info.position.lat === pos.position.lat && info.position.lng === pos.position.lng && (
             <CustomOverlayMap position={pos.position}>
-            <div className="wrap">
+            <div className="wrap" style={{zIndex : "9999"}}>
               <div className="info">
                 <div className="title" style={{color: "white"}}>
                   {pos.title}

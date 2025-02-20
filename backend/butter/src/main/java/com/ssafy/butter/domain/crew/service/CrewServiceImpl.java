@@ -162,9 +162,11 @@ public class  CrewServiceImpl implements CrewService {
         Member currentMember = memberService.findById(currentUser.id());
         Crew crew = crewRepository.findById(id).orElseThrow();
         validateCrewAdmin(crew, currentMember);
-        String imageUrl = null;
+        String imageUrl;
         if (crewSaveRequestDTO.image() != null) {
             imageUrl = imageUploader.uploadImage(crewSaveRequestDTO.image());
+        } else {
+            imageUrl = crew.getImageUrl();
         }
 
         crew.update(crewSaveRequestDTO, imageUrl);

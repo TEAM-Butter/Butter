@@ -31,6 +31,8 @@ import { StreamingModal } from "../../components/common/modals/StreamingModal.ts
 import { CustomOverlayMap, Map, MapMarker, MarkerClusterer} from "react-kakao-maps-sdk";
 import { StatementSync } from "node:sqlite";
 import { Bookmark, MyLocation } from "@mui/icons-material";
+import { useCrewStore } from "../../stores/UserStore.ts";
+
 const images = [sample1,sample2,sample3,sample4,sample5,sample6,sample5,sample5,sample5,sample5]
 
 
@@ -64,15 +66,10 @@ const LayOut3=styled.div`
 `
 
 const Box1Wrapper = styled.div`
-    
+    position: relative;
 `
 
 const Box1Friend = styled.img`
-    
-`
-
-
-const Box1=styled.div`
   background-color: gray;
   width : 100%;
   box-sizing: border-box;
@@ -82,8 +79,11 @@ const Box1=styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-
+  filter: brightness(40%);
 `
+
+
+
 
 const Box2=styled.div`
   border-radius: 20px;
@@ -165,7 +165,9 @@ const Arrow = styled.img`
 
 const EditButton = styled.img`
     height:  20px;
-    margin-top: 5px;
+    right: 20px;
+    top: 10px;
+    position: absolute;
 `
 
 const Right = styled.div`
@@ -176,7 +178,6 @@ const Right = styled.div`
 const TextName = styled.div`
     font-size: 60px;
     font-weight: 500;
-
     margin-bottom: 10px;
 `
 const TextGenre = styled.div`
@@ -213,34 +214,37 @@ padding-left: 10px;
 const Box1BottomWrapper = styled.div`
     display: flex;
     justify-content: space-between;
-    padding-right: 10px;
-    padding-bottom: 15px;
-    padding-left: 10px;
+
+    position: absolute;
+    bottom: 40px;
+    left: 10px;
 `
 
 
 const FollowButton = styled.div`
       height: 40px;
-    margin-top: 10px;
-    margin-right: 5px;
+      bottom: 50px;
+      right: 20px;
     width: 90px;
     background-color: #a3a3a3;
     border-radius: 30px;
     display: flex;
     align-items: center;
     justify-content: center;
+    position: absolute;
 `
 
 const UnFollowButton = styled.div`
     height: 40px;
-    margin-top: 10px;
-    margin-right: 5px;
+    bottom: 50px;
+    right: 20px;
     width: 90px;
     background-color: #a3a3a3;
     border-radius: 30px;
     display: flex;
     align-items: center;
     justify-content: center;
+    position: absolute;
 `
 
 
@@ -248,6 +252,8 @@ const CrewPicture = styled.img`
     height: 180px;
     width: 180px;
     border-radius: 20px;
+    filter: brightness(40%);
+    
 `
 
 const PlusBtn = styled.div`
@@ -276,6 +282,9 @@ const NoticeWrapperBox = styled.div`
 const CrewNameWrapper = styled.div`
     padding-bottom: 180px;
     padding-left: 40px;
+    top: 25px;
+    left: -10px;
+    position: absolute;
 `
 
 const NoticeTitle = styled.div`
@@ -307,6 +316,7 @@ const MoveToNoticePage = styled.img`
     width: 30px;
 `
 
+
 const ServerUrl = 'http://localhost:8080'
 
 function CrewDetailPage() {
@@ -318,13 +328,23 @@ function CrewDetailPage() {
     const [error, setError] = useState(null) // 에러 상태
     const [ crewScheduleDetail, setCrewScheduleDetail] = useState(['1번','2번','3번'])
     const [ crewNoticeDetail, setCrewNoticeDetail] = useState(['1번 공지사항','2번 공지사항','3번 공지사항', ])
- 
+    
     const [crewEditSwitch , setCrewEditSwitch] =  useState(false)
     const [crewDetailSwitch, setcrewDetailSwitch] = useState(true)
     const [isFollowed, setIsFollowed] = useState(false)
     const [scheduleLikeList, setScheduleLikeList] = useState([])
+    const [canSee, setCanSee] = useState(false)
+    const userCrewId = useCrewStore((state)=> state.id)
+    console.log(id)
+    console.log(userCrewId)
 
-
+    useEffect(()=>{
+        if ( Number(userCrewId) === Number(id)){
+            setCanSee(true)
+           
+        }
+    },[canSee])
+    console.log(canSee)
 
     
     const handleEditClick = () => {                        //수정하기 버튼 누르면 컴포넌트 바뀜
@@ -341,7 +361,6 @@ function CrewDetailPage() {
                 const response = await axiosInstance.get(`/crew/detail/${id}`) // 크루 디테일 정보 받아옴
                 setCrewDetail(response.data);
                 console.log("response.data : ", response.data)
-               
                 if (crewDetail?.lives[0].endDate === null) {
                     setLiveOn(true)
                 } else {
@@ -422,12 +441,11 @@ function CrewDetailPage() {
             <LayOut1 >
             
             {crewDetailSwitch && <div className="크루 디테일 정보">   
-                <Box1Wrapper></Box1Wrapper>
-                <Box1Friend>
-                </Box1Friend>
-                <Box1>
+                <Box1Wrapper>
+                    <Box1Friend src={crewDetail.imageUrl} alt="crewImage"></Box1Friend>
+  
                     <Right>
-                    <EditButton onClick={() => handleEditClick()} src={editButton} alt="editButton"></EditButton>
+                     {canSee &&<EditButton onClick={() => handleEditClick()} src={editButton} alt="editButton"></EditButton>}
                     </Right>
                     <CrewNameWrapper>
                         <TextName> {crewDetail.name}</TextName>
@@ -436,21 +454,21 @@ function CrewDetailPage() {
                     </CrewNameWrapper>
                     <Box1BottomWrapper>
                       <ImageMovingBox>
-                        {crewDetail.members.map((a :any, i: any)=>{return(<CrewMemberImage src={images[i]} alt="CrewMemberImage2"></CrewMemberImage>)})}
+                        {crewDetail.members.map((a :any, i: any)=>{return(<CrewMemberImage src={a.profileImage} alt="CrewMemberImage2"></CrewMemberImage>)})}
                       </ImageMovingBox>  
+                    </Box1BottomWrapper>
                         {isFollowed && <FollowButton  onClick={()=>{CrewFollow()}}>follow</FollowButton>}
                         {!isFollowed && <UnFollowButton onClick={()=>{CrewUnFollow()}}>unfollow</UnFollowButton>}
-                    </Box1BottomWrapper>
-                </Box1>
-                
+            
+                </Box1Wrapper>
                 </div>}
                 {crewEditSwitch && <CrewEditComponent1 crewDetail = {crewDetail} handleEditClick={handleEditClick}/>}
         <LayOut3>        
       
             {crewDetailSwitch &&   
                 <Box2>
-                    <CrewPicture src={sample3}></CrewPicture>
-                    <TextFollowNum> 크루 팔로우 수 : {crewDetail.followerCnt}</TextFollowNum>
+                    <CrewPicture src={crewDetail.imageUrl}></CrewPicture>
+                    <TextFollowNum> 크루 팔로우 수 : {crewDetail.followerCount}</TextFollowNum>
                 </Box2>
             }
             {crewEditSwitch && <CrewEditComponent2 />}
@@ -461,12 +479,12 @@ function CrewDetailPage() {
         </LayOut3>       
                 </LayOut1>
                 <LayOut2>
-                <ScheduleEditComponent crewScheduleDetail={crewScheduleDetail} crewDetail={crewDetail} />
+                <ScheduleEditComponent crewScheduleDetail={crewScheduleDetail} crewDetail={crewDetail}/>
                 
                 <Box6><div>Notice</div><MoveToNoticePage src={rightRightArrow} alt="rightRightArrow" onClick={()=>{navigate(`/crew/notice/detail/${id}/${0}`)}}></MoveToNoticePage></Box6>
                 <Box7 ><div id="scroll-area2"> {crewDetail.notices.map((a : any, i : any)=>
                                 {return(<NoticeBox  key={i}>
-                                            <NoticeImg src={images[i+1]}></NoticeImg>
+                                            <NoticeImg src={a.imageUrl}></NoticeImg>
                                                 <NoticeWrapperBox> 
                                                     <NoticeTitle>{a.title}</NoticeTitle>
                                                     <NoticeContent> {a.content}</NoticeContent>
@@ -512,19 +530,22 @@ const CrewMemberEditModalContent = styled.div`
 
 const CancelButton = styled.img`
     height:  20px;
-    margin-top: 5px;
+    top: 10px;
+    right : 90px;
+    position: absolute;
 `
 
 const ButtonWrapper = styled.div`
     display: flex;
     justify-content: end;
-    padding-right: 20px;
-    padding-top: 15px;
-    gap: 10px;
+    right: 20px;
+    top: 20px;
 `
 
 const CrewNameInputBox = styled.div`
-
+ position: absolute;
+ top: 50px;
+ width: 100%;
 `
 
 const CrewNameInput = styled.input`
@@ -539,7 +560,7 @@ const CrewNameInput = styled.input`
   font-size: 40px;
   font-weight: bold;
   margin-left: 20px;
-  
+  top:20px ;
 `
 
 const CrewDetailInputBox = styled.div`
@@ -549,6 +570,8 @@ const CrewDetailInputBox = styled.div`
     margin-right: 20px;
     height: 150px;
     border-radius: 20px;
+    position: absolute;
+    top: 170px;
 `
 const CrewDetailInput = styled.input`
     background-color: rgb(66, 66, 66);
@@ -580,6 +603,7 @@ const Hr2 = styled.hr`
     border: none;
   border-top: 3px solid white; /* 가로줄 스타일 */
   margin: 10px 0; /* 위아래 여백 */
+
 `
 
 
@@ -609,6 +633,8 @@ const Box8= styled.div`
     display: flex;
     gap: 35px;
     padding-bottom: 20px;
+    position: absolute;
+    bottom: 20px;
 `
 
 const PlusButton = styled.img`
@@ -619,7 +645,11 @@ const PlusButton = styled.img`
 `
 
 
-
+const ImageBox = styled.div`
+    display: flex;
+    gap : 10px;
+    align-items: center;
+`
 
 
 function CrewEditComponent1({ crewDetail, handleEditClick }: { crewDetail: any; handleEditClick: () => void }) {
@@ -627,6 +657,7 @@ function CrewEditComponent1({ crewDetail, handleEditClick }: { crewDetail: any; 
     const [crewMemberPlusModalOpen, setCrewMemberPlusModalOpen] = useState(false) // 크루 멤버 추가 모달 스위치
       const [Name, setTitle] = useState("");
       const [content, setContent] = useState("");
+      const [crewImage, setcrewImage] = useState(null)
        // 🔹 입력값 변경 시 상태 업데이트
        const handleTitleChange = (e : any) => setTitle(e.target.value);
        const handleContentChange = (e : any) => setContent(e.target.value);
@@ -636,13 +667,13 @@ function CrewEditComponent1({ crewDetail, handleEditClick }: { crewDetail: any; 
        const [ loading, setLoading ] = useState(true) // 로딩 표시하는 변수
        const [ error, setError] = useState(null) // 에러 상태
        const {id} = useParams()
-       const [file, setFile] = useState<File | null>(null);
+       const [file, setFile] = useState<any>(null);
        const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files) {
           setFile(event.target.files[0]); // ✅ 파일 저장
         }
       };
-      const [crewData, setCrewData] = useState({ name: "", description: "" });
+      const [crewData, setCrewData] = useState<any>({ name: crewDetail.name, description: crewDetail.Description });
 
        const CrewInfoEdit = async() => {
         // if (!file) {
@@ -650,14 +681,23 @@ function CrewEditComponent1({ crewDetail, handleEditClick }: { crewDetail: any; 
         //     return;
         //   }
           const formData = new FormData();
-       
-          formData.append("name", Name); // ✅ 파일 추가
-          formData.append("description", content); // ✅ 파일 추가
-        //   formData.append("image", content); // ✅ 파일 추가
-        //   formData.append("promotionUrl", address); // ✅ 파일 추가
+          if (Name== "") {formData.append("name", crewDetail.name)}
+
+          else {formData.append("name", Name);} // ✅ 파일 추가
+          
+        if (content== "") {formData.append("description", crewDetail.description)}
+
+            else {formData.append("description", content);} // ✅ 파일 추가
+
+        if (file != null) {
+            formData.append("image", file)
+            console.log("실행확인")
+        }
                try {
+                    console.log(formData,"dd")
                    setLoading(true);
                    console.log(id)
+                   
                    const response = await axiosInstance.put(`/crew/${id}`, formData, // 크루 정보 수정 요청
                    {headers: {
                          "Content-Type": "multipart/form-data",
@@ -673,6 +713,7 @@ function CrewEditComponent1({ crewDetail, handleEditClick }: { crewDetail: any; 
                
                } catch (err: any) {
                 alert("업로드 중 오류가 발생했습니다.");
+                console.log(err)
                } finally {
                 setLoading(false)
                }
@@ -770,17 +811,18 @@ function CrewEditComponent1({ crewDetail, handleEditClick }: { crewDetail: any; 
 
     }, [crewDetail])
 
-    // const PlusGenre = async () => {
 
-    //     try {
-    //         const res : any = axiosInstance.put(`/crew/${id}/genre`, copyList)
-    //         console.log(res.data)
-    //         alert("장르추가성공")
-    //     } catch (err: any) {
-    //         setError(err.message); //요청 놓치면 에러 메세지 띄우기
-    //     }finally {
-    //         setLoading(false) // 요청 끝나면 로딩끄기
-    //     }}
+
+    const [image, setImage] = useState<any>(null); // 선택한 파일 저장
+    const [preview, setPreview] = useState<string | null>(null); // 미리보기 이미지
+    // 파일 선택 시 실행되는 함수
+    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files[0]) {
+            const file = e.target.files[0];
+            setImage(file); // 선택한 파일 저장
+            setPreview(URL.createObjectURL(file)); // 미리보기 URL 생성
+        }
+    }
 
     
     
@@ -794,6 +836,8 @@ function CrewEditComponent1({ crewDetail, handleEditClick }: { crewDetail: any; 
 
 const PlusModal = styled.div`
     position: relative;
+    z-index: 9999;
+
 `
 const FlexCan2 = styled.div`
     display: flex;
@@ -872,8 +916,8 @@ const PlusMember = async (memId : any) => {
     return (
     <div>
      
-        <Box1>
-            
+        <Box1Wrapper>
+        <Box1Friend src={crewDetail.imageUrl} alt="crewImage"></Box1Friend>
             <ButtonWrapper>
                 <CancelButton src={cancelButton} alt="cancelButton" onClick={handleEditClick}>
                 </CancelButton>
@@ -912,9 +956,12 @@ const PlusMember = async (memId : any) => {
             </MemberEditWrapper>})}
           
             <PlusButton src={plusButton} alt="plusButton" onClick={() =>setCrewMemberPlusModalOpen(true)}></PlusButton>
+            <ImageBox><input type="file" accept="image/*" onChange={handleFileChange} />
+                            <div onClick={() => { { setPreview(null); setImage(null) } }}>x</div>
+                        </ImageBox>
             </Box8>          
             
-        </Box1>
+        </Box1Wrapper>
         {crewMemberPlusModalOpen && (
             <CrewMemberEditModalOverlay>
                 <CrewMemberEditModalContent>
@@ -1208,7 +1255,18 @@ function ScheduleEditComponent({crewScheduleDetail,crewDetail}:any) {
         }
     }
 
+    const [canSee, setCanSee] = useState(false)
+    const userCrewId = useCrewStore((state)=> state.id)
+    console.log(id)
+    console.log(userCrewId)
 
+    useEffect(()=>{
+        if ( Number(userCrewId) === Number(id)){
+            setCanSee(true)
+           
+        }
+    },[canSee])
+    console.log(canSee)
 
     useEffect(()=> {
         const FetchLikeList = async () => {
@@ -1301,11 +1359,11 @@ function ScheduleEditComponent({crewScheduleDetail,crewDetail}:any) {
         <div>
             <ScheduleText>
             <BuskingText >Busking </BuskingText> <p>Schedule </p>
-            <div onClick={()=>{
+            {canSee && <div onClick={()=>{
                 setModalType("SchedulePlus");
              }}>
                +
-            </div>
+            </div>}
             </ScheduleText>
             <Hr />
         </div>
@@ -1313,7 +1371,7 @@ function ScheduleEditComponent({crewScheduleDetail,crewDetail}:any) {
         <ScheduleList id="scroll-area"> 
             {
             crewDetail.schedules.map((a:any, i:any) => {
-                return ( <ScheduleWrapper key={i} > <ScheduleImg src={images[i+1]} alt="ScheduleImg"></ScheduleImg> <ScheduleTitle><ScheduleTitleComponent1>{a.title}</ScheduleTitleComponent1><div>{a.content}</div></ScheduleTitle><LeftArrowTag onClick={()=> {setisScheduleDetailModalOpen(true); setSelectedScheduleIndex(i+1);}} src={leftArrow} alt="leftArrow"></LeftArrowTag></ScheduleWrapper>)
+                return ( <ScheduleWrapper key={i} > <ScheduleImg src={crewDetail.imageUrl} alt="ScheduleImg"></ScheduleImg> <ScheduleTitle><ScheduleTitleComponent1>{a.title}</ScheduleTitleComponent1><div>{a.content}</div></ScheduleTitle><LeftArrowTag onClick={()=> {setisScheduleDetailModalOpen(true); setSelectedScheduleIndex(i+1);}} src={leftArrow} alt="leftArrow"></LeftArrowTag></ScheduleWrapper>)
             })
             }
         </ScheduleList>

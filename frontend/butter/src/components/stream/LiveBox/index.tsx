@@ -1,13 +1,19 @@
 import styled from "@emotion/styled";
 import { Navigate, useNavigate } from "react-router-dom";
 
-const LiveBoxWrapper = styled.div`
+const LiveBoxWrapper = styled.div<{ thumbnail?: string }>`
   width: 100%;
   height: 100%;
   border-radius: 20px;
-  background-color: wheat;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   display: flex;
   flex-direction: column;
+  ${(props) =>
+    props.thumbnail
+      ? `background-image: url("${props.thumbnail}");`
+      : `background-color: gray;`}
 `;
 
 const LiveGenres = styled.div`
@@ -79,9 +85,18 @@ interface LiveProps {
   title: string;
   genres: string[];
   location: string | null;
+  thumbnail: string;
+  crewImg: string;
 }
 
-const LiveBox = ({ id, title, genres, location }: LiveProps) => {
+const LiveBox = ({
+  id,
+  title,
+  genres,
+  location,
+  thumbnail,
+  crewImg,
+}: LiveProps) => {
   const navigate = useNavigate();
   const goLive = (id, title) => {
     console.log(`Going live: ${title}`);
@@ -94,7 +109,7 @@ const LiveBox = ({ id, title, genres, location }: LiveProps) => {
   };
 
   return (
-    <LiveBoxWrapper key={id}>
+    <LiveBoxWrapper key={id} thumbnail={thumbnail || crewImg}>
       <LiveGenres>
         {genres.map((genre) => (
           <LiveGenre key={genre}>{genre}</LiveGenre>

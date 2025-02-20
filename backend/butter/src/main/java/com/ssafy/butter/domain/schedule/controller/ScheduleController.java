@@ -103,4 +103,11 @@ public class ScheduleController {
             @Parameter(hidden = true) @CurrentUser AuthInfoDTO currentUser) {
         return ResponseEntity.ok(scheduleService.getLikedScheduleList(currentUser));
     }
+
+    @Operation(summary = "내 크루 버스킹 일정 목록", description = "내가 크루장인 크루의 버스킹 일정 목록을 조회합니다.")
+    @GetMapping("/my-crew")
+    public ResponseEntity<List<ScheduleResponseDTO>> getMyCrewScheduleList(
+            @Parameter(hidden = true) @CurrentUser AuthInfoDTO currentUser) {
+        return ResponseEntity.ok(scheduleService.getMyCrewScheduleList(currentUser));
+    }
 }
