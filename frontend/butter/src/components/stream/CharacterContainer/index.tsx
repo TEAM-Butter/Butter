@@ -338,7 +338,6 @@ const CharacterContainer = ({
             currentEmotion: existingMember?.currentEmotion ?? null, // 초기값은 null
           };
         });
-        console.log("Updated members:", updatedMembers);
         return updatedMembers;
       });
     }
@@ -402,6 +401,9 @@ const CharacterContainer = ({
   };
   const handleSocketOn = () => {
     socket.on("message", handleMessage);
+    // socket.on("finishLive", () => {
+    //   console.log("🤣🤣🤣🤣🤣🤣");
+    // });
     socket.on("increaseEmotionCount", (content) => {
       setHeartCount(content.heart);
       setLikeCount(content.like);

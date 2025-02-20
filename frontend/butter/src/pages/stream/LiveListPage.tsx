@@ -20,8 +20,8 @@ const Header = styled.div`
   }
 
   @media (max-width: 915px) {
-      grid-template-columns: 1fr;
-      gap: 10px;
+    grid-template-columns: 1fr;
+    gap: 10px;
   }
 `;
 
@@ -112,7 +112,9 @@ const LiveListPage = () => {
             <div id="pageTitleLg">Live</div>
             <div id="pageTitleMd">Busking</div>
           </Text>
-          <div id="pageInfo">라이브에 참여해 재미있는 모션과 함께 버스킹을 즐겨보세요!</div>
+          <div id="pageInfo">
+            라이브에 참여해 재미있는 모션과 함께 버스킹을 즐겨보세요!
+          </div>
         </div>
         <div>
           <GenreToggle setGenreToggle={setGenreToggle} keyName="stream" />
@@ -124,7 +126,7 @@ const LiveListPage = () => {
             return (
               <LiveCard key={live.id}>
                 <LiveBox
-                  id={live.id || ""}
+                  id={live.crew.id || ""}
                   title={live.title || "제목 없음"}
                   genres={
                     Array.isArray(live.crew?.genres) ? live.crew.genres : []
