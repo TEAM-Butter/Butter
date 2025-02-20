@@ -305,13 +305,16 @@ function SchedulePage() {
   const checkLikedSchedule = async (scheduleId : any) => {
     try {
       const res = await axiosInstance.get('schedule/like')
-      console.log(res.data, "필요한 데이터")
-      for (let i = 0 ;  i <= res.data.length ; i++ ) {
-        if (res.data[i].id == scheduleId)
-          setHaveBookMarked(true)
-      }
-    } catch{
-      console.log("에러")
+      console.log(res.data, "필요한 데이터"
+   
+      )
+      // scheduleId가 존재하는지 확인
+      const isBookmarked = res.data.some((a: any) => a.id === scheduleId);
+
+      setHaveBookMarked(isBookmarked);
+        
+    } catch(err){
+      console.log(err,"에러",)
     }
   }
 
@@ -338,7 +341,6 @@ function SchedulePage() {
 
 const BookmarkMinus = async (scheduleId : any) => {
     try {
-
         console.log(scheduleId)
         const res = await axiosInstance.delete(`schedule/like/${scheduleId}`)
         console.log(res.data)
@@ -430,6 +432,12 @@ const BookmarkMinus = async (scheduleId : any) => {
             lng: parseFloat(place.longitude), // ✅ 백엔드에서 `longitude` 제공
           },
           content: place.place, // ✅ 백엔드에서 `name` 또는 `place_name` 제공 // 여기서 받아오고 싶은 정보 추가하면 됨.
+          description : place.content,
+          crewImage : place.crew.imageUrl,
+          crewName : place.crew.name,
+          isLiked : place.isLiked,
+          title : place.title,
+          scheduleId : place.id,
         }));
   
         setMarkers(markers2);
@@ -950,6 +958,7 @@ useEffect(() => {
               }
               
               else { setIsOpenSmall(true)
+                    setHaveBookMarked(false)
                     checkLikedSchedule(pos.scheduleId)
                   
               }
@@ -989,7 +998,7 @@ useEffect(() => {
                         
                     
                     </div>
-                    {haveBookMarked && <BookMarkIcon src={followedIcon} alt="followedIcon" onClick={()=>{BookmarkMinus(pos.scheduleId)}}></BookMarkIcon>}
+                    {haveBookMarked && <BookMarkIcon src={followedIcon} alt="followedIcon" onClick={()=>{ BookmarkMinus(pos.scheduleId)}}></BookMarkIcon>}
                     {!haveBookMarked && <BookMarkIcon src={notFollowedIcon} alt="notFollowedIcon" onClick={()=>{BookmarkPlus(pos.scheduleId)}}></BookMarkIcon>}
                   </div>
                 </div>
@@ -1061,7 +1070,7 @@ useEffect(() => {
           }}
           onClick={() => {handleResultClick(pos); myLocationLevel("upgrade")} } // ✅ 클릭 시 해당 위치로 이동 & 마커 클릭 효과
           >
-            <ScheduleImage src={images[i]} alt="scheduleImages"></ScheduleImage>
+            <ScheduleImage src={pos.crewImage} alt="scheduleImages"></ScheduleImage>
               <ScheduleInnerBox2>
                   <ScheduleGenre>{pos.crewName}</ScheduleGenre>
                 <ScheduleContent>{pos.description}</ScheduleContent>
