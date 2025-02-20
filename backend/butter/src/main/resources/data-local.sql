@@ -231,7 +231,15 @@ INSERT INTO clip (hit_count, crew_id, title, video_name, video_url)
 VALUES
     (100, 1, 'Rock Performance', 'clip-1-1', 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'),
     (200, 1, 'Jazz Solo', 'clip-1-1', 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4'),
-    (150, 2, 'Pop Star Performance', 'clip-2-1', 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4 ');
+    (150, 2, 'Pop Star Performance', 'clip-2-1', 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4 '),
+
+    (1, 1, 100, 'ding ding', 'clip-1-1', 'https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/KakaoTalk_20250221_025158227.mp4'),
+    (2, 1, 200, 'jannabi', 'clip-1-1', 'https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/KakaoTalk_20250221_025159475.mp4'),
+    (3, 2, 150, 'wongyeom', 'clip-2-1', 'https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/KakaoTalk_20250221_025204045.mp4'),
+    (4, 2, 150, 'joker', 'clip-2-2', 'https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/KakaoTalk_20250221_025210113.mp4'),
+    (5, 2, 200, 'bong', 'clip-3-1', 'https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/KakaoTalk_20250221_025208574.mp4'),
+    (6, 1, 300, 'nangman', 'clip-3-2', 'https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/KakaoTalk_20250221_025201188.mp4');
+
 
 -- liked_clip 테이블
 INSERT INTO liked_clip (is_liked, clip_id, member_id)
