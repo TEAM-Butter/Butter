@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import LiveBox from "../../components/stream/LiveBox";
 import { axiosInstance } from "../../apis/axiosInstance";
 import { GenreToggle } from "../../components/common/toggle/toggle";
+import { motion } from "framer-motion";
+
 const LiveListPageWrapper = styled.div`
   margin: 40px;
 `;
@@ -117,7 +119,6 @@ const LiveListPage = () => {
         </div>
       </Header>
       <div>
-        <GenreToggle setGenreToggle={setGenreToggle} />
         <LiveContainer>
           {presentlivelist.map((live) => {
             return (
