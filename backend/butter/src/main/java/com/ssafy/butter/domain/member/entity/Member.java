@@ -43,23 +43,19 @@ public class Member {
     private String loginId;
 
     @Embedded
-    @NotNull
+
     private Nickname nickname;
 
     @Embedded
-    @NotNull
     private Email email;
 
     @Embedded
-    @NotNull
     private BirthDate birthDate;
 
     @Embedded
-    @NotNull
     private BreadAmount breadAmount;
 
     @Embedded
-    @NotNull
     private Password password;
 
     @Column(length = 2048)
