@@ -39,7 +39,8 @@ public interface MemberService {
     PasswordUpdateResponseDTO updatePassword(PasswordUpdateRequestDTO passwordUpdateRequestDTO, AuthInfoDTO authInfoDTO);
     RegisterExtraInfoResponseDTO saveExtraUserInfo(ExtraInfoDTO extraInfoDTO, Long memberId);
     boolean checkIfEmailExists(String email);
-    CheckLoginIdResponseDTO checkIfLoginIdExists(String loginId);
+    boolean checkIfLoginIdExists(String loginId);
+    CheckLoginIdResponseDTO validateLoginIdDuplication(String loginId);
     Page<SearchMemberResponseDTO> findByNicknameContainingIgnoreCase(MemberSearchRequestDTO memberSearchRequestDTO);
     BreadAmountResponseDTO getBreadAmount(AuthInfoDTO authInfoDTO);
     CheckNickNameDuplicationResponseDTO checkIfNicknameExists(String nickname);

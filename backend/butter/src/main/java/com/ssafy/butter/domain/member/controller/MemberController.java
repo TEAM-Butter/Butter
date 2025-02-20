@@ -97,7 +97,7 @@ public class MemberController {
     @PostMapping("/check-loginId")
     public ResponseEntity<CheckLoginIdResponseDTO> checkEmailExists(
             @RequestBody CheckLoginIdDTO loginIdDTO) {
-        CheckLoginIdResponseDTO response = memberService.checkIfLoginIdExists(loginIdDTO.loginId());
+        CheckLoginIdResponseDTO response = memberService.validateLoginIdDuplication(loginIdDTO.loginId());
         return ResponseEntity.ok(response);
     }
 
