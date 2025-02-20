@@ -63,8 +63,8 @@ public class CrewRepositoryImpl implements CrewRepository {
     public List<Crew> getCrewList(CrewListRequestDTO crewListRequestDTO) {
         return jpaQueryFactory.selectDistinct(qCrew)
                 .from(qCrew)
-                .join(qCrew.crewGenres, qCrewGenre).fetchJoin()
-                .join(qCrewGenre.genre, qGenre).fetchJoin()
+                .leftJoin(qCrew.crewGenres, qCrewGenre).fetchJoin()
+                .leftJoin(qCrewGenre.genre, qGenre).fetchJoin()
                 .where(createCrewListCondition(crewListRequestDTO))
                 .orderBy(createCrewListOrderCondition(crewListRequestDTO))
                 .limit(crewListRequestDTO.pageSize())
