@@ -68,6 +68,7 @@ const ImgStyle = styled.img<ImgProps>`
 
 const CrewListPageWrapper = styled.div`
     margin: 40px;
+ 
 `
 
 // CrewListContainer: 화면 가로 전체에 꽉 차게
