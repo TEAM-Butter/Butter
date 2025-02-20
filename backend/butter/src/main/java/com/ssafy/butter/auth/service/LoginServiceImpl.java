@@ -71,24 +71,20 @@ public class LoginServiceImpl implements LoginService{
     }
 
     private BaseCrewDTO getCrewInfo(Member member){
-        Optional<CrewMember> crewMember = crewMemberService.findByMember(member);
+        List<CrewMember> crewMember = crewMemberService.findByMember(member);
 
-        return crewMember.map(value ->
-                new BaseCrewDTO(value.getCrew()))
-                .orElse(null);
+        return new BaseCrewDTO(crewMember.getFirst().getCrew());
     }
 
     private String getMemberTypeInLogic(Member member){
-        Optional<CrewMember> optionalCrewMember = crewMemberService.findByMember(member);
+        List<CrewMember> crewMembers = crewMemberService.findByMember(member);
 
-        if (optionalCrewMember.isEmpty()) {
+        if (crewMembers.isEmpty()) {
             return MemberTypes.MEMBER.name().toLowerCase();
         }
 
-        CrewMember findCrewMember = optionalCrewMember.get();
-        boolean isCrewAdmin = findCrewMember.getIsCrewAdmin();
-
-        return isCrewAdmin
+        return crewMembers.stream()
+                .anyMatch(CrewMember::getIsCrewAdmin)
                 ? MemberTypes.CREW.name().toLowerCase()
                 : MemberTypes.MEMBER.name().toLowerCase();
     }
