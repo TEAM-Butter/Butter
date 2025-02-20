@@ -46,15 +46,14 @@ padding: 0 15px;
 const Check = styled.div`
     display: flex;
 `
-const Hr = styled.hr`
-    border: none;
-  border-top: 5px solid white; /* 가로줄 스타일 */
-  margin: 0px; /* 위아래 여백 */
-
+const Hr = styled.div`
+  width: 100%;
+  height: 55px;
+  border-bottom: 1px solid white;
 `
 const Hr2 = styled.hr`
     border: none;
-  border-top: 3px solid white; /* 가로줄 스타일 */
+  border-top: 1px solid white; /* 가로줄 스타일 */
   margin:0px; /* 위아래 여백 */
   
 `
@@ -85,10 +84,17 @@ const SearchResultBox = styled.div`
     background: var(--liner);
     color: black;
     display: flex;
-    height: 40px;
-    display: flex;
+    height: 50px;
     align-items: center;
     justify-content: space-between;
+    padding: 10px;
+    border-bottom: 3px solid black;
+
+    #LtSide {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
 `
 
 const LocationIcon = styled.img`
@@ -99,27 +105,63 @@ const SelectIcon = styled.img`
     height: 20px;
     width: 40px;
 `
+
+const DateInputComment = styled.div`
+  margin-top: 20px;
+  font-weight: 300;
+`
 const DateSelectWrapper = styled.div`
     display: flex;
-    gap : 5px;
+    justify-content: space-between;
+
+    input {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 5px;
+      width: 100%;
+    }
 `
 const AddressText = styled.div`
   padding-right: 40px;
+
 `
 const SelectText = styled.div`
   border-radius: 30px;
   background-color: black;
   color : white;
   height: 30px;
-  width: 60px;
+  min-width: 80px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-right: 20px;
+  font-weight: 300;
+  /* margin-right: 20px; */
+  transition: all ease-in-out 0.2s;
+
+  &:hover {
+    background-color: rgba(0,0,0,0.7);
+  }
 `
 
+const HeaderTitle = styled.div`
+  font-size: 18px;
+`
 
+const CheckBuskingInput = styled.div`
+  display: flex;
+  flex-direction: column;
 
+  #CheckDate {
+    font-size: 20px;
+    font-weight: 400;
+  }
+  
+  #CheckLocation {
+    font-size: 20px;
+    font-weight: 800;
+    color: #296EB4;
+  }
+`
 
 export const SchedulePlusModal = ({ setModalType, width, height, id }: any) => {
       const [state, setState] = useState<any>({
@@ -379,6 +421,8 @@ const [selectDate, setSelectDate] = useState<any>("")
 
 const Scroll = styled.div`
   overflow-y: auto;
+  flex: 1;
+  background: var(--liner);
 `
 
 
@@ -433,39 +477,42 @@ return (
         <Check>
 
     <MC.ModalBody_v3>
-       
-            <SearchWrapper>
-            <SchedulePlusTitleInput
-            placeholder="장소를 입력해주세요"
-            {...register("roomName", { required: true })}
-            value={searchTerm} onChange={(e)=>{setSearchTerm(e.target.value)}} onKeyDown={(e) => {if (e.key === "Enter") handleSearch()}}
-            >
-            </SchedulePlusTitleInput>
-            <FindIcon src={findIconBlack} alt="findIcon" onClick={handleSearch}></FindIcon>    
-            </SearchWrapper>
-            <Hr/>
+            <Hr>
+              <SearchWrapper>
+              <SchedulePlusTitleInput
+              placeholder="장소를 입력해주세요"
+              {...register("roomName", { required: true })}
+              value={searchTerm} onChange={(e)=>{setSearchTerm(e.target.value)}} onKeyDown={(e) => {if (e.key === "Enter") handleSearch()}}
+              >
+              </SchedulePlusTitleInput>
+              <FindIcon src={findIconBlack} alt="findIcon" onClick={handleSearch}></FindIcon>    
+              </SearchWrapper>
+            </Hr>
             <div>장소명 {searchTerm} 검색결과</div>
             <Scroll>
-              {markers.map((a :any, i:any)=>{return(<SearchResultBox>
-                  <LocationIcon src={locationIcon} alt="locationIcon"></LocationIcon>
-                  <AddressText>{a.content}</AddressText>
+              {markers.map((a :any, i:any)=>{return(
+                <SearchResultBox>
+                  <div id="LtSide">
+                    <LocationIcon src={locationIcon} alt="locationIcon"></LocationIcon>
+                    <AddressText>{a.content}</AddressText>
+                  </div>
                   <SelectText onClick={()=>{setAddress(a.content); setPosition(a.position); SelectLocation(a.position)}}>select</SelectText>
               </SearchResultBox>)})}
-              </Scroll>
-    <DateSelectWrapper>    
-        <div>
-      <label>날짜 선택: </label>
+            </Scroll>
+    <DateInputComment>버스킹 일자를 선택해주세요.</DateInputComment>    
+    <DateSelectWrapper>
+      <div>
       <DatePicker
+        placeholderText="날짜를 선택해 주세요."
         selected={selectedDate}
         onChange={(date : any) => setSelectedDate(date)}
         dateFormat="yyyy-MM-dd" // 날짜 포맷 설정
         minDate={new Date()} // 오늘 이후의 날짜만 선택 가능
       />
-      <p>선택한 날짜: {selectedDate && format(selectedDate, "yyyy-MM-dd", { locale: ko })}</p>
-    </div>
-    <div>
-      <label>시간 선택: </label>
+      </div>
+      <div>
       <DatePicker
+        placeholderText="시간을 선택해 주세요."
         selected={selectedTime}
         onChange={(date : any) => setSelectedTime(date)}
         showTimeSelect
@@ -474,13 +521,12 @@ return (
         timeCaption="시간"
         dateFormat="HH:mm"
       />
-      {selectedTime && <p>선택한 시간: {selectedTime.toLocaleTimeString("ko-KR", { hour: "2-digit", minute: "2-digit" })}</p>}
-    </div>
+      </div>
     </DateSelectWrapper>
         </MC.ModalBody_v3>
         <div>
         <MC.ModalHeader2>
-            <div>CREATE BUSKING SCHEDULE</div>
+            <HeaderTitle>CREATE BUSKING SCHEDULE</HeaderTitle>
             <MC.ModalCloseBtn
                 textColor="white"
                 onClick={() => {
@@ -489,7 +535,7 @@ return (
             >
                 X
             </MC.ModalCloseBtn>
-            </MC.ModalHeader2>
+        </MC.ModalHeader2>
         <MC.ModalBody_v4>
         <MC.Comment_v3 type="text" placeholder="Type your schedule title." value={title} onChange={handleTitleChange}></MC.Comment_v3>
         <Hr2 />
@@ -497,16 +543,20 @@ return (
       
 
                             <MC.ModalHeader3>
-                            <div> {selectDate}날짜로, {address}에서 버스킹 하시는게 맞으실까요?</div>
-                            <MC.FilledBtn width="70px" height="30px" color="var(--yellow)" textColor="black" onClick={() => {SchedulePost();}}>생성</MC.FilledBtn>
+                              <CheckBuskingInput>
+                                <div><span id="CheckDate">{selectDate}</span>날짜로,</div>
+                                <div><span id="CheckLocation">{address}</span>에서</div> 
+                                버스킹 하시는게 맞으실까요?
+                              </CheckBuskingInput>
+                              <MC.FilledBtn width="70px" height="30px" color="var(--yellow)" textColor="black" onClick={() => {SchedulePost();}}>생성</MC.FilledBtn>
                             </MC.ModalHeader3>
                             <Map // 지도를 표시할 Container
                                     center={state.center}
                                     isPanto={state.isPanto}
                                     style={{
                                     // 지도의 크기
-                                    width: "400px",
-                                    height: "200px",
+                                    width: "100%",
+                                    height: "150px",
                                     }}
                                     id="map"
                                     onCreate={setMap}

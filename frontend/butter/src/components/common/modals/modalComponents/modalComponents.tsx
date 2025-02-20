@@ -65,13 +65,12 @@ export const ModalHeader3 = styled.div`
   display: flex;
   width: 100%;
   background-color: black;
-  align-items: center;
+  align-items: flex-end;
   font-size: 18px;
   font-weight: 200;
   justify-content: space-between;
   border-radius: 10px;
-  height: 60px;
-  padding-right: 10px;
+  padding: 15px;
 `;
 
 
@@ -108,7 +107,7 @@ export const ModalBody_v3 = styled(ModalBody)`
 `;
 
 export const ModalBody_v4 = styled(ModalBody)`
-  height: 480px;
+  height: 460px;
   width: 450px;
   justify-content: space-between;
 `;
@@ -128,13 +127,17 @@ export const Comment_v3 = styled.input`
   height: 40px;
   font-size: 20px;
   color:white;
-`;
+  border: none;
+  `;
+
 export const Comment_v4 = styled.input`
   background-color: rgba(0, 0, 0, 0.8);
   height: 80px;
   color: white;
-
+  font-size: 18px;
+  border: none;
 `;
+
 export const Comment_v5 = styled.input`
 
   margin-bottom: 5px;
