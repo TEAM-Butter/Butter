@@ -618,8 +618,9 @@ const BookmarkMinus = async (scheduleId : any) => {
   
     useEffect(() => {
       if (!window.kakao || !window.kakao.maps) return;
-      if (positions.length === 0) return;
-  
+      if (positions.length === 0)
+         setUpdatedPositions([])
+      else{
       const geocoder = new kakao.maps.services.Geocoder();
   
       const fetchAddresses = async () => {
@@ -641,7 +642,7 @@ const BookmarkMinus = async (scheduleId : any) => {
         console.log("updatedPosition", results)
       };
   
-      fetchAddresses();
+      fetchAddresses();}
     }, [positions]);  // ✅ positions이 변경될 때만 실행
   
     return updatedPositions;
@@ -659,7 +660,6 @@ useEffect(() => {
   // positions2가 변경될 때 로그 출력
 useEffect(() => {
   console.log("✅ positions2 상태 업데이트됨:", positions2);
-  
 
 }, [positions2]);
 
@@ -676,6 +676,11 @@ useEffect(() => {
 
 }, [state.center]);
 
+ // state가 변경될 때 로그 출력
+ useEffect(() => {
+  console.log("✅ updatedpositions 상태 업데이트됨:", updatedPositions);
+
+}, [updatedPositions]);
 
 
 
@@ -1099,7 +1104,8 @@ useEffect(() => {
         </MarginBox>
         <hr style={{border : "1px solid black", marginBottom: "0px"}}/>
        <HeightModify id="scroll-area3">
-          { updatedPositions.map((pos :any, i : any)=> {return(
+      
+          {updatedPositions.length >0 ? updatedPositions.map((pos :any, i : any)=> {return(
         <ScheduleBox>
           <ScheduleInnerBox key={i} 
           style={{
@@ -1121,7 +1127,10 @@ useEffect(() => {
                 <OpenDetailBtn src={leftArrow} alt="leftArrow"></OpenDetailBtn>
           </ScheduleInnerBox>
         </ScheduleBox>
-          )})}
+        
+       )}) :  (
+        <p style={{ textAlign: "center", padding: "10px" }}>검색 결과가 없습니다.</p>
+      )}
         
         </HeightModify>
       </Box4>
