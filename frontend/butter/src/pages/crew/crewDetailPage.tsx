@@ -89,17 +89,16 @@ const Box1Friend = styled.img`
 const Box2=styled.div`
   border-radius: 20px;
   height: 140px;
-  width: 140px;
+  width: 180px;
   display: flex;
   position: relative;
 `
 const Box3=styled.div`
-  background-color: rgb(22, 22, 22);
+  background-color: rgb(58, 58, 58);
   border-radius: 20px;
   height: 180px;
   width : 35%;
   display: flex;
-  margin-right: -45px;
   text-align: left;
   align-items: center;
   justify-content: space-between;
@@ -1294,7 +1293,7 @@ function ScheduleEditComponent({crewScheduleDetail,crewDetail}:any) {
 
     const [canSee, setCanSee] = useState(false)
     const userCrewId = useCrewStore((state)=> state.id)
-    console.log(id)
+  
     console.log(userCrewId)
 
     useEffect(()=>{
