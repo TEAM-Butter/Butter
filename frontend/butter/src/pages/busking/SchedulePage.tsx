@@ -151,7 +151,7 @@ const CalenderBox = styled.div`
   padding: 20px;
   top: 60px;
   right: 20px;
-  width: 350px;
+  width: 440px;
   position: absolute;
   border: 1px solid white;
 `
