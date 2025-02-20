@@ -65,8 +65,8 @@ VALUES
     (1, 2, 'butter1243', '유리', 'user3@example.com', '1990-01-01', 1367, '$2a$12$EGlsV9zlJcfjr2Iplvxq9uY1to7FUnsUG9wUFj4mJpD3kPRl7Wsz6', 'https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/07186f22-e6a9-4c3f-8994-28d46e93a980.jpg', 'MALE', NOW(), FALSE),
     (1, 2, 'butter1244', '맹구', 'user3@example.com', '1990-01-01', 1152, '$2a$12$EGlsV9zlJcfjr2Iplvxq9uY1to7FUnsUG9wUFj4mJpD3kPRl7Wsz6', 'https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/1a1cef8b-b188-4aaf-883b-6cd27384f2d2.jpg', 'MALE', NOW(), FALSE),
     (1, 2, 'butter1245', '훈이', 'user3@example.com', '1990-01-01', 1234, '$2a$12$EGlsV9zlJcfjr2Iplvxq9uY1to7FUnsUG9wUFj4mJpD3kPRl7Wsz6', 'https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/5d6c29a9-3a42-4df0-84ab-5619798016d7.jpg', 'MALE', NOW(), FALSE),
-    (1, 3, 'rladnjscks1!', '크루장 김원찬', 'rladnjscks1@eexample.com', '1999-11-23', 1535, '$2a$10$ugpwRg6xsmazWGaZKpsPBOORd2SkwIXJds//uWevZygdOCoTIn1Bi', 'https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/ecee0476-99a7-4713-94e2-9ba9a484de18.webp', 'MALE', NOW(), FALSE),
-    (1, 2, 'dksekwjd1!', '크루장 안다정', 'dksekwjd1@eexample.com', '1999-11-23', 1535, '$2a$10$j7pNvJLstT54tvOWnkCJ2exaDnnWptJ8RWlBZ5jA5L0X.idrTPoOK', 'https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/8df81bb2-3243-434a-ad8c-92ecc3caf9d7.webp', 'FEMALE', NOW(), FALSE);
+    (1, 3, 'rladnjscks1!', '크루장 김원찬', 'rladnjscks1@eexample.com', '1999-11-23', 1535, '$2a$10$ugpwRg6xsmazWGaZKpsPBOORd2SkwIXJds//uWevZygdOCoTIn1Bi', 'https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/ecee0476-99a7-4713-94e2-9ba9a484de18.webp', 'MALE', NOW(), TRUE),
+    (1, 2, 'dksekwjd1!', '크루장 안다정', 'dksekwjd1@eexample.com', '1999-11-23', 1535, '$2a$10$j7pNvJLstT54tvOWnkCJ2exaDnnWptJ8RWlBZ5jA5L0X.idrTPoOK', 'https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/8df81bb2-3243-434a-ad8c-92ecc3caf9d7.webp', 'FEMALE', NOW(), TRUE);
 
 -- crew 테이블
 INSERT INTO `crew` (`donation_amount`,`create_date`,`update_date`,`name`,`description`,`image_url`,`portfolio_video_url`,`promotion_url`)
@@ -230,14 +230,14 @@ INSERT INTO clip (hit_count, crew_id, title, video_name, video_url)
 VALUES
     (100, 1, 'Rock Performance', 'clip-1-1', 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'),
     (200, 1, 'Jazz Solo', 'clip-1-1', 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4'),
-    (150, 2, 'Pop Star Performance', 'clip-2-1', 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4 '),
+    (150, 2, 'Pop Star Performance', 'clip-2-1', 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4'),
 
-    (1, 1, 100, 'ding ding', 'clip-1-1', 'https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/KakaoTalk_20250221_025158227.mp4'),
-    (2, 1, 200, 'jannabi', 'clip-1-1', 'https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/KakaoTalk_20250221_025159475.mp4'),
-    (3, 2, 150, 'wongyeom', 'clip-2-1', 'https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/KakaoTalk_20250221_025204045.mp4'),
-    (4, 2, 150, 'joker', 'clip-2-2', 'https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/KakaoTalk_20250221_025210113.mp4'),
-    (5, 2, 200, 'bong', 'clip-3-1', 'https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/KakaoTalk_20250221_025208574.mp4'),
-    (6, 1, 300, 'nangman', 'clip-3-2', 'https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/KakaoTalk_20250221_025201188.mp4');
+    (100, 1, 'ding ding', 'clip-1-1', 'https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/KakaoTalk_20250221_025158227.mp4'),
+    (200, 1, 'jannabi', 'clip-1-1', 'https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/KakaoTalk_20250221_025159475.mp4'),
+    (150, 2, 'wongyeom', 'clip-2-1', 'https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/KakaoTalk_20250221_025204045.mp4'),
+    (150, 2, 'joker', 'clip-2-2', 'https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/KakaoTalk_20250221_025210113.mp4'),
+    (200, 2, 'bong', 'clip-3-1', 'https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/KakaoTalk_20250221_025208574.mp4'),
+    (300, 1, 'nangman', 'clip-3-2', 'https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/KakaoTalk_20250221_025201188.mp4');
 
 
 -- liked_clip 테이블
