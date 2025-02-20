@@ -389,11 +389,12 @@ function CrewDetailPage() {
                 const response = await axiosInstance.get(`/crew/detail/${id}`) // 크루 디테일 정보 받아옴
                 setCrewDetail(response.data);
                 console.log("response.data : ", response.data)
-                if (response.data.lives[0].endDate === null) {
+                for (let i = 0; i < response.data.lives.length ; i++){ if(response?.data?.lives[i]?.endDate === null) {
                     setLiveOn(true)
+                    return
                 } else {
                     setLiveOn(false)
-                }
+                }}
                
                 if (response.data.isFollowed == true) {
                     setIsFollowed(false) }
@@ -506,7 +507,7 @@ function CrewDetailPage() {
             {crewEditSwitch && <CrewEditComponent2 />}
            
             <Box3 onClick={()=> {(crewDetail.promotionUrl) ?(window.location.href = crewDetail.promotionUrl) :  alert("등록된 링크가 없습니다") }}><SnsText><div style={{ fontSize : "20px"}}>SNS</div><div>link</div></SnsText><UpArrowTag src={upArrow} alt="upArrow"></UpArrowTag></Box3>
-            {LiveOn == true && <Box4 onClick={()=>{navigate(`/stream/live/${crewDetail.lives[0].title}`,{state: {roomId : crewDetail.lives[0].id, time: crewDetail.lives[0].title}} )}}><LiveText1>Live</LiveText1><div>On</div> </Box4>}
+            {LiveOn == true && <Box4 onClick={()=>{navigate(`/stream/${crewDetail.lives[0].title}`,{state: {roomId : crewDetail.lives[0].id, time: crewDetail.lives[0].title}} )}}><LiveText1>Live</LiveText1><div>On</div> </Box4>}
             {LiveOn == false && <Box4 onClick={()=>{alert("라이브 중이 아닙니다.")}} style={{backgroundColor : "gray"}}><LiveText1>Live</LiveText1><div>Off</div> </Box4>} 
         </LayOut3>       
                 </LayOut1>
