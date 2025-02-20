@@ -65,8 +65,8 @@ VALUES
     (1, 2, 'butter1243', '유리', 'user3@example.com', '1990-01-01', 1367, '$2a$12$EGlsV9zlJcfjr2Iplvxq9uY1to7FUnsUG9wUFj4mJpD3kPRl7Wsz6', 'https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/07186f22-e6a9-4c3f-8994-28d46e93a980.jpg', 'MALE', NOW(), FALSE),
     (1, 2, 'butter1244', '맹구', 'user3@example.com', '1990-01-01', 1152, '$2a$12$EGlsV9zlJcfjr2Iplvxq9uY1to7FUnsUG9wUFj4mJpD3kPRl7Wsz6', 'https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/1a1cef8b-b188-4aaf-883b-6cd27384f2d2.jpg', 'MALE', NOW(), FALSE),
     (1, 2, 'butter1245', '훈이', 'user3@example.com', '1990-01-01', 1234, '$2a$12$EGlsV9zlJcfjr2Iplvxq9uY1to7FUnsUG9wUFj4mJpD3kPRl7Wsz6', 'https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/5d6c29a9-3a42-4df0-84ab-5619798016d7.jpg', 'MALE', NOW(), FALSE),
-    (1, 3, 'rladnjscks1!', '크루장 김원찬', 'rladnjscks1@eexample.com', '1999-11-23', 1535, '$2a$10$.FRa7kiY9qRN7TAArRGEteYp2TibTdvpiTNki2xzTogjLNbhJMgYe', 'https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/ecee0476-99a7-4713-94e2-9ba9a484de18.webp', 'MALE', NOW(), FALSE),
-    (1, 2, 'dksekwjd1!', '크루장 안다정', 'dksekwjd1@eexample.com', '1999-11-23', 1535, '$2a$10$5DukgwOIJpEO8koCJhlWhOcP54y.6u7zgkDEHF4SfMFt2CQe2Q3F6', 'https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/8df81bb2-3243-434a-ad8c-92ecc3caf9d7.webp', 'FEMALE', NOW(), FALSE);
+    (1, 3, 'rladnjscks1!', '크루장 김원찬', 'rladnjscks1@eexample.com', '1999-11-23', 1535, '$2a$10$ugpwRg6xsmazWGaZKpsPBOORd2SkwIXJds//uWevZygdOCoTIn1Bi', 'https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/ecee0476-99a7-4713-94e2-9ba9a484de18.webp', 'MALE', NOW(), FALSE),
+    (1, 2, 'dksekwjd1!', '크루장 안다정', 'dksekwjd1@eexample.com', '1999-11-23', 1535, '$2a$10$j7pNvJLstT54tvOWnkCJ2exaDnnWptJ8RWlBZ5jA5L0X.idrTPoOK', 'https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/8df81bb2-3243-434a-ad8c-92ecc3caf9d7.webp', 'FEMALE', NOW(), FALSE);
 
 -- crew 테이블
 INSERT INTO `crew` (`donation_amount`,`create_date`,`update_date`,`name`,`description`,`image_url`,`portfolio_video_url`,`promotion_url`)
