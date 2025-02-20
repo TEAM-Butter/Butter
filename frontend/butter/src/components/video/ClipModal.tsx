@@ -289,7 +289,7 @@ export const ClipModal: React.FC<ClipModalProps> = ({
             Download Video
           </DownLoadButton>
           <RightButtonGroup>
-            <SaveButton onClick={handleSave}>저장</SaveButton>
+            <SaveButton onClick={handleSave}>Clip 저장</SaveButton>
             <CancelButton onClick={onClose}>취소</CancelButton>
           </RightButtonGroup>
         </ButtonContainer>

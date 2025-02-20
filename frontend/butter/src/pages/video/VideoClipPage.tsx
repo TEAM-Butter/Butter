@@ -50,7 +50,7 @@ const HeartButton = styled.button`
   border-radius: 5px;
   color: white;
   border: none;
-  font-size: 20px;
+  font-size: 30px;
   cursor: pointer;
   z-index: 10;
 `;
@@ -60,7 +60,7 @@ const VideoWrapper = styled.div`
 `;
 const NoContentBox = styled.div`
   margin-top: 100px;
-  font-size: 25px;
+  font-size: 30px;
   margin: 10px;
   display: flex;
   justify-content: center;
@@ -77,12 +77,12 @@ const NoContentContext = styled.div`
 `;
 const LikeCountSpan = styled.div`
   margin-left: 9px;
-  font-size: 1rem;
+  font-size: 1.5rem;
 `;
 const Heart = styled.img`
   display: flex;
-  width: 2.5vh;
-  height: 2.5vh;
+  width: 3vh;
+  height: 3vh;
   margin-left: 5px;
   /* align-items: center; */
 `;

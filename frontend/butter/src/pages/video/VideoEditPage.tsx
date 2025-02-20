@@ -59,10 +59,29 @@ const VideoListContainer = styled.div`
   flex: 1;
   display: flex;
   flex-direction: column;
+  overflow-y: scroll;
   gap: 12px;
   border-radius: 20px;
   background-color: var(--darkgray);
   padding: 10px;
+  scroll-behavior: smooth;
+  max-height: calc(100vh - 150px);
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #4d4d4d;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
   @media (max-width: 780px) {
     min-height: 300px;
     gap: 8px; /* 간격 균일하게 */
