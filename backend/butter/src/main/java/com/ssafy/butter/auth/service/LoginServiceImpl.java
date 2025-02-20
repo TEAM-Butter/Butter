@@ -71,12 +71,12 @@ public class LoginServiceImpl implements LoginService{
     }
 
     private BaseCrewDTO getCrewInfo(Member member){
-        List<CrewMember> crewMember = crewMemberService.findByMember(member);
+    List<CrewMember> crewMembers = crewMemberService.findByMember(member);
 
-        if(crewMember != null)
-            return new BaseCrewDTO(crewMember.getFirst().getCrew());
-        else
-            return new BaseCrewDTO();
+    if (crewMembers != null && !crewMembers.isEmpty()) {
+        return new BaseCrewDTO(crewMembers.get(0).getCrew());
+    }
+    return new BaseCrewDTO();
     }
 
     private String getMemberTypeInLogic(Member member){
