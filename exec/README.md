@@ -94,6 +94,9 @@
 **Amazon S3** 
 **Minio**: 2024.10.13-debian-12-r1
 
+#### Mornitoring
+**grafana**: 11.3.0
+
 </br>
 
 ---
