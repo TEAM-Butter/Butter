@@ -11,6 +11,7 @@ import { removeAccessToken } from "../../../apis/auth";
 import bell from "../../../assets/user/bell.png"
 import { Alert } from "./Alert";
 import { useNavigate } from "react-router-dom";
+import default_profile from "../../../assets/user/default_profile.jpg"
 
 const Nav = styled.nav`
   display: flex;
@@ -78,7 +79,7 @@ const Profile = styled.li`
     gap: 5px;
   }
 
-  #profileImg {
+  #profileImg , #default_profile {
     justify-content: flex-end;
     width: 38px;
     height: 38px;
@@ -218,8 +219,8 @@ function Navbar() {
                     setIsToggle(!isToggle)
                     setIsHovered(false)
                   }} />
-                  {profileImg === null ?
-                    `PROFILE`
+                  {profileImg === "null" ?
+                    <img id="default_profile" src={default_profile} alt="profileImg"/>
                     :
                     <img id="profileImg" src={profileImg || ""} alt="profileImg" />
                   }
@@ -239,14 +240,6 @@ function Navbar() {
                   {/* <Link to="/">
                     <SubItem>마이 크루</SubItem>
                   </Link> */}
-                  <SubItem
-                    className="openModalBtn"
-                    onClick={() => {
-                      setModalType("streaming");
-                    }}
-                  >
-                    스트리밍 라이브
-                  </SubItem>
                   {memberType == "crew" ? (
                     <>
                       <SubItem
