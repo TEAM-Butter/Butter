@@ -18,27 +18,27 @@
 
 ### 1. 프로젝트 협업 툴
 
-**이슈 관리**: JIRA
-**형상 관리**: Gitlab
-**커뮤니케이션**: Notion, Mattermost, Discord
-**설계**: ERDCloud
-**디자인**: Figma
+**이슈 관리**: JIRA<br/>
+**형상 관리**: Gitlab<br/>
+**커뮤니케이션**: Notion, Mattermost, Discord<br/>
+**설계**: ERDCloud<br/>
+**디자인**: Figma<br/>
 
 </br>
 
 ### 2. 개발환경
 
 #### IDE
-**VS Code**: 1.97.1
-**IntelliJ**: 11.1.5
+**VS Code**: 1.97.1<br/>
+**IntelliJ**: 11.1.5<br/>
 
 #### DB
-**MySQL**: 8.0.41
-**Redis**: 7.4.1
+**MySQL**: 8.0.41<br/>
+**Redis**: 7.4.1<br/>
 
 #### CI/CD
-**Jenkins**: 2.492.1
-**Docker**: 27.5.1
+**Jenkins**: 2.492.1<br/>
+**Docker**: 27.5.1<br/>
 
 </br>
 
@@ -47,55 +47,55 @@
 #### Backend
 
 ##### Spring Boot
-**JDK**: 21
-**Spring Boot**: 3.4.1
-**Gradle**: 8.11.1
-**JPA**: 3.4.3
-**QueryDSL**: 5.0.0
-**JWT**: 0.12.6
-**OAuth 2.0** 
-**Lombok**: 1.18.30
+**JDK**: 21<br/>
+**Spring Boot**: 3.4.1<br/>
+**Gradle**: 8.11.1<br/>
+**JPA**: 3.4.3<br/>
+**QueryDSL**: 5.0.0<br/>
+**JWT**: 0.12.6<br/>
+**OAuth 2.0** <br/>
+**Lombok**: 1.18.30<br/>
 
 ##### Node.js
-**JavaScript**: ECMAScript 2024(ES15)
-**Node.js**: 22.14.0
-**mysql2**: 3.12.0
-**OpenVidu**: 3.0.0
-**LiveKit Egress**: 1.8.4
-**LiveKit Ingress**: 1.4.2
+**JavaScript**: ECMAScript 2024(ES15)<br/>
+**Node.js**: 22.14.0<br/>
+**mysql2**: 3.12.0<br/>
+**OpenVidu**: 3.0.0<br/>
+**LiveKit Egress**: 1.8.4<br/>
+**LiveKit Ingress**: 1.4.2<br/>
 
 ##### Python Packages
-**Python**: 3.11.9
-**Flask**: 2.3.3
-**Flask-SocketIO**: 5.3.4
-**numpy**: 1.25.0
-**opencv-python**: 4.9.0.60
-**torch-cuda**: 2.1.0
-**ultralytics**: 8.0.0
+**Python**: 3.11.9<br/>
+**Flask**: 2.3.3<br/>
+**Flask-SocketIO**: 5.3.4<br/>
+**numpy**: 1.25.0<br/>
+**opencv-python**: 4.9.0.60<br/>
+**torch-cuda**: 2.1.0<br/>
+**ultralytics**: 8.0.0<br/>
 
 #### Frontend
 
-**React**: 18.3.1
-**TypeScript**: 5.6.2
-**Vite**: 6.0.5
-**Emotion**: 11.14.0
-**Fullcalendar**: 6.1.15
-**LiveKit**: 2.8.1
-**Stomp**: 7.0.0
-**Axios**: 1.7.9
-**Socket.io**: 4.8.1
-**Swiper**: 11.2.4
-**Zustand**: 5.0.3
-**Iamport**: 2.0.13
+**React**: 18.3.1<br/>
+**TypeScript**: 5.6.2<br/>
+**Vite**: 6.0.5<br/>
+**Emotion**: 11.14.0<br/>
+**Fullcalendar**: 6.1.15<br/>
+**LiveKit**: 2.8.1<br/>
+**Stomp**: 7.0.0<br/>
+**Axios**: 1.7.9<br/>
+**Socket.io**: 4.8.1<br/>
+**Swiper**: 11.2.4<br/>
+**Zustand**: 5.0.3<br/>
+**Iamport**: 2.0.13<br/>
 
 #### Server
-**AWS**: 6.8.0-1021-aws
-**Nginx**: 1.18.0
-**Amazon S3** 
-**Minio**: 2024.10.13-debian-12-r1
+**AWS**: 6.8.0-1021-aws<br/>
+**Nginx**: 1.18.0<br/>
+**Amazon S3** <br/>
+**Minio**: 2024.10.13-debian-12-r1<br/>
 
 #### Mornitoring
-**grafana**: 11.3.0
+**grafana**: 11.3.0<br/>
 
 </br>
 
