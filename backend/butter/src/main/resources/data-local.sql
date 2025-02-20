@@ -146,7 +146,7 @@ VALUES
     -- 원찬이와 아이들, 떡잎마을 방범대
     (15000, NOW(), NOW(), '원찬이와 아이들', '우리 버스킹 크루는 열정과 감성으로 거리를 무대로 만들어, 음악과 퍼포먼스로 사람들에게 감동과 즐거움을 선사합니다!', 'https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/b5c3b8da-5f77-47b0-9bb5-f0dcb6c0623a.jpg', 'http://video.url/crew9','http://promo.url/crew9'),
     (15000, NOW(), NOW(), '떡잎마을 방범대', '다채로운 음악과 열정적인 퍼포먼스로 거리의 분위기를 밝히는 버스킹 크루입니다', 'https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/0c9445c1-706c-43ae-b4b2-3f36c2b5b491.jpg', 'http://video.url/crew9','http://promo.url/crew9'),
-    (15000, NOW(), NOW(), '다정이와 아이들', '우리 버스킹 크루는 열정과 감성으로 거리를 무대로 만들어, 음악과 퍼포먼스로 사람들에게 감동과 즐거움을 선사합니다!', 'https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/b5c3b8da-5f77-47b0-9bb5-f0dcb6c0623a.jpg', 'http://video.url/crew9','http://promo.url/crew9');
+    (15000, NOW(), NOW(), '다정이와 아이들', '우리 버스킹 크루는 열정과 감성으로 거리를 무대로 만들어, 음악과 퍼포먼스로 사람들에게 감동과 즐거움을 선사합니다!', 'https://butter-s3-bucket.s3.ap-northeast-2.amazonaws.com/b15297fe-8996-484f-a761-8f685e58a464.jpg', 'http://video.url/crew9','http://promo.url/crew9');
 
 -- crew_genre 테이블
 -- 위 크루들 순서대로 장르 지정
@@ -160,8 +160,8 @@ values
     (41, 13), (42, 13), (43, 13), (44, 13), (45, 13), (46, 13), (47, 13), (48, 13),
     (49, 4), (50, 4), (51, 4), (52, 4), (53, 4), (54, 4), (55, 4), (56, 4),
     (57, 7), (58, 7), (59, 7), (60, 7), (61, 7), (62, 7), (63, 7), (64, 7),
-    -- 원찬이와 아이들, 떡잎마을 방범대
-    (65, 13), (66, 1);
+    -- 원찬이와 아이들, 떡잎마을 방범대, 다정이와 아이들
+    (65, 13), (66, 1), (67, 1);
 
 -- crew_member 테이블
 INSERT INTO crew_member (crew_id, member_id, is_crew_admin)
@@ -191,7 +191,6 @@ VALUES
     (67, 9, FALSE),
     (67, 10, FALSE),
     (67, 11, FALSE);
-
 
 -- live 테이블 (clip 테이블 참조를 위해 선행 삽입 필요)
 INSERT INTO live (crew_id, start_date, end_date, title)
