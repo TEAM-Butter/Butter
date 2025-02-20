@@ -12,7 +12,7 @@ import "./MapCss2.css";
 
 const Container = styled.div`
   /* position: relative; */
-  height: 89%;
+  height: 88%;
   display:flex;
   flex-direction: column;
   margin: 40px;
@@ -36,15 +36,19 @@ const Text = styled.div`
   font-size: 60px;
 `
 
+const BodyWrapper = styled.div`
+  flex: 1;
+  width: 100%;
+  display: flex;
+  gap: 50px;
+`
 
 const CalenderBox = styled.div`
-  flex: 1;
   width: 40%;
-  min-width: 500px;
+  height: 100%;
+  min-width: 550px;
   border-radius: 30px;
   padding: 20px;
-  top: 130px;
-  left : 220px;
   border: 2px solid white;
 `
 
@@ -59,7 +63,6 @@ const ModalCollumBox = styled.div`
 `
 // 스타일드 컴포넌트 정의
 const ScheduleDetailModalOverlay = styled.div`
-    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
@@ -67,24 +70,27 @@ const ScheduleDetailModalOverlay = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    padding-left: 500px;
-    padding-top: 140px;
     flex-direction: column;
 `;
 
 const ScheduleDetailModalContent = styled.div`
     background: black;
     color: white;
-    padding: 20px;
+    padding: 15px 25px;
     border-radius: 10px;
-    width: 400px;
+    width: 450px;
     text-align: center;
     border-bottom: 1px dashed white;
 `;
+
 const ScheduleTitleBox = styled.div`
     display: flex;
     align-items: center;
     justify-content: space-between;
+
+    #modalTitle {
+      font-size: 20px;
+    }
 
 `
 const GenreFlexBox = styled.div`
@@ -108,9 +114,9 @@ const ScheduleDetailModalContent2 = styled.div`
     color: white;
     padding: 20px;
     border-radius: 10px;
-    width: 400px;
+    width: 450px;
     background-color:rgba(0, 0, 0, 0.8);
-    height: 400px;
+    height: 370px;
 
 `;
 const TextBox = styled.div`
@@ -130,6 +136,7 @@ const ContentText = styled.div`
 const FlexCan = styled.div`
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 10px;
 `
 const DateText = styled.div`
@@ -185,6 +192,21 @@ const EditBox = styled.div`
 const PageTitleBox = styled.div`
   font-size: 100px;
   font-weight: 500;
+`
+
+const RtSide = styled.div`
+  display: flex;
+  flex-direction: column;
+`
+
+const SelectedDate = styled.div`
+  font-size: 30px;
+  font-weight: 200;
+  padding: 15px 30px;
+  width: 450px;
+  background-color: black;
+  border-radius: 30px;
+  margin-bottom: 15px;
 `
 
 const MyCalendarPage = () => {
@@ -361,6 +383,7 @@ const MyCalendarPage = () => {
         </Text>
         <div id="pageInfo">북마크한 버스킹 일정들을 한눈에 확인해보세요!</div>
       </Header>
+      <BodyWrapper>
       <CalenderBox>
         <FullCalendar
           height={"100%"}
@@ -375,20 +398,20 @@ const MyCalendarPage = () => {
           }}
           dateClick={(info) => { setSelectedDate(info.dateStr); }} // ✅ 날짜 클릭 시 업데이트
         />
+        </CalenderBox>
 
-        {/* 선택한 날짜를 화면에 표시 */}
-        {selectedDate && <DateTextBox>선택한 날짜: {selectedDate}</DateTextBox>}
-        {/* 스케쥴 상세 정보 모달 */}
-
-
+        <RtSide>
+        
         {dayScheduleOPen &&
-
+        <>
+          {/* 선택한 날짜를 화면에 표시 */}
+          {selectedDate && <SelectedDate>{selectedEvent.start.toISOString().split("T")[0]}</SelectedDate>}
+          {/* 스케쥴 상세 정보 모달 */}
 
           <ModalCollumBox>
             <ScheduleDetailModalOverlay>
               <ScheduleDetailModalContent>
-                <ScheduleTitleBox><div style={{ fontSize: "30px" }}>{selectedEvent.title}</div>  <div onClick={() => { setdayScheduleOPen(false) }}>X</div> </ScheduleTitleBox>
-
+                <ScheduleTitleBox><div id="modalTitle">{selectedEvent.title}</div>  <div onClick={() => { setdayScheduleOPen(false) }}>X</div> </ScheduleTitleBox>
 
               </ScheduleDetailModalContent>
               <ScheduleDetailModalContent2>
@@ -408,8 +431,8 @@ const MyCalendarPage = () => {
                   center={{ lat: selectedEvent.extendedProps.lat, lng: selectedEvent.extendedProps.lng }}
                   style={{
                     // 지도의 크기
-                    width: "360px",
-                    height: "200px",
+                    width: "400px",
+                    height: "180px",
                   }}
                   id="map"
                   onCreate={setMap}
@@ -423,12 +446,10 @@ const MyCalendarPage = () => {
               </ScheduleDetailModalContent2>
             </ScheduleDetailModalOverlay>
           </ModalCollumBox>
-
-
-
-
+        </>
         }
-      </CalenderBox>
+      </RtSide>
+      </BodyWrapper>
     </Container>
   );
 };
