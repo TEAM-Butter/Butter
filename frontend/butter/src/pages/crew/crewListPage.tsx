@@ -225,19 +225,23 @@ function CrewListPage() {
             try {
                 // ✅ 헤더 추가: Authorization (JWT 토큰 포함)
                 setLoading(true);
-                if (genreToggle == "All") {
-                    const response = await axiosInstance.get(`/crew/list?pageSize=20&sortBy=followerCount`)
+                if (genreToggle == "All"){
+                    const response = await axiosInstance.get(`/crew/list?pageSize=200&sortBy=followerCount`)
                     setCrewList(response.data);
                     console.log(response.data)
-                } else if (genreToggle == "R&B") {
-                    const response = await axiosInstance.get(`/crew/list?pageSize=20&sortBy=followerCount&genre=R%26B`)
+                    // const response2 = await axiosInstance.get('clip/detail/8')
+                    // setdummy(response2.data.videoUrl)
+                    // console.log(response2.data)
+                    // const response3 = await axiosInstance.get('clip/list?pageSize=5')
+                    // console.log(response3.data)
+                } else if (genreToggle == "R&B"){
+                    const response = await axiosInstance.get(`/crew/list?pageSize=50&sortBy=followerCount&genre=R%26B`)
                     setCrewList(response.data);
                     console.log(response.data)
-                } else {
-                    const response = await axiosInstance.get(`/crew/list?pageSize=10&sortBy=followerCount&genre=${genreToggle}`)
-                    setCrewList(response.data); // 크루 리스트 정보 받아옴
-                    console.log(response.data)
-                }
+                } else{
+                const response = await axiosInstance.get(`/crew/list?pageSize=50&sortBy=followerCount&genre=${genreToggle}`)
+                setCrewList(response.data); // 크루 리스트 정보 받아옴
+                console.log(response.data)}
                 console.log(genreToggle)
 
             } catch (err: any) {

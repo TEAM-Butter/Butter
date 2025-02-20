@@ -61,7 +61,7 @@ const [searchTerm, setSearchTerm] = useState("")
 const [searchResult, setSearchResult] = useState([])
 const handleSearch = async () => {
     try{
-        const res = await axiosInstance.get(`/crew/list?pageSize=10&sortBy=followerCount&keyword=${searchTerm}`)
+        const res = await axiosInstance.get(`/crew/list?pageSize=100&sortBy=followerCount&keyword=${searchTerm}`)
 
         console.log(res.data)
         setSearchResult(res.data)
