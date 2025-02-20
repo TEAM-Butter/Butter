@@ -70,12 +70,12 @@ public class LoginServiceImpl implements LoginService{
         return new LoginResponseDTO(accessToken, refreshToken, authenticatedMemberInfo);
     }
 
-    private Optional<BaseCrewDTO> getCrewInfo(Member member) {
+    private BaseCrewDTO getCrewInfo(Member member) {
         List<CrewMember> crewMembers = crewMemberService.findByMember(member);
         if (crewMembers != null && !crewMembers.isEmpty()) {
-            return Optional.of(new BaseCrewDTO(crewMembers.get(0).getCrew()));
+            return new BaseCrewDTO(crewMembers.getFirst().getCrew());
         }
-        return Optional.empty();
+        return null;
     }
 
     private String getMemberTypeInLogic(Member member){
@@ -116,7 +116,7 @@ public class LoginServiceImpl implements LoginService{
                 memberType,
                 genres,
                 member.isExtraInfoRegistered(),
-                getCrewInfo(member).orElse(new BaseCrewDTO())
+                getCrewInfo(member)
         );
 
         AuthInfoDTO authInfo = new AuthInfoDTO(member.getId(),member.getEmail().getValue(), member.getGender().name(), member.getBirthDate().getDate());
