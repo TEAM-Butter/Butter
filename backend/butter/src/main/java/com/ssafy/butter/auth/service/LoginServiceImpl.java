@@ -116,7 +116,7 @@ public class LoginServiceImpl implements LoginService{
                 memberType,
                 genres,
                 member.isExtraInfoRegistered(),
-                getCrewInfo(member)
+                getCrewInfo(member).orElse(new BaseCrewDTO())
         );
 
         AuthInfoDTO authInfo = new AuthInfoDTO(member.getId(),member.getEmail().getValue(), member.getGender().name(), member.getBirthDate().getDate());
