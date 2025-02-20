@@ -1,13 +1,10 @@
 package com.ssafy.butter.domain.crew.dto.response;
 
-import com.ssafy.butter.auth.enums.MemberTypes;
 import com.ssafy.butter.domain.crew.entity.Crew;
-import com.ssafy.butter.domain.crew.entity.CrewMember;
 import com.ssafy.butter.domain.crew.entity.Notice;
 import com.ssafy.butter.domain.live.dto.BaseLiveDTO;
 import com.ssafy.butter.domain.live.entity.Live;
 import com.ssafy.butter.domain.member.entity.Member;
-import com.ssafy.butter.domain.member.entity.MemberType;
 import com.ssafy.butter.domain.schedule.dto.BaseScheduleDTO;
 import com.ssafy.butter.domain.schedule.entity.Schedule;
 import lombok.Getter;
@@ -28,8 +25,7 @@ public record CrewResponseDTO(
         String promotionUrl,
         LocalDateTime createDate,
         Long followerCount,
-        Boolean isFollowed,
-        MemberType memberType
+        Boolean isFollowed
 ) {
 
     public static CrewResponseDTO from(Crew crew, Boolean isFollowed, Long followerCount) {
@@ -46,8 +42,7 @@ public record CrewResponseDTO(
                 crew.getPromotionUrl(),
                 crew.getCreateDate(),
                 followerCount,
-                isFollowed,
-                null
+                isFollowed
         );
     }
 
@@ -65,8 +60,7 @@ public record CrewResponseDTO(
                 crew.getPromotionUrl(),
                 crew.getCreateDate(),
                 followerCount,
-                isFollowed,
-                MemberType.builder().name(MemberTypes.CREW.name().toLowerCase()).build()
+                isFollowed
         );
     }
 
