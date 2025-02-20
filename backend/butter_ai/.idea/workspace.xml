@@ -5,9 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9d7c38df-f533-4bfb-8b82-f0c5671298ff" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/routes/ai.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/routes/ai.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../frontend/butter/src/components/stream/CharacterContainer/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../../frontend/butter/src/components/stream/CharacterContainer/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../frontend/butter/src/components/common/modals/DonationModal.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../../frontend/butter/src/components/common/modals/DonationModal.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../frontend/butter/src/pages/stream/LivePage.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../../frontend/butter/src/pages/stream/LivePage.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -80,7 +78,7 @@
       <workItem from="1739982341317" duration="4000" />
       <workItem from="1740014803289" duration="1952000" />
       <workItem from="1740048440772" duration="12000" />
-      <workItem from="1740060248426" duration="8395000" />
+      <workItem from="1740060248426" duration="8990000" />
     </task>
     <servers />
   </component>

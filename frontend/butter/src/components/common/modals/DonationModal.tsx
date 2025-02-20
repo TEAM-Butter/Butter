@@ -1,9 +1,13 @@
-import { breadDonationRequest } from "../../../apis/request/bread/breadRequest.ts";
+import {
+  breadDonationRequest,
+  getBreadAmount,
+} from "../../../apis/request/bread/breadRequest.ts";
 import * as MC from "./modalComponents/modalComponents.tsx";
 import styled from "@emotion/styled";
-import { useCrewStore } from "../../../stores/UserStore.ts";
-import { RoomName } from "@livekit/components-react";
 import { Socket } from "socket.io-client";
+import { useEffect, useState } from "react";
+import { memberDetailRequest } from "../../../apis/request/member/memberRequest.ts";
+import { MemberDetailResponseDto } from "../../../apis/response/member/index.ts";
 const BreadAmountForm = styled.form`
   display: flex;
   flex-direction: column;
@@ -54,9 +58,20 @@ export const DonationModal = ({
 }: DonationModalProps) => {
   let breadAmount: number = 0;
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
+    const { value } = e.target;
     breadAmount = +value;
   };
+
+  const [userBread, setUserBread] = useState(0);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await getBreadAmount();
+      setUserBread(response.breadAmount);
+    };
+    fetchData();
+  }, []);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     breadDonationRequest({
@@ -72,6 +87,14 @@ export const DonationModal = ({
   socket.on("donate", (content) => {
     console.log("🤣🤣🤣🤣🤣🤣", content);
   });
+  useEffect(() => {
+    memberDetailRequest().then(
+      (responseBody: MemberDetailResponseDto | null) => {
+        if (!responseBody) return;
+        console.log(responseBody);
+      }
+    );
+  }, []);
 
   return (
     <>
@@ -89,6 +112,7 @@ export const DonationModal = ({
           </MC.ModalCloseBtn>
         </MC.ModalHeader>
         <MC.ModalBody>
+          <MC.Comment>총 보유량 : {userBread} Bread</MC.Comment>
           <MC.Comment>빵을 얼마나 후원하시겠어요?</MC.Comment>
           <BreadAmountForm onSubmit={handleSubmit}>
             <BreadAmountInputWrapper>
