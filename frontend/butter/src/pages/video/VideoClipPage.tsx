@@ -11,22 +11,25 @@ const VideoClipPageWrapper = styled.div`
   display: flex;
   flex-direction: column;
   /* height: 90%; */
-  margin: auto;
+  margin: 40px;
   padding-top: 15px; // 하나로 통일
   overflow: hidden; // 추가
 `;
 
 const T1 = styled.div`
-  margin: 10px;
-  font-size: 100px;
-  font-weight: bold;
+  display: flex;
+  align-items: flex-end;
+  gap: 5px;
+  font-size: 60px;
+
+  #pageTitleMd {
+    font-weight: 200;
+  }
 `;
 
 const T2 = styled.div`
-  font-size: 20px;
   margin: 5px;
   margin-bottom: 15px;
-  margin-left: 30px;
 `;
 
 const VideoPlayer = styled.video`
@@ -38,13 +41,13 @@ const HeartButton = styled.button`
   position: absolute;
   display: flex;
 
-  bottom: 20px;
-  left: 20px;
+  bottom: 10px;
+  left: 10px;
   background-color: #0e0e0e1b;
   border-radius: 5px;
   color: white;
   border: none;
-  font-size: 30px;
+  font-size: 20px;
   cursor: pointer;
   z-index: 10;
 `;
@@ -62,7 +65,7 @@ const NoContentBox = styled.div`
 `;
 
 const NoContentContext = styled.div`
-  font-size: 20px;
+  /* font-size: 20px; */
   padding: 25px;
   padding-left: 70px;
   padding-right: 70px;
@@ -71,12 +74,12 @@ const NoContentContext = styled.div`
 `;
 const LikeCountSpan = styled.div`
   margin-left: 8px;
-  font-size: 30px;
+  font-size: 1rem;
 `;
 const Heart = styled.img`
   display: flex;
-  width: 30px;
-  height: 30px;
+  width: 2.5vh;
+  height: 2.5vh;
   margin-left: 5px;
   /* align-items: center; */
 `;
@@ -194,13 +197,18 @@ const VideoClipPage = () => {
 
   return (
     <VideoClipPageWrapper>
-      <T1>Video Clip</T1>
+      <T1>
+        <div id="pageTitleLg">Video</div>
+        <div id="pageTitleMd">Clip</div>
+      </T1>
       <T2>버스킹의 뜨거운 순간, 함께 느껴보세요</T2>
       {videos.length === 0 ? (
         <NoContentBox>
           <NoContentContext>
-            아직 등록된 클립이 없습니다. 첫 번째 버스킹 영상의 주인공이
-            되어보세요!
+            <div id="pageInfo">
+              아직 등록된 클립이 없습니다. 첫 번째 버스킹 영상의 주인공이
+              되어보세요!
+            </div>
           </NoContentContext>
         </NoContentBox>
       ) : (
