@@ -17,16 +17,15 @@ const VideoClipPageWrapper = styled.div`
 `;
 
 const T1 = styled.div`
-  margin: 20px;
+  margin: 10px;
   font-size: 100px;
   font-weight: bold;
-  margin-bottom: 5px;
 `;
 
 const T2 = styled.div`
-  font-size: 23px;
-  margin: 10px;
-  margin-bottom: 20px;
+  font-size: 20px;
+  margin: 5px;
+  margin-bottom: 15px;
   margin-left: 30px;
 `;
 
@@ -56,8 +55,6 @@ const VideoWrapper = styled.div`
 const NoContentBox = styled.div`
   font-size: 25px;
   margin: 10px;
-  width: 100%;
-  height: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -65,7 +62,7 @@ const NoContentBox = styled.div`
 `;
 
 const NoContentContext = styled.div`
-  font-size: 30px;
+  font-size: 20px;
   padding: 25px;
   padding-left: 70px;
   padding-right: 70px;
@@ -252,6 +249,7 @@ const VideoClipPage = () => {
           slidesPerView={1}
           spaceBetween={30}
           mousewheel={true}
+          loop={true}
           pagination={{
             clickable: true,
           }}
@@ -263,6 +261,7 @@ const VideoClipPage = () => {
           style={{
             aspectRatio: 16 / 8.8,
             backgroundColor: "#0a0a0b84",
+            width: "80%",
           }}
         >
           {videos.map((video, idx) => (
