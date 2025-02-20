@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { keyframes } from "@emotion/react";
 import MainPageImg from "../../assets/home/MainPageImg.png"
 import LpImg2 from "../../assets/home/LpImg2.png"
+import { useUserStore } from "../../stores/UserStore";
 
 const HomePageWrapper = styled(motion.div)`
   overflow: hidden;
@@ -117,6 +118,7 @@ const LpImgBox = styled.div`
   `
 
 const Home1Page = () => {
+  const isLogin = useUserStore(state => state.isLogin);
 
   return (<>
     <HomePageWrapper
@@ -138,7 +140,7 @@ const Home1Page = () => {
           <span>당신의 버스킹은 누군가의 하루를 특별하게 만듭니다.</span>
           <span>라이브를 통해 거리의 한계를 넘어 더 많은 이들과 그 순간을 나눠보세요.</span>
           <SignUpBtnBox>
-            <Link to="/auth/signup"><SignUpBtn>SIGN UP</SignUpBtn></Link>
+            { !isLogin && <Link to="/auth/login"><SignUpBtn>Log in</SignUpBtn></Link>}
           </SignUpBtnBox>
         </LogoText>
         <BottomWrapper>
