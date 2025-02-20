@@ -65,7 +65,7 @@
 **OpenVidu**: 3.0.0<br/>
 **LiveKit Egress**: 1.8.4<br/>
 
-##### Python Packages
+##### Flask
 **Python**: 3.11.9<br/>
 **Flask**: 2.3.3<br/>
 **Flask-SocketIO**: 5.3.4<br/>
