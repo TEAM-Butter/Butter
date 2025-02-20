@@ -118,21 +118,6 @@ const RightTop = styled.div`
   }
 `;
 
-const RightMiddle = styled.div`
-  border-radius: 20px;
-  overflow: hidden;
-  /* background-color: bisque; */
-  flex: 1;
-  max-height: 500px;
-  padding: 10px;
-  @media (max-width: 780px) {
-    width: calc(50% - 4px); /* 여백을 고려한 너비 */
-    aspect-ratio: 16 / 9; /* RightTop과 동일한 비율 */
-    max-height: 300px;
-    flex: none;
-  }
-`;
-
 const LiveOffBtn = styled.div`
   background-color: #ea2323;
   min-height: 100px;
@@ -163,12 +148,57 @@ const BackBtn = styled.div`
   }
 `;
 
+const RightMiddle = styled.div`
+  border-radius: 20px;
+  flex: 1;
+  height: 500px;
+  padding: 10px;
+  display: flex;
+  overflow: hidden;
+
+  @media (max-width: 780px) {
+    width: calc(50% - 4px);
+    aspect-ratio: 16 / 9;
+    height: 300px;
+    flex: none;
+  }
+`;
+
+const RecordingContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: calc(100% - 20px); /* padding 고려 */
+`;
+
 const RecordingListContainer = styled.div`
   margin-top: 15px;
   display: flex;
+  flex: 1;
   flex-direction: column;
   gap: 12px;
+  overflow-y: auto;
+  padding-right: 8px;
+
+  /* Customize scrollbar */
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
 `;
+
 const RecordingItem = styled.div`
   display: flex;
   justify-content: space-between;
@@ -178,6 +208,7 @@ const RecordingItem = styled.div`
   color: black;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  flex-shrink: 0;
 `;
 const RecordingInfo = styled.div`
   flex-grow: 1;
@@ -241,10 +272,7 @@ const LivePage = () => {
 
   const location = useLocation();
   const roomId = location.state.roomId;
-  console.log("❤️❤️❤️❤️❤️❤️❤️", roomId);
   const crewId = useCrewStore((state) => state.id || roomId);
-  console.log("🤣🤣🤣🤣🤣🤣", crewId);
-  console.log("crewStore crewName : ", crewId);
 
   const navigate = useNavigate();
 
@@ -627,23 +655,25 @@ const LivePage = () => {
                 )}
               </RightTop>
               <RightMiddle>
-                {recordingService && (
-                  <RecordingControls
-                    recordingService={recordingService}
-                    onRecordingStateChange={handleRecordingStateChange}
-                    onRecordingStop={onRecordingStop}
-                  />
-                )}
-                <div>{recordings.length}개의 녹화된 영상</div>
-                <RecordingListContainer>
-                  {recordings.map((recording) => (
-                    <RecordingItem key={recording.name}>
-                      <RecordingInfo>
-                        <p>녹화 시간 : {formatDate(recording.startedAt)}</p>
-                      </RecordingInfo>
-                    </RecordingItem>
-                  ))}
-                </RecordingListContainer>
+                <RecordingContent>
+                  {recordingService && (
+                    <RecordingControls
+                      recordingService={recordingService}
+                      onRecordingStateChange={handleRecordingStateChange}
+                      onRecordingStop={onRecordingStop}
+                    />
+                  )}
+                  <div>{recordings.length}개의 녹화된 영상</div>
+                  <RecordingListContainer>
+                    {recordings.map((recording) => (
+                      <RecordingItem key={recording.name}>
+                        <RecordingInfo>
+                          <p>녹화 시간 : {formatDate(recording.startedAt)}</p>
+                        </RecordingInfo>
+                      </RecordingItem>
+                    ))}
+                  </RecordingListContainer>
+                </RecordingContent>
               </RightMiddle>
 
               <LiveOffBtn onClick={handleLiveOffBtnClick}>
