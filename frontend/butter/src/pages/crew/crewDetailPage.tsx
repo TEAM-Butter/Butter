@@ -33,6 +33,7 @@ import { StatementSync } from "node:sqlite";
 import { Bookmark, MyLocation } from "@mui/icons-material";
 import { useCrewStore } from "../../stores/UserStore.ts";
 import { link } from "fs";
+import { time } from "console";
 
 const images = [sample1,sample2,sample3,sample4,sample5,sample6,sample5,sample5,sample5,sample5]
 
@@ -42,6 +43,7 @@ const PageContainer=styled.div`
   width: 100%;   /* 전체 너비 100% */
   padding: 20px 50px; /* 양쪽 끝에 20px의 여백 추가 */
   box-sizing: border-box; /* 패딩이 포함된 크기 계산 */
+
 `
 
 
@@ -387,7 +389,7 @@ function CrewDetailPage() {
                 const response = await axiosInstance.get(`/crew/detail/${id}`) // 크루 디테일 정보 받아옴
                 setCrewDetail(response.data);
                 console.log("response.data : ", response.data)
-                if (crewDetail?.lives[0]?.endDate === null) {
+                if (response.data.lives[0].endDate === null) {
                     setLiveOn(true)
                 } else {
                     setLiveOn(false)
@@ -504,7 +506,7 @@ function CrewDetailPage() {
             {crewEditSwitch && <CrewEditComponent2 />}
            
             <Box3 onClick={()=> {(crewDetail.promotionUrl) ?(window.location.href = crewDetail.promotionUrl) :  alert("등록된 링크가 없습니다") }}><SnsText><div style={{ fontSize : "20px"}}>SNS</div><div>link</div></SnsText><UpArrowTag src={upArrow} alt="upArrow"></UpArrowTag></Box3>
-            {LiveOn == true && <Box4 onClick={()=>{navigate(`/stream/live/${id}`)}}><LiveText1>Live</LiveText1><div>On</div> </Box4>}
+            {LiveOn == true && <Box4 onClick={()=>{navigate(`/stream/live/${crewDetail.lives[0].title}`,{state: {roomId : crewDetail.lives[0].id, time: crewDetail.lives[0].title}} )}}><LiveText1>Live</LiveText1><div>On</div> </Box4>}
             {LiveOn == false && <Box4 onClick={()=>{alert("라이브 중이 아닙니다.")}} style={{backgroundColor : "gray"}}><LiveText1>Live</LiveText1><div>Off</div> </Box4>} 
         </LayOut3>       
                 </LayOut1>
