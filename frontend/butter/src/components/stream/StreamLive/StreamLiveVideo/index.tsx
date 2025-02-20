@@ -23,7 +23,7 @@ function StreamLiveVideo({
 }: StreamLiveVideoProps) {
   const videoElement = useRef<HTMLVideoElement | null>(null);
   const streamInterval = 500; // 200ms 간격으로 프레임 전송
-  const thumbnailInterval = 600000;
+  const thumbnailInterval = 30000;
   const sendFrameToServer = async () => {
     if (!videoElement.current || !local) return;
 

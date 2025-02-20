@@ -129,12 +129,6 @@ interface Video {
   date: string;
 }
 
-const video: Video = {
-  url: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
-  title: "Sample Video",
-  date: "2025-02-09",
-};
-
 export interface Recording {
   id: string; // 녹화 ID
   name: string; // 녹화 파일 이름
@@ -151,13 +145,11 @@ const VideoEditPage = () => {
     {}
   );
   const [selectedVideoName, setSelectedVideoName] = useState<string>("");
-  const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
 
   const selectVideo = (
     url: { [key: string]: string },
     recordingName: string
   ) => {
-    console.log("url성공", url);
     setSelectedVideo(url.recordingUrl);
     setSelectedVideoName(recordingName);
   };
