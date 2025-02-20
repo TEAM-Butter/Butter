@@ -88,7 +88,10 @@ def on_leave(data):
     if get_room_size(room_id) == 0:
         print(f"Room {room_id} is empty")
         websocket_room_service.remove_room(room_id)
-    sock.emit("leave", websocket_room_service.room_members.get(room_id), room=room_id)
+    if data["role"] == "publisher":
+        sock.emit("finishLive", None, room=room_id)
+    else:
+        sock.emit("leave", websocket_room_service.room_members.get(room_id), room=room_id)
 
 
 @sock.on("increaseEmotionCount")
