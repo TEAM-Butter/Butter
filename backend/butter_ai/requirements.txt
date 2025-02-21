@@ -1,0 +1,6 @@
+Flask
+Flask-SocketIO
+requests
+numpy
+opencv-python
+torch-cuda
