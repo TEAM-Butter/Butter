@@ -116,6 +116,12 @@ interface MemberDetailResponseDto {
   isExtraInfoRegistered: boolean;
 }
 
+declare global {
+  interface Window {
+    IMP: any;
+  }
+}
+
 import { axiosInstance } from "../../apis/axiosInstance";
 import { useUserStore } from "../../stores/UserStore";
 import { useEffect, useState } from "react";

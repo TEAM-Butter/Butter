@@ -98,7 +98,7 @@ const LiveBox = ({
   crewImg,
 }: LiveProps) => {
   const navigate = useNavigate();
-  const goLive = (id, title) => {
+  const goLive = (id: string, title: string) => {
     console.log(`Going live: ${title}`);
     navigate(`/stream/${title}`, {
       state: {

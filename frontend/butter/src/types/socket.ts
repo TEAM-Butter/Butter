@@ -8,7 +8,7 @@ export interface MemberType {
   avatarType: string;
   left: number;
   isEmoting: boolean;
-  currentEmotion: string;
+  currentEmotion: string | null;
 }
 export interface SocketContent {
   status: string;
