@@ -1,0 +1,48 @@
+name: Action for React frontend
+
+on:
+  push:
+    branches:
+      - master
+      - develop
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      - name: Copy secret file
+        run: printf "%s" "${{ secrets.REACT_ENV }}" > frontend/butter/.env
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: 'npm'
+
+      - name: Install dependencies and build React app
+        run: cd frontend/butter; npm install; npm run build
+
+      - name: Build Docker Image
+        run: cd frontend/butter; docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/butter-frontend:latest .
+
+      - name: Push Docker Image to Docker Hub
+        run: cd frontend/butter; docker push ${{ secrets.DOCKER_HUB_USERNAME }}/butter-frontend:latest
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+          script: |
+            docker stop butter-frontend || true
+            docker rm butter-frontend || true
+            docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/butter-frontend:latest
+            docker run -d --name my-app -p 5080:5080 ${{ secrets.DOCKER_HUB_USERNAME }}/butter-frontend:latest
