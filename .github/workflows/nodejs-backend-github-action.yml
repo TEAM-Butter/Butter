@@ -24,6 +24,12 @@ jobs:
           cache: 'npm'
           cache-dependency-path: ./backend/butter_webrtc/package-lock.json
 
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
       - name: Build and push Docker Image
         run: cd backend/butter_webrtc; docker build -t 5almiakki/butter-nodejs-backend:latest .; docker push 5almiakki/butter-nodejs-backend:latest
 
