@@ -26,11 +26,8 @@ jobs:
       - name: Install dependencies and build React app
         run: cd frontend/butter; npm install; npm run build
 
-      - name: Build Docker Image
-        run: cd frontend/butter; docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/butter-frontend:latest .
-
-      - name: Push Docker Image to Docker Hub
-        run: cd frontend/butter; docker push ${{ secrets.DOCKER_HUB_USERNAME }}/butter-frontend:latest
+      - name: Build and push Docker Image
+        run: cd frontend/butter; docker build -t 5almiakki/butter-frontend:latest .; docker push 5almiakki/butter-frontend:latest
 
   deploy:
     needs: build

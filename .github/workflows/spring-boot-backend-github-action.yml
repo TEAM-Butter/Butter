@@ -33,7 +33,7 @@ jobs:
           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
       - name: Build and push Docker Image
-        run: cd backend/butter; docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/butter-spring-boot-backend:latest .; docker push ${{ secrets.DOCKER_HUB_USERNAME }}/butter-spring-boot-backend:latest
+        run: cd backend/butter; docker build -t 5almiakki/butter-spring-boot-backend:latest .; docker push 5almiakki/butter-spring-boot-backend:latest
 
   deploy:
     needs: build
