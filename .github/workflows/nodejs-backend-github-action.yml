@@ -1,0 +1,45 @@
+name: Action for NodeJS backend
+
+on:
+  push:
+    branches:
+      - master
+      - develop
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      - name: Copy secret file
+        run: printf "%s" "${{ secrets.NODEJS_ENV }}" > backend/butter_webrtc/.env
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: 'npm'
+
+      - name: Build Docker Image
+        run: cd backend/butter_webrtc; docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/butter-nodejs-backend:latest .
+
+      - name: Push Docker Image to Docker Hub
+        run: cd backend/butter_webrtc; docker push ${{ secrets.DOCKER_HUB_USERNAME }}/butter-nodejs-backend:latest
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+          script: |
+            docker stop butter-nodejs-backend || true
+            docker rm butter-nodejs-backend || true
+            docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/butter-nodejs-backend:latest
+            docker run -d --name my-app -p 6080:6080 ${{ secrets.DOCKER_HUB_USERNAME }}/butter-nodejs-backend:latest
