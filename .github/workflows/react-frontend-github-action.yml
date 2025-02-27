@@ -22,6 +22,7 @@ jobs:
         with:
           node-version: 18
           cache: 'npm'
+          cache-dependency-path: ./frontend/butter/package-lock.json
 
       - name: Install dependencies and build React app
         run: cd frontend/butter; npm install; npm run build
