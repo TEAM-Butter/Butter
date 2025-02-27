@@ -27,6 +27,12 @@ jobs:
       - name: Install dependencies and build React app
         run: cd frontend/butter; npm install; npm run build
 
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
       - name: Build and push Docker Image
         run: cd frontend/butter; docker build -t 5almiakki/butter-frontend:latest .; docker push 5almiakki/butter-frontend:latest
 
