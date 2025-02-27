@@ -166,10 +166,10 @@ const VideoEditPage = () => {
   const [selectedVideoName, setSelectedVideoName] = useState<string>("");
 
   const selectVideo = (
-    url: { [key: string]: string },
+    url: string ,
     recordingName: string
   ) => {
-    setSelectedVideo(url.recordingUrl);
+    setSelectedVideo(url);
     setSelectedVideoName(recordingName);
   };
   const params = useParams();
