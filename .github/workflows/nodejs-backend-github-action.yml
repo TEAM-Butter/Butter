@@ -22,6 +22,7 @@ jobs:
         with:
           node-version: 18
           cache: 'npm'
+          cache-dependency-path: ./backend/butter_webrtc/package-lock.json
 
       - name: Build and push Docker Image
         run: cd backend/butter_webrtc; docker build -t 5almiakki/butter-nodejs-backend:latest .; docker push 5almiakki/butter-nodejs-backend:latest
