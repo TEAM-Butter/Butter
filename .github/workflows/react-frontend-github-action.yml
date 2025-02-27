@@ -49,5 +49,5 @@ jobs:
           script: |
             docker stop butter-frontend || true
             docker rm butter-frontend || true
-            docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/butter-frontend:latest
-            docker run -d --name my-app -p 5080:5080 ${{ secrets.DOCKER_HUB_USERNAME }}/butter-frontend:latest
+            docker pull 5almiakki/butter-frontend:latest
+            docker run -d --name my-app -p 5080:5080 5almiakki/butter-frontend:latest

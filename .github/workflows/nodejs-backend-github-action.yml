@@ -46,5 +46,5 @@ jobs:
           script: |
             docker stop butter-nodejs-backend || true
             docker rm butter-nodejs-backend || true
-            docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/butter-nodejs-backend:latest
-            docker run -d --name my-app -p 6080:6080 ${{ secrets.DOCKER_HUB_USERNAME }}/butter-nodejs-backend:latest
+            docker pull 5almiakki/butter-nodejs-backend:latest
+            docker run -d --name my-app -p 6080:6080 5almiakki/butter-nodejs-backend:latest

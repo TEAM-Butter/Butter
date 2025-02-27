@@ -48,5 +48,5 @@ jobs:
           script: |
             docker stop butter-spring-boot-backend || true
             docker rm butter-spring-boot-backend || true
-            docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/butter-spring-boot-backend:latest
-            docker run -d --name my-app -p 8080:8080 ${{ secrets.DOCKER_HUB_USERNAME }}/butter-spring-boot-backend:latest
+            docker pull 5almiakki/butter-spring-boot-backend:latest
+            docker run -d --name my-app -p 8080:8080 5almiakki/butter-spring-boot-backend:latest
