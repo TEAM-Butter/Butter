@@ -5,6 +5,7 @@ on:
     branches:
       - master
       - develop
+      - chore/github-action
 
 jobs:
   build:
@@ -31,11 +32,8 @@ jobs:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
-      - name: Build Docker Image
-        run: cd backend/butter; docker build -t butter-spring-boot-backend:latest .
-
-      - name: Push Docker Image to Docker Hub
-        run: cd backend/butter; docker push butter-spring-boot-backend:latest
+      - name: Build and push Docker Image
+        run: cd backend/butter; docker build -t 5almiakki/butter-spring-boot-backend:latest .; docker push 5almiakki/butter-spring-boot-backend:latest
 
   deploy:
     needs: build
