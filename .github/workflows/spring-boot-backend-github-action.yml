@@ -32,7 +32,7 @@ jobs:
           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
       - name: Build Docker Image
-        run: cd backend/butter; docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/butter-spring-boot-backend:latest .
+        run: cd backend/butter; docker build -t butter-spring-boot-backend:latest .
 
       - name: Push Docker Image to Docker Hub
         run: cd backend/butter; docker push ${{ secrets.DOCKER_HUB_USERNAME }}/butter-spring-boot-backend:latest
