@@ -46,5 +46,6 @@ jobs:
           script: |
             sudo docker stop butter-nodejs-backend || true
             sudo docker rm butter-nodejs-backend || true
+            sudo docker rmi -f \$(docker images -f "dangling=true" -q) || true
             sudo docker pull 5almiakki/butter-nodejs-backend:latest
             sudo docker run -d --name butter-nodejs-backend -p 6080:6080 5almiakki/butter-nodejs-backend:latest

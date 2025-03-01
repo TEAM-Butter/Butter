@@ -48,5 +48,6 @@ jobs:
           script: |
             sudo docker stop butter-spring-boot-backend || true
             sudo docker rm butter-spring-boot-backend || true
+            sudo docker rmi -f \$(docker images -f "dangling=true" -q) || true
             sudo docker pull 5almiakki/butter-spring-boot-backend:latest
             sudo docker run -d --name butter-spring-boot-backend -p 8080:8080 5almiakki/butter-spring-boot-backend:latest
