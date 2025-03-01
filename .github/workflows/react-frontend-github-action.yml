@@ -47,7 +47,7 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
           script: |
-            docker stop butter-frontend || true
-            docker rm butter-frontend || true
-            docker pull 5almiakki/butter-frontend:latest
-            docker run -d --name my-app -p 5080:5080 5almiakki/butter-frontend:latest
+            sudo docker stop butter-frontend || true
+            sudo docker rm butter-frontend || true
+            sudo docker pull 5almiakki/butter-frontend:latest
+            sudo docker run -d --name my-app -p 5080:5080 5almiakki/butter-frontend:latest
