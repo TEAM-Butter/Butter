@@ -1,11 +1,11 @@
 name: Action for React frontend
 
-on:
-  push:
-    branches:
-      - master
-      - develop
-      - chore/github-action
+# on:
+#   push:
+#     branches:
+#       - master
+#       - develop
+#       - chore/github-action
 
 jobs:
   build:
