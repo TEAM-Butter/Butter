@@ -52,3 +52,4 @@ jobs:
             sudo docker rmi -f $(docker images -f "dangling=true" -q) || true
             sudo docker pull 5almiakki/butter-frontend:latest
             sudo docker run -d --name butter-frontend -p 5080:5080 5almiakki/butter-frontend:latest
+            sudo docker image prune -f || true
